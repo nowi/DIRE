@@ -10,21 +10,43 @@ import scala.util.parsing.combinator.syntactical._
 
 object FOLDsl extends StandardTokenParsers {
   lexical.delimiters ++= List("(", ")", ",")
-  lexical.reserved += ("exist", "forall", "some", "and", "or", "not", "<->", "->", "<-")
+  lexical.reserved += ("exists", "forall", "some", "and", "or", "not", "iff", "then", "if")
 
-  def sentence = atomicsentence | "(" ~> sentence ~ connective ~ sentence <~ ")" | quantifier ~ repsep(variable, ",") ~ sentence | "not" ~ sentence
+  def sentence: Parser[Any] = {println("Sentence"); atomicsentence | "(" ~> sentence ~ connective ~ sentence <~ ")" | quantifier ~ repsep(variable, ",") ~ sentence | negation}
 
-  def atomicsentence = predicate ~ "(" ~> repsep(term, ",") <~ ")" | term
+  def negation: Parser[Any] = {println("negation"); "not" ~ "(" ~> sentence <~ ")"}
 
-  def term = function ~ "(" ~> repsep(term, ",") <~ ")" | constant | variable
+  def atomicsentence: Parser[Any] = relation | term
 
-  def connective = ("->" | "or" | "and" | "<->")
+  def term: Parser[Any] = {println("Term"); relation | constant | variable}
 
-  def quantifier = ("forall" | "exists")
+  def connective: Parser[Any] = {println("connective"); ("then" | "or" | "and" | "iff")}
 
-  def function = "fun" ~ ident
+  def quantifier: Parser[Any] = {println("Quantifier"); ("forall" | "exists")}
 
-  def variable = stringLit
+  //  def function: Parser[Any] = { println("Function");"f" ~ ident }
 
-  def constant = ident
+  //  def predicate: Parser[Any] = { println("Predicate");"p" ~ ident }
+
+  def relation: Parser[Any] = {println("Relation"); ident ~ "(" ~> repsep(term, ",") <~ ")"}
+
+
+  def variable: Parser[Any] = {println("Variable"); ident}
+
+  def constant: Parser[Any] = {println("Constant"); stringLit}
+
+
+  def parse(dsl: String) =
+    {
+      val tokens = new lexical.Scanner(dsl)
+      phrase(sentence)(tokens) match {
+        case Success(tree, _) => {
+          println(tree)
+        }
+        case e: NoSuccess => Console.err.println(e)
+      }
+
+
+    }
+
 }
