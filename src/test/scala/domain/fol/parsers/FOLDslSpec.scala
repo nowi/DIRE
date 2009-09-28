@@ -45,6 +45,21 @@ class FOLDslSpec extends Spec with ShouldMatchers {
       FOLDsl.parse(text)
 
     }
+
+
+    it("For all x Cat(x) => Mammal(x) ") {
+      val text = "(forall x Cat(x) then Mammal(x))"
+      // parse
+      FOLDsl.parse(text)
+
+    }
+
+    it("exist Sister(x, Spot) A Cat(x)  ") {
+      val text = "(exists x Sister(x,'Spot') then Cat(x))"
+      // parse
+      FOLDsl.parse(text)
+
+    }
   }
 
 }

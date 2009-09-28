@@ -2,6 +2,7 @@
 build/*
 out/*
 lib/*
+target/*
 DIRE.iws
 
 *.pbxuser
