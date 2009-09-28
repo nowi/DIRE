@@ -6,4 +6,14 @@ package domain.fol
  * Time: 16:53:52
  */
 
-trait Sentence 
+
+trait Sentence
+
+
+object Sentence {
+  implicit def sentenceToAndConnective(x: Sentence): AndConnective = x.asInstanceOf[AndConnective]
+
+  implicit def sentenceToTerm(x: Sentence): Term = x.asInstanceOf[Term]
+}
+
+
