@@ -12,28 +12,36 @@ object FOLDsl extends StandardTokenParsers {
   lexical.delimiters ++= List("(", ")", ",")
   lexical.reserved += ("exists", "forall", "some", "and", "or", "not", "iff", "then", "if")
 
-  def sentence: Parser[Any] = {println("Sentence"); atomicsentence | "(" ~> sentence ~ connective ~ sentence <~ ")" | quantifier ~ repsep(variable, ",") ~ sentence | negation}
+  def sentence: Parser[Sentence] = atomicsentence | connective | quantifier | negation
 
-  def negation: Parser[Any] = {println("negation"); "not" ~ "(" ~> sentence <~ ")"}
+  def negation: Parser[Sentence] = "not" ~ "(" ~> sentence <~ ")" ^^ {case s => Negation(s)}
 
-  def atomicsentence: Parser[Any] = relation | term
+  def atomicsentence: Parser[Sentence] = relation | term
 
-  def term: Parser[Any] = {println("Term"); relation | constant | variable}
+  def term: Parser[Term] = relation | constant | variable
 
-  def connective: Parser[Any] = {println("connective"); ("then" | "or" | "and" | "iff")}
+  def connective: Parser[Sentence] = "(" ~> sentence ~ ("then" | "or" | "and" | "iff") ~ sentence <~ ")" ^^ {
+    case s1 ~ "then" ~ s2 => ImplicationConnective(s1, s2)
+    case s1 ~ "or" ~ s2 => OrConnective(s1, s2)
+    case s1 ~ "and" ~ s2 => AndConnective(s1, s2)
+    case s1 ~ "iff" ~ s2 => EqualityConnective(s1, s2)
+  }
 
-  def quantifier: Parser[Any] = {println("Quantifier"); ("forall" | "exists")}
+  def quantifier: Parser[Sentence] = ("forall" | "exists") ~ repsep(variable, ",") ~ sentence ^^ {
+    case "forall" ~ vars ~ s => UniversalQuantifer(s, vars)
+    case "exists" ~ vars ~ s => ExistentialQuantifer(s, vars)
 
-  //  def function: Parser[Any] = { println("Function");"f" ~ ident }
+  }
 
-  //  def predicate: Parser[Any] = { println("Predicate");"p" ~ ident }
+  def relation: Parser[Predicate] = ident ~ terms ^^ {case i ~ terms => Predicate(i, terms)}
 
-  def relation: Parser[Any] = {println("Relation"); ident ~ "(" ~> repsep(term, ",") <~ ")"}
+  def terms: Parser[List[Term]] =
+    "(" ~> repsep(term, ",") <~ ")" ^^ {(terms: List[Term]) => terms}
 
 
-  def variable: Parser[Any] = {println("Variable"); ident}
+  def variable: Parser[Variable] = ident ^^ {case v => Variable(v)}
 
-  def constant: Parser[Any] = {println("Constant"); stringLit}
+  def constant: Parser[Constant] = stringLit ^^ {case s => Constant(s)}
 
 
   def parse(dsl: String) =

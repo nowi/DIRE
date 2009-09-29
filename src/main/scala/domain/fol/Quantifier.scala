@@ -9,5 +9,9 @@ package domain.fol
 abstract class Quantifier extends Sentence
 
 
-case class UniversalQuantifer(filler: Sentence, variables: Variable*) extends Quantifier
-case class ExistentialQuantifer(filler: Sentence, variables: Variable*) extends Quantifier
+case class UniversalQuantifer(filler: Sentence, variables: List[Variable]) extends Quantifier {
+  override def toString = "∀ %s %s" format (variables mkString ("", ",", ""), filler)
+}
+case class ExistentialQuantifer(filler: Sentence, variables: List[Variable]) extends Quantifier {
+  override def toString = "∃ %s %s" format (variables mkString ("", ",", ""), filler)
+}

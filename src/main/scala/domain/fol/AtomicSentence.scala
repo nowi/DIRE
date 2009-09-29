@@ -7,3 +7,8 @@ package domain.fol
  */
 
 trait AtomicSentence extends Sentence
+
+
+object AtomicSentence {
+  implicit def atomicSentenceToTerm(x: AtomicSentence): Term = x.asInstanceOf[Term]
+}

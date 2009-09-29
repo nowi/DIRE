@@ -6,7 +6,7 @@ package domain.fol
  * Time: 16:20:57
  */
 
-case class Predicate(name: String, terms: Term*) extends AtomicSentence with NamedObject {
-  override def toString = "%s(%s)" format (name, terms)
+case class Predicate(name: String, terms: List[Term]) extends Term {
+  override def toString = "%s(%s)" format (name, terms mkString ("", ",", ""))
 }
 
