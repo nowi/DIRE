@@ -50,8 +50,13 @@ object FOLDsl extends StandardTokenParsers {
       phrase(sentence)(tokens) match {
         case Success(tree, _) => {
           println(tree)
+          true
+
         }
-        case e: NoSuccess => Console.err.println(e)
+        case e: NoSuccess => {
+          Console.err.println(e)
+          false
+        }
       }
 
 
