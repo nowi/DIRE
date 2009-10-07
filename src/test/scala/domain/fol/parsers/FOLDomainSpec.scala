@@ -47,7 +47,7 @@ class FOLDomainSpec extends Spec with ShouldMatchers {
       val r = PositiveFOLLiteral(richard);
       val j = NegativeFOLLiteral(john);
 
-      val clause = Clause(Set(r, j))
+      val clause = Clause(Set(r, j));
 
       println(clause)
 

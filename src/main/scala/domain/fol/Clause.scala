@@ -11,7 +11,8 @@ package domain.fol
 case class Clause(literals: Set[FOLLiteral]) {
   override def toString = "Clause : %s" format (literals mkString ("[", ",", "]"))
 
-  def positiveLiterals: Set[FOLLiteral] = {
+
+  lazy val positiveLiterals: Set[FOLLiteral] = {
     literals filter (_ match {
       case PositiveFOLLiteral(_) => true
       case _ => false
@@ -19,8 +20,7 @@ case class Clause(literals: Set[FOLLiteral]) {
     })
 
   }
-
-  def negativeLiterals: Set[FOLLiteral] = {
+  lazy val negativeLiterals: Set[FOLLiteral] = {
     literals filter (_ match {
       case NegativeFOLLiteral(_) => true
       case _ => false
@@ -29,5 +29,16 @@ case class Clause(literals: Set[FOLLiteral]) {
 
   }
 
+  lazy val isEmpty = literals.isEmpty
+
+  lazy val isUnit = literals.size == 1
+
+  // A Horn clause is a disjunction of literals of which at most one is
+  // positive.
+  lazy val isHorn = !isEmpty && positiveLiterals.size <= 1
+
+  lazy val isDefinitive = !isEmpty && positiveLiterals.size == 1
+
 
 }
+
