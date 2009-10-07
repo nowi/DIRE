@@ -16,7 +16,9 @@ object FOLDsl extends StandardTokenParsers {
 
   def negation: Parser[Sentence] = "not" ~ "(" ~> sentence <~ ")" ^^ {case s => Negation(s)}
 
-  def atomicsentence: Parser[Sentence] = relation | term
+  def atomicsentence: Parser[AtomicSentence] = relation | termEquality
+
+  def termEquality: Parser[TermEquality] = term ~ "iff" ~ term ^^ {case t1 ~ "iff" ~ t2 => TermEquality(t1, t2)}
 
   def term: Parser[Term] = relation | constant | variable
 

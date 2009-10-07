@@ -17,8 +17,8 @@ import org.scalatest.Spec
 @RunWith(classOf[JUnit4Runner])
 class FOLDslSpec extends Spec with ShouldMatchers {
   describe("A FOLParser") {
-    it("should parse simple constants") {
-      val text = "('richard' iff 'richard')"
+    it("should parse simple term equality") {
+      val text = "'richard' iff 'richard'"
       // parse
       assert(FOLDsl.parse(text))
 
