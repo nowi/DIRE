@@ -26,30 +26,35 @@ class Unifier {
   }
 
   private def unify(x: FOLNode, y: FOLNode, theta: Option[Map[Variable, FOLNode]]): Option[Map[Variable, FOLNode]] = {
-    if (x == y) theta;
+    if (x == y) {
+      theta
+    } else {
+      // if theta = failure then return failure
+      theta match {
+        case Some(t) => {
+          (x, y) match {
+            case (x: Variable, y: FOLNode) => unifyVar(x, y, theta)
+            case (x: FOLNode, y: Variable) => unifyVar(y, x, theta)
+            case (x: Constant, y: Constant) => None
+            case (x: FOLNode, y: FOLNode) => {
+              //IF COMPOUND?(x) and COMPOUND?(y) then
+              //UNIFY(ARGS[x], ARGS[y], UNIFY(OP[x], OP[y], theta))
 
-    // if theta = failure then return failure
-    theta match {
-      case Some(t) => {
-        (x, y) match {
-          case (x: Variable, y: FOLNode) => unifyVar(x, y, theta)
-          case (x: FOLNode, y: Variable) => unifyVar(y, x, theta)
-          case (x: Constant, y: Constant) => None
-          case (x: FOLNode, y: FOLNode) => {
-            //IF COMPOUND?(x) and COMPOUND?(y) then
-            //UNIFY(ARGS[x], ARGS[y], UNIFY(OP[x], OP[y], theta))
-
-            unify(x.args, y.args, unify(x.symbolicName, y.symbolicName, theta));
+              unify(x.args, y.args, unify(x.symbolicName, y.symbolicName, theta));
 
 
+            }
           }
-        }
 
+
+        }
+        case None => None
 
       }
-      case None => None
 
     }
+
+
   }
 
 
@@ -62,7 +67,7 @@ class Unifier {
             (xss, yss) match {
               case (List(), List()) => theta
               case (x :: List(), y :: List()) => unify(x, y, theta)
-              case (x :: xsss, y :: ysss) => unify(xsss.asInstanceOf[Option[List[FOLNode]]], ysss.asInstanceOf[Option[List[FOLNode]]], unify(x.asInstanceOf[FOLNode], y.asInstanceOf[FOLNode], theta))
+              case (x :: xsss, y :: ysss) => unify(Some(xsss), Some(ysss), unify(x.asInstanceOf[FOLNode], y.asInstanceOf[FOLNode], theta))
             }
 
           }
@@ -109,7 +114,7 @@ class Unifier {
   /**
    * Cascading substitutions
 
-  Sometimes you get a substitution of the form σ =             { z ← x, x ← a.
+  Sometimes you get a substitution of the form σ =                { z ← x, x ← a.
   Suppose you were to apply this substitution to p(z,x). The correct result is p(a,a).
   The reason is that you need to "cascade" the substitutions; if z takes the value x,
   you need to make sure that you haven't constrained x to be some other value.

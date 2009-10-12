@@ -65,4 +65,22 @@ object FOLDsl extends StandardTokenParsers {
 
     }
 
+  def parse2(dsl: String): Option[Sentence] =
+    {
+      val tokens = new lexical.Scanner(dsl)
+      phrase(sentence)(tokens) match {
+        case Success(tree, _) => {
+          println(tree)
+          Some(tree)
+
+        }
+        case e: NoSuccess => {
+          Console.err.println(e)
+          None
+        }
+      }
+
+
+    }
+
 }
