@@ -1,7 +1,7 @@
 package core
 
 import domain.fol.ast._
-import core.Substitutor._
+import Substitutor._
 
 /**
  * User: nowi
@@ -97,12 +97,16 @@ class Unifier {
   private def unifyVar(v: Variable, node: FOLNode, theta: Option[Map[Variable, FOLNode]]): Option[Map[Variable, FOLNode]] = {
     theta match {
       case Some(t) => {
-        if (t.keySet.contains(v)) unify(t.get(v).asInstanceOf[FOLNode], node, theta)
-        // TODO something not right here , investigate
-        //    else if (theta.keySet().contains(node)) unify(v, theta(node), theta)
-        else if (doesVarOccur(theta, v, node)) None
-        else {
-          cascadeSubstitution(theta, v, node);
+        t.get(v) match {
+          case Some(value) => unify(value, node, theta)
+          // TODO something not right here , investigate
+          //    else if (theta.keySet().contains(node)) unify(v, theta(node), theta)
+          case None => {
+            if (doesVarOccur(theta, v, node)) None
+            else {
+              cascadeSubstitution(theta, v, node);
+            }
+          }
         }
       }
       case None => None
@@ -114,7 +118,7 @@ class Unifier {
   /**
    * Cascading substitutions
 
-  Sometimes you get a substitution of the form σ =                { z ← x, x ← a.
+  Sometimes you get a substitution of the form σ =                    { z ← x, x ← a.
   Suppose you were to apply this substitution to p(z,x). The correct result is p(a,a).
   The reason is that you need to "cascade" the substitutions; if z takes the value x,
   you need to make sure that you haven't constrained x to be some other value.
