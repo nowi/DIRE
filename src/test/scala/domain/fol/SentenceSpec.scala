@@ -6,6 +6,7 @@ package domain.fol
  * Time: 17:56:34
  */
 
+import ast.{Constant, AndConnective}
 import com.jteigen.scalatest.JUnit4Runner
 
 import org.junit.runner.RunWith

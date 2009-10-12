@@ -1,0 +1,158 @@
+package core
+
+import domain.fol.ast._
+import core.Substitutor._
+
+/**
+ * User: nowi
+ * Date: 09.10.2009
+ * Time: 14:59:57
+ */
+
+class Unifier {
+
+  /**
+   * <code>
+   * function UNIFY(x, y, theta) returns a substitution to make x and y identical
+   *   inputs: x, a variable, constant, list, or compound
+   *           y, a variable, constant, list, or compound
+   *
+   * @return a Map<Variable, Term> representing the substitution (i.e. a set
+   *         of variable/term pairs, see pg. 254 for a description) emmpty if failed to unify
+   */
+  def unify(x: FOLNode, y: FOLNode): Option[Map[Variable, FOLNode]] = {
+    unify(x, y, Some(Map[Variable, FOLNode]()))
+
+  }
+
+  private def unify(x: FOLNode, y: FOLNode, theta: Option[Map[Variable, FOLNode]]): Option[Map[Variable, FOLNode]] = {
+    if (x == y) theta;
+
+    // if theta = failure then return failure
+    theta match {
+      case Some(t) => {
+        (x, y) match {
+          case (x: Variable, y: FOLNode) => unifyVar(x, y, theta)
+          case (x: FOLNode, y: Variable) => unifyVar(y, x, theta)
+          case (x: Constant, y: Constant) => None
+          case (x: FOLNode, y: FOLNode) => {
+            //IF COMPOUND?(x) and COMPOUND?(y) then
+            //UNIFY(ARGS[x], ARGS[y], UNIFY(OP[x], OP[y], theta))
+
+            unify(x.args, y.args, unify(x.symbolicName, y.symbolicName, theta));
+
+
+          }
+        }
+
+
+      }
+      case None => None
+
+    }
+  }
+
+
+  private def unify(xs: Option[List[FOLNode]], ys: Option[List[FOLNode]], theta: Option[Map[Variable, FOLNode]]): Option[Map[Variable, FOLNode]] = {
+    theta match {
+      case Some(t) => {
+        (xs, ys) match {
+          case (Some(xss), Some(yss)) => {
+            if (xss.size != yss.size) None
+            (xss, yss) match {
+              case (List(), List()) => theta
+              case (x :: List(), y :: List()) => unify(x, y, theta)
+              case (x :: xsss, y :: ysss) => unify(xsss.asInstanceOf[Option[List[FOLNode]]], ysss.asInstanceOf[Option[List[FOLNode]]], unify(x.asInstanceOf[FOLNode], y.asInstanceOf[FOLNode], theta))
+            }
+
+          }
+          // one ore bots of the lists are notexistent
+          case _ => None
+
+        }
+
+      }
+      case None => None
+    }
+
+  }
+
+  private def unify(x: String, y: String, theta: Option[Map[Variable, FOLNode]]): Option[Map[Variable, FOLNode]] = {
+    theta match {
+      case Some(t) => {
+        if (x == y) theta
+        else None
+      }
+      case None => None
+
+    }
+
+  }
+
+  private def unifyVar(v: Variable, node: FOLNode, theta: Option[Map[Variable, FOLNode]]): Option[Map[Variable, FOLNode]] = {
+    theta match {
+      case Some(t) => {
+        if (t.keySet.contains(v)) unify(t.get(v).asInstanceOf[FOLNode], node, theta)
+        // TODO something not right here , investigate
+        //    else if (theta.keySet().contains(node)) unify(v, theta(node), theta)
+        else if (doesVarOccur(theta, v, node)) None
+        else {
+          cascadeSubstitution(theta, v, node);
+        }
+      }
+      case None => None
+    }
+
+  }
+
+
+  /**
+   * Cascading substitutions
+
+  Sometimes you get a substitution of the form σ =             { z ← x, x ← a.
+  Suppose you were to apply this substitution to p(z,x). The correct result is p(a,a).
+  The reason is that you need to "cascade" the substitutions; if z takes the value x,
+  you need to make sure that you haven't constrained x to be some other value.
+  It would be incorrect to write p(x,a). This has particularly important consequences anytime
+  you are trying to unify two expressions.
+   */
+  private def cascadeSubstitution(theta: Option[Map[Variable, FOLNode]], v: Variable, term: FOLNode): Option[Map[Variable, FOLNode]] = {
+    // add the new subsitution
+    theta match {
+      case Some(t) => {
+        val theta2: Map[Variable, FOLNode] = t + (v -> term)
+
+        val theta3 = (for (key <- theta2.keySet) yield Map(key -> substitute(Some(theta2),
+          theta2.get(key) match {
+            case Some(value) => value
+          })))
+
+        Some(theta3.reduceLeft((map1, map2) => map1 ++ map2))
+
+
+      }
+      case None => None
+    }
+
+  }
+
+
+  private def doesVarOccur(theta: Option[Map[Variable, FOLNode]], v: Variable, term: FOLNode): Boolean = {
+    term match {
+      case x: Function => x.vars contains v
+      case _ => false
+    }
+  }
+
+
+}
+
+
+object Unifier {
+  def unify(x: FOLNode, y: FOLNode): Option[Map[Variable, FOLNode]] = {
+    val unifier = new Unifier
+    unifier.unify(x, y)
+
+  }
+
+}

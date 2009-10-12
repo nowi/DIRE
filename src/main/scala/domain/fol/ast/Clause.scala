@@ -1,15 +1,15 @@
-package domain.fol
+package domain.fol.ast
 
 /**
  * User: nowi
  * Date: 07.10.2009
  * Time: 15:54:46
  *
- * A disjunction of literals
+ * A standard clause == disjunction of literals
  */
 
 case class Clause(literals: Set[FOLLiteral]) {
-  override def toString = "Clause : %s" format (literals mkString ("[", ",", "]"))
+  override def toString = "Clause : %s" format (literals mkString ("[", "∨", "]"))
 
 
   lazy val positiveLiterals: Set[FOLLiteral] = {

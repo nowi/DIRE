@@ -1,4 +1,4 @@
-package domain.fol
+package domain.fol.ast
 
 /**
  * User: nowi
@@ -7,13 +7,13 @@ package domain.fol
  */
 
 
-trait Sentence
+trait Sentence extends FOLNode
 
 
 object Sentence {
   implicit def sentenceToAndConnective(x: Sentence): AndConnective = x.asInstanceOf[AndConnective]
 
   implicit def sentenceToTerm(x: Sentence): Term = x.asInstanceOf[Term]
+
+
 }
-
-

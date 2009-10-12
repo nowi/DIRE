@@ -6,6 +6,7 @@ package domain.fol.parsers
  * Time: 17:56:34
  */
 
+import ast._
 import com.jteigen.scalatest.JUnit4Runner
 
 import org.junit.runner.RunWith
@@ -76,6 +77,33 @@ class FOLDomainSpec extends Spec with ShouldMatchers {
       assert(!(negatives contains r));
 
       assert(true);
+
+    }
+
+
+    it("a function should be able to return its nested variables") {
+      // Loves(SF1(v2),v2)
+      // Loves(v3,SF0(v3))
+      // or
+      // P(v1,SF0(v1),SF0(v1))
+      // P(v2,SF0(v2),v2     )
+      // or
+      // P(v1,   F(v2),F(v2),F(v2),v1,      F(F(v1)),F(F(F(v1))),v2)
+      // P(F(v3),v4,   v5,   v6,   F(F(v5)),v4,      F(v3),      F(F(v5)))
+
+      val v2 = Variable("v2")
+      val SF1 = Function("SF1", List(v2));
+      val Loves = Function("Loves", List(SF1, v2));
+
+
+      // get Variables from loves
+      val lovesvars = Loves.vars;
+      Loves.printVars
+      Loves.printFlatArgs
+
+      assert(Loves.vars contains v2);
+      assert(Loves.vars.size == 2);
+
 
     }
 

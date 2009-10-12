@@ -1,4 +1,4 @@
-package domain.fol
+package domain.fol.ast
 
 /**
  * User: nowi

@@ -6,6 +6,7 @@ package domain.fol.parsers
  * Time: 14:28:33
  */
 
+import ast._
 import scala.util.parsing.combinator.syntactical._
 
 object FOLDsl extends StandardTokenParsers {
