@@ -6,7 +6,7 @@ package domain.fol.ast
  * Time: 16:20:57
  */
 
-case class Predicate(name: String, terms: List[Term]) extends Term {
+case class Predicate(name: String, terms: List[FOLNode]) extends Term {
   val symbolicName = name
   val args = Some(terms)
 

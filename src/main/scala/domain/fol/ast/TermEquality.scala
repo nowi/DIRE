@@ -6,7 +6,7 @@ package domain.fol.ast
  * Time: 15:05:22
  */
 
-case class TermEquality(left: Term, right: Term) extends AtomicSentence {
+case class TermEquality(left: FOLNode, right: FOLNode) extends AtomicSentence {
   val symbolicName = "="
   val args: Option[List[FOLNode]] = Some(List(left, right))
 

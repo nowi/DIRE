@@ -1,5 +1,7 @@
 package core
 
+import VariableRewriter._
+
 import domain.fol.ast._
 
 /**
@@ -23,7 +25,14 @@ class Substitutor {
    *
    */
   def substitute(theta: Option[Map[Variable, FOLNode]], node: FOLNode): FOLNode = {
-    return node
+    // use a variable rewriter
+    theta match {
+      case Some(map) => rewriteVars(node, map)
+      case None => {
+        println("No substition map theata specified , not rewriting term : %s" format (node))
+        node
+      }
+    }
   }
 
 

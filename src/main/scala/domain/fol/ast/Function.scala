@@ -6,7 +6,7 @@ package domain.fol.ast
  * Time: 16:20:47
  */
 
-case class Function(name: String, terms: List[Term]) extends Term {
+case class Function(name: String, terms: List[FOLNode]) extends Term {
   val args = Some(terms)
   val symbolicName = name
 

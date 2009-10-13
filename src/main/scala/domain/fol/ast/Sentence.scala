@@ -15,5 +15,6 @@ object Sentence {
 
   implicit def sentenceToTerm(x: Sentence): Term = x.asInstanceOf[Term]
 
+  implicit def folnodeToSentence(x: FOLNode): Sentence = x.asInstanceOf[Sentence]
 
 }
