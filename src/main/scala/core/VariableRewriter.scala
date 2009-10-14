@@ -8,7 +8,6 @@ import domain.fol.ast._
  * Date: 12.10.2009
  * Time: 19:03:48
  */
-
 class VariableRewriter {
 
   /**Rewrite based on mapping theta

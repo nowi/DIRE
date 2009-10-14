@@ -76,7 +76,7 @@ class UnifierSpec extends Spec with ShouldMatchers {
     }
 
 
-    it("should unify(Knows(John,x), Know s(x, Elizabeth)) =fail") {
+    it("should unify(Knows(John,x), Know s(x, Elizabeth)) by appliying standardize apart") {
       val john = Constant("John")
       val jane = Constant("Jane")
       val leonid = Constant("Leonid")
@@ -90,7 +90,7 @@ class UnifierSpec extends Spec with ShouldMatchers {
 
       // unfiy a and e -- this will test the standardise apart case
       val theta4 = unify(a, e)
-      theta4 should equal(None)
+      theta4 should not equal (None)
 
     }
 

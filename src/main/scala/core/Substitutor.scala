@@ -39,8 +39,9 @@ class Substitutor {
 }
 
 object Substitutor {
+  lazy val substitutor = new Substitutor
+
   def substitute(theta: Option[Map[Variable, FOLNode]], node: FOLNode): FOLNode = {
-    val substitutor = new Substitutor
     substitutor.substitute(theta, node)
 
   }

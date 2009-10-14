@@ -2,6 +2,7 @@ package core
 
 import domain.fol.ast._
 import Substitutor._
+import Standardizer._
 
 /**
  * User: nowi
@@ -21,7 +22,9 @@ class Unifier {
    *         of variable/term pairs, see pg. 254 for a description) emmpty if failed to unify
    */
   def unify(x: FOLNode, y: FOLNode): Option[Map[Variable, FOLNode]] = {
-    unify(x, y, Some(Map[Variable, FOLNode]()))
+    // standardize apart the terms
+    val (xr, yr) = standardizeApart(x, y)
+    unify(xr, yr, Some(Map[Variable, FOLNode]()))
 
   }
 
@@ -39,10 +42,7 @@ class Unifier {
             case (x: FOLNode, y: FOLNode) => {
               //IF COMPOUND?(x) and COMPOUND?(y) then
               //UNIFY(ARGS[x], ARGS[y], UNIFY(OP[x], OP[y], theta))
-
               unify(x.args, y.args, unify(x.symbolicName, y.symbolicName, theta));
-
-
             }
           }
 
@@ -118,7 +118,7 @@ class Unifier {
   /**
    * Cascading substitutions
 
-  Sometimes you get a substitution of the form σ =                    { z ← x, x ← a.
+  Sometimes you get a substitution of the form σ =                     { z ← x, x ← a.
   Suppose you were to apply this substitution to p(z,x). The correct result is p(a,a).
   The reason is that you need to "cascade" the substitutions; if z takes the value x,
   you need to make sure that you haven't constrained x to be some other value.
