@@ -15,22 +15,17 @@ import containers._
  */
 
 trait Proving {
-
-  // all clauses that have already been selected for inference
-  var workedOff: ClauseStore
-
-  // all candidate clauses to generate inferences
-  var usable: ClauseStore
-
   def prove(clauses: ClauseStore): ProvingResult = {
-    workedOff = CNFClauseStore(List())
+    // all clauses that have already been selected for inference
+    var workedOff: ClauseStorage = CNFClauseStore(List())
 
+    // all candidate clauses to generate inferences
     // perform input reduction
-    usable = taut(sub(clauses))
+    var usable: ClauseStorage = taut(sub(clauses))
 
     while (!usable.isEmpty && !usable.containsEmptyClause) {
       // 5. select a clause
-      val given = choose(usable)
+      val given: ClauseStorage = choose(usable)
 
 
       // 5. 6. add to workedoff, remove from usable
@@ -39,7 +34,7 @@ trait Proving {
 
       // 7. all resolution inference conlusions between given and workedoff and all
       // factoring inference conclusions from given are stored in fresh
-      var fresh = resolve(given, workedOff) ++ factor(given)
+      var fresh: ClauseStorage = resolve(given, workedOff) ++ factor(given)
 
       // 8. - 11.  Perform reductions/forward contractions
       // remove all tautologies and subsumptions from fresh
@@ -68,25 +63,25 @@ trait Proving {
   }
 
 
-  def resolve(a: ClauseStore, b: ClauseStore): ClauseStore = {
+  def resolve(a: ClauseStorage, b: ClauseStorage): ClauseStorage = {
     CNFClauseStore()
 
   }
 
-  def choose(clauses: ClauseStore): ClauseStore = {
+  def choose(clauses: ClauseStorage): ClauseStorage = {
     CNFClauseStore()
   }
 
-  def factor(clauses: ClauseStore): ClauseStore = {
+  def factor(clauses: ClauseStorage): ClauseStorage = {
     CNFClauseStore()
 
   }
 
-  def taut(clauses: ClauseStore): ClauseStore = {
+  def taut(clauses: ClauseStorage): ClauseStorage = {
     CNFClauseStore()
   }
 
-  def sub(a: ClauseStore, b: ClauseStore): ClauseStore = {
+  def sub(a: ClauseStorage, b: ClauseStorage): ClauseStorage = {
     CNFClauseStore()
 
   }
@@ -96,7 +91,7 @@ trait Proving {
    * Apply subsumption deletion to all of the clauses in the clauseStore
    * and return the resulting clausestore
    */
-  def sub(a: ClauseStore): ClauseStore = {
+  def sub(a: ClauseStorage): ClauseStorage = {
     CNFClauseStore()
   }
 
@@ -104,6 +99,8 @@ trait Proving {
 }
 
 
+class ResolutionProover1 extends Proving {
+}
 
 
 

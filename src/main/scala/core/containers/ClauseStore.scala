@@ -23,7 +23,7 @@ trait ClauseStorage {
    * @param elems the iterable object containing the elements to be added
    * @return a new set with the elements added.
    */
-  def ++(aStore: ClauseStore): ClauseStore
+  def ++(aStore: ClauseStorage): ClauseStorage
 
   /**Remove all the elements provided by another ClauseStore
    *  of the iterable object <code>elems</code> from the ClauseStore.
@@ -31,7 +31,7 @@ trait ClauseStorage {
    * @param elems the iterable object containing the elements to be removed
    * @return a new set with the elements removed.
    */
-  def --(aStore: ClauseStore): ClauseStore
+  def --(aStore: ClauseStorage): ClauseStorage
 
 }
 
@@ -58,11 +58,11 @@ case class CNFClauseStore(clauses: List[Clause]) extends ClauseStore with CNFRew
   }
 
 
-  def ++(aStore: ClauseStore) = {
+  def ++(aStore: ClauseStorage) = {
     CNFClauseStore(clauses ++ aStore.clauses)
   }
 
-  def --(aStore: ClauseStore) = {
+  def --(aStore: ClauseStorage) = {
     CNFClauseStore(clauses -- aStore.clauses)
   }
 }

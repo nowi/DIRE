@@ -5,7 +5,7 @@ package domain.fol.ast
  * Date: 07.10.2009
  * Time: 15:54:46
  *
- * A standard clause == disjunction of literals
+ * A standard clause == disjunction of literals == Literal OR Literal ...
  */
 
 case class Clause(literals: Set[FOLLiteral]) {
