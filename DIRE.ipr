@@ -392,15 +392,37 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/scala-tools/javautils/2.7.4-0.2-SNAPSHOT/javautils-2.7.4-0.2-SNAPSHOT-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.scala-lang:scala-library:2.7.4">
+    <library name="Maven: net.lag:configgy:1.4.3">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.7.4/scala-library-2.7.4.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/lag/configgy/1.4.3/configgy-1.4.3.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.7.4/scala-library-2.7.4-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/lag/configgy/1.4.3/configgy-1.4.3-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.7.4/scala-library-2.7.4-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/lag/configgy/1.4.3/configgy-1.4.3-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.scala-lang:scala-compiler:2.7.5">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-compiler/2.7.5/scala-compiler-2.7.5.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-compiler/2.7.5/scala-compiler-2.7.5-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-compiler/2.7.5/scala-compiler-2.7.5-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.scala-lang:scala-library:2.7.5">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.7.5/scala-library-2.7.5.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.7.5/scala-library-2.7.5-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.7.5/scala-library-2.7.5-sources.jar!/" />
       </SOURCES>
     </library>
   </component>

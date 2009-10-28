@@ -2,6 +2,8 @@ package core
 
 
 import containers._
+import net.lag.logging.Logger
+
 
 /**
  * User: nowi
@@ -15,7 +17,12 @@ import containers._
  */
 
 trait Proving {
+  val log = Logger.get
+
   def prove(clauses: ClauseStore): ProvingResult = {
+    log.info("Starting theorem proving on clause store %s", clauses)
+
+
     // all clauses that have already been selected for inference
     var workedOff: ClauseStorage = CNFClauseStore(List())
 
@@ -24,38 +31,50 @@ trait Proving {
     var usable: ClauseStorage = taut(sub(clauses))
 
     while (!usable.isEmpty && !usable.containsEmptyClause) {
+      log.info("Inner Loop")
       // 5. select a clause
       val given: ClauseStorage = choose(usable)
-
+      log.info("After 5. Given Clause %s", given)
 
       // 5. 6. add to workedoff, remove from usable
       usable = usable -- given
       workedOff = workedOff ++ given
+      log.info("After 5. 6.  usable : %s", usable)
+      log.info("After 5. 6.  workedOff : %s", workedOff)
 
       // 7. all resolution inference conlusions between given and workedoff and all
       // factoring inference conclusions from given are stored in fresh
       var fresh: ClauseStorage = resolve(given, workedOff) ++ factor(given)
+      log.info("After 7. fresh Clause %s", fresh)
 
       // 8. - 11.  Perform reductions/forward contractions
       // remove all tautologies and subsumptions from fresh
       fresh = taut(sub(fresh))
+      log.info("After 11. Reduced Fresh Clause %s", fresh)
 
       // remove all clauses that are subsumed by a clause in workedoff or usable are deleted
       // from fresh ( forward subsumtion )
       fresh = sub(sub(fresh, workedOff), usable)
+      log.info("After Forward Subsumption Fresh Clause %s", fresh)
+
 
       // clasuse remaining in fresh are then used for backward subsumtion
       workedOff = sub(workedOff, fresh)
+      log.info("After Backward Subsumption workedOff Clauses : %s", workedOff)
 
       // finally add the clauses from fresh to usable , theese are the kept clauses
       usable = sub(usable, fresh) ++ fresh
+      log.info("After Addition usable  Clauses are : %s", usable)
     }
 
     if (usable.containsEmptyClause) {
+      log.info("Proof found")
       ProofFound()
     } else if (usable.isEmpty) {
+      log.info("Completion found")
       CompletionFound()
     } else {
+      log.error("Some error occured during prooving, there has been no prooving result")
       error("Some error occured during prooving, there has been no prooving result")
     }
 
