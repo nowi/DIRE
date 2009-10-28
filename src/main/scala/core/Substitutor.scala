@@ -1,5 +1,6 @@
 package core
 
+import rewriting.VariableRewriter
 import VariableRewriter._
 
 import domain.fol.ast._

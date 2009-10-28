@@ -3,6 +3,7 @@ package core
 
 import domain.fol.ast._
 import java.util.Random
+import rewriting.VariableRewriter
 import VariableRewriter._
 
 /**
