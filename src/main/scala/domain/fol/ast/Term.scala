@@ -8,3 +8,9 @@ package domain.fol.ast
 
 trait Term extends AtomicSentence with NamedObject {
 }
+
+
+object Term {
+  implicit def folNodeToTerm(x: FOLNode): Term = x.asInstanceOf[Term]
+
+}

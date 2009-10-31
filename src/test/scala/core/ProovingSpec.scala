@@ -26,9 +26,9 @@ class ProovingSpec extends Spec with ShouldMatchers {
       //¬die(fido)
 
 
-      val one = Clause(Set(NegativeFOLLiteral(Predicate("dog", List(Variable("x")))), PositiveFOLLiteral(Predicate("animal", List(Variable("x"))))))
-      val two = Clause(Set(PositiveFOLLiteral(Predicate("dog", List(Constant("fido"))))))
-      val three = Clause(Set(NegativeFOLLiteral(Predicate("animal", List(Variable("y")))), PositiveFOLLiteral(Predicate("die", List(Variable("y"))))))
+      val one = Clause(Set(Predicate("dog", List(Variable("x"))), Predicate("animal", List(Variable("x")))))
+      val two = Clause(Set(Predicate("dog", List(Constant("fido")))))
+      val three = Clause(Set(Predicate("animal", List(Variable("y"))), Predicate("die", List(Variable("y")))))
 
       val clauseStore = CNFClauseStore(List(one, two, three))
 

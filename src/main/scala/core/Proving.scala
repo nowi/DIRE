@@ -2,8 +2,9 @@ package core
 
 
 import containers._
+import inference.OrderedFactoring
 import net.lag.logging.Logger
-
+import reduction.{SubsumptionDeletion, TautologyDeletion}
 
 /**
  * User: nowi
@@ -16,8 +17,8 @@ import net.lag.logging.Logger
  * from the Automated Theorem Proving Book Volume II
  */
 
-trait Proving {
-  val log = Logger.get
+trait Proving extends TautologyDeletion with SubsumptionDeletion with OrderedFactoring {
+  private lazy val log = Logger.get
 
   def prove(clauses: ClauseStore): ProvingResult = {
     log.info("Starting theorem proving on clause store %s", clauses)
@@ -83,26 +84,26 @@ trait Proving {
 
 
   def resolve(a: ClauseStorage, b: ClauseStorage): ClauseStorage = {
+    log.info("Resolve %s with %s", a, b)
     CNFClauseStore()
 
   }
 
   def choose(clauses: ClauseStorage): ClauseStorage = {
+    log.info("Choosing from %s", clauses)
     CNFClauseStore()
   }
 
   def factor(clauses: ClauseStorage): ClauseStorage = {
-    CNFClauseStore()
-
+    factorize(clauses)
   }
 
   def taut(clauses: ClauseStorage): ClauseStorage = {
-    CNFClauseStore()
+    deleteTautologies(clauses)
   }
 
   def sub(a: ClauseStorage, b: ClauseStorage): ClauseStorage = {
-    CNFClauseStore()
-
+    deleteSubsumptions(a, b)
   }
 
 
@@ -111,7 +112,7 @@ trait Proving {
    * and return the resulting clausestore
    */
   def sub(a: ClauseStorage): ClauseStorage = {
-    CNFClauseStore()
+    deleteSubsumptions(a)
   }
 
 

@@ -23,17 +23,14 @@ class FOLDomainSpec extends Spec with ShouldMatchers {
       val john = Constant("john");
 
       // create literals
-      val r = PositiveFOLLiteral(richard);
-      val j = NegativeFOLLiteral(john);
-
       val richardAndJohn = AndConnective(richard, john);
 
-      // should throw exception
-      intercept[ClassCastException] {
-        PositiveFOLLiteral(richardAndJohn);
+      // should not qualify as literal
 
-      }
-
+      assert(richardAndJohn match {
+        case FOLLiteral(x) => false
+        case _ => true
+      })
 
       assert(true)
 
@@ -44,11 +41,7 @@ class FOLDomainSpec extends Spec with ShouldMatchers {
       val richard = Constant("richard");
       val john = Constant("john");
 
-      // create literals
-      val r = PositiveFOLLiteral(richard);
-      val j = NegativeFOLLiteral(john);
-
-      val clause = Clause(Set(r, j));
+      val clause = Clause(Set(richard, john));
 
       println(clause)
 
@@ -61,20 +54,18 @@ class FOLDomainSpec extends Spec with ShouldMatchers {
       val john = Constant("john");
 
       // create literals
-      val r = PositiveFOLLiteral(richard);
-      val j = NegativeFOLLiteral(john);
 
-      val clause = Clause(Set(r, j))
+      val clause = Clause(Set(richard, john))
 
       val positives = clause.positiveLiterals;
       val negatives = clause.negativeLiterals;
 
       // should contain richard
-      assert(positives contains r);
-      assert(!(positives contains j));
+      assert(positives contains richard);
+      assert(!(positives contains john));
 
-      assert(negatives contains j);
-      assert(!(negatives contains r));
+      assert(negatives contains john);
+      assert(!(negatives contains richard));
 
       assert(true);
 

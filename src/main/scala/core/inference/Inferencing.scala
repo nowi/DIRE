@@ -1,6 +1,8 @@
 package core.inference
 
+import containers.{ClauseStorage, CNFClauseStore}
 import domain.fol.ast._
+import net.lag.logging.Logger
 
 /**
  * User: nowi
@@ -19,11 +21,44 @@ class Resolution extends Inferencing {
   def infer(clause: Clause) = null
 }
 
-class FactoringRight extends Inferencing {
-  def infer(clause: Clause) = null
+
+trait Factoring {
+  def factorize(clause: Clause): Clause
+
+  def factorize(clauses: ClauseStorage): ClauseStorage
 }
 
-class FactoringLeft extends Inferencing {
-  def infer(clause: Clause) = null
+trait OrderedFactoring extends Factoring {
+  private lazy val log = Logger.get
+
+  def factorize(clause: Clause): Clause = {
+    log.info("Ordered Factoring on clause %s ", clause)
+    clause
+
+  }
+
+  def factorize(clauses: ClauseStorage): ClauseStorage = {
+    log.info("Ordered Factoring on clauses %s ", clauses)
+    clauses
+  }
+
 }
+
+
+
+trait StandardFactoring extends Factoring {
+  private lazy val log = Logger.get
+
+  override def factorize(clause: Clause): Clause = {
+    log.info("Factoring on clause %s ", clause)
+    clause
+
+  }
+
+  override def factorize(clauses: ClauseStorage): ClauseStorage = {
+    log.info("Factoring on clauses %s ", clauses)
+    clauses
+  }
+}
+
 

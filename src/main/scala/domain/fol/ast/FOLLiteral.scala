@@ -6,14 +6,29 @@ package domain.fol.ast
  * Time: 15:12:59
  */
 
-abstract class FOLLiteral {
+object FOLLiteral {
+  def unapply(node: FOLNode): Option[FOLNode] = {
+    node match {
+      case x: AtomicSentence => Some(x)
+      case _ => None
+    }
+  }
 }
 
-
-case class PositiveFOLLiteral(atom: AtomicSentence) extends FOLLiteral {
-  override def toString = "%s" format (atom)
+object NegativeFOLLiteral {
+  def unapply(node: FOLNode): Option[FOLNode] = {
+    node match {
+      case Negation(FOLLiteral(literal)) => Some(node)
+      case _ => None
+    }
+  }
 }
-case class NegativeFOLLiteral(atom: AtomicSentence) extends FOLLiteral {
-  override def toString = "-%s" format (atom)
 
+object PositiveFOLLiteral {
+  def unapply(node: FOLNode): Option[FOLNode] = {
+    node match {
+      case FOLLiteral(x) => Some(x)
+      case _ => None
+    }
+  }
 }

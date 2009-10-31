@@ -10,6 +10,8 @@ case class Predicate(name: String, terms: List[FOLNode]) extends Term {
   val symbolicName = name
   val args = Some(terms)
 
+  override def arity = terms.size
+
   override def flatArgs: List[FOLNode] = {
     args match {
       case Some(args1) => args1.map({x: FOLNode => x.flatArgs}).flatten
