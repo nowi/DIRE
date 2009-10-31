@@ -9,14 +9,9 @@ package domain.fol.ast
 case class Variable(name: String) extends Term {
   // is not complex, therefore no arguments 
   val symbolicName = name
-  val args = None
+  val args = List()
 
   override def toString = "%s" format (name)
 
-  override def flatArgs: List[FOLNode] = {
-    println("Invoking flatArgs in object %s" format (this))
-    args match {
-      case None => List(this)
-    }
-  }
+  override def flatArgs: List[FOLNode] = List(this)
 }

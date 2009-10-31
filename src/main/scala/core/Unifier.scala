@@ -58,22 +58,14 @@ class Unifier {
   }
 
 
-  private def unify(xs: Option[List[FOLNode]], ys: Option[List[FOLNode]], theta: Option[Map[Variable, FOLNode]]): Option[Map[Variable, FOLNode]] = {
+  private def unify(xs: List[FOLNode], ys: List[FOLNode], theta: Option[Map[Variable, FOLNode]]): Option[Map[Variable, FOLNode]] = {
+    if (xs.size != ys.size) None
     theta match {
       case Some(t) => {
         (xs, ys) match {
-          case (Some(xss), Some(yss)) => {
-            if (xss.size != yss.size) None
-            (xss, yss) match {
-              case (List(), List()) => theta
-              case (x :: List(), y :: List()) => unify(x, y, theta)
-              case (x :: xsss, y :: ysss) => unify(Some(xsss), Some(ysss), unify(x.asInstanceOf[FOLNode], y.asInstanceOf[FOLNode], theta))
-            }
-
-          }
-          // one ore bots of the lists are notexistent
-          case _ => None
-
+          case (List(), List()) => theta
+          case (x :: List(), y :: List()) => unify(x, y, theta)
+          case (x :: xsss, y :: ysss) => unify(xsss, ysss, unify(x.asInstanceOf[FOLNode], y.asInstanceOf[FOLNode], theta))
         }
 
       }
@@ -118,7 +110,7 @@ class Unifier {
   /**
    * Cascading substitutions
 
-  Sometimes you get a substitution of the form σ =                     { z ← x, x ← a.
+  Sometimes you get a substitution of the form σ =                      { z ← x, x ← a.
   Suppose you were to apply this substitution to p(z,x). The correct result is p(a,a).
   The reason is that you need to "cascade" the substitutions; if z takes the value x,
   you need to make sure that you haven't constrained x to be some other value.

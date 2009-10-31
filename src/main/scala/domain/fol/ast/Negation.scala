@@ -8,12 +8,10 @@ package domain.fol.ast
 
 case class Negation(filler: Sentence) extends Sentence {
   val symbolicName = "not"
-  val args = Some(List(filler))
+  val args = List(filler)
 
   override def flatArgs: List[FOLNode] = {
-    args match {
-      case Some(args1) => args1.map({x: FOLNode => x.flatArgs}).flatten
-    }
+    args.map({x: FOLNode => x.flatArgs}).flatten
   }
 
   override def toString = "¬(%s)" format (filler)

@@ -7,15 +7,11 @@ package domain.fol.ast
  */
 
 case class Constant(name: String) extends Term {
-  val args = None
+  val args = List()
   val symbolicName = name
 
   override def toString = "%s" format (name)
 
-  override def flatArgs: List[FOLNode] = {
-    args match {
-      case None => List(this)
-    }
-  }
+  override def flatArgs: List[FOLNode] = List(this)
 
 }

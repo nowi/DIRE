@@ -7,7 +7,7 @@ package domain.fol.ast
  */
 
 trait FOLNode {
-  val args: Option[List[FOLNode]]
+  val args: List[FOLNode]
   val symbolicName: String
 
   // arity defaults to 0

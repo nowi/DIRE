@@ -49,15 +49,15 @@ class ALCLPComparator extends LiteralComparator {
       // sj ≻ tj
       // and s ≻ tk for all k with j < k ≤ n
       var result: Integer = -2
-      for (j <- 0 until g.flatArgs.length) {
-        val sj = f.flatArgs(j)
-        val tj = g.flatArgs(j)
+      for (j <- 0 until g.args.length) {
+        val sj = f.args(j)
+        val tj = g.args(j)
         // same or sj > tj
         if (compare(sj, tj) >= 0) {
           // and s ≻ tk for all k with j < k ≤ n
           var isRestSmaller: Boolean = false
-          for (k <- j until g.flatArgs.length) {
-            val tk = g.flatArgs(k)
+          for (k <- j until g.args.length) {
+            val tk = g.args(k)
             if (compare(f, tk) > 0) isRestSmaller = true
           }
           if (isRestSmaller) {
@@ -90,22 +90,22 @@ class ALCLPComparator extends LiteralComparator {
           // f and g are n-ary
           // f > g and s ≻ ti for all i with 1 ≤ i ≤ n
           log.info("%s is N-Ary %s is N-Ary", f, g)
-          if (comparePrecedence(f, g) == 1 && g.flatArgs.forall(compare(f, _) == 1)) {
+          if (comparePrecedence(f, g) == 1 && g.args.forall(compare(f, _) == 1)) {
             log.info("%s has higher precedence then %s and is greater than all args of %s", f, g, g)
             1
-          } else if (comparePrecedence(f, g) == 1 && g.flatArgs.forall(compare(f, _) == 0)) {
+          } else if (comparePrecedence(f, g) == 1 && g.args.forall(compare(f, _) == 0)) {
             log.info("%s has higher precedence then %s and all args are equal", f, g)
             1
-          } else if (comparePrecedence(g, f) == 1 && f.flatArgs.forall(compare(_, g) == 1)) {
+          } else if (comparePrecedence(g, f) == 1 && f.args.forall(compare(_, g) == 1)) {
             log.info("%s has higher precedence then %s and is greater than all args of %s", g, f, f)
             -1
-          } else if (comparePrecedence(g, f) == 1 && f.flatArgs.forall(compare(g, _) == 1)) {
+          } else if (comparePrecedence(g, f) == 1 && f.args.forall(compare(g, _) == 1)) {
             log.info("%s has higher precedence then %s and is greater than all args of %s", g, f, f)
             -1
-          } else if (comparePrecedence(g, f) == 1 && f.flatArgs.forall(compare(g, _) == 0)) {
+          } else if (comparePrecedence(g, f) == 1 && f.args.forall(compare(g, _) == 0)) {
             log.info("%s has higher precedence then %s and all args are equal", g, f)
             -1
-          } else if (comparePrecedence(f, g) == 1 && g.flatArgs.forall(compare(_, f) == 1)) {
+          } else if (comparePrecedence(f, g) == 1 && g.args.forall(compare(_, f) == 1)) {
             log.info("%s has higher precedence then %s and is greater than all args of %s", f, g, g)
             1
           } else if (comparePrecedence(f, g) == 0 && compareArgs(f, g) == 1) {
@@ -123,7 +123,7 @@ class ALCLPComparator extends LiteralComparator {
         //        case (Nary(f), Unary(g)) => {
         //          log.info("%s is N-Ary %s is UNAry", f, g)
         //          // (iii) sj ≽ t for some j with 1 ≤ j ≤ m
-        //          if (f.flatArgs.exists(compare(_, g) >= 0)) {
+        //          if (f.args.exists(compare(_, g) >= 0)) {
         //            log.info("%s has some args that are greater or equal then %s", f, g)
         //            1
         //          } else {
@@ -136,7 +136,7 @@ class ALCLPComparator extends LiteralComparator {
         //        case (Unary(f), Nary(g)) => {
         //          log.info("%s is N-Ary %s is UNAry", g, f)
         //          // (iii) sj ≽ t for some j with 1 ≤ j ≤ m
-        //          if (g.flatArgs.exists(compare(_, f) >= 0)) {
+        //          if (g.args.exists(compare(_, f) >= 0)) {
         //            log.info("%s has some args that are greater or equal then %s", g, f)
         //            -1
         //          } else {

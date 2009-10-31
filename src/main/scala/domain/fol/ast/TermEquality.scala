@@ -8,16 +8,13 @@ package domain.fol.ast
 
 case class TermEquality(left: FOLNode, right: FOLNode) extends AtomicSentence {
   val symbolicName = "="
-  val args: Option[List[FOLNode]] = Some(List(left, right))
+  val args: List[FOLNode] = List(left, right)
 
   override def toString = "%s = %s" format (left, right)
 
   override def flatArgs: List[FOLNode] = {
-    (left.args, right.args) match {
-      case (Some(args1), Some(args2)) => (args1.map({x: FOLNode => x.flatArgs}) ::: args2.map({x: FOLNode => x.flatArgs})).flatten
-      case (_, Some(args2)) => args2.map({x: FOLNode => x.flatArgs}).flatten
-      case (Some(args1), _) => args1.map({x: FOLNode => x.flatArgs}).flatten
-    }
+    (left.args.map({x: FOLNode => x.flatArgs}) ::: right.args.map({x: FOLNode => x.flatArgs})).flatten
+
   }
 
 
