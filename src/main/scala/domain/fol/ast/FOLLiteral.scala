@@ -9,7 +9,8 @@ package domain.fol.ast
 object FOLLiteral {
   def unapply(node: FOLNode): Option[FOLNode] = {
     node match {
-      case x: AtomicSentence => Some(x)
+      case PositiveFOLLiteral(x) => Some(x)
+      case NegativeFOLLiteral(x) => Some(x)
       case _ => None
     }
   }
@@ -18,7 +19,7 @@ object FOLLiteral {
 object NegativeFOLLiteral {
   def unapply(node: FOLNode): Option[FOLNode] = {
     node match {
-      case Negation(FOLLiteral(literal)) => Some(node)
+      case Negation(PositiveFOLLiteral(literal)) => Some(node)
       case _ => None
     }
   }
@@ -27,7 +28,7 @@ object NegativeFOLLiteral {
 object PositiveFOLLiteral {
   def unapply(node: FOLNode): Option[FOLNode] = {
     node match {
-      case FOLLiteral(x) => Some(x)
+      case x: AtomicSentence => Some(x)
       case _ => None
     }
   }
