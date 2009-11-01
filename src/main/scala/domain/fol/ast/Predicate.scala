@@ -19,3 +19,13 @@ case class Predicate(name: String, terms: List[FOLNode]) extends Term {
   override def toString = "%s(%s)" format (name, terms mkString ("", ",", ""))
 }
 
+
+object Predicate {
+  def apply(name: String, params: FOLNode*): Predicate = {
+    Predicate(name, List(params: _*))
+  }
+
+}
+
+
+

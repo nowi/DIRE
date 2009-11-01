@@ -16,6 +16,9 @@ case class Clause(literals: Set[FOLNode]) {
   })), "FOL nodes passed into a clause can only be Literals")
 
 
+
+
+
   override def toString = "Clause : %s" format (literals mkString ("[", "∨", "]"))
 
 
@@ -46,6 +49,13 @@ case class Clause(literals: Set[FOLNode]) {
 
   lazy val isDefinitive = !isEmpty && positiveLiterals.size == 1
 
+
+}
+
+object Clause {
+  def apply(params: FOLNode*): Clause = {
+    Clause(Set(params: _*))
+  }
 
 }
 

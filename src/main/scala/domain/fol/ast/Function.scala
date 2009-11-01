@@ -39,3 +39,12 @@ case class Function(name: String, terms: List[FOLNode]) extends Term {
 
 
 }
+
+
+object Function {
+  def apply(name: String, params: FOLNode*): Function = {
+    Function(name, List(params: _*))
+  }
+
+}
+

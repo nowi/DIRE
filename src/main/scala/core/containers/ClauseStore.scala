@@ -69,6 +69,11 @@ case class CNFClauseStore(clauses: List[Clause]) extends ClauseStore with CNFRew
 
 object CNFClauseStore {
   def apply(): CNFClauseStore = CNFClauseStore(List())
+
+  def apply(params: Clause*): CNFClauseStore = {
+    CNFClauseStore(List(params: _*))
+  }
+
 }
 
 

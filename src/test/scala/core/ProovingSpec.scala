@@ -26,11 +26,56 @@ class ProovingSpec extends Spec with ShouldMatchers {
       //¬die(fido)
 
 
-      val one = Clause(Set(Predicate("dog", List(Variable("x"))), Predicate("animal", List(Variable("x")))))
-      val two = Clause(Set(Predicate("dog", List(Constant("fido")))))
-      val three = Clause(Set(Predicate("animal", List(Variable("y"))), Predicate("die", List(Variable("y")))))
+      // init with the resolution example from the AIMA Book page 298
 
-      val clauseStore = CNFClauseStore(List(one, two, three))
+      val x = Variable("x")
+      val y = Variable("y")
+      val z = Variable("z")
+      val west = Constant("West")
+      val nono = Constant("Nono")
+      val m1 = Constant("M1")
+      val america = Constant("America")
+
+
+      val C1 = Clause(Negation(Predicate("American", x)), Predicate("Weapon", y),
+        Negation(Predicate("Sells", x, y, z)), Negation(Predicate("Hostile", z)),
+        Predicate("Criminal", x))
+
+      val C2 = Clause(
+        Negation(Predicate("Missile", x)),
+        Negation(Predicate("Owns", nono, x)),
+        Predicate("Sells", west, x, nono)
+        )
+
+      val C3 = Clause(
+        Negation(Predicate("Enemy", x, america)),
+        Predicate("Hostile", x)
+        )
+
+
+      val C4 = Clause(
+        Negation(Predicate("Missile", x)),
+        Predicate("Weapon", x)
+        )
+
+      val C5 = Clause(
+        Predicate("Owns", nono, m1)
+        )
+      val C6 = Clause(
+        Predicate("Missile", m1)
+        )
+      val C7 = Clause(
+        Predicate("American", west)
+        )
+
+      val C8 = Clause(
+        Predicate("Enemy", nono, america)
+        )
+
+
+
+
+      val clauseStore = CNFClauseStore(C1, C2, C3, C4, C5, C6, C7, C8)
 
 
       // create a proover
