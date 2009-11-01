@@ -13,10 +13,14 @@ import domain.fol.ast._
 import org.junit.runner.RunWith
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
+import net.lag.logging.Logger
 
 @RunWith(classOf[JUnit4Runner])
 class LiteralComparatorSpec extends Spec with ShouldMatchers {
   describe("ALCLPOrderingComparator") {
+
+    val log: Logger = Logger.get
+
     val john = Constant("John")
     val jane = Constant("Jane")
     val leonid = Constant("Leonid")
@@ -35,7 +39,7 @@ class LiteralComparatorSpec extends Spec with ShouldMatchers {
     //      // should throw exception
     //      intercept[IllegalArgumentException] {
     //        // compare c , e
-    //        comparator.compare (c,e)
+    //        comparator.comparePartial (c,e)
     //
     //      }
     //
@@ -43,37 +47,51 @@ class LiteralComparatorSpec extends Spec with ShouldMatchers {
     //    }
 
     it("Literals not containing function or predicate.") {
-      comparator.compare(leonid, elizabeth) should equal(Some(1))
-      comparator.compare(elizabeth, leonid) should equal(Some(-1))
-      comparator.compare(leonid, leonid) should equal(Some(0))
+      comparator.comparePartial(leonid, elizabeth) should equal(Some(1))
+      comparator.comparePartial(elizabeth, leonid) should equal(Some(-1))
+      comparator.comparePartial(leonid, leonid) should equal(Some(0))
     }
 
     it("Literals containing a function symbol precede literals that do not contain a function symbol.") {
-      comparator.compare(c, leonid) should equal(Some(1))
-      comparator.compare(leonid, c) should equal(Some(-1))
-      comparator.compare(leonid, leonid) should equal(Some(0))
+      comparator.comparePartial(c, leonid) should equal(Some(1))
+      comparator.comparePartial(leonid, c) should equal(Some(-1))
+      comparator.comparePartial(leonid, leonid) should equal(Some(0))
     }
 
     it("Literals containing a function symbol are ordered according to the precedence of the function symbols.") {
-      comparator.compare(c, c1) should equal(Some(-1))
-      comparator.compare(c1, c) should equal(Some(1))
-      comparator.compare(c1, c1) should equal(Some(0))
+      comparator.comparePartial(c, c1) should equal(Some(-1))
+      comparator.comparePartial(c1, c) should equal(Some(1))
+      comparator.comparePartial(c1, c1) should equal(Some(0))
 
     }
 
 
     it("Literals containing nested functions/predicates") {
-      comparator.compare(c, d) should equal(Some(-1))
-      comparator.compare(d, c) should equal(Some(1))
-      comparator.compare(d, d) should equal(Some(0))
+      comparator.comparePartial(c, d) should equal(Some(-1))
+      comparator.comparePartial(d, c) should equal(Some(1))
+      comparator.comparePartial(d, d) should equal(Some(0))
 
 
     }
 
     it("Functions with different arities") {
-      comparator.compare(b, b1) should equal(Some(1))
-      comparator.compare(b1, b) should equal(Some(-1))
-      comparator.compare(b1, b1) should equal(Some(0))
+      comparator.comparePartial(b, b1) should equal(Some(1))
+      comparator.comparePartial(b1, b) should equal(Some(-1))
+      comparator.comparePartial(b1, b1) should equal(Some(0))
+
+
+    }
+
+
+    it("Should sort a few clauses with java.util.Comparator contract") {
+      val folNodes = List(Predicate("dog", List(Variable("x"))), Predicate("animal", List(Variable("x"))), Predicate("dog", List(Constant("fido"))), Predicate("animal", List(Variable("y"))), Predicate("die", List(Variable("y"))))
+
+      val sortedFOLNodes = scala.util.Sorting.stableSort(folNodes, comparator.isGreater(_, _))
+
+      log.info("UNSorted FOLNodes : %s", folNodes)
+      log.info("Sorted FOLNodes : %s", sortedFOLNodes)
+
+      assert(true)
 
 
     }

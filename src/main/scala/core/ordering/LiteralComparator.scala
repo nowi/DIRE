@@ -2,6 +2,7 @@ package core.ordering
 
 
 import domain.fol.ast._
+import java.util.Comparator
 import net.lag.logging.Logger
 
 /**
@@ -10,7 +11,7 @@ import net.lag.logging.Logger
  * Time: 12:53:32
  */
 
-abstract class LiteralComparator {
+abstract class LiteralComparator extends Comparator[FOLNode] {
 }
 
 /**
@@ -36,15 +37,38 @@ abstract class LiteralComparator {
  */
 class ALCLPComparator extends LiteralComparator {
   val log: Logger = Logger.get
+
+  def compare(o1: FOLNode, o2: FOLNode) = {
+    // compare , handle notcomparable as equal
+    comparePartial(o1, o2) match {
+      case Some(result) => result
+      case None => 0
+    }
+
+  }
+
+  def isGreater(o1: FOLNode, o2: FOLNode): Boolean = {
+    // compare , handle notcomparable as equal
+    comparePartial(o1, o2) match {
+      case Some(result) => {
+        if (result > 0)
+          true
+        else false
+
+      }
+      case None => false
+    }
+
+  }
+
+
+
   //  s = f (s1 , . . . , sm) ≻ g(t1 , . . . , tn ) = t if and only if t is a proper subterm
   // * of s or at least one of the following holds
   // *  (i)  f > g and s ≻ ti for all i with 1 ≤ i ≤ n
   // *  (ii) f = g and for some j we have (s1 , . . . , sj −1 ) = (t1 , . . . , tj −! ),
   // *       sj ≻ tj and s ≻ tk for all k with j < k ≤ n (iii) sj ≽ t for some j with 1 ≤ j ≤ m
-  def compare(s: FOLNode, t: FOLNode): Option[Int] = {
-
-
-
+  def comparePartial(s: FOLNode, t: FOLNode): Option[Int] = {
     //  this = f (s1 , . . . , sm) ≻ g(t1 , . . . , tn ) = that if and only if that is a proper subterm
     if (s == t) {
       Some(0)
@@ -68,7 +92,7 @@ class ALCLPComparator extends LiteralComparator {
           } else if (isSmaller) {
             Some(-1)
           } else {
-            log.warning("Could not compare %s with %s", g, f)
+            log.warning("Could not comparePartial %s with %s", g, f)
             None
           }
 
@@ -105,14 +129,14 @@ class ALCLPComparator extends LiteralComparator {
         val sj = f.args(j)
         val tj = g.args(j)
         // same or sj > tj
-        result = compare(sj, tj) match {
+        result = comparePartial(sj, tj) match {
           case Some(r) => {
             if (r >= 0) {
               // and s ≻ tk for all k with j < k ≤ n
               var isRestSmaller: Boolean = false
               for (k <- j until g.args.length) {
                 val tk = g.args(k)
-                if (compare(f, tk).getOrElse(0) > 0) isRestSmaller = true
+                if (comparePartial(f, tk).getOrElse(0) > 0) isRestSmaller = true
               }
               if (isRestSmaller) {
                 Some(1)
@@ -135,7 +159,7 @@ class ALCLPComparator extends LiteralComparator {
 
 
     result match {
-      case None => log.warning("Could not compare f : %s with g : %s", f, g)
+      case None => log.warning("Could not comparePartial f : %s with g : %s", f, g)
       case _ => result
     }
 
@@ -146,7 +170,7 @@ class ALCLPComparator extends LiteralComparator {
 
   def rule1(f: FOLNode, g: FOLNode): Boolean = {
     // f > g and s ≻ ti for all i with 1 ≤ i ≤ n
-    val result = (comparePrecedence(f, g) == 1 && g.args.forall(compare(f, _).getOrElse(false) == 1))
+    val result = (comparePrecedence(f, g) == 1 && g.args.forall(comparePartial(f, _).getOrElse(false) == 1))
     log.info("f=%s,g=%s , RULE 1 evalutaes to %s", f, g, result)
     result
   }
@@ -163,7 +187,7 @@ class ALCLPComparator extends LiteralComparator {
 
   def rule3(f: FOLNode, g: FOLNode): Boolean = {
     // sj ≽ t for some j with 1 ≤ j ≤ m
-    val result = f.args.exists(compare(_, g).getOrElse(false) == 1)
+    val result = f.args.exists(comparePartial(_, g).getOrElse(false) == 1)
     log.info("f=%s,g=%s , RULE 3 evalutaes to %s", f, g, result)
     result
   }
