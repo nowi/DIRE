@@ -76,14 +76,8 @@ class StandardFactoringSpec extends Spec with ShouldMatchers {
 
       // create a proover
 
-      // factorize
-      factorizer.factorize(C1)
-      factorizer.factorize(C2)
-      factorizer.factorize(C3)
-      factorizer.factorize(C4)
-      factorizer.factorize(C5)
-      factorizer.factorize(C6)
-      factorizer.factorize(C7)
+      // factorize a store
+      factorizer.factorize(clauseStore)
 
 
     }

@@ -74,7 +74,7 @@ class StandardFactorizer(env: {val unificator: Unify; val substitutor: Substitut
     log.info("COllected Substitutions during factoring : %s", substitutions)
 
     // apply the substitutions to the clause if there are any
-    if (!substitutions.isEmpty) {
+    if (!substitutions.isEmpty && substitutions.exists(!_.isEmpty)) {
       log.info("Found unifiers .. applying substitutions to clause : %s ", clause)
       substitutor.substitute(Some(substitutions.reduceLeft(_ ++ _)), clause)
     } else {
@@ -85,8 +85,7 @@ class StandardFactorizer(env: {val unificator: Unify; val substitutor: Substitut
   }
 
   override def factorize(clauses: ClauseStorage): ClauseStorage = {
-    log.info("Factoring on clauses %s ", clauses)
-    clauses
+    CNFClauseStore(clauses.clauses.map(factorize(_)))
   }
 }
 

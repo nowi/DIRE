@@ -98,13 +98,13 @@ class ResolutionProover1(env: {val tautologyDeleter: TautologyDeletion; val subs
   }
 
   def choose(clauses: ClauseStorage): ClauseStorage = {
-    log.info("Choosing from %s", clauses)
-    CNFClauseStore()
+    val choosen = clauses.clauses.head
+    log.info("Naively choosing clause : %s from clauses store : %s", choosen, clauses)
+    CNFClauseStore(choosen)
   }
 
   def factor(clauses: ClauseStorage): ClauseStorage = {
-    //    factorize(clauses)
-    clauses
+    factorizer.factorize(clauses)
   }
 
   def taut(clauses: ClauseStorage): ClauseStorage = {
