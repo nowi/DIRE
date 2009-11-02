@@ -3,8 +3,7 @@ package core
 
 import domain.fol.ast._
 import java.util.Random
-import rewriting.VariableRewriter
-import VariableRewriter._
+import rewriting.VariableRewriting
 
 /**
  * User: nowi
@@ -19,7 +18,7 @@ import VariableRewriter._
  *
  *
  */
-class Standardizer {
+trait Standardizing extends VariableRewriting {
   lazy val randomizer: Random = new Random(System.currentTimeMillis)
 
   /**
@@ -32,16 +31,16 @@ class Standardizer {
     // check terms need standardizing
     commonVars(x, y) match {
       case List() => { // empty list
-        println("Tuple(%s,%s) needs no standardizing" format (x, y))
+        //        println("Tuple(%s,%s) needs no standardizing" format (x, y))
         (x, y)
       }
       case cvs: List[Variable] => {
-        // create the substition map
+        // create the substition transform
         val theta = cvs.map({old: Variable => (old -> renameVar(old))}).foldLeft(Map[Variable, Variable]())(_ + _)
         // rewirte the smaller node , we default to x for now
-        // TODO rewrite only the smaller node
-        val xr = rewriteVars(x, theta)
-        println("Tuple(%s,%s) has been standardized apart to (%s,%s) by %s" format (x, y, xr, y, this))
+        // TODO rewriteClause only the smaller node
+        val xr = rewrite(x, theta)
+        //        println("Tuple(%s,%s) has been standardized apart to (%s,%s) by %s" format (x, y, xr, y, this))
         (xr, y)
       }
     }
@@ -63,17 +62,11 @@ class Standardizer {
   }
 
 
-  def commonVars(x: FOLNode, y: FOLNode): List[Variable] = {
+  private def commonVars(x: FOLNode, y: FOLNode): List[Variable] = {
     (x.flatArgs.filter({_.isInstanceOf[Variable]}) intersect y.flatArgs.filter({_.isInstanceOf[Variable]})).asInstanceOf[List[Variable]]
   }
 }
 
 
-object Standardizer {
-  lazy val standardizer = new Standardizer
-
-  def standardizeApart(x: FOLNode, y: FOLNode): (FOLNode, FOLNode) = {
-    standardizer.standardizeApart(x, y)
-  }
-
+class Standardizer extends Standardizing {
 }

@@ -28,6 +28,11 @@ case class Function(name: String, terms: List[FOLNode]) extends Term {
 
   def printFlatArgs {println(flatArgs)}
 
+  override def map(f: (FOLNode => FOLNode)): FOLNode = {
+    Function(name, args.map({_.map(f)}))
+  }
+
+
   override def flatArgs: List[FOLNode] = {
     val flatArgs: List[FOLNode] = args.map({x: FOLNode => x.flatArgs}).flatten
     log.info("FlatArgs for %s are : %s", this, flatArgs)

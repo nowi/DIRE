@@ -14,4 +14,8 @@ case class Constant(name: String) extends Term {
 
   override def flatArgs: List[FOLNode] = List(this)
 
+  override def map(f: (FOLNode => FOLNode)): FOLNode = {
+    f(this)
+  }
+
 }

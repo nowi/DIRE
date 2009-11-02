@@ -8,7 +8,8 @@ import domain.fol.ast._
  * Date: 12.10.2009
  * Time: 19:03:48
  */
-class VariableRewriter {
+trait VariableRewriting {
+  val log = net.lag.logging.Logger.get
 
   /**Rewrite based on mapping theta
    * @param theta - the mapping
@@ -20,9 +21,9 @@ class VariableRewriter {
     // define the replacement function
     val f = (node: FOLNode, theta: Map[Variable, FOLNode]) => {
       node match {
-        case x: Variable => theta.get(x) match {
-          case Some(value) => value // we have a substition for this variable
-          case None => x // there is no substitution return the original
+        case x: Variable => {
+          // check if there is a substitution
+          theta.getOrElse(x, node)
         }
         case _ => node
       }
@@ -35,14 +36,33 @@ class VariableRewriter {
   }
 
 
-}
-object VariableRewriter {
-  lazy val rewriter: VariableRewriter = new VariableRewriter
+  /**Rewrite based on mapping theta
+   * @param theta - the mapping
+   * @returns rewritten clause
+   */
+  def rewriteClause(clause: Clause, theta: Map[Variable, FOLNode]): Clause = {
+    // check all possible fol types
+    log.info("Rewriting Clause %s", clause)
 
-  def rewriteVars(node: FOLNode, theta: Map[Variable, FOLNode]): FOLNode = {
-    val rewritten = rewriter.rewrite(node, theta)
-    println("Rewritten %s --> %s (using Rewriter %s and theta : %s)" format (node, rewritten, this, theta))
-    rewritten
+    // define the replacement function
+    val f = (node: FOLNode, theta: Map[Variable, FOLNode]) => {
+      node match {
+        case x: Variable => {
+          // check if there is a substitution
+          theta.getOrElse(x, node)
+        }
+        case _ => node
+      }
+    }
+
+    val rewrittenClauses = clause.literals.map({x: FOLNode => x.map(f(_: FOLNode, theta))})
+    // apply this function partially , theta is fixed
+    log.info("Rewritten clauses are : %s", rewrittenClauses)
+    Clause(rewrittenClauses)
+
   }
 
+
 }
+
+class VariableRewriter extends VariableRewriting

@@ -14,4 +14,9 @@ case class Variable(name: String) extends Term {
   override def toString = "%s" format (name)
 
   override def flatArgs: List[FOLNode] = List(this)
+
+  override def map(f: (FOLNode => FOLNode)): FOLNode = {
+    f(this)
+  }
+
 }

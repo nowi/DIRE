@@ -41,7 +41,7 @@ class FOLDomainSpec extends Spec with ShouldMatchers {
       val richard = Constant("richard");
       val john = Constant("john");
 
-      val clause = Clause(Set(richard, john));
+      val clause = Clause(richard, john);
 
       println(clause)
 
@@ -55,7 +55,7 @@ class FOLDomainSpec extends Spec with ShouldMatchers {
 
       // create literals
 
-      val clause = Clause(Set(richard, john))
+      val clause = Clause(richard, john)
 
       val positives = clause.positiveLiterals;
       val negatives = clause.negativeLiterals;

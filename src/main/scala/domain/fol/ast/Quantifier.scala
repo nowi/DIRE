@@ -18,10 +18,21 @@ case class UniversalQuantifer(filler: Sentence, variables: List[Variable]) exten
   val args = List(filler) ::: variables
 
   override def toString = "∀ %s : %s" format (variables mkString ("", ",", ""), filler)
+
+  override def map(f: (FOLNode => FOLNode)): FOLNode = {
+    // check all possible fol types
+    UniversalQuantifer(filler.map(f), args.map({_.map(f).asInstanceOf[Variable]}))
+  }
+
 }
 case class ExistentialQuantifer(filler: Sentence, variables: List[Variable]) extends Quantifier {
   val symbolicName = "exists"
   val args = List(filler) ::: variables
+
+  override def map(f: (FOLNode => FOLNode)): FOLNode = {
+    // check all possible fol types
+    ExistentialQuantifer(filler.map(f), args.map({_.map(f).asInstanceOf[Variable]}))
+  }
 
   override def toString = "∃ %s : %s" format (variables mkString ("", ",", ""), filler)
 }

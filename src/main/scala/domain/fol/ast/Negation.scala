@@ -14,5 +14,11 @@ case class Negation(filler: Sentence) extends Sentence {
     args.map({x: FOLNode => x.flatArgs}).flatten
   }
 
+
+  override def map(f: (FOLNode => FOLNode)): FOLNode = {
+    // check all possible fol types
+    Negation(filler.map(f))
+  }
+
   override def toString = "¬(%s)" format (filler)
 }

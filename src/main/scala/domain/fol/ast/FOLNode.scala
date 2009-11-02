@@ -14,21 +14,7 @@ trait FOLNode {
   def arity = 0
 
   // this should maybe be implemented in each subclass
-  def map(f: (FOLNode => FOLNode)): FOLNode = {
-    // check all possible fol types
-    this match {
-      case x: Variable => f(x)
-      case x: Constant => f(x)
-      case x: Function => Function(x.name, x.terms.map({f(_)}))
-      case x: Predicate => Predicate(x.name, x.terms.map({f(_)}))
-      case x: AndConnective => AndConnective(f(x.left), f(x.right))
-      case x: OrConnective => OrConnective(f(x.left), f(x.right))
-      case x: UniversalQuantifer => UniversalQuantifer(f(x.filler), x.variables.map({f(_).asInstanceOf[Variable]}))
-      case x: ExistentialQuantifer => ExistentialQuantifer(f(x.filler), x.variables.map({f(_).asInstanceOf[Variable]}))
-      case x: Negation => Negation(f(x.filler))
-      case x: TermEquality => TermEquality(f(x.left), f(x.right))
-    }
-  }
+  def map(f: (FOLNode => FOLNode)): FOLNode
 
   // get flattened args , empty lists if no args
   def flatArgs: List[FOLNode]

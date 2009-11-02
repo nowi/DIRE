@@ -1,8 +1,7 @@
 package core
 
 import domain.fol.ast._
-import Substitutor._
-import Standardizer._
+import rewriting.{Substitution}
 
 /**
  * User: nowi
@@ -10,7 +9,7 @@ import Standardizer._
  * Time: 14:59:57
  */
 
-class Unifier {
+trait Unify extends Standardizing with Substitution {
 
   /**
    * <code>
@@ -110,7 +109,7 @@ class Unifier {
   /**
    * Cascading substitutions
 
-  Sometimes you get a substitution of the form σ =                      { z ← x, x ← a.
+  Sometimes you get a substitution of the form σ =                        { z ← x, x ← a.
   Suppose you were to apply this substitution to p(z,x). The correct result is p(a,a).
   The reason is that you need to "cascade" the substitutions; if z takes the value x,
   you need to make sure that you haven't constrained x to be some other value.
@@ -148,12 +147,7 @@ class Unifier {
 
 }
 
-
-object Unifier {
-  def unify(x: FOLNode, y: FOLNode): Option[Map[Variable, FOLNode]] = {
-    val unifier = new Unifier
-    unifier.unify(x, y)
-
-  }
-
+class Unificator extends Unify {
 }
+
+

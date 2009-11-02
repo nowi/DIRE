@@ -7,10 +7,15 @@ package domain.fol.ast
  */
 
 case class Predicate(name: String, terms: List[FOLNode]) extends Term {
+  val log = net.lag.logging.Logger.get
   val symbolicName = name
   val args = terms
 
   override def arity = terms.size
+
+  override def map(f: (FOLNode => FOLNode)): FOLNode = {
+    Predicate(name, args.map({_.map(f)}))
+  }
 
   override def flatArgs: List[FOLNode] = {
     args.map({x: FOLNode => x.flatArgs}).flatten

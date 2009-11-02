@@ -17,5 +17,10 @@ case class TermEquality(left: FOLNode, right: FOLNode) extends AtomicSentence {
 
   }
 
+  override def map(f: (FOLNode => FOLNode)): FOLNode = {
+    // check all possible fol types
+    TermEquality(left.map(f), right.map(f))
+  }
+
 
 }
