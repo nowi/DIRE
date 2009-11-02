@@ -9,7 +9,7 @@ import rewriting.{Substitution}
  * Time: 14:59:57
  */
 
-trait Unify extends Standardizing with Substitution {
+trait Unify {
 
   /**
    * <code>
@@ -20,9 +20,18 @@ trait Unify extends Standardizing with Substitution {
    * @return a Map<Variable, Term> representing the substitution (i.e. a set
    *         of variable/term pairs, see pg. 254 for a description) emmpty if failed to unify
    */
-  def unify(x: FOLNode, y: FOLNode): Option[Map[Variable, FOLNode]] = {
+  def unify(x: FOLNode, y: FOLNode): Option[Map[Variable, FOLNode]]
+
+}
+
+// standard unification implementation
+class Unificator(env: {val substitutor: Substitution; val standardizer: Standardizing}) extends Unify {
+  val substitutor = env.substitutor
+  val standardizer = env.standardizer
+
+  override def unify(x: FOLNode, y: FOLNode): Option[Map[Variable, FOLNode]] = {
     // standardize apart the terms
-    val (xr, yr) = standardizeApart(x, y)
+    val (xr, yr) = standardizer.standardizeApart(x, y)
     unify(xr, yr, Some(Map[Variable, FOLNode]()))
 
   }
@@ -109,7 +118,7 @@ trait Unify extends Standardizing with Substitution {
   /**
    * Cascading substitutions
 
-  Sometimes you get a substitution of the form σ =                        { z ← x, x ← a.
+  Sometimes you get a substitution of the form σ =                         { z ← x, x ← a.
   Suppose you were to apply this substitution to p(z,x). The correct result is p(a,a).
   The reason is that you need to "cascade" the substitutions; if z takes the value x,
   you need to make sure that you haven't constrained x to be some other value.
@@ -122,7 +131,7 @@ trait Unify extends Standardizing with Substitution {
       case Some(t) => {
         val theta2: Map[Variable, FOLNode] = t + (v -> term)
 
-        val theta3 = (for (key <- theta2.keySet) yield Map(key -> substitute(Some(theta2),
+        val theta3 = (for (key <- theta2.keySet) yield Map(key -> substitutor.substitute(Some(theta2),
           theta2.get(key) match {
             case Some(value) => value
           })))
@@ -145,9 +154,6 @@ trait Unify extends Standardizing with Substitution {
   }
 
 
-}
-
-class Unificator extends Unify {
 }
 
 

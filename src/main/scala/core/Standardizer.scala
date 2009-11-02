@@ -18,7 +18,21 @@ import rewriting.VariableRewriting
  *
  *
  */
-trait Standardizing extends VariableRewriting {
+trait Standardizing {
+  /**
+   * Make variablesnames unique with in context of the 2 nodes
+   * @param x - folnode
+   * @param y - folnode
+   * @returns Tupel of rewritten FOLNodes that have unique varnames with respect to each other
+   */
+  def standardizeApart(x: FOLNode, y: FOLNode): (FOLNode, FOLNode)
+
+  def needStandardizing(x: FOLNode, y: FOLNode): Boolean
+}
+
+
+class Standardizer(env: {val variableRewriter: VariableRewriting}) extends Standardizing {
+  val variableRewriter = env.variableRewriter
   lazy val randomizer: Random = new Random(System.currentTimeMillis)
 
   /**
@@ -39,7 +53,7 @@ trait Standardizing extends VariableRewriting {
         val theta = cvs.map({old: Variable => (old -> renameVar(old))}).foldLeft(Map[Variable, Variable]())(_ + _)
         // rewirte the smaller node , we default to x for now
         // TODO rewriteClause only the smaller node
-        val xr = rewrite(x, theta)
+        val xr = variableRewriter.rewrite(x, theta)
         //        println("Tuple(%s,%s) has been standardized apart to (%s,%s) by %s" format (x, y, xr, y, this))
         (xr, y)
       }
@@ -65,8 +79,6 @@ trait Standardizing extends VariableRewriting {
   private def commonVars(x: FOLNode, y: FOLNode): List[Variable] = {
     (x.flatArgs.filter({_.isInstanceOf[Variable]}) intersect y.flatArgs.filter({_.isInstanceOf[Variable]})).asInstanceOf[List[Variable]]
   }
-}
 
 
-class Standardizer extends Standardizing {
 }

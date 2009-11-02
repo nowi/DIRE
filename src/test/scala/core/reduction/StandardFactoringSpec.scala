@@ -8,6 +8,7 @@ package core.reduction
 
 import com.jteigen.scalatest.JUnit4Runner
 
+import config.TheoremProvingConfig1
 import containers.{CNFClauseStore}
 import domain.fol.ast._
 import org.junit.runner.RunWith
@@ -20,7 +21,7 @@ class StandardFactoringSpec extends Spec with ShouldMatchers {
     it("should factorize some clauses") {
       // init with the resolution example from the AIMA Book page 298
 
-      val factorizer = new StandardFactorizer
+      val factorizer = new StandardFactorizer(TheoremProvingConfig1)
 
 
       val x = Variable("x")
@@ -90,7 +91,7 @@ class StandardFactoringSpec extends Spec with ShouldMatchers {
     it("should factorize Loves(G(Jack),Jack) OR Loves(G(x),x)") {
       // init with the resolution example from the AIMA Book page 298
 
-      val factorizer = (new Object with core.reduction.StandardFactoring)
+      val factorizer = new StandardFactorizer(TheoremProvingConfig1)
 
 
       val jack = Constant("Jack")

@@ -8,6 +8,7 @@ package core
 
 import com.jteigen.scalatest.JUnit4Runner
 
+import config.TheoremProvingConfig1
 import domain.fol.ast._
 import org.junit.runner.RunWith
 
@@ -17,7 +18,7 @@ import org.scalatest.Spec
 
 @RunWith(classOf[JUnit4Runner])
 class StandardizerSpec extends Spec with ShouldMatchers {
-  val standardizer = new Standardizer
+  val standardizer = new Standardizer(TheoremProvingConfig1)
 
   describe("The Standardizer") {
     it("should stardize (Knows(John,x), Know s(x, Elizabeth))") {

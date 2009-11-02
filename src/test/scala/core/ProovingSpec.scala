@@ -8,11 +8,16 @@ package core
 
 import com.jteigen.scalatest.JUnit4Runner
 
+import config.TheoremProvingConfig1
 import containers.{CNFClauseStore}
 import domain.fol.ast._
 import org.junit.runner.RunWith
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
+
+// use default reasoning configuration
+
+
 
 @RunWith(classOf[JUnit4Runner])
 class ProovingSpec extends Spec with ShouldMatchers {
@@ -80,7 +85,7 @@ class ProovingSpec extends Spec with ShouldMatchers {
 
       // create a proover
 
-      val resolutionProover1 = new ResolutionProover1
+      val resolutionProover1 = new ResolutionProover1(TheoremProvingConfig1)
 
       // prove
       resolutionProover1.prove(clauseStore)

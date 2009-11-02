@@ -65,7 +65,7 @@ class VariableRewriterSpec extends Spec with ShouldMatchers {
     it("should rewrite Loves(G(List(x)),x) to Loves(G(List(Jack)),Jack)") {
       // init with the resolution example from the AIMA Book page 298
 
-      val rewriter = (new Object with VariableRewriting)
+      val rewriter = new VariableRewriter()
 
 
       val x = Variable("x")

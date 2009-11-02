@@ -3,6 +3,8 @@ package core.reduction
 import containers.{ClauseStorage, CNFClauseStore}
 import domain.fol.ast._
 import net.lag.logging.Logger
+import rewriting.Substitution
+
 
 /**
  * User: nowi
@@ -20,8 +22,11 @@ trait Factoring {
   def factorize(clauses: ClauseStorage): ClauseStorage
 }
 
-trait OrderedFactoring extends Factoring with Unify {
-  override val log = Logger.get
+class OrderedFactorizer(env: {val unificator: Unify})
+        extends Factoring {
+  // depends on unifier
+
+  val log = Logger.get
 
   def factorize(clause: Clause): Clause = {
     log.info("Ordered Factoring on clause %s ", clause)
@@ -38,8 +43,12 @@ trait OrderedFactoring extends Factoring with Unify {
 
 
 
-trait StandardFactoring extends Factoring with Unify {
-  override val log = Logger.get
+// depends on unifier and substitutor
+class StandardFactorizer(env: {val unificator: Unify; val substitutor: Substitution}) extends Factoring {
+  val unificator: Unify = env.unificator
+  val substitutor: Substitution = env.substitutor
+
+  val log = Logger.get
 
   override def factorize(clause: Clause): Clause = {
     log.info("Standard Factoring on clause %s", clause)
@@ -49,7 +58,7 @@ trait StandardFactoring extends Factoring with Unify {
     val substitutions = for (
       c1 <- clause.literals;
       c2 <- clause.literals;
-      unifier = unify(c1, c2);
+      unifier = unificator.unify(c1, c2);
       if (c1 != c2)
 
     )
@@ -67,7 +76,7 @@ trait StandardFactoring extends Factoring with Unify {
     // apply the substitutions to the clause if there are any
     if (!substitutions.isEmpty) {
       log.info("Found unifiers .. applying substitutions to clause : %s ", clause)
-      substitute(Some(substitutions.reduceLeft(_ ++ _)), clause)
+      substitutor.substitute(Some(substitutions.reduceLeft(_ ++ _)), clause)
     } else {
       log.info("Not found any substitutions for clause : %s ", clause)
       clause
@@ -81,7 +90,5 @@ trait StandardFactoring extends Factoring with Unify {
   }
 }
 
-class StandardFactorizer extends StandardFactoring {
-}
 
 

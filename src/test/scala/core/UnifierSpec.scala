@@ -8,6 +8,7 @@ package core
 
 import com.jteigen.scalatest.JUnit4Runner
 
+import config.TheoremProvingConfig1
 import domain.fol.ast._
 import org.junit.runner.RunWith
 
@@ -20,7 +21,7 @@ class UnifierSpec extends Spec with ShouldMatchers {
   describe("The FOL Term Unifier ") {
 
     // create unificator
-    val unificator = new Unificator
+    val unificator = new Unificator(TheoremProvingConfig1)
 
     it("should unificator.unify(Knows(John,x), Knows( John, Jane)) - {x/Jane}") {
       val john = Constant("John")

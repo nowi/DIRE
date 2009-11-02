@@ -3,7 +3,7 @@ package core
 
 import containers._
 import net.lag.logging.Logger
-import reduction.{SubsumptionDeletion, TautologyDeletion, StandardFactoring}
+import reduction.{Factoring, SubsumptionDeletion, TautologyDeletion}
 
 /**
  * User: nowi
@@ -16,10 +16,19 @@ import reduction.{SubsumptionDeletion, TautologyDeletion, StandardFactoring}
  * from the Automated Theorem Proving Book Volume II
  */
 
-trait Proving extends TautologyDeletion with SubsumptionDeletion with StandardFactoring {
-  override val log = Logger.get
+trait Proving {
+  def prove(clauses: ClauseStore): ProvingResult
+}
 
-  def prove(clauses: ClauseStore): ProvingResult = {
+
+class ResolutionProover1(env: {val tautologyDeleter: TautologyDeletion; val subsumptionDeleter: SubsumptionDeletion; val factorizer: Factoring}) extends Proving {
+  val log = Logger.get
+
+  val tautologyDeleter = env.tautologyDeleter
+  val subsumptionDeleter = env.subsumptionDeleter
+  val factorizer = env.factorizer
+
+  override def prove(clauses: ClauseStore): ProvingResult = {
     log.info("Starting theorem proving on clause store %s", clauses)
 
 
@@ -99,11 +108,11 @@ trait Proving extends TautologyDeletion with SubsumptionDeletion with StandardFa
   }
 
   def taut(clauses: ClauseStorage): ClauseStorage = {
-    deleteTautologies(clauses)
+    tautologyDeleter.deleteTautologies(clauses)
   }
 
   def sub(a: ClauseStorage, b: ClauseStorage): ClauseStorage = {
-    deleteSubsumptions(a, b)
+    subsumptionDeleter.deleteSubsumptions(a, b)
   }
 
 
@@ -112,14 +121,10 @@ trait Proving extends TautologyDeletion with SubsumptionDeletion with StandardFa
    * and return the resulting clausestore
    */
   def sub(a: ClauseStorage): ClauseStorage = {
-    deleteSubsumptions(a)
+    subsumptionDeleter.deleteSubsumptions(a)
   }
 
 
-}
-
-
-class ResolutionProover1 extends Proving {
 }
 
 

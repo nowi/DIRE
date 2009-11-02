@@ -9,6 +9,20 @@ import domain.fol.ast._
  * Time: 19:03:48
  */
 trait VariableRewriting {
+  /**Rewrite based on mapping theta
+   * @param theta - the mapping
+   * @returns rewritten folnode
+   */
+  def rewrite(node: FOLNode, theta: Map[Variable, FOLNode]): FOLNode
+
+  /**Rewrite based on mapping theta
+   * @param theta - the mapping
+   * @returns rewritten clause
+   */
+  def rewriteClause(clause: Clause, theta: Map[Variable, FOLNode]): Clause
+}
+
+class VariableRewriter extends VariableRewriting {
   val log = net.lag.logging.Logger.get
 
   /**Rewrite based on mapping theta
@@ -62,7 +76,4 @@ trait VariableRewriting {
 
   }
 
-
 }
-
-class VariableRewriter extends VariableRewriting
