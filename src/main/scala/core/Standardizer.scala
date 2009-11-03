@@ -87,11 +87,13 @@ class Standardizer(env: {val variableRewriter: VariableRewriting}) extends Stand
       }
       case cvs: List[Variable] => {
         // create the substition transform
-        val theta = cvs.map({old: Variable => (old -> renameVar(old))}).foldLeft(Map[Variable, Variable]())(_ + _)
+        val theta1 = cvs.map({old: Variable => (old -> renameVar(old))}).foldLeft(Map[Variable, Variable]())(_ + _)
+        val theta2 = cvs.map({old: Variable => (old -> renameVar(old))}).foldLeft(Map[Variable, Variable]())(_ + _)
         // rewririte all nodes
-        val cr1 = variableRewriter.rewriteClause(c1, theta)
-        val cr2 = variableRewriter.rewriteClause(c2, theta)
-        log.info("Clauses have been standardized apart and rewritten to %s by %s" format (cr1, cr2, this))
+        val cr1 = variableRewriter.rewriteClause(c1, theta1)
+        val cr2 = variableRewriter.rewriteClause(c2, theta2)
+        log.trace("Clauses have been standardized apart and rewritten to %s by %s" format (cr1, cr2, this))
+
         (cr1, cr2)
       }
     }
@@ -131,7 +133,7 @@ class Standardizer(env: {val variableRewriter: VariableRewriting}) extends Stand
   }
 
   private def commonVars(c1: Clause, c2: Clause): List[Variable] = {
-    val cv = commonVars(c1.literals.toList) intersect commonVars(c2.literals.toList)
+    val cv = (commonVars(c1.literals.toList) intersect commonVars(c2.literals.toList))
     log.info("Common vars for clause : %s and  clause : %s are %s", c1, c2, cv)
     cv
   }

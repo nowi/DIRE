@@ -52,7 +52,10 @@ class StandardizerSpec extends Spec with ShouldMatchers {
       val theta5 = standardizer.standardizeApart(A, B)
 
       log.info("Standardized Apart tuple of clause A and B : %s is %s", A, theta5)
-      theta5 should not equal (None)
+      theta5 should not equal ((A, B))
+
+      // and there should be no vars in common
+
 
 
     }
