@@ -19,6 +19,7 @@
     <orderEntry type="library" exported="" name="Maven: net.lag:configgy:1.4.3" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.scala-lang:scala-compiler:2.7.5" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.scala-lang:scala-library:2.7.5" level="project" />
+    <orderEntry type="library" exported="" name="Maven: com.google.collections:google-collections:1.0-rc2" level="project" />
     <orderEntry type="library" exported="" name="Maven: com.jteigen.scalatest:junit4runner:1.0-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="Maven: junit:junit:4.5" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.scala-tools.testing:scalatest:0.9.5" level="project" />
