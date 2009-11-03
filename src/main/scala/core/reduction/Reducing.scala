@@ -32,7 +32,7 @@ class SubsumptionDeleter extends SubsumptionDeletion {
 
   override def deleteSubsumptions(a: ClauseStorage, b: ClauseStorage): ClauseStorage = {
     log.info("Subsume %s with %s", a, b)
-    CNFClauseStore()
+    a
 
   }
 
@@ -42,7 +42,7 @@ class SubsumptionDeleter extends SubsumptionDeletion {
    */
   override def deleteSubsumptions(a: ClauseStorage): ClauseStorage = {
     log.info("Subsumption deletion to all of %s", a)
-    CNFClauseStore()
+    a
   }
 }
 
@@ -58,7 +58,7 @@ class TautologyDeleter extends TautologyDeletion {
 
   override def deleteTautologies(clauses: ClauseStorage): ClauseStorage = {
     log.info("Tautology elemination on %s by %s", clauses, this)
-    CNFClauseStore()
+    clauses
   }
 
 

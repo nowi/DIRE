@@ -4,6 +4,7 @@ package core
 import containers._
 import net.lag.logging.Logger
 import reduction.{Factoring, SubsumptionDeletion, TautologyDeletion}
+import resolution.Resolution
 
 /**
  * User: nowi
@@ -21,9 +22,10 @@ trait Proving {
 }
 
 
-class ResolutionProover1(env: {val tautologyDeleter: TautologyDeletion; val subsumptionDeleter: SubsumptionDeletion; val factorizer: Factoring}) extends Proving {
+class ResolutionProover1(env: {val tautologyDeleter: TautologyDeletion; val subsumptionDeleter: SubsumptionDeletion; val factorizer: Factoring; val resolver: Resolution}) extends Proving {
   val log = Logger.get
 
+  val resolver = env.resolver
   val tautologyDeleter = env.tautologyDeleter
   val subsumptionDeleter = env.subsumptionDeleter
   val factorizer = env.factorizer
@@ -37,7 +39,8 @@ class ResolutionProover1(env: {val tautologyDeleter: TautologyDeletion; val subs
 
     // all candidate clauses to generate inferences
     // perform input reduction
-    var usable: ClauseStorage = taut(sub(clauses))
+    //    var usable: ClauseStorage = taut(sub(clauses))
+    var usable: ClauseStorage = clauses
 
     while (!usable.isEmpty && !usable.containsEmptyClause) {
       log.info("Inner Loop")
@@ -92,8 +95,7 @@ class ResolutionProover1(env: {val tautologyDeleter: TautologyDeletion; val subs
 
 
   def resolve(a: ClauseStorage, b: ClauseStorage): ClauseStorage = {
-    log.info("Resolve %s with %s", a, b)
-    CNFClauseStore()
+    resolver.resolve(a, b)
 
   }
 

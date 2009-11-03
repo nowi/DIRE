@@ -2,6 +2,7 @@ package core.config
 
 
 import reduction.{StandardFactorizer, SubsumptionDeleter, TautologyDeleter}
+import resolution.BinaryResolver
 import rewriting.{Substitutor, VariableRewriter}
 
 /**
@@ -19,5 +20,7 @@ object TheoremProvingConfig1 {
   lazy val unificator = new Unificator(this)
   lazy val substitutor = new Substitutor(this)
   lazy val factorizer = new StandardFactorizer(this)
+  lazy val resolver = new BinaryResolver(this)
+
 
 }

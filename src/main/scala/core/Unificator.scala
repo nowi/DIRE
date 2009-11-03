@@ -22,6 +22,8 @@ trait Unify {
    */
   def unify(x: FOLNode, y: FOLNode): Option[Map[Variable, FOLNode]]
 
+  def unify(clause: Clause): Option[Map[Variable, FOLNode]]
+
 }
 
 // standard unification implementation
@@ -29,10 +31,27 @@ class Unificator(env: {val substitutor: Substitution; val standardizer: Standard
   val substitutor = env.substitutor
   val standardizer = env.standardizer
 
+  val log = net.lag.logging.Logger.get
+
   override def unify(x: FOLNode, y: FOLNode): Option[Map[Variable, FOLNode]] = {
     // standardize apart the terms
     val (xr, yr) = standardizer.standardizeApart(x, y)
     unify(xr, yr, Some(Map[Variable, FOLNode]()))
+
+  }
+
+  override def unify(clause: Clause): Option[Map[Variable, FOLNode]] = {
+    // unify all literals of this clause
+    val thetas = for (l1 <- clause.literals;
+                      l2 <- clause.literals;
+                      if (l1 != l2);
+                      (sl1, sl2) = standardizer.standardizeApart(l1, l2))
+
+    yield unify(sl1, sl2, Some(Map[Variable, FOLNode]())) match {
+        case Some(theta) => theta
+        case None => Map[Variable, FOLNode]()
+      }
+    Some(thetas.reduceLeft(_ ++ _))
 
   }
 
@@ -66,7 +85,8 @@ class Unificator(env: {val substitutor: Substitution; val standardizer: Standard
   }
 
 
-  private def unify(xs: List[FOLNode], ys: List[FOLNode], theta: Option[Map[Variable, FOLNode]]): Option[Map[Variable, FOLNode]] = {
+  def unify(xs: List[FOLNode], ys: List[FOLNode], theta: Option[Map[Variable, FOLNode]]): Option[Map[Variable, FOLNode]] = {
+    log.info("Unifier : %s is unifiying list 1 : %s with list 2 : %s", this, xs, ys)
     if (xs.size != ys.size) None
     theta match {
       case Some(t) => {
@@ -118,7 +138,7 @@ class Unificator(env: {val substitutor: Substitution; val standardizer: Standard
   /**
    * Cascading substitutions
 
-  Sometimes you get a substitution of the form σ =                         { z ← x, x ← a.
+  Sometimes you get a substitution of the form σ =                            { z ← x, x ← a.
   Suppose you were to apply this substitution to p(z,x). The correct result is p(a,a).
   The reason is that you need to "cascade" the substitutions; if z takes the value x,
   you need to make sure that you haven't constrained x to be some other value.
