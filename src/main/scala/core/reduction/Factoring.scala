@@ -19,7 +19,10 @@ import rewriting.Substitution
 trait Factoring {
   def factorize(clause: Clause): Clause
 
+  def factorize(clause: Clause, mgu: Option[MGU]): Clause
+
   def factorize(clauses: ClauseStorage): ClauseStorage
+
 }
 
 class OrderedFactorizer(env: {val unificator: Unify})
@@ -33,6 +36,9 @@ class OrderedFactorizer(env: {val unificator: Unify})
     clause
 
   }
+
+
+  def factorize(clause: Clause, mgu: Option[MGU]) = null
 
   def factorize(clauses: ClauseStorage): ClauseStorage = {
     log.info("Ordered Factoring on clauses %s ", clauses)
@@ -55,33 +61,59 @@ class StandardFactorizer(env: {val unificator: Unify; val substitutor: Substitut
 
     // permutate all literals in the clause  with each other
     // collect the substitutions
-    val substitutions = for (
-      c1 <- clause.literals;
-      c2 <- clause.literals;
-      unifier = unificator.unify(c1, c2);
-      if (c1 != c2)
+    // we need a global theta for this
+    var substitutions: Map[Variable, FOLNode] = Map[Variable, FOLNode]()
+    var rewrittenClause = clause
 
-    )
-    yield unifier match {
-        case Some(x) => {
-          log.info("Literal : %s unifies with %s ... mgu : %s", c1, c2, x)
-          x
+    // unify all literals of these clauess
+    val thetas = for (l1 <- clause.literals;
+                      l2 <- clause.literals;
+                      if (l1 != l2)
+    ) {
+        unificator.unify(l1, l2, Some(substitutions)) match {
+          case Some(x) => {
+            // there was a unification apply the rewrite
+            log.info("Success unifying literals : %s with %s ...", l1, l2)
+            log.info("New global theta is : %s ", x)
+            substitutions = x
+          }
+          case None => {
+            // ignore
+            log.info("Could not unify literal : %s with %s ... ignoring", l1, l2)
+          }
+
         }
-        case _ => Map[Variable, FOLNode]()
-
       }
+
+
+    log.info("Final global theta : %s", substitutions);
 
     log.info("COllected Substitutions during factoring : %s", substitutions)
 
     // apply the substitutions to the clause if there are any
-    if (!substitutions.isEmpty && substitutions.exists(!_.isEmpty)) {
+    if (!substitutions.isEmpty) {
       log.info("Found unifiers .. applying substitutions to clause : %s ", clause)
-      substitutor.substitute(Some(substitutions.reduceLeft(_ ++ _)), clause)
+      substitutor.substitute(Some(substitutions), clause)
     } else {
       log.info("Not found any substitutions for clause : %s ", clause)
       clause
     }
 
+  }
+
+
+  override def factorize(clause: Clause, mgu: Option[MGU]): Clause = {
+    log.info("Standard Factoring on clause %s with given mgu : %s", clause, mgu)
+    mgu match {
+      case Some(x) => {
+        // apply the factorization on this clause with the given mgu
+        substitutor.substitute(mgu, clause)
+      }
+      case None => {
+        throw new IllegalArgumentException("No mgu specified !")
+        clause
+      }
+    }
   }
 
   override def factorize(clauses: ClauseStorage): ClauseStorage = {

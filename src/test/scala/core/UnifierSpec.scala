@@ -118,11 +118,11 @@ class UnifierSpec extends Spec with ShouldMatchers {
       //      A' = {¬P (z , a), ¬P (z , x)}
       val AStrich = Clause(Negation(Predicate("P", z, a)), Negation(Predicate("P", z, x)))
       // ′ = {P (z , a)}
-      val BStrich = Clause(Predicate("P", z, a))
+      val BStrich = Clause(Predicate("P", z, a), Predicate("P", z, Function("f", z)))
 
 
-      val anegstrich = AStrich.negativeLiterals
-      val bposstrich = BStrich.positiveLiterals
+      val anegstrich = A.negativeLiterals
+      val bposstrich = B.positiveLiterals
 
       // unfiy a and e -- this will test the standardise apart case
       val theta5 = unificator.unify(Clause(anegstrich).absoluteClause, Clause(bposstrich))

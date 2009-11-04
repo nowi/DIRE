@@ -24,6 +24,9 @@ trait Unify {
 
   def unify(c1: Clause, c2: Clause): Option[Map[Variable, FOLNode]]
 
+  def unify(c1: Clause, c2: Clause, theta: Option[Map[Variable, FOLNode]]): Option[Map[Variable, FOLNode]]
+
+  def unify(x: FOLNode, y: FOLNode, theta: Option[Map[Variable, FOLNode]]): Option[Map[Variable, FOLNode]]
 }
 
 // standard unification implementation
@@ -34,9 +37,66 @@ class Unificator(env: {val substitutor: Substitution; val standardizer: Standard
 
   override def unify(x: FOLNode, y: FOLNode): Option[Map[Variable, FOLNode]] = {
     // standardize apart the terms
+    if (x == y) {
+      log.info("%s trivially unified equal nodes : %s , %s", this, x, y)
+      Some(Map[Variable, FOLNode]())
+    }
     val (xr, yr) = standardizer.standardizeApart(x, y)
     unify(xr, yr, Some(Map[Variable, FOLNode]()))
 
+  }
+
+
+  def unify(c1: Clause, c2: Clause, t: Option[Map[Variable, FOLNode]]) = {
+
+    t match {
+      case Some(theta) => {
+        // first standardize both clauses
+        val (cs1, cs2) = standardizer.standardizeApart(c1, c2)
+        // we need a global theta for this
+        var globalTheta: Map[Variable, FOLNode] = theta
+
+        // unify all literals of these clauess
+        val thetas = for (l1 <- cs1.literals;
+                          l2 <- cs2.literals;
+                          if (l1 != l2)
+        ) {
+            unify(l1, l2, Some(globalTheta)) match {
+              case Some(x) => {
+                // there was a unification , set this as our new theta
+                log.info("Success unifying literals : %s with %s ...", l1, l2)
+                log.info("New global theta is : %s ", x)
+                globalTheta = x
+              }
+              case None => {
+                // ignore
+                log.info("Could not unify literal : %s with %s ... ignoring", l1, l2)
+              }
+
+            }
+          }
+
+
+        log.info("Final global theta : %s", globalTheta);
+        Some(globalTheta)
+      }
+      case _ => None
+
+    }
+
+
+
+    //    globalTheta match {
+    //      case Some(x) => {
+    //        log.info("Final global theta : %s",globalTheta);
+    //        Some(x)
+    //      }
+    //      case None => {
+    //        log.warning("No globalTheta could be constructed")
+    //        None
+    //      }
+    //    }
+    //    Some(thetas.reduceLeft(_ ++ _))
   }
 
   override def unify(c1: Clause, c2: Clause): Option[Map[Variable, FOLNode]] = {
@@ -87,7 +147,7 @@ class Unificator(env: {val substitutor: Substitution; val standardizer: Standard
   }
 
 
-  private def unify(x: FOLNode, y: FOLNode, theta: Option[Map[Variable, FOLNode]]): Option[Map[Variable, FOLNode]] = {
+  def unify(x: FOLNode, y: FOLNode, theta: Option[Map[Variable, FOLNode]]): Option[Map[Variable, FOLNode]] = {
     if (x == y) {
       theta
     } else {
@@ -169,7 +229,7 @@ class Unificator(env: {val substitutor: Substitution; val standardizer: Standard
   /**
    * Cascading substitutions
 
-  Sometimes you get a substitution of the form σ =                          { z ← x, x ← a.
+  Sometimes you get a substitution of the form σ =                            { z ← x, x ← a.
   Suppose you were to apply this substitution to p(z,x). The correct result is p(a,a).
   The reason is that you need to "cascade" the substitutions; if z takes the value x,
   you need to make sure that you haven't constrained x to be some other value.

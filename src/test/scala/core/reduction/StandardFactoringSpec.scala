@@ -101,6 +101,24 @@ class StandardFactoringSpec extends Spec with ShouldMatchers {
 
     }
 
+    it("should factorize sentence with double variable predicate") {
+      // init with the resolution example from the AIMA Book page 298
+
+      val factorizer = new StandardFactorizer(TheoremProvingConfig1)
+
+      val y = Variable("x")
+      val x = Variable("y")
+
+      val C = Clause(Predicate("man", x), Predicate("man", y), Negation(Predicate("in_love", x, y)))
+      val C1 = Clause(Predicate("man", x), Negation(Predicate("in_love", x, x)))
+
+
+      // factorize
+      factorizer.factorize(C) should equal(C1)
+
+
+    }
+
 
   }
 }
