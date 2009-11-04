@@ -16,6 +16,9 @@ case class Clause(literals: Set[FOLNode]) {
   })), "FOL nodes passed into a clause can only be Literals")
 
 
+  def ++(that: Clause): Clause =
+    Clause(literals ++ that.literals)
+
 
   def absoluteClause = Clause(absoluteLiterals)
 
