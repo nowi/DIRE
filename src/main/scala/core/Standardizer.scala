@@ -127,7 +127,7 @@ class Standardizer(env: {val variableRewriter: VariableRewriting}) extends Stand
   private def commonVars(nodes: List[FOLNode]): List[Variable] = {
     // get all variables that are in common for any pair of nodes in the input nodes
     // we can ignore tuples with identical elements and reverse order to
-    val cv = for (n1 <- nodes; n2 <- nodes; if (n1 != n2)) yield {commonVars(n1, n2)}
+    val cv = for (n1 <- nodes; n2 <- nodes) yield {commonVars(n1, n2)}
     log.info("Common vars for node List : %s are %s", nodes, cv)
     cv.flatten
   }

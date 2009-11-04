@@ -17,9 +17,20 @@ case class Clause(literals: Set[FOLNode]) {
 
 
 
+  def absoluteClause = Clause(absoluteLiterals)
 
 
   override def toString = "Clause : %s" format (literals mkString ("[", "∨", "]"))
+
+
+  lazy val absoluteLiterals: Set[FOLNode] = {
+    literals map (_ match {
+      case Negation(filler) => filler
+      case x: FOLNode => x
+
+    })
+
+  }
 
 
   lazy val positiveLiterals: Set[FOLNode] = {

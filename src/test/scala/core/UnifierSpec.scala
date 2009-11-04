@@ -106,7 +106,7 @@ class UnifierSpec extends Spec with ShouldMatchers {
 
     it("should unify Clause  A = {¬P (z , a), ¬P (z , x), ¬P (x, z )} union B = {P (z , f (z )), P (z , a)}.  ") {
       val x = Variable("x")
-      val a = Variable("a")
+      val a = Constant("a")
       val z = Variable("z")
       // A = {¬P (z , a), ¬P (z , x), ¬P (x, z )}
       val A = Clause(Negation(Predicate("P", z, a)), Negation(Predicate("P", z, x)), Negation(Predicate("P", x, z)))
@@ -115,13 +115,20 @@ class UnifierSpec extends Spec with ShouldMatchers {
 
       val B = Clause(Predicate("P", z, Function("f", z)), Predicate("P", z, a))
 
-      val aneg = A.negativeLiterals
-      val bpos = B.positiveLiterals
+      //      A' = {¬P (z , a), ¬P (z , x)}
+      val AStrich = Clause(Negation(Predicate("P", z, a)), Negation(Predicate("P", z, x)))
+      // ′ = {P (z , a)}
+      val BStrich = Clause(Predicate("P", z, a))
+
+
+      val anegstrich = AStrich.negativeLiterals
+      val bposstrich = BStrich.positiveLiterals
 
       // unfiy a and e -- this will test the standardise apart case
-      val theta5 = unificator.unify(Clause(aneg ++ bpos))
+      val theta5 = unificator.unify(Clause(anegstrich).absoluteClause, Clause(bposstrich))
 
       log.info("MGU of union of a and b is %s", theta5)
+      // the subsitutions should containt Some(Map(z_4 -> z_8, x -> a))
       theta5 should not equal (None)
 
 
@@ -131,24 +138,24 @@ class UnifierSpec extends Spec with ShouldMatchers {
 
 
 
-    it("should unify Clause  {P (z1 , a), P (z1 , x), P (z2 , a)} ") {
-      val z1 = Variable("z1");
-      val z2 = Variable("z2");
-      val a = Variable("a")
-      val x = Variable("x")
-
-      val p1 = Clause(Predicate("P", z1, a), Predicate("P", z1, x), Predicate("P", z2, a))
-
-
-      // unfiy a and e -- this will test the standardise apart case
-      val theta5 = unificator.unify(p1)
-
-
-      log.info("MGU of Clause : %s is %s", p1, theta5)
-      theta5 should not equal (None)
-
-
-    }
+    //    it("should unify Clause  {P (z1 , a), P (z1 , x), P (z2 , a)} ") {
+    //      val z1 = Variable("z1");
+    //      val z2 = Variable("z2");
+    //      val a = Variable("a")
+    //      val x = Variable("x")
+    //
+    //      val p1 = Clause(Predicate("P", z1, a), Predicate("P", z1, x), Predicate("P", z2, a))
+    //
+    //
+    //      // unfiy a and e -- this will test the standardise apart case
+    //      val theta5 = unificator.unify(p1)
+    //
+    //
+    //      log.info("MGU of Clause : %s is %s", p1, theta5)
+    //      theta5 should not equal (None)
+    //
+    //
+    //    }
 
 
   }

@@ -22,7 +22,7 @@ trait Unify {
    */
   def unify(x: FOLNode, y: FOLNode): Option[Map[Variable, FOLNode]]
 
-  def unify(clause: Clause): Option[Map[Variable, FOLNode]]
+  def unify(c1: Clause, c2: Clause): Option[Map[Variable, FOLNode]]
 
 }
 
@@ -30,7 +30,6 @@ trait Unify {
 class Unificator(env: {val substitutor: Substitution; val standardizer: Standardizing}) extends Unify {
   val substitutor = env.substitutor
   val standardizer = env.standardizer
-
   val log = net.lag.logging.Logger.get
 
   override def unify(x: FOLNode, y: FOLNode): Option[Map[Variable, FOLNode]] = {
@@ -40,20 +39,53 @@ class Unificator(env: {val substitutor: Substitution; val standardizer: Standard
 
   }
 
-  override def unify(clause: Clause): Option[Map[Variable, FOLNode]] = {
-    // unify all literals of this clause
-    val thetas = for (l1 <- clause.literals;
-                      l2 <- clause.literals;
-                      if (l1 != l2);
-                      (sl1, sl2) = standardizer.standardizeApart(l1, l2))
+  override def unify(c1: Clause, c2: Clause): Option[Map[Variable, FOLNode]] = {
+    // first standardize both clauses
+    val (cs1, cs2) = standardizer.standardizeApart(c1, c2)
 
-    yield unify(sl1, sl2, Some(Map[Variable, FOLNode]())) match {
-        case Some(theta) => theta
-        case None => Map[Variable, FOLNode]()
+
+
+    // we need a global theta for this
+    var globalTheta: Map[Variable, FOLNode] = Map[Variable, FOLNode]()
+
+    // unify all literals of these clauess
+    val thetas = for (l1 <- cs1.literals;
+                      l2 <- cs2.literals;
+                      if (l1 != l2)
+    ) {
+        unify(l1, l2, Some(globalTheta)) match {
+          case Some(x) => {
+            // there was a unification , set this as our new theta
+            log.info("Success unifying literals : %s with %s ...", l1, l2)
+            log.info("New global theta is : %s ", x)
+            globalTheta = x
+          }
+          case None => {
+            // ignore
+            log.info("Could not unify literal : %s with %s ... ignoring", l1, l2)
+          }
+
+        }
       }
-    Some(thetas.reduceLeft(_ ++ _))
+
+
+    log.info("Final global theta : %s", globalTheta);
+    Some(globalTheta)
+
+    //    globalTheta match {
+    //      case Some(x) => {
+    //        log.info("Final global theta : %s",globalTheta);
+    //        Some(x)
+    //      }
+    //      case None => {
+    //        log.warning("No globalTheta could be constructed")
+    //        None
+    //      }
+    //    }
+    //    Some(thetas.reduceLeft(_ ++ _))
 
   }
+
 
   private def unify(x: FOLNode, y: FOLNode, theta: Option[Map[Variable, FOLNode]]): Option[Map[Variable, FOLNode]] = {
     if (x == y) {
@@ -85,8 +117,7 @@ class Unificator(env: {val substitutor: Substitution; val standardizer: Standard
   }
 
 
-  def unify(xs: List[FOLNode], ys: List[FOLNode], theta: Option[Map[Variable, FOLNode]]): Option[Map[Variable, FOLNode]] = {
-    log.info("Unifier : %s is unifiying list 1 : %s with list 2 : %s", this, xs, ys)
+  private def unify(xs: List[FOLNode], ys: List[FOLNode], theta: Option[Map[Variable, FOLNode]]): Option[Map[Variable, FOLNode]] = {
     if (xs.size != ys.size) None
     theta match {
       case Some(t) => {
@@ -138,7 +169,7 @@ class Unificator(env: {val substitutor: Substitution; val standardizer: Standard
   /**
    * Cascading substitutions
 
-  Sometimes you get a substitution of the form σ =                            { z ← x, x ← a.
+  Sometimes you get a substitution of the form σ =                          { z ← x, x ← a.
   Suppose you were to apply this substitution to p(z,x). The correct result is p(a,a).
   The reason is that you need to "cascade" the substitutions; if z takes the value x,
   you need to make sure that you haven't constrained x to be some other value.
@@ -149,14 +180,17 @@ class Unificator(env: {val substitutor: Substitution; val standardizer: Standard
     // add the new subsitution
     theta match {
       case Some(t) => {
-        val theta2: Map[Variable, FOLNode] = t + (v -> term)
 
+        val theta2: Map[Variable, FOLNode] = t + (v -> term)
+        log.info("Creating substitution %s -- > %s .., theta = %s", v, term, theta2)
         val theta3 = (for (key <- theta2.keySet) yield Map(key -> substitutor.substitute(Some(theta2),
           theta2.get(key) match {
             case Some(value) => value
           })))
 
-        Some(theta3.reduceLeft((map1, map2) => map1 ++ map2))
+        val theta4 = theta3.reduceLeft((map1, map2) => map1 ++ map2)
+        log.info("Cascading substitution %s -- > %s .., theta = %s", v, term, theta4)
+        Some(theta4)
 
 
       }
