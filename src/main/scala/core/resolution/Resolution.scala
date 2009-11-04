@@ -3,6 +3,7 @@ package core.resolution
 
 import containers.{CNFClauseStore, ClauseStorage}
 import domain.fol.ast.Clause
+import reduction.Factoring
 
 /**
  * User: nowi
@@ -16,8 +17,67 @@ trait Resolution {
   def resolve(a: Clause, b: Clause): Set[Clause]
 }
 
-class BinaryResolver(env: {val unificator: Unify}) extends Resolution {
+class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring}) extends Resolution {
   val unificator = env.unificator
+  val factorizer = env.factorizer
+
+  val log = net.lag.logging.Logger.get
+
+  override def resolve(a: ClauseStorage, b: ClauseStorage): ClauseStorage = {
+    log.info("Resolving %s with %s by resolver : %s", a, b, this)
+    a
+  }
+
+
+  /**
+   * Binary resolution always focuses on two clauses and one literal in each.
+   * To admit a conclusion, the literals must be opposite in sign and alike in predicate,
+   * and there must exist a unifier (substitution of terms for variables) to otherwise make them
+   * identical. If a conclusion results, it is obtained by applying the unifier to the two
+   * clauses excluding the two literals in focus, and taking the union of the transformed literals.
+   */
+  override def resolve(a: Clause, b: Clause): Set[Clause] = {
+    // Apos , Bneg
+    log.info("%s is resolving Clauses %s,%s", this, a, b)
+    val aPosLits = a.positiveLiterals
+    val bNegLits = b.negativeLiterals
+
+    val conclusions: Set[Clause] = for (aPos <- aPosLits;
+                                        bNeg <- bNegLits;
+                                        mgu = unificator.unify(aPos, bNeg).asInstanceOf[Option[MGU]])
+    yield mgu match {
+        case Some(x) => {
+          // we have a mgu
+          // apply it to the two clauses excluding the 2 focused
+          log.info("MGU is %s", mgu)
+          //            val c1 = factorizer.factorize(Clause(aPosLits - aPos), mgu)
+          val c1 = factorizer.factorize(Clause(aPosLits - aPos))
+          //            val c2 = factorizer.factorize(Clause(bNegLits - bNeg), mgu)
+          val c2 = factorizer.factorize(Clause(bNegLits - bNeg))
+
+          val union = c1 ++ c2
+          log.info("Resolved for Literals %s,%s  --> %s %s , by factoring with mgu : %s", this, aPos, bNeg, c1, c2, mgu)
+          union
+        }
+        case None => {
+          log.info("%s Could not resolve Literals %s,%s", this, aPos, bNeg)
+          Clause()
+        }
+      }
+
+
+
+    log.info("Resolver %s resolved from clauses %s and %s --> %s", this, a, b, conclusions)
+    conclusions
+
+  }
+
+
+}
+
+class GeneralResolution(env: {val unificator: Unify}) extends Resolution {
+  val unificator = env.unificator
+
   val log = net.lag.logging.Logger.get
 
   override def resolve(a: ClauseStorage, b: ClauseStorage): ClauseStorage = {
@@ -30,8 +90,8 @@ class BinaryResolver(env: {val unificator: Unify}) extends Resolution {
    * Deﬁnition 8.5.2 Given two clauses A and B, a clause C is a resolvent of
    * A and B iﬀ the following holds:
    *
-   * (i) There is a subset A′ =  { A1 , ..., Am } ⊆ A of literals all of the same sign,
-   * a subset B′ =  { B1 , ..., Bn } ⊆ B of literals all of the opposite sign of the set A′ ,
+   * (i) There is a subset A′ =       { A1 , ..., Am } ⊆ A of literals all of the same sign,
+   * a subset B′ =       { B1 , ..., Bn } ⊆ B of literals all of the opposite sign of the set A′ ,
    * and a separating pair of substitutions (ρ, ρ′ ) such that the set |ρ(A′ ) ∪ ρ′ (B′ )|
    * is uniﬁable;
    *
@@ -39,113 +99,8 @@ class BinaryResolver(env: {val unificator: Unify}) extends Resolution {
    * C = σ(ρ(A − A′ ) ∪ ρ′ (B − B′ )).
    */
   override def resolve(a: Clause, b: Clause): Set[Clause] = {
-    //    log.info("Resolving %s with %s by resolver : %s", a, b, this)
-    //
-    //
-    //    // first case
-    //    val mgu = unificator.unify() .positiveLiterals ++ b.negativeLiterals
-    //
-    //
-    //
-    //
-    //
-    //    val aneg = a.negativeLiterals
-    //    val bpos = b.positiveLiterals
-    //
-    //
-    //
-    //
-    //
-    //
-    //    binaryResolvents(a)
     Set(a)
   }
-  //
-  //  def binaryResolvents(a : Clause ,b : Clause) : Option[Set[Clause][] = {
-  //    Set<Clause> resolvents = new LinkedHashSet<Clause>();
-  //    if (a.isEmpty && b.isEmpty) {
-  //      None
-  //    } else {
-  //      val positiveLiterals = a.positiveLiterals ++ b.positiveLiterals
-  //      val negativeLiterals = a.negativeLiterals ++ b.negativeLiterals
-  //
-  //
-  //
-  //    }
-  //
-  //
-  //    List<Literal> trPosLits = new ArrayList<Literal>();
-  //    List<Literal> trNegLits = new ArrayList<Literal>();
-  //    List<Literal> copyRPosLits = new ArrayList<Literal>();
-  //    List<Literal> copyRNegLits = new ArrayList<Literal>();
-  //
-  //    for (int i = 0; i < 2; i++) {
-  //      trPosLits.clear();
-  //      trNegLits.clear();
-  //
-  //      if (i == 0) {
-  //        // See if this clauses positives
-  //        // unify with the other clauses
-  //        // negatives
-  //        trPosLits.addAll(this.positiveLiterals);
-  //        trNegLits.addAll(othC.negativeLiterals);
-  //      } else {
-  //        // Try the other way round now
-  //        trPosLits.addAll(othC.positiveLiterals);
-  //        trNegLits.addAll(this.negativeLiterals);
-  //      }
-  //
-  //      // Now check to see if they resolve
-  //      Map<Variable, Term> copyRBindings = new LinkedHashMap<Variable, Term>();
-  //      for (Literal pl : trPosLits) {
-  //        for (Literal nl : trNegLits) {
-  //          copyRBindings.clear();
-  //          if (null != _unifier.unify(pl.getAtomicSentence(), nl
-  //              .getAtomicSentence(), copyRBindings)) {
-  //            copyRPosLits.clear();
-  //            copyRNegLits.clear();
-  //            boolean found = false;
-  //            for (Literal l : allPosLits) {
-  //              if (!found && pl.equals(l)) {
-  //                found = true;
-  //                continue;
-  //              }
-  //              copyRPosLits.add(_substVisitor.subst(copyRBindings,
-  //                  l));
-  //            }
-  //            found = false;
-  //            for (Literal l : allNegLits) {
-  //              if (!found && nl.equals(l)) {
-  //                found = true;
-  //                continue;
-  //              }
-  //              copyRNegLits.add(_substVisitor.subst(copyRBindings,
-  //                  l));
-  //            }
-  //            // Ensure the resolvents are standardized apart
-  //            Map<Variable, Term> renameSubstitituon = _standardizeApart
-  //                .standardizeApart(copyRPosLits, copyRNegLits,
-  //                    _saIndexical);
-  //            Clause c = new Clause(copyRPosLits, copyRNegLits);
-  //            c.setProofStep(new ProofStepClauseBinaryResolvent(c,
-  //                this, othC, copyRBindings, renameSubstitituon));
-  //            if (isImmutable()) {
-  //              c.setImmutable();
-  //            }
-  //            if (!isStandardizedApartCheckRequired()) {
-  //              c.setStandardizedApartCheckNotRequired();
-  //            }
-  //            resolvents.add(c);
-  //          }
-  //        }
-  //      }
-  //    }
-  //
-  //    return resolvents;
-  //
-  //  }
-
-
 
 
 }
