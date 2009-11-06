@@ -15,6 +15,7 @@ import org.junit.runner.RunWith
 
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
+import rewriting.Substitutor
 
 @RunWith(classOf[JUnit4Runner])
 class UnifierSpec extends Spec with ShouldMatchers {
@@ -23,6 +24,7 @@ class UnifierSpec extends Spec with ShouldMatchers {
     // create unificator
     val unificator = new Unificator(TheoremProvingConfig1)
 
+    val substitutor = new Substitutor(TheoremProvingConfig1)
     //    Configgy.configureFromResource("config.conf")
 
     // logger
@@ -43,6 +45,23 @@ class UnifierSpec extends Spec with ShouldMatchers {
       val theta = unificator.unify(a, b)
       println(theta)
       theta should equal(Some(Map(Variable("x") -> jane)))
+
+    }
+
+    it("should unify -P(y) with P(a)") {
+      val y = Variable("y")
+      val a = Constant("a")
+
+
+
+      val P1 = Negation(Predicate("P", y))
+      // x gets rewritten to y  , we need logical equals methods
+      val P2 = Predicate("P", a)
+
+      // unificator.unify a and b
+      val theta = unificator.unify(P1, P2)
+      println(theta)
+      theta should equal(Some(Map(y -> a)))
 
     }
 
@@ -133,6 +152,35 @@ class UnifierSpec extends Spec with ShouldMatchers {
 
 
     }
+
+    it("should unify two Predicates double variable predicate") {
+      // init with the resolution example from the AIMA Book page 298
+      val y = Variable("x")
+      val x = Variable("y")
+
+      val C = Clause(Predicate("man", x), Predicate("man", y), Negation(Predicate("in_love", x, y)))
+      //      val C1 = Clause(Predicate("man", x), Negation(Predicate("in_love", x, x)))
+
+      // unfiy a and e -- this will test the standardise apart case
+      val firstUnfier = unificator.firstUnifier(C)
+
+      log.info("First unifier of a and b is %s", firstUnfier)
+      firstUnfier should not equal (None)
+
+      // now rewrite the C clause with the first unifier
+      val C1 = substitutor.substitute(firstUnfier, C)
+      log.info("Rewritten C to C1 using unifer %s == %s", firstUnfier, C1)
+      C1 should not equal (C)
+
+      // check if there are more substitions , should be none
+      val secondUnifier = unificator.firstUnifier(C1)
+      log.info("Second unifier of a and b is %s", secondUnifier)
+      secondUnifier should equal(None)
+      // the subsitutions should containt Some(Map(z_4 -> z_8, x -> a))
+    }
+
+
+
 
 
 

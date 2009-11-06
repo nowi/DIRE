@@ -27,6 +27,8 @@ trait Unify {
   def unify(c1: Clause, c2: Clause, theta: Option[Map[Variable, FOLNode]]): Option[Map[Variable, FOLNode]]
 
   def unify(x: FOLNode, y: FOLNode, theta: Option[Map[Variable, FOLNode]]): Option[Map[Variable, FOLNode]]
+
+  def firstUnifier(c1: Clause): Option[Map[Variable, FOLNode]]
 }
 
 // standard unification implementation
@@ -84,19 +86,42 @@ class Unificator(env: {val substitutor: Substitution; val standardizer: Standard
 
     }
 
+  }
 
 
-    //    globalTheta match {
-    //      case Some(x) => {
-    //        log.info("Final global theta : %s",globalTheta);
-    //        Some(x)
-    //      }
-    //      case None => {
-    //        log.warning("No globalTheta could be constructed")
-    //        None
-    //      }
-    //    }
-    //    Some(thetas.reduceLeft(_ ++ _))
+  // this methods immediately returns the first unifier it can find
+  def firstUnifier(c1: Clause): Option[Map[Variable, FOLNode]] = {
+
+    // we need a global theta for this
+
+    // unify all literals of these clauess
+    val thetas: List[Option[Map[Variable, FOLNode]]] = for (l1 <- c1.literals.toList;
+                                                            l2 <- c1.literals.toList;
+                                                            if (l1 != l2)
+    ) yield unify(l1, l2, Some(Map[Variable, FOLNode]())) match {
+        case Some(x) => {
+          // there was a unification , set this as our new theta
+          log.info("Success unifying literals : %s with %s ...", l1, l2)
+          Some(x)
+
+        }
+        case None => {
+          // ignore
+          log.info("Could not unify literal : %s with %s ... ignoring", l1, l2)
+          None
+        }
+
+      }
+
+
+
+
+    if (!thetas.isEmpty) {
+      log.info("Found first Unifier : %s", thetas.head);
+      thetas.head
+    }
+    else None
+
   }
 
   override def unify(c1: Clause, c2: Clause): Option[Map[Variable, FOLNode]] = {
@@ -155,6 +180,10 @@ class Unificator(env: {val substitutor: Substitution; val standardizer: Standard
       theta match {
         case Some(t) => {
           (x, y) match {
+          // TODO clean this up , we have a problem with negations
+            case (Negation(x), Negation(y)) => unify(x, y, theta)
+            case (Negation(x), y: FOLNode) => unify(x, y, theta)
+            case (x: FOLNode, Negation(y)) => unify(x, y, theta)
             case (x: Variable, y: FOLNode) => unifyVar(x, y, theta)
             case (x: FOLNode, y: Variable) => unifyVar(y, x, theta)
             case (x: Constant, y: Constant) => None
@@ -229,7 +258,7 @@ class Unificator(env: {val substitutor: Substitution; val standardizer: Standard
   /**
    * Cascading substitutions
 
-  Sometimes you get a substitution of the form σ =                            { z ← x, x ← a.
+  Sometimes you get a substitution of the form σ =                               { z ← x, x ← a.
   Suppose you were to apply this substitution to p(z,x). The correct result is p(a,a).
   The reason is that you need to "cascade" the substitutions; if z takes the value x,
   you need to make sure that you haven't constrained x to be some other value.
