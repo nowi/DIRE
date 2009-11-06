@@ -20,6 +20,18 @@ case class Clause(literals: Set[FOLNode]) {
     Clause(literals ++ that.literals)
 
 
+  def --(that: Clause): Clause =
+    Clause(literals -- that.literals)
+
+
+  def -(that: FOLNode): Clause =
+    Clause(literals - that)
+
+
+  def +(that: FOLNode): Clause =
+    Clause(literals + that)
+
+
   def absoluteClause = Clause(absoluteLiterals)
 
 

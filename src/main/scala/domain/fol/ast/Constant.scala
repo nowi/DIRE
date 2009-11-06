@@ -7,7 +7,7 @@ package domain.fol.ast
  */
 
 case class Constant(name: String) extends Term {
-  val args = List()
+  val args = List(this)
   val symbolicName = name
 
   override def toString = "%s" format (name)

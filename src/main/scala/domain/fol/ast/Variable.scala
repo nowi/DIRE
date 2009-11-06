@@ -9,7 +9,7 @@ package domain.fol.ast
 case class Variable(name: String) extends Term {
   // is not complex, therefore no arguments 
   val symbolicName = name
-  val args = List()
+  val args = List(this)
 
   override def toString = "%s" format (name)
 
