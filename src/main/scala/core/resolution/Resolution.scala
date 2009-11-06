@@ -4,6 +4,7 @@ package core.resolution
 import containers.{CNFClauseStore, ClauseStorage}
 import domain.fol.ast.Clause
 import reduction.Factoring
+import rewriting.Substitution
 
 /**
  * User: nowi
@@ -17,9 +18,12 @@ trait Resolution {
   def resolve(a: Clause, b: Clause): Set[Clause]
 }
 
-class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring}) extends Resolution {
+class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val standardizer: Standardizing; val substitutor: Substitution}) extends Resolution {
   val unificator = env.unificator
   val factorizer = env.factorizer
+  val standardizer = env.standardizer
+  val substitutor = env.substitutor
+
 
   val log = net.lag.logging.Logger.get
 
@@ -38,32 +42,40 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring}) ex
    */
   override def resolve(a: Clause, b: Clause): Set[Clause] = {
     // Apos , Bneg
-    log.info("%s is resolving Clauses %s,%s", this, a, b)
-    val aPosLits = a.positiveLiterals
-    val bNegLits = b.negativeLiterals
+    log.info("%s is resolving the Clauses %s,%s", this, a, b)
 
-    val conclusions: Set[Clause] = for (aPos <- aPosLits;
-                                        bNeg <- bNegLits;
-                                        mgu = unificator.unify(aPos, bNeg).asInstanceOf[Option[MGU]])
+    // standardize apart the clauses
+    val (aStand, bStand) = standardizer.standardizeApart(a, b)
+
+    val aPosLits = aStand.positiveLiterals
+    log.info("Positive literals of standardized Clause %s are : %s", aStand, aPosLits)
+    val bNegLits = bStand.negativeLiterals
+    log.info("Negative literals of standardized Clause %s are : %s", bStand, bNegLits)
+
+    val conclusions: Set[Clause] = (for (aPos <- aPosLits;
+                                         bNeg <- bNegLits;
+                                         mgu = unificator.unify(aPos, bNeg))
     yield mgu match {
         case Some(x) => {
           // we have a mgu
           // apply it to the two clauses excluding the 2 focused
-          log.info("MGU is %s", mgu)
-          //            val c1 = factorizer.factorize(Clause(aPosLits - aPos), mgu)
-          val c1 = factorizer.factorize(Clause(aPosLits - aPos))
-          //            val c2 = factorizer.factorize(Clause(bNegLits - bNeg), mgu)
-          val c2 = factorizer.factorize(Clause(bNegLits - bNeg))
+          log.info("MGU for Literal : %s and Literal %s is %s", aPos, bNeg, mgu)
+          //            Let S_1 and S_2 be two clauses with no variables in common, let S_1 contain a positive literal L_1, S_2 contain a negative literal L_2, and let eta be the most general unifier of L_1 and L_2. Then
+          //(S_1eta-L_1eta) union (S_2eta-L_2eta)  
 
-          val union = c1 ++ c2
-          log.info("Resolved for Literals %s,%s  --> %s %s , by factoring with mgu : %s", this, aPos, bNeg, c1, c2, mgu)
-          union
+          val S1 = substitutor.substitute(mgu, aStand) - substitutor.substitute(mgu, aPos)
+          val S2 = substitutor.substitute(mgu, bStand) - substitutor.substitute(mgu, bNeg)
+
+          val binaryResolvent = S1 ++ S2
+
+          binaryResolvent
+
         }
         case None => {
           log.info("%s Could not resolve Literals %s,%s", this, aPos, bNeg)
           Clause()
         }
-      }
+      }).filter(!_.literals.isEmpty) // filter out empty clauses
 
 
 
@@ -90,8 +102,8 @@ class GeneralResolution(env: {val unificator: Unify}) extends Resolution {
    * Deﬁnition 8.5.2 Given two clauses A and B, a clause C is a resolvent of
    * A and B iﬀ the following holds:
    *
-   * (i) There is a subset A′ =       { A1 , ..., Am } ⊆ A of literals all of the same sign,
-   * a subset B′ =       { B1 , ..., Bn } ⊆ B of literals all of the opposite sign of the set A′ ,
+   * (i) There is a subset A′ =         { A1 , ..., Am } ⊆ A of literals all of the same sign,
+   * a subset B′ =         { B1 , ..., Bn } ⊆ B of literals all of the opposite sign of the set A′ ,
    * and a separating pair of substitutions (ρ, ρ′ ) such that the set |ρ(A′ ) ∪ ρ′ (B′ )|
    * is uniﬁable;
    *

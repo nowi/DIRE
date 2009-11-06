@@ -83,22 +83,46 @@ class ResolutionSpec extends Spec with ShouldMatchers {
     //
     //    }
 
-    it("should resolve A = {¬P (z , a), ¬P (z , x), ¬P (x, z )} and B = {P (z , f (z )), P (z , a)}.") {
+    it("should resolve the 2 clauses from the http://www.enm.bris.ac.uk/ai/enjl/logic/sld034.html") {
       // init with the resolution example from the AIMA Book page 298
+
+
+      val y = Variable("x")
+      val x = Variable("y")
+      val z = Variable("z")
+
+      val C1 = Clause(Predicate("man", x), Predicate("man", y), Negation(Predicate("in_love", x, y)))
+      // x gets rewritten to y  , we need logical equals methods
+      val C2 = Clause(Predicate("male", z), Negation(Predicate("man", z)))
+
+
+      // factorize
+      val conclusions = resolver.resolve(C1, C2)
+
+      log.info("Resolved %s , %s --> %s", C1, C2, conclusions)
+
+
+    }
+
+    it("should resolve the 2 clauses from http://mathworld.wolfram.com/ResolutionPrinciple.html") {
+      // init with the resolution example from the AIMA Book page 298
+
+
+      val y = Variable("y")
       val x = Variable("x")
       val a = Constant("a")
-      val z = Variable("z")
-      // A = {¬P (z , a), ¬P (z , x), ¬P (x, z )}
-      val A = Clause(Negation(Predicate("P", z, a)))
-      //      B = {P (z , f (z )), P (z , a)}.
-      val B = Clause(Predicate("P", z, Function("f", z)), Predicate("P", z, a))
-      // resolve
-      val conclusions1 = resolver.resolve(A, B) should not equal (None)
-      log.info("Resolved : %s", conclusions1)
 
-      // resolve different order
-      val conclusions2 = resolver.resolve(B, A) should not equal (None)
-      log.info("Resolved : %s", conclusions2)
+      val C1 = Clause(Predicate("P", x), Predicate("Q", x))
+      // x gets rewritten to y  , we need logical equals methods
+      val C2 = Clause(Negation(Predicate("P", a)), Predicate("R", y))
+
+
+      // factorize
+      val conclusions: Set[Clause] = resolver.resolve(C1, C2)
+      log.info("Resolved %s , %s --> %s", C1, C2, conclusions)
+      conclusions should contain(Clause(Predicate("Q", a), Predicate("R", y)))
+      conclusions should have size (1)
+
 
     }
 

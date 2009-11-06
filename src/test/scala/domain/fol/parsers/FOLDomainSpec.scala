@@ -18,6 +18,7 @@ import org.scalatest.Spec
 @RunWith(classOf[JUnit4Runner])
 class FOLDomainSpec extends Spec with ShouldMatchers {
   describe("The FOLDomain Objects") {
+    val log = net.lag.logging.Logger.get
     it("literals should be only instantiable with atomic sentences and throw class cast exception if not") {
       val richard = Constant("richard");
       val john = Constant("john");
@@ -51,14 +52,17 @@ class FOLDomainSpec extends Spec with ShouldMatchers {
 
     it("clause should be able to return its positive/negative literals") {
       val richard = Constant("richard");
-      val john = Constant("john");
+      val john = Negation(Constant("john"));
 
       // create literals
 
       val clause = Clause(richard, john)
 
       val positives = clause.positiveLiterals;
+      log.info("Positive Literals of CLause %s are %s", clause, positives)
+
       val negatives = clause.negativeLiterals;
+      log.info("Negative Literals of CLause %s are %s", clause, negatives)
 
       // should contain richard
       assert(positives contains richard);

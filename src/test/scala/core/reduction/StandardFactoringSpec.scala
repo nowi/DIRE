@@ -110,7 +110,8 @@ class StandardFactoringSpec extends Spec with ShouldMatchers {
       val x = Variable("y")
 
       val C = Clause(Predicate("man", x), Predicate("man", y), Negation(Predicate("in_love", x, y)))
-      val C1 = Clause(Predicate("man", x), Negation(Predicate("in_love", x, x)))
+      // x gets rewritten to y  , we need logical equals methods
+      val C1 = Clause(Predicate("man", y), Negation(Predicate("in_love", y, y)))
 
 
       // factorize
