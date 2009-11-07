@@ -42,6 +42,7 @@ class ResolutionProover1(env: {val tautologyDeleter: TautologyDeletion; val subs
     //    var usable: ClauseStorage = taut(sub(clauses))
     var usable: ClauseStorage = clauses
 
+    var iteration = 1;
     while (!usable.isEmpty && !usable.containsEmptyClause) {
       log.info("Inner Loop")
       // 5. select a clause
@@ -76,7 +77,10 @@ class ResolutionProover1(env: {val tautologyDeleter: TautologyDeletion; val subs
 
       // finally add the clauses from fresh to usable , theese are the kept clauses
       usable = sub(usable, fresh) ++ fresh
+      log.info("Usable Size after iteration %d : %s", iteration, usable.clauses.size)
+
       log.trace("After Addition usable  Clauses are : %s", usable)
+      iteration += 1
     }
 
     if (usable.containsEmptyClause) {

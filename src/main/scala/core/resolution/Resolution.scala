@@ -28,7 +28,7 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
   val log = net.lag.logging.Logger.get
 
   override def resolve(a: ClauseStorage, b: ClauseStorage): ClauseStorage = {
-    log.info("Resolving %s with %s by resolver : %s", a, b, this)
+    log.trace("Resolving %s with %s by resolver : %s", a, b, this)
     // interresolve all clauses
 
     val resolvents1 = (for (clause1 <- a.clauses;
@@ -63,15 +63,15 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
    */
   override def resolve(a: Clause, b: Clause): Set[Clause] = {
     // Apos , Bneg
-    log.info("%s is resolving the Clauses %s,%s", this, a, b)
+    log.trace("%s is resolving the Clauses %s,%s", this, a, b)
 
     // standardize apart the clauses
     val (aStand, bStand) = standardizer.standardizeApart(a, b)
 
     val aPosLits = aStand.positiveLiterals
-    log.info("Positive literals of standardized Clause %s are : %s", aStand, aPosLits)
+    log.trace("Positive literals of standardized Clause %s are : %s", aStand, aPosLits)
     val bNegLits = bStand.negativeLiterals
-    log.info("Negative literals of standardized Clause %s are : %s", bStand, bNegLits)
+    log.trace("Negative literals of standardized Clause %s are : %s", bStand, bNegLits)
 
     val conclusions: Set[Clause] = (for (aPos <- aPosLits;
                                          bNeg <- bNegLits;
@@ -80,7 +80,7 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
         case Some(x) => {
           // we have a mgu
           // apply it to the two clauses excluding the 2 focused
-          log.info("MGU for Literal : %s and Literal %s is %s", aPos, bNeg, mgu)
+          log.trace("MGU for Literal : %s and Literal %s is %s", aPos, bNeg, mgu)
           //            Let S_1 and S_2 be two clauses with no variables in common, let S_1 contain a positive literal L_1, S_2 contain a negative literal L_2, and let eta be the most general unifier of L_1 and L_2. Then
           //(S_1eta-L_1eta) union (S_2eta-L_2eta)  
 
@@ -93,7 +93,7 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
 
         }
         case None => {
-          log.info("%s Could not resolve Literals %s,%s", this, aPos, bNeg)
+          log.trace("%s Could not resolve Literals %s,%s", this, aPos, bNeg)
           Clause()
         }
       }).filter(!_.literals.isEmpty) // filter out empty clauses
@@ -126,8 +126,8 @@ class GeneralResolution(env: {val unificator: Unify}) extends Resolution {
    * Deﬁnition 8.5.2 Given two clauses A and B, a clause C is a resolvent of
    * A and B iﬀ the following holds:
    *
-   * (i) There is a subset A′ =               { A1 , ..., Am } ⊆ A of literals all of the same sign,
-   * a subset B′ =               { B1 , ..., Bn } ⊆ B of literals all of the opposite sign of the set A′ ,
+   * (i) There is a subset A′ =                { A1 , ..., Am } ⊆ A of literals all of the same sign,
+   * a subset B′ =                { B1 , ..., Bn } ⊆ B of literals all of the opposite sign of the set A′ ,
    * and a separating pair of substitutions (ρ, ρ′ ) such that the set |ρ(A′ ) ∪ ρ′ (B′ )|
    * is uniﬁable;
    *

@@ -61,7 +61,7 @@ class Standardizer(env: {val variableRewriter: VariableRewriting}) extends Stand
     // check terms need standardizing
     commonVars(x, y) match {
       case List() => { // empty list
-        log.info("Tuple(%s,%s) needs no standardizing" format (x, y))
+        log.trace("Tuple(%s,%s) needs no standardizing" format (x, y))
         (x, y)
       }
       case cvs: List[Variable] => {
@@ -70,7 +70,7 @@ class Standardizer(env: {val variableRewriter: VariableRewriting}) extends Stand
         // rewirte the smaller node , we default to x for now
         // TODO rewriteClause only the smaller node
         val xr = variableRewriter.rewrite(x, theta)
-        log.info("Tuple(%s,%s) has been standardized apart to (%s,%s) by %s" format (x, y, xr, y, this))
+        log.trace("Tuple(%s,%s) has been standardized apart to (%s,%s) by %s" format (x, y, xr, y, this))
         (xr, y)
       }
     }
@@ -82,7 +82,7 @@ class Standardizer(env: {val variableRewriter: VariableRewriting}) extends Stand
     // check terms need standardizing
     commonVars(c1, c2) match {
       case List() => { // empty list
-        log.info("clauses %s and %s need no standardizing", c1, c2)
+        log.trace("clauses %s and %s need no standardizing", c1, c2)
         (c1, c2)
       }
       case cvs: List[Variable] => {
@@ -128,13 +128,11 @@ class Standardizer(env: {val variableRewriter: VariableRewriting}) extends Stand
     // get all variables that are in common for any pair of nodes in the input nodes
     // we can ignore tuples with identical elements and reverse order to
     val cv = for (n1 <- nodes; n2 <- nodes) yield {commonVars(n1, n2)}
-    log.info("Common vars for node List : %s are %s", nodes, cv)
     cv.flatten
   }
 
   private def commonVars(c1: Clause, c2: Clause): List[Variable] = {
     val cv = (commonVars(c1.literals.toList) intersect commonVars(c2.literals.toList))
-    log.info("Common vars for clause : %s and  clause : %s are %s", c1, c2, cv)
     cv
   }
 

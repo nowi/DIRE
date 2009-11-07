@@ -56,7 +56,7 @@ class VariableRewriter extends VariableRewriting {
    */
   def rewriteClause(clause: Clause, theta: Map[Variable, FOLNode]): Clause = {
     // check all possible fol types
-    log.info("Rewriting Clause %s", clause)
+    log.trace("Rewriting Clause %s", clause)
 
     // define the replacement function
     val f = (node: FOLNode, theta: Map[Variable, FOLNode]) => {
@@ -71,7 +71,7 @@ class VariableRewriter extends VariableRewriting {
 
     val rewrittenClauses = clause.literals.map({x: FOLNode => x.map(f(_: FOLNode, theta))})
     // apply this function partially , theta is fixed
-    log.info("Rewritten clauses are : %s", rewrittenClauses)
+    log.trace("Rewritten clauses are : %s", rewrittenClauses)
     Clause(rewrittenClauses)
 
   }

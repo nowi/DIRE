@@ -77,10 +77,13 @@ class ProovingSpec extends Spec with ShouldMatchers {
         Predicate("Enemy", nono, america)
         )
 
+      val goalClause = Clause(
+        Negation(Predicate("Criminal", west))
+        )
 
 
 
-      val clauseStore = CNFClauseStore(C1, C2, C3, C4, C5, C6, C7, C8)
+      val clauseStore = CNFClauseStore(goalClause, C1, C2, C3, C4, C5, C6, C7, C8)
 
 
       // create a proover
