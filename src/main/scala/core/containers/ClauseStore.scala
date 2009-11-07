@@ -13,7 +13,7 @@ import rewriting.CNFRewriting
  *
  */
 trait ClauseStorage {
-  val clauses: List[Clause]
+  val clauses: Set[Clause]
   val isEmpty: Boolean
   val containsEmptyClause: Boolean
 
@@ -48,7 +48,7 @@ abstract class ClauseStore extends ClauseStorage {
  * clause is a disjunction of literals.
  *
  */
-case class CNFClauseStore(clauses: List[Clause]) extends ClauseStore with CNFRewriting {
+case class CNFClauseStore(clauses: Set[Clause]) extends ClauseStore with CNFRewriting {
   override lazy val isEmpty: Boolean = {
     clauses.isEmpty
   }
@@ -68,10 +68,10 @@ case class CNFClauseStore(clauses: List[Clause]) extends ClauseStore with CNFRew
 }
 
 object CNFClauseStore {
-  def apply(): CNFClauseStore = CNFClauseStore(List())
+  def apply(): CNFClauseStore = CNFClauseStore(Set[Clause]())
 
   def apply(params: Clause*): CNFClauseStore = {
-    CNFClauseStore(List(params: _*))
+    CNFClauseStore(Set(params: _*))
   }
 
 }

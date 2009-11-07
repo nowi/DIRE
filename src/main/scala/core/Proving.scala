@@ -2,6 +2,7 @@ package core
 
 
 import containers._
+import domain.fol.ast.Clause
 import net.lag.logging.Logger
 import reduction.{Factoring, SubsumptionDeletion, TautologyDeletion}
 import resolution.Resolution
@@ -35,7 +36,7 @@ class ResolutionProover1(env: {val tautologyDeleter: TautologyDeletion; val subs
 
 
     // all clauses that have already been selected for inference
-    var workedOff: ClauseStorage = CNFClauseStore(List())
+    var workedOff: ClauseStorage = CNFClauseStore(Set[Clause]())
 
     // all candidate clauses to generate inferences
     // perform input reduction
@@ -107,7 +108,7 @@ class ResolutionProover1(env: {val tautologyDeleter: TautologyDeletion; val subs
   }
 
   def choose(clauses: ClauseStorage): ClauseStorage = {
-    val choosen = clauses.clauses.head
+    val choosen = clauses.clauses.toList.head
     log.info("Naively choosing clause : %s from clauses store : %s", choosen, clauses)
     CNFClauseStore(choosen)
   }
