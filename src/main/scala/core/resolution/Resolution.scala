@@ -32,13 +32,13 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
     // interresolve all clauses
 
     val resolvents1 = (for (clause1 <- a.clauses;
-          clause2 <- b.clauses;
-          if (clause1 != clause2);
-          resolvent = resolve(clause1, clause2))
+                            clause2 <- b.clauses;
+                            if (clause1 != clause2);
+                            resolvent = resolve(clause1, clause2))
     yield resolvent)
 
 
-    val resolvents2 =  resolvents1 match {
+    val resolvents2 = resolvents1 match {
       case Nil => {
         log.info("There are no resolvents for clausestorage %s , %s", a, b)
         Set[Clause]()
@@ -99,8 +99,11 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
       }).filter(!_.literals.isEmpty) // filter out empty clauses
 
 
-
-    log.info("Resolver %s resolved from clauses %s and %s --> %s", this, a, b, conclusions)
+    if (!conclusions.isEmpty) {
+      log.info("Resolver %s resolved from clauses %s and %s --> %s", this, a, b, conclusions)
+    } else {
+      log.info("Resolver %s RESOLVED THE EMPTY CLAUSE from clauses %s and %s !", this, a, b)
+    }
     conclusions
 
   }
@@ -123,8 +126,8 @@ class GeneralResolution(env: {val unificator: Unify}) extends Resolution {
    * Deﬁnition 8.5.2 Given two clauses A and B, a clause C is a resolvent of
    * A and B iﬀ the following holds:
    *
-   * (i) There is a subset A′ =              { A1 , ..., Am } ⊆ A of literals all of the same sign,
-   * a subset B′ =              { B1 , ..., Bn } ⊆ B of literals all of the opposite sign of the set A′ ,
+   * (i) There is a subset A′ =               { A1 , ..., Am } ⊆ A of literals all of the same sign,
+   * a subset B′ =               { B1 , ..., Bn } ⊆ B of literals all of the opposite sign of the set A′ ,
    * and a separating pair of substitutions (ρ, ρ′ ) such that the set |ρ(A′ ) ∪ ρ′ (B′ )|
    * is uniﬁable;
    *
