@@ -29,7 +29,28 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
 
   override def resolve(a: ClauseStorage, b: ClauseStorage): ClauseStorage = {
     log.info("Resolving %s with %s by resolver : %s", a, b, this)
-    a
+    // interresolve all clauses
+
+    val resolvents1 = (for (clause1 <- a.clauses;
+          clause2 <- b.clauses;
+          if (clause1 != clause2);
+          resolvent = resolve(clause1, clause2))
+    yield resolvent)
+
+
+    val resolvents2 =  resolvents1 match {
+      case Nil => {
+        log.info("There are no resolvents for clausestorage %s , %s", a, b)
+        Set[Clause]()
+      }
+      case _ => {
+        resolvents1.reduceLeft(_ ++ _)
+      }
+    }
+
+    CNFClauseStore(resolvents2.toList)
+
+
   }
 
 
@@ -102,8 +123,8 @@ class GeneralResolution(env: {val unificator: Unify}) extends Resolution {
    * Deﬁnition 8.5.2 Given two clauses A and B, a clause C is a resolvent of
    * A and B iﬀ the following holds:
    *
-   * (i) There is a subset A′ =         { A1 , ..., Am } ⊆ A of literals all of the same sign,
-   * a subset B′ =         { B1 , ..., Bn } ⊆ B of literals all of the opposite sign of the set A′ ,
+   * (i) There is a subset A′ =              { A1 , ..., Am } ⊆ A of literals all of the same sign,
+   * a subset B′ =              { B1 , ..., Bn } ⊆ B of literals all of the opposite sign of the set A′ ,
    * and a separating pair of substitutions (ρ, ρ′ ) such that the set |ρ(A′ ) ∪ ρ′ (B′ )|
    * is uniﬁable;
    *
