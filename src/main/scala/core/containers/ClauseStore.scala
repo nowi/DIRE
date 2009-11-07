@@ -1,7 +1,7 @@
 package core.containers
 
 
-import domain.fol.ast.{Sentence, Clause}
+import domain.fol.ast.{FOLClause, EmptyClause, Sentence, Clause}
 import rewriting.CNFRewriting
 
 /**
@@ -13,7 +13,7 @@ import rewriting.CNFRewriting
  *
  */
 trait ClauseStorage {
-  val clauses: Set[Clause]
+  val clauses: Set[FOLClause]
   val isEmpty: Boolean
   val containsEmptyClause: Boolean
 
@@ -48,14 +48,16 @@ abstract class ClauseStore extends ClauseStorage {
  * clause is a disjunction of literals.
  *
  */
-case class CNFClauseStore(clauses: Set[Clause]) extends ClauseStore with CNFRewriting {
+case class CNFClauseStore(clauses: Set[FOLClause]) extends ClauseStore with CNFRewriting {
   override lazy val isEmpty: Boolean = {
     clauses.isEmpty
   }
 
-  override lazy val containsEmptyClause: Boolean = {
-    false
-  }
+  override lazy val containsEmptyClause: Boolean =
+  (clauses exists ((_ match {
+    case EmptyClause() => true
+    case _ => false
+  })))
 
 
   def ++(aStore: ClauseStorage) = {
@@ -68,9 +70,9 @@ case class CNFClauseStore(clauses: Set[Clause]) extends ClauseStore with CNFRewr
 }
 
 object CNFClauseStore {
-  def apply(): CNFClauseStore = CNFClauseStore(Set[Clause]())
+  def apply(): CNFClauseStore = CNFClauseStore(Set[FOLClause]())
 
-  def apply(params: Clause*): CNFClauseStore = {
+  def apply(params: FOLClause*): CNFClauseStore = {
     CNFClauseStore(Set(params: _*))
   }
 

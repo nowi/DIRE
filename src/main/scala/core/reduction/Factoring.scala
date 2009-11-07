@@ -17,9 +17,9 @@ import rewriting.Substitution
  * First-Order factoring reduces two literals to one if they are unifiable, th
  */
 trait Factoring {
-  def factorize(clause: Clause): Clause
+  def factorize(clause: FOLClause): FOLClause
 
-  def factorize(clause: Clause, mgu: Option[Map[Variable, FOLNode]]): Clause
+  def factorize(clause: FOLClause, mgu: Option[Map[Variable, FOLNode]]): FOLClause
 
   def factorize(clauses: ClauseStorage): ClauseStorage
 
@@ -31,14 +31,14 @@ class OrderedFactorizer(env: {val unificator: Unify})
 
   val log = Logger.get
 
-  def factorize(clause: Clause): Clause = {
+  def factorize(clause: FOLClause): FOLClause = {
     log.info("Ordered Factoring on clause %s ", clause)
     clause
 
   }
 
 
-  def factorize(clause: Clause, mgu: Option[Map[Variable, FOLNode]]) = null
+  def factorize(clause: FOLClause, mgu: Option[Map[Variable, FOLNode]]) = null
 
   def factorize(clauses: ClauseStorage): ClauseStorage = {
     log.info("Ordered Factoring on clauses %s ", clauses)
@@ -56,7 +56,7 @@ class StandardFactorizer(env: {val unificator: Unify; val substitutor: Substitut
 
   val log = Logger.get
 
-  override def factorize(clause: Clause): Clause = {
+  override def factorize(clause: FOLClause): FOLClause = {
     log.info("Standard Factoring on clause %s", clause)
     // as long as there are unfiers , rewirte the clause
     var factorizedClause = clause
@@ -70,7 +70,7 @@ class StandardFactorizer(env: {val unificator: Unify; val substitutor: Substitut
   }
 
 
-  override def factorize(clause: Clause, mgu: Option[Map[Variable, FOLNode]]): Clause = {
+  override def factorize(clause: FOLClause, mgu: Option[Map[Variable, FOLNode]]): FOLClause = {
     log.info("Standard Factoring on clause %s with given mgu : %s", clause, mgu)
     mgu match {
       case Some(x) => {

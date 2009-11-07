@@ -37,7 +37,7 @@ trait Substitution {
    *         substitution theta to aSentence.
    *
    */
-  def substitute(theta: Option[Map[Variable, FOLNode]], clause: Clause): Clause
+  def substitute(theta: Option[Map[Variable, FOLNode]], clause: FOLClause): FOLClause
 
 
 }
@@ -83,7 +83,7 @@ class Substitutor(env: {val variableRewriter: VariableRewriting}) extends Substi
    *         substitution theta to aSentence.
    *
    */
-  def substitute(theta: Option[Map[Variable, FOLNode]], clause: Clause): Clause = {
+  def substitute(theta: Option[Map[Variable, FOLNode]], clause: FOLClause): FOLClause = {
     // use a variable rewriter
     theta match {
       case Some(map) => variableRewriter.rewriteClause(clause, map)

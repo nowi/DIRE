@@ -83,48 +83,48 @@ class ResolutionSpec extends Spec with ShouldMatchers {
     //
     //    }
 
-    it("should resolve the 2 clauses from the http://www.enm.bris.ac.uk/ai/enjl/logic/sld034.html") {
-      // init with the resolution example from the AIMA Book page 298
-
-
-      val y = Variable("x")
-      val x = Variable("y")
-      val z = Variable("z")
-
-      val C1 = Clause(Predicate("man", x), Predicate("man", y), Negation(Predicate("in_love", x, y)))
-      // x gets rewritten to y  , we need logical equals methods
-      val C2 = Clause(Predicate("male", z), Negation(Predicate("man", z)))
-
-
-      // factorize
-      val conclusions = resolver.resolve(C1, C2)
-
-      log.info("Resolved %s , %s --> %s", C1, C2, conclusions)
-
-
-    }
-
-    it("should resolve the 2 clauses from http://mathworld.wolfram.com/ResolutionPrinciple.html") {
-      // init with the resolution example from the AIMA Book page 298
-
-
-      val y = Variable("y")
-      val x = Variable("x")
-      val a = Constant("a")
-
-      val C1 = Clause(Predicate("P", x), Predicate("Q", x))
-      // x gets rewritten to y  , we need logical equals methods
-      val C2 = Clause(Negation(Predicate("P", a)), Predicate("R", y))
-
-
-      // factorize
-      val conclusions: Set[Clause] = resolver.resolve(C1, C2)
-      log.info("Resolved %s , %s --> %s", C1, C2, conclusions)
-      conclusions should contain(Clause(Predicate("Q", a), Predicate("R", y)))
-      conclusions should have size (1)
-
-
-    }
+    //    it("should resolve the 2 clauses from the http://www.enm.bris.ac.uk/ai/enjl/logic/sld034.html") {
+    //      // init with the resolution example from the AIMA Book page 298
+    //
+    //
+    //      val y = Variable("x")
+    //      val x = Variable("y")
+    //      val z = Variable("z")
+    //
+    //      val C1 = Clause(Predicate("man", x), Predicate("man", y), Negation(Predicate("in_love", x, y)))
+    //      // x gets rewritten to y  , we need logical equals methods
+    //      val C2 = Clause(Predicate("male", z), Negation(Predicate("man", z)))
+    //
+    //
+    //      // factorize
+    //      val conclusions = resolver.resolve(C1, C2)
+    //
+    //      log.info("Resolved %s , %s --> %s", C1, C2, conclusions)
+    //
+    //
+    //    }
+    //
+    //    it("should resolve the 2 clauses from http://mathworld.wolfram.com/ResolutionPrinciple.html") {
+    //      // init with the resolution example from the AIMA Book page 298
+    //
+    //
+    //      val y = Variable("y")
+    //      val x = Variable("x")
+    //      val a = Constant("a")
+    //
+    //      val C1 = Clause(Predicate("P", x), Predicate("Q", x))
+    //      // x gets rewritten to y  , we need logical equals methods
+    //      val C2 = Clause(Negation(Predicate("P", a)), Predicate("R", y))
+    //
+    //
+    //      // factorize
+    //      val conclusions: Set[Clause] = resolver.resolve(C1, C2)
+    //      log.info("Resolved %s , %s --> %s", C1, C2, conclusions)
+    //      conclusions should contain(Clause(Predicate("Q", a), Predicate("R", y)))
+    //      conclusions should have size (1)
+    //
+    //
+    //    }
 
 
     it("it should resolve the steps from the aima book page 298") {
@@ -190,65 +190,75 @@ class ResolutionSpec extends Spec with ShouldMatchers {
       val R1 = resolver.resolve(C1, goalClause)
       log.info("R1 : %s", R1)
       R1 should have size (1)
-      R1 should contain(Clause(Negation(sells(west, y, z)), Negation(weapon(y)), Negation(american(west)), Negation(hostile(z))))
+      //      R1 should contain(Clause(Negation(sells(west, y, z)), Negation(weapon(y)), Negation(american(west)), Negation(hostile(z))))
+      R1.contains(Clause(Negation(sells(west, y, z)), Negation(weapon(y)), Negation(american(west)), Negation(hostile(z)))) should be(true)
 
 
       // 2.) resolve C7 with R1
-      val R2: Set[Clause] = resolver.resolve(C7, R1.toList.head)
+      val R2 = resolver.resolve(C7, R1.toList.head)
       log.info("R2 : %s", R2)
       R2 should have size (1)
-      R2 should contain(Clause(Negation(sells(west, y, z)), Negation(weapon(y)), Negation(hostile(z))))
+      //      R2 should contain(Clause(Negation(sells(west, y, z)), Negation(weapon(y)), Negation(hostile(z))))
+      R2.contains(Clause(Negation(sells(west, y, z)), Negation(weapon(y)), Negation(hostile(z)))) should be(true)
 
 
       // 3.) resolve C4 with R2
-      val R3: Set[Clause] = resolver.resolve(C4, R2.toList.head)
+      val R3 = resolver.resolve(C4, R2.toList.head)
       log.info("R3 : %s", R3)
       R3 should have size (1)
-      R3 should contain(Clause(Negation(sells(west, y, z)), Negation(missile(y)), Negation(hostile(z))))
+      //      R3 should contain(Clause(Negation(sells(west, y, z)), Negation(missile(y)), Negation(hostile(z))))
+      R3.contains(Clause(Negation(sells(west, y, z)), Negation(missile(y)), Negation(hostile(z)))) should be(true)
 
 
       // 4.) resolve C6 with R3
-      val R4: Set[Clause] = resolver.resolve(C6, R3.toList.head)
+      val R4 = resolver.resolve(C6, R3.toList.head)
       log.info("R4 : %s", R4)
       R4 should have size (1)
-      R4 should contain(Clause(Negation(sells(west, m1, z)), Negation(hostile(z))))
+      //      R4 should contain(Clause(Negation(sells(west, m1, z)), Negation(hostile(z))))
+      R4.contains(Clause(Negation(sells(west, m1, z)), Negation(hostile(z)))) should be(true)
 
 
       // 5.) resolve C2 with R4
-      val R5: Set[Clause] = resolver.resolve(C2, R4.toList.head)
+      val R5 = resolver.resolve(C2, R4.toList.head)
       log.info("R5 : %s", R5)
       R5 should have size (1)
-      R5 should contain(Clause(Negation(missile(m1)), Negation(owns(nono, m1)), Negation(hostile(nono))))
+      //      R5 should contain(Clause(Negation(missile(m1)), Negation(owns(nono, m1)), Negation(hostile(nono))))
+      R5.contains(Clause(Negation(missile(m1)), Negation(owns(nono, m1)), Negation(hostile(nono)))) should be(true)
 
 
       // 6.) resolve C6 with R5
-      val R6: Set[Clause] = resolver.resolve(C6, R5.toList.head)
+      val R6 = resolver.resolve(C6, R5.toList.head)
       log.info("R6 : %s", R6)
       R6 should have size (1)
-      R6 should contain(Clause(Negation(owns(nono, m1)), Negation(hostile(nono))))
+      //      R6 should contain(Clause(Negation(owns(nono, m1)), Negation(hostile(nono))))
+      R6.contains(Clause(Negation(owns(nono, m1)), Negation(hostile(nono)))) should be(true)
 
 
 
       // 7.) resolve C5 with R6
-      val R7: Set[Clause] = resolver.resolve(C5, R6.toList.head)
+      val R7 = resolver.resolve(C5, R6.toList.head)
       log.info("R7 : %s", R7)
       R7 should have size (1)
-      R7 should contain(Clause(Negation(hostile(nono))))
+      //      R7 should contain(Clause(Negation(hostile(nono))))
+      R7.contains(Clause(Negation(hostile(nono)))) should be(true)
 
 
 
       // 8.) resolve C3 with R7
-      val R8: Set[Clause] = resolver.resolve(C3, R7.toList.head)
+      val R8 = resolver.resolve(C3, R7.toList.head)
       log.info("R8 : %s", R8)
       R8 should have size (1)
-      R8 should contain(Clause(Negation(enemy(nono, america))))
+      assert(R8.contains(Clause(Negation(enemy(nono, america)))))
+      //      R8  should contain(Clause(Negation(enemy(nono, america))))
+      R8.contains(Clause(Negation(enemy(nono, america)))) should be(true)
 
 
 
       // 9.) resolve C8 with R8
-      val R9: Set[Clause] = resolver.resolve(C8, R8.toList.head)
+      val R9 = resolver.resolve(C8, R8.toList.head)
       log.info("R9 : %s", R9)
-      R9 should have size (0)
+      //      R9 should contain(EmptyClause())
+      R9.contains(EmptyClause()) should be(true)
 
 
     }

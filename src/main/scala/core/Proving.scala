@@ -2,7 +2,7 @@ package core
 
 
 import containers._
-import domain.fol.ast.Clause
+import domain.fol.ast.{FOLClause, Clause}
 import net.lag.logging.Logger
 import reduction.{Factoring, SubsumptionDeletion, TautologyDeletion}
 import resolution.Resolution
@@ -36,7 +36,7 @@ class ResolutionProover1(env: {val tautologyDeleter: TautologyDeletion; val subs
 
 
     // all clauses that have already been selected for inference
-    var workedOff: ClauseStorage = CNFClauseStore(Set[Clause]())
+    var workedOff: ClauseStorage = CNFClauseStore(Set[FOLClause]())
 
     // all candidate clauses to generate inferences
     // perform input reduction
@@ -59,7 +59,7 @@ class ResolutionProover1(env: {val tautologyDeleter: TautologyDeletion; val subs
       // 7. all resolution inference conlusions between given and workedoff and all
       // factoring inference conclusions from given are stored in fresh
       var fresh: ClauseStorage = resolve(given, workedOff) ++ factor(given)
-      log.trace("After 7. fresh Clause %s", fresh)
+      log.info("After 7. fresh Clause %s", fresh)
 
       // 8. - 11.  Perform reductions/forward contractions
       // remove all tautologies and subsumptions from fresh

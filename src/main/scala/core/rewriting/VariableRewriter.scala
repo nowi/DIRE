@@ -19,7 +19,7 @@ trait VariableRewriting {
    * @param theta - the mapping
    * @returns rewritten clause
    */
-  def rewriteClause(clause: Clause, theta: Map[Variable, FOLNode]): Clause
+  def rewriteClause(clause: FOLClause, theta: Map[Variable, FOLNode]): FOLClause
 }
 
 class VariableRewriter extends VariableRewriting {
@@ -54,7 +54,7 @@ class VariableRewriter extends VariableRewriting {
    * @param theta - the mapping
    * @returns rewritten clause
    */
-  def rewriteClause(clause: Clause, theta: Map[Variable, FOLNode]): Clause = {
+  def rewriteClause(clause: FOLClause, theta: Map[Variable, FOLNode]): FOLClause = {
     // check all possible fol types
     log.trace("Rewriting Clause %s", clause)
 

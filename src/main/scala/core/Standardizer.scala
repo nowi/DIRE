@@ -35,11 +35,11 @@ trait Standardizing {
    * @param c2 - clause
    * @returns rewritten clauses pair
    */
-  def standardizeApart(c1: Clause, c2: Clause): (Clause, Clause)
+  def standardizeApart(c1: FOLClause, c2: FOLClause): (FOLClause, FOLClause)
 
   def needStandardizing(x: FOLNode, y: FOLNode): Boolean
 
-  def needStandardizing(c1: Clause, c2: Clause): Boolean
+  def needStandardizing(c1: FOLClause, c2: FOLClause): Boolean
 }
 
 
@@ -78,7 +78,7 @@ class Standardizer(env: {val variableRewriter: VariableRewriting}) extends Stand
   }
 
 
-  def standardizeApart(c1: Clause, c2: Clause): (Clause, Clause) = {
+  def standardizeApart(c1: FOLClause, c2: FOLClause): (FOLClause, FOLClause) = {
     // check terms need standardizing
     commonVars(c1, c2) match {
       case List() => { // empty list
@@ -115,7 +115,7 @@ class Standardizer(env: {val variableRewriter: VariableRewriting}) extends Stand
     commonVars(x, y).isEmpty
   }
 
-  def needStandardizing(c1: Clause, c2: Clause): Boolean = {
+  def needStandardizing(c1: FOLClause, c2: FOLClause): Boolean = {
     commonVars(c1, c2).isEmpty
   }
 
@@ -131,7 +131,7 @@ class Standardizer(env: {val variableRewriter: VariableRewriting}) extends Stand
     cv.flatten
   }
 
-  private def commonVars(c1: Clause, c2: Clause): List[Variable] = {
+  private def commonVars(c1: FOLClause, c2: FOLClause): List[Variable] = {
     val cv = (commonVars(c1.literals.toList) intersect commonVars(c2.literals.toList))
     cv
   }

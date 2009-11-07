@@ -31,8 +31,9 @@ class SubsumptionDeleter extends SubsumptionDeletion {
   override def reduce(a: ClauseStorage) = deleteSubsumptions(a)
 
   override def deleteSubsumptions(a: ClauseStorage, b: ClauseStorage): ClauseStorage = {
-    log.info("Delete Subsumptions %s with %s", a, b)
-    a
+    log.info("Delete Subsumptions %s with %s ...  for now we check if a is contained in b", a, b)
+    // remove the intersection
+    b
 
   }
 
