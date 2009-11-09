@@ -4,7 +4,7 @@ package core
 import containers._
 import domain.fol.ast.{FOLClause, Clause}
 import net.lag.configgy.Configgy
-import net.lag.logging.Logger
+import org.slf4j.LoggerFactory
 import reduction.{Factoring, SubsumptionDeletion, TautologyDeletion}
 import resolution.Resolution
 
@@ -26,7 +26,11 @@ trait Proving {
 
 class ResolutionProover1(env: {val tautologyDeleter: TautologyDeletion; val subsumptionDeleter: SubsumptionDeletion; val factorizer: Factoring; val resolver: Resolution}) extends Proving {
   Configgy.configure("/Users/nowi/workspace/DIRE/DIRE/config.conf")
-  val log = Logger.get
+  //  val log = Logger.get
+
+
+  val log = LoggerFactory getLogger (this getClass)
+
   val rnd = new Random
 
 

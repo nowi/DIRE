@@ -64,6 +64,23 @@
         <!--<version>2.7.4</version>-->
         <!--</dependency>-->
 
+        <dependency>
+            <groupId>de.huxhorn.lilith</groupId>
+            <artifactId>de.huxhorn.lilith.logback.logging-adapter</artifactId>
+            <version>0.9.36</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.huxhorn.lilith</groupId>
+            <artifactId>de.huxhorn.lilith.logback.appender.multiplex-classic</artifactId>
+            <version>0.9.36</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>0.9.17</version>
+        </dependency>
 
         <dependency>
             <groupId>net.lag</groupId>
