@@ -2,7 +2,7 @@ package core.reduction
 
 import containers.{ClauseStorage, CNFClauseStore}
 import domain.fol.ast._
-import net.lag.logging.Logger
+import org.slf4j.LoggerFactory
 import rewriting.Substitution
 
 
@@ -29,10 +29,10 @@ class OrderedFactorizer(env: {val unificator: Unify})
         extends Factoring {
   // depends on unifier
 
-  val log = Logger.get
+  val log = LoggerFactory getLogger (this getClass)
 
   def factorize(clause: FOLClause): FOLClause = {
-    log.info("Ordered Factoring on clause %s ", clause)
+    log.trace("Ordered Factoring on clause {} ", clause)
     clause
 
   }
@@ -41,7 +41,7 @@ class OrderedFactorizer(env: {val unificator: Unify})
   def factorize(clause: FOLClause, mgu: Option[Map[Variable, FOLNode]]) = null
 
   def factorize(clauses: ClauseStorage): ClauseStorage = {
-    log.info("Ordered Factoring on clauses %s ", clauses)
+    log.trace("Ordered Factoring on clauses {} ", clauses)
     clauses
   }
 
@@ -54,10 +54,10 @@ class StandardFactorizer(env: {val unificator: Unify; val substitutor: Substitut
   val unificator: Unify = env.unificator
   val substitutor: Substitution = env.substitutor
 
-  val log = Logger.get
+  val log = LoggerFactory getLogger (this getClass)
 
   override def factorize(clause: FOLClause): FOLClause = {
-    log.info("Standard Factoring on clause %s", clause)
+    log.trace("Standard Factoring on clause {}", clause)
     // as long as there are unfiers , rewirte the clause
     var factorizedClause = clause
     var mgu = unificator.firstUnifier(factorizedClause)
@@ -71,7 +71,7 @@ class StandardFactorizer(env: {val unificator: Unify; val substitutor: Substitut
 
 
   override def factorize(clause: FOLClause, mgu: Option[Map[Variable, FOLNode]]): FOLClause = {
-    log.info("Standard Factoring on clause %s with given mgu : %s", clause, mgu)
+    log.trace("Standard Factoring on clause {} with given mgu : {}", clause, mgu)
     mgu match {
       case Some(x) => {
         // apply the factorization on this clause with the given mgu

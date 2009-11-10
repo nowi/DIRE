@@ -1,5 +1,8 @@
 package domain.fol.ast
 
+
+import org.slf4j.LoggerFactory
+
 /**
  * User: nowi
  * Date: 25.09.2009
@@ -7,7 +10,7 @@ package domain.fol.ast
  */
 
 case class Predicate(name: String, terms: List[FOLNode]) extends Term {
-  val log = net.lag.logging.Logger.get
+  val log = LoggerFactory getLogger (this getClass)
   val symbolicName = name
   val args = terms
 

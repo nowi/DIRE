@@ -3,6 +3,7 @@ package core.resolution
 
 import containers.{CNFClauseStore, ClauseStorage}
 import domain.fol.ast.{FOLClause, EmptyClause, Clause}
+import org.slf4j.LoggerFactory
 import reduction.Factoring
 import rewriting.Substitution
 
@@ -25,10 +26,10 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
   val substitutor = env.substitutor
 
 
-  val log = net.lag.logging.Logger.get
+  val log = LoggerFactory getLogger (this getClass)
 
   override def resolve(a: ClauseStorage, b: ClauseStorage): ClauseStorage = {
-    log.trace("Resolving %s with %s by resolver : %s", a, b, this)
+    log.trace("Resolving {} with {}", a, b)
     // resolve
 
     val resolvents1 = (for (clause1 <- a.clauses;
@@ -40,7 +41,7 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
 
     val resolvents2 = resolvents1 match {
       case x if (x.isEmpty) => {
-        log.info("There are no resolvents for clausestorage %s , %s", a, b)
+        log.trace("There are no resolvents for clausestorage {} , {}", a, b)
         Set[FOLClause]()
       }
       case _ => {
@@ -63,15 +64,15 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
    */
   override def resolve(a: FOLClause, b: FOLClause): Set[FOLClause] = {
     // Apos , Bneg
-    log.info("%s is resolving the Clauses %s,%s", this, a, b)
+    log.trace("Resolving the Clauses {},{}", a, b)
 
     // standardize apart the clauses
     val (aStand, bStand) = standardizer.standardizeApart(a, b)
 
     val aPosLits = aStand.positiveLiterals
-    log.trace("Positive literals of standardized Clause %s are : %s", aStand, aPosLits)
+    log.trace("Positive literals of standardized Clause {} are : {}", aStand, aPosLits)
     val bNegLits = bStand.negativeLiterals
-    log.trace("Negative literals of standardized Clause %s are : %s", bStand, bNegLits)
+    log.trace("Negative literals of standardized Clause {} are : {}", bStand, bNegLits)
 
     val conclusions: Set[FOLClause] = (for (aPos <- aPosLits;
                                             bNeg <- bNegLits;
@@ -81,7 +82,7 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
         case Some(x) => {
           // we have a mgu
           // apply it to the two clauses excluding the 2 focused
-          log.trace("MGU for Literal : %s and Literal %s is %s", aPos, bNeg, mgu)
+          log.trace("MGU for Literal : {} and Literal {} is {}", Array(aPos, bNeg, mgu))
           //            Let S_1 and S_2 be two clauses with no variables in common, let S_1 contain a positive literal L_1, S_2 contain a negative literal L_2, and let eta be the most general unifier of L_1 and L_2. Then
           //(S_1eta-L_1eta) union (S_2eta-L_2eta)  
 
@@ -94,7 +95,7 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
           val binaryResolvent = (S1 - aPosS) ++ (S2 - bNegS)
 
           if (binaryResolvent.isEmpty) {
-            log.info("EMPTY RESOLVENTS !!!")
+            log.trace("EMPTY RESOLVENTS !!!")
             EmptyClause()
           } else {
             binaryResolvent
@@ -102,16 +103,16 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
 
         }
         case None => {
-          log.trace("%s Could not resolve Literals %s,%s", this, aPos, bNeg)
+          log.trace("Could not resolve Literals {},{}", aPos, bNeg)
           Clause()
         }
       })
 
 
     if (!conclusions.isEmpty) {
-      log.info("Resolver %s resolved from clauses %s and %s --> %s", this, a, b, conclusions)
+      log.trace("Resolved from clauses {} and {} --> {}", (a, b, conclusions))
     } else {
-      log.info("Resolver %s RESOLVED NOTHING from clauses %s and %s !", this, a, b)
+      log.trace("RESOLVED NOTHING from clauses {} and {} !", a, b)
     }
     conclusions
 
@@ -123,10 +124,10 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
 class GeneralResolution(env: {val unificator: Unify}) extends Resolution {
   val unificator = env.unificator
 
-  val log = net.lag.logging.Logger.get
+  val log = LoggerFactory getLogger (this getClass)
 
   override def resolve(a: ClauseStorage, b: ClauseStorage): ClauseStorage = {
-    log.info("Resolving %s with %s by resolver : %s", a, b, this)
+    log.trace("Resolving {} with {}", a, b)
     a
   }
 
@@ -135,8 +136,8 @@ class GeneralResolution(env: {val unificator: Unify}) extends Resolution {
    * Deﬁnition 8.5.2 Given two clauses A and B, a clause C is a resolvent of
    * A and B iﬀ the following holds:
    *
-   * (i) There is a subset A′ =                  { A1 , ..., Am } ⊆ A of literals all of the same sign,
-   * a subset B′ =                  { B1 , ..., Bn } ⊆ B of literals all of the opposite sign of the set A′ ,
+   * (i) There is a subset A′ =                   { A1 , ..., Am } ⊆ A of literals all of the same sign,
+   * a subset B′ =                   { B1 , ..., Bn } ⊆ B of literals all of the opposite sign of the set A′ ,
    * and a separating pair of substitutions (ρ, ρ′ ) such that the set |ρ(A′ ) ∪ ρ′ (B′ )|
    * is uniﬁable;
    *

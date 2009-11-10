@@ -14,10 +14,11 @@ import domain.fol.ast._
 import org.junit.runner.RunWith
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
+import org.slf4j.LoggerFactory
 
 @RunWith(classOf[JUnit4Runner])
 class ResolutionSpec extends Spec with ShouldMatchers {
-  val log = net.lag.logging.Logger.get
+  val log = LoggerFactory getLogger (this getClass)
   val resolver = new BinaryResolver(TheoremProvingConfig1)
   describe("A object implementing the Resolution Trait") {
     //    it("should factorize some clauses") {
@@ -99,7 +100,7 @@ class ResolutionSpec extends Spec with ShouldMatchers {
     //      // factorize
     //      val conclusions = resolver.resolve(C1, C2)
     //
-    //      log.info("Resolved %s , %s --> %s", C1, C2, conclusions)
+    //      log.trace("Resolved {} , {} --> {}", C1, C2, conclusions)
     //
     //
     //    }
@@ -119,7 +120,7 @@ class ResolutionSpec extends Spec with ShouldMatchers {
     //
     //      // factorize
     //      val conclusions: Set[Clause] = resolver.resolve(C1, C2)
-    //      log.info("Resolved %s , %s --> %s", C1, C2, conclusions)
+    //      log.trace("Resolved {} , {} --> {}", C1, C2, conclusions)
     //      conclusions should contain(Clause(Predicate("Q", a), Predicate("R", y)))
     //      conclusions should have size (1)
     //
@@ -188,7 +189,7 @@ class ResolutionSpec extends Spec with ShouldMatchers {
 
       // 1.) resolve goal clause with the C1
       val R1 = resolver.resolve(C1, goalClause)
-      log.info("R1 : %s", R1)
+      log.trace("R1 : {}", R1)
       R1 should have size (1)
       //      R1 should contain(Clause(Negation(sells(west, y, z)), Negation(weapon(y)), Negation(american(west)), Negation(hostile(z))))
       R1.contains(Clause(Negation(sells(west, y, z)), Negation(weapon(y)), Negation(american(west)), Negation(hostile(z)))) should be(true)
@@ -196,7 +197,7 @@ class ResolutionSpec extends Spec with ShouldMatchers {
 
       // 2.) resolve C7 with R1
       val R2 = resolver.resolve(C7, R1.toList.head)
-      log.info("R2 : %s", R2)
+      log.trace("R2 : {}", R2)
       R2 should have size (1)
       //      R2 should contain(Clause(Negation(sells(west, y, z)), Negation(weapon(y)), Negation(hostile(z))))
       R2.contains(Clause(Negation(sells(west, y, z)), Negation(weapon(y)), Negation(hostile(z)))) should be(true)
@@ -204,7 +205,7 @@ class ResolutionSpec extends Spec with ShouldMatchers {
 
       // 3.) resolve C4 with R2
       val R3 = resolver.resolve(C4, R2.toList.head)
-      log.info("R3 : %s", R3)
+      log.trace("R3 : {}", R3)
       R3 should have size (1)
       //      R3 should contain(Clause(Negation(sells(west, y, z)), Negation(missile(y)), Negation(hostile(z))))
       R3.contains(Clause(Negation(sells(west, y, z)), Negation(missile(y)), Negation(hostile(z)))) should be(true)
@@ -212,7 +213,7 @@ class ResolutionSpec extends Spec with ShouldMatchers {
 
       // 4.) resolve C6 with R3
       val R4 = resolver.resolve(C6, R3.toList.head)
-      log.info("R4 : %s", R4)
+      log.trace("R4 : {}", R4)
       R4 should have size (1)
       //      R4 should contain(Clause(Negation(sells(west, m1, z)), Negation(hostile(z))))
       R4.contains(Clause(Negation(sells(west, m1, z)), Negation(hostile(z)))) should be(true)
@@ -220,7 +221,7 @@ class ResolutionSpec extends Spec with ShouldMatchers {
 
       // 5.) resolve C2 with R4
       val R5 = resolver.resolve(C2, R4.toList.head)
-      log.info("R5 : %s", R5)
+      log.trace("R5 : {}", R5)
       R5 should have size (1)
       //      R5 should contain(Clause(Negation(missile(m1)), Negation(owns(nono, m1)), Negation(hostile(nono))))
       R5.contains(Clause(Negation(missile(m1)), Negation(owns(nono, m1)), Negation(hostile(nono)))) should be(true)
@@ -228,7 +229,7 @@ class ResolutionSpec extends Spec with ShouldMatchers {
 
       // 6.) resolve C6 with R5
       val R6 = resolver.resolve(C6, R5.toList.head)
-      log.info("R6 : %s", R6)
+      log.trace("R6 : {}", R6)
       R6 should have size (1)
       //      R6 should contain(Clause(Negation(owns(nono, m1)), Negation(hostile(nono))))
       R6.contains(Clause(Negation(owns(nono, m1)), Negation(hostile(nono)))) should be(true)
@@ -237,7 +238,7 @@ class ResolutionSpec extends Spec with ShouldMatchers {
 
       // 7.) resolve C5 with R6
       val R7 = resolver.resolve(C5, R6.toList.head)
-      log.info("R7 : %s", R7)
+      log.trace("R7 : {}", R7)
       R7 should have size (1)
       //      R7 should contain(Clause(Negation(hostile(nono))))
       R7.contains(Clause(Negation(hostile(nono)))) should be(true)
@@ -246,7 +247,7 @@ class ResolutionSpec extends Spec with ShouldMatchers {
 
       // 8.) resolve C3 with R7
       val R8 = resolver.resolve(C3, R7.toList.head)
-      log.info("R8 : %s", R8)
+      log.trace("R8 : {}", R8)
       R8 should have size (1)
       assert(R8.contains(Clause(Negation(enemy(nono, america)))))
       //      R8  should contain(Clause(Negation(enemy(nono, america))))
@@ -256,7 +257,7 @@ class ResolutionSpec extends Spec with ShouldMatchers {
 
       // 9.) resolve C8 with R8
       val R9 = resolver.resolve(C8, R8.toList.head)
-      log.info("R9 : %s", R9)
+      log.trace("R9 : {}", R9)
       //      R9 should contain(EmptyClause())
       R9.contains(EmptyClause()) should be(true)
 

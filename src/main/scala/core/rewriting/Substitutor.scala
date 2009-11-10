@@ -2,6 +2,7 @@ package core.rewriting
 
 
 import domain.fol.ast._
+import org.slf4j.LoggerFactory
 
 /**
  * User: nowi                         ov
@@ -44,7 +45,7 @@ trait Substitution {
 
 // dependends on VariableRewriter
 class Substitutor(env: {val variableRewriter: VariableRewriting}) extends Substitution {
-  val log = net.lag.logging.Logger.get
+  val log = LoggerFactory getLogger (this getClass)
   val variableRewriter = env.variableRewriter
 
   /**
@@ -64,7 +65,7 @@ class Substitutor(env: {val variableRewriter: VariableRewriting}) extends Substi
     theta match {
       case Some(map) => variableRewriter.rewrite(node, map)
       case None => {
-        log.warning("No substition map theata specified , not rewriting term : %s" format (node))
+        //        log.trace("No substition map theata specified , not rewriting term : {}" node)
         node
       }
     }
@@ -88,7 +89,7 @@ class Substitutor(env: {val variableRewriter: VariableRewriting}) extends Substi
     theta match {
       case Some(map) => variableRewriter.rewriteClause(clause, map)
       case None => {
-        log.warning("No substition map theata specified , not rewriting clause : %s" format (clause))
+        //        log.trace("No substition map theata specified , not rewriting clause : {}" clause)
         clause
       }
     }

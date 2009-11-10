@@ -1,7 +1,7 @@
 package domain.fol.ast
 
 
-import net.lag.logging.Logger
+import org.slf4j.LoggerFactory
 
 /**
  * User: nowi
@@ -12,7 +12,7 @@ import net.lag.logging.Logger
 case class Function(name: String, terms: List[FOLNode]) extends Term {
   val args = terms
   val symbolicName = name
-  val log: Logger = Logger.get
+  val log = LoggerFactory getLogger (this getClass)
 
   override def arity = terms.size
 
@@ -35,7 +35,7 @@ case class Function(name: String, terms: List[FOLNode]) extends Term {
 
   override def flatArgs: List[FOLNode] = {
     val flatArgs: List[FOLNode] = args.map({x: FOLNode => x.flatArgs}).flatten
-    log.info("FlatArgs for %s are : %s", this, flatArgs)
+    log.trace("FlatArgs for %s are : %s", this, flatArgs)
     flatArgs
 
   }

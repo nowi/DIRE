@@ -2,7 +2,7 @@ package core.reduction
 
 
 import containers.{CNFClauseStore, ClauseStorage}
-import net.lag.logging.Logger
+import org.slf4j.LoggerFactory
 
 /**
  * User: nowi
@@ -26,12 +26,12 @@ trait SubsumptionDeletion extends Reducing {
 }
 
 class SubsumptionDeleter extends SubsumptionDeletion {
-  private val log = Logger.get
+  private val log = LoggerFactory getLogger (this getClass)
 
   override def reduce(a: ClauseStorage) = deleteSubsumptions(a)
 
   override def deleteSubsumptions(a: ClauseStorage, b: ClauseStorage): ClauseStorage = {
-    log.info("Delete Subsumptions %s with %s ...  for now we check if a is contained in b", a, b)
+    log.trace("Delete Subsumptions {} with {} ...  for now we check if a is contained in b", a, b)
     // remove the intersection
     a
 
@@ -42,7 +42,7 @@ class SubsumptionDeleter extends SubsumptionDeletion {
    * and return the resulting clausestore
    */
   override def deleteSubsumptions(a: ClauseStorage): ClauseStorage = {
-    log.info("Subsumption deletion to all of %s", a)
+    log.trace("Subsumption deletion to all of {}", a)
     a
   }
 }
@@ -55,10 +55,10 @@ trait TautologyDeletion extends Reducing {
 }
 
 class TautologyDeleter extends TautologyDeletion {
-  private lazy val log = Logger.get
+  private lazy val log = LoggerFactory getLogger (this getClass)
 
   override def deleteTautologies(clauses: ClauseStorage): ClauseStorage = {
-    log.info("Tautology elemination on %s by %s", clauses, this)
+    log.trace("Tautology elemination on {} by {}", clauses, this)
     clauses
   }
 

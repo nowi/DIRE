@@ -13,13 +13,13 @@ import domain.fol.ast._
 import org.junit.runner.RunWith
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
-import net.lag.logging.Logger
+import org.slf4j.LoggerFactory
 
 @RunWith(classOf[JUnit4Runner])
 class LiteralComparatorSpec extends Spec with ShouldMatchers {
   describe("ALCLPOrderingComparator") {
 
-    val log: Logger = Logger.get
+    val log = LoggerFactory getLogger (this getClass)
 
     val john = Constant("John")
     val jane = Constant("Jane")
@@ -88,8 +88,8 @@ class LiteralComparatorSpec extends Spec with ShouldMatchers {
 
       val sortedFOLNodes = scala.util.Sorting.stableSort(folNodes, comparator.isGreater(_, _))
 
-      log.info("UNSorted FOLNodes : %s", folNodes)
-      log.info("Sorted FOLNodes : %s", sortedFOLNodes)
+      log.trace("UNSorted FOLNodes : {}", folNodes)
+      log.trace("Sorted FOLNodes : {}", sortedFOLNodes)
 
       assert(true)
 

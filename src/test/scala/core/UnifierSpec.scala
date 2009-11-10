@@ -15,6 +15,7 @@ import org.junit.runner.RunWith
 
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
+import org.slf4j.LoggerFactory
 import rewriting.Substitutor
 
 @RunWith(classOf[JUnit4Runner])
@@ -28,7 +29,7 @@ class UnifierSpec extends Spec with ShouldMatchers {
     //    Configgy.configureFromResource("config.conf")
 
     // logger
-    val log = net.lag.logging.Logger.get
+    val log = LoggerFactory getLogger (this getClass)
 
     it("should unificator.unify(Knows(John,x), Knows( John, Jane)) - {x/Jane}") {
       val john = Constant("John")
@@ -146,7 +147,7 @@ class UnifierSpec extends Spec with ShouldMatchers {
       // unfiy a and e -- this will test the standardise apart case
       val theta5 = unificator.unify(Clause(anegstrich).absoluteClause, Clause(bposstrich))
 
-      log.info("MGU of union of a and b is %s", theta5)
+      log.trace("MGU of union of a and b is {}", theta5)
       // the subsitutions should containt Some(Map(z_4 -> z_8, x -> a))
       theta5 should not equal (None)
 
@@ -164,17 +165,17 @@ class UnifierSpec extends Spec with ShouldMatchers {
       // unfiy a and e -- this will test the standardise apart case
       val firstUnfier = unificator.firstUnifier(C)
 
-      log.info("First unifier of a and b is %s", firstUnfier)
+      log.trace("First unifier of a and b is {}", firstUnfier)
       firstUnfier should not equal (None)
 
       // now rewrite the C clause with the first unifier
       val C1 = substitutor.substitute(firstUnfier, C)
-      log.info("Rewritten C to C1 using unifer %s == %s", firstUnfier, C1)
+      log.trace("Rewritten C to C1 using unifer {} == {}", firstUnfier, C1)
       C1 should not equal (C)
 
       // check if there are more substitions , should be none
       val secondUnifier = unificator.firstUnifier(C1)
-      log.info("Second unifier of a and b is %s", secondUnifier)
+      log.trace("Second unifier of a and b is {}", secondUnifier)
       secondUnifier should equal(None)
       // the subsitutions should containt Some(Map(z_4 -> z_8, x -> a))
     }
@@ -199,7 +200,7 @@ class UnifierSpec extends Spec with ShouldMatchers {
     //      val theta5 = unificator.unify(p1)
     //
     //
-    //      log.info("MGU of Clause : %s is %s", p1, theta5)
+    //      log.trace("MGU of Clause : {} is {}", p1, theta5)
     //      theta5 should not equal (None)
     //
     //

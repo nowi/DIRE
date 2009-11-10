@@ -26,7 +26,7 @@ trait Proving {
 
 class ResolutionProover1(env: {val tautologyDeleter: TautologyDeletion; val subsumptionDeleter: SubsumptionDeletion; val factorizer: Factoring; val resolver: Resolution}) extends Proving {
   Configgy.configure("/Users/nowi/workspace/DIRE/DIRE/config.conf")
-  //  val log = Logger.get
+  //  val log = LoggerFactory getLogger (this getClass)
 
 
   val log = LoggerFactory getLogger (this getClass)
@@ -40,7 +40,7 @@ class ResolutionProover1(env: {val tautologyDeleter: TautologyDeletion; val subs
   val factorizer = env.factorizer
 
   override def prove(clauses: ClauseStore): ProvingResult = {
-    log.info("Starting theorem proving on clause store %s", clauses)
+    log.info("Starting theorem proving on clause store {}", clauses)
 
 
     // all clauses that have already been selected for inference
@@ -53,42 +53,42 @@ class ResolutionProover1(env: {val tautologyDeleter: TautologyDeletion; val subs
 
     var iteration = 1;
     while (!usable.isEmpty && !usable.containsEmptyClause) {
-      log.info("Inner Loop")
+      log.trace("Inner Loop")
       // 5. select a clause
       val given: ClauseStorage = choose(usable)
-      log.trace("After 5. Given Clause %s", given)
+      log.trace("After 5. Given Clause {}", given)
 
       // 5. 6. add to workedoff, remove from usable       fa
       usable = usable -- given
       workedOff = workedOff ++ given
-      log.trace("After 5. 6.  usable : %s", usable)
-      log.trace("After 5. 6.  workedOff : %s", workedOff)
+      log.trace("After 5. 6.  usable : {}", usable)
+      log.trace("After 5. 6.  workedOff : {}", workedOff)
 
       // 7. all resolution inference conlusions between given and workedoff and all
       // factoring inference conclusions from given are stored in fresh
       var fresh: ClauseStorage = resolve(given, workedOff) ++ factor(given)
-      log.info("After 7. fresh Clause %s", fresh)
+      log.trace("After 7. fresh Clause {}", fresh)
 
       // 8. - 11.  Perform reductions/forward contractions
       // remove all tautologies and subsumptions from fresh
       fresh = taut(sub(fresh))
-      log.trace("After 11. Reduced Fresh Clause %s", fresh)
+      log.trace("After 11. Reduced Fresh Clause {}", fresh)
 
       // remove all clauses that are subsumed by a clause in workedoff or usable are deleted
       // from fresh ( forward subsumtion )
       fresh = sub(sub(fresh, workedOff), usable)
-      log.trace("After Forward Subsumption Fresh Clause %s", fresh)
+      log.trace("After Forward Subsumption Fresh Clause {}", fresh)
 
 
       // clasuse remaining in fresh are then used for backward subsumtion
       workedOff = sub(workedOff, fresh)
-      log.trace("After Backward Subsumption workedOff Clauses : %s", workedOff)
+      log.trace("After Backward Subsumption workedOff Clauses : {}", workedOff)
 
       // finally add the clauses from fresh to usable , theese are the kept clauses
       usable = sub(usable, fresh) ++ fresh
-      log.info("Usable Size after iteration %d : %s", iteration, usable.clauses.size)
+      log.trace("Usable Size after iteration %d : {}", iteration, usable.clauses.size)
 
-      log.trace("After Addition usable  Clauses are : %s", usable)
+      log.trace("After Addition usable  Clauses are : {}", usable)
       iteration += 1
     }
 
@@ -110,7 +110,7 @@ class ResolutionProover1(env: {val tautologyDeleter: TautologyDeletion; val subs
   def resolve(a: ClauseStorage, b: ClauseStorage): ClauseStorage = {
 
     val resolved = resolver.resolve(a, b)
-    log.info("Resolved : %s", resolved)
+    log.info("Resolved : {}", resolved)
     resolved
 
   }
@@ -118,7 +118,7 @@ class ResolutionProover1(env: {val tautologyDeleter: TautologyDeletion; val subs
   def choose(clauses: ClauseStorage): ClauseStorage = {
 
     val choosen = clauses.clauses.toList(rnd.nextInt(clauses.clauses.toList.size))
-    log.info("Naively choosing clause : %s from clauses store : %s", choosen, clauses)
+    log.trace("Naively choosing clause : {} from clauses store : {}", choosen, clauses)
     CNFClauseStore(choosen)
   }
 
