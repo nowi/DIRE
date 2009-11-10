@@ -4,6 +4,7 @@ out/*
 lib/*
 target/*
 DIRE.iws
+.log
 
 *.pbxuser
 *.mode1v3
