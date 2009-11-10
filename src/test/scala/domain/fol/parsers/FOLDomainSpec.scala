@@ -9,6 +9,7 @@ package domain.fol.parsers
 import ast._
 import com.jteigen.scalatest.JUnit4Runner
 
+import helpers.Logging
 import org.junit.runner.RunWith
 
 
@@ -17,9 +18,8 @@ import org.scalatest.Spec
 import org.slf4j.LoggerFactory
 
 @RunWith(classOf[JUnit4Runner])
-class FOLDomainSpec extends Spec with ShouldMatchers {
+class FOLDomainSpec extends Spec with ShouldMatchers with Logging {
   describe("The FOLDomain Objects") {
-    val log = LoggerFactory getLogger (this getClass)
     it("literals should be only instantiable with atomic sentences and throw class cast exception if not") {
       val richard = Constant("richard");
       val john = Constant("john");
@@ -99,6 +99,47 @@ class FOLDomainSpec extends Spec with ShouldMatchers {
 
       assert(Loves.vars contains v2);
       assert(Loves.vars.size == 2);
+
+
+    }
+
+
+    it("a clause should be able to return its signature ( name-arity pairs)") {
+      val x = Variable("x")
+      val y = Variable("y")
+      val z = Variable("z")
+      val west = Constant("West")
+      val nono = Constant("Nono")
+      val m1 = Constant("M1")
+      val america = Constant("America")
+      val sells = (x: FOLNode, y: FOLNode, z: FOLNode) => Predicate("Sells", x, y, z)
+      val weapon = (x: FOLNode) => Predicate("Weapon", x)
+      val american = (x: FOLNode) => Predicate("American", x)
+      val hostile = (x: FOLNode) => Predicate("Hostile", x)
+      val missile = (x: FOLNode) => Predicate("Missile", x)
+      val owns = (x: FOLNode, y: FOLNode) => Predicate("Owns", x, y)
+      val enemy = (x: FOLNode, y: FOLNode) => Predicate("Enemy", x, y)
+
+
+      val C1 = Clause(Negation(Predicate("American", x)), Negation(Predicate("Weapon", y)),
+        Negation(Predicate("Sells", x, y, z)), Negation(Predicate("Hostile", z)),
+        Predicate("Criminal", x))
+
+
+      val C2 = Clause(Negation(Predicate("American", x)), Negation(Predicate("Weapon", y)),
+        Negation(Predicate("Sells", x, y, z)),
+        Predicate("Criminal", x))
+
+
+      val signatureC1 = C1.signature
+      log.info("Signature of Clause C1 {} is : {}",C1,signatureC1)
+
+     val signatureC2 = C2.signature
+      log.info("Signature of Clause C2 {} is : {}",C2,signatureC2)
+
+      // c2sig should be subset
+      signatureC1.containsAll(signatureC2) should be (true)
+
 
 
     }

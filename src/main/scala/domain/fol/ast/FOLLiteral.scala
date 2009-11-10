@@ -19,7 +19,7 @@ object FOLLiteral {
 object NegativeFOLLiteral {
   def unapply(node: FOLNode): Option[FOLNode] = {
     node match {
-      case Negation(PositiveFOLLiteral(literal)) => Some(node)
+      case Negation(PositiveFOLLiteral(literal)) => Some(literal)
       case _ => None
     }
   }

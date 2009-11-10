@@ -44,6 +44,20 @@ trait FOLClause {
 
   }
 
+
+  lazy val signature = {
+    literals.map({
+      x: FOLNode => x match {
+        case PositiveFOLLiteral(literal) => (literal.symbolicName,literal.arity)
+        case NegativeFOLLiteral(literal) => ("-" + literal.symbolicName,literal.arity)
+      }
+
+    })
+
+  }
+
+
+
   lazy val isEmpty = literals.isEmpty
 
   lazy val isUnit = literals.size == 1
