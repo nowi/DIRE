@@ -48,8 +48,8 @@ trait FOLClause {
   lazy val signature = {
     literals.map({
       x: FOLNode => x match {
-        case PositiveFOLLiteral(literal) => (literal.symbolicName,literal.arity)
-        case NegativeFOLLiteral(literal) => ("-" + literal.symbolicName,literal.arity)
+        case PositiveFOLLiteral(literal) => (literal.symbolicName, literal.arity)
+        case NegativeFOLLiteral(literal) => ("-" + literal.symbolicName, literal.arity)
       }
 
     })
@@ -57,6 +57,23 @@ trait FOLClause {
   }
 
 
+  /**Retrieve the literals which is associated with the given literal signature.
+   * @param litSig the signature of the literal (symblicname,arity)
+   * @return the literals
+   */
+  def apply(litSig: (String, Int)): Set[FOLNode] = {
+    literals.map({
+      x: FOLNode => x match {
+        case PositiveFOLLiteral(literal) if (litSig == (literal.symbolicName, literal.arity)) => x
+        case NegativeFOLLiteral(literal) if (litSig == ("-" + literal.symbolicName, literal.arity)) => x
+      }
+
+    })
+
+  }
+
+
+  lazy val size: Int = literals.size
 
   lazy val isEmpty = literals.isEmpty
 
@@ -83,6 +100,10 @@ case class Clause(literals: Set[FOLNode]) extends FOLClause {
     case FOLLiteral(x) => true
     case _ => false
   })), "FOL nodes passed into a clause can only be Literals")
+
+
+
+
 
 
   override def ++(that: FOLClause): FOLClause =

@@ -15,7 +15,6 @@ import org.junit.runner.RunWith
 
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
-import org.slf4j.LoggerFactory
 
 @RunWith(classOf[JUnit4Runner])
 class FOLDomainSpec extends Spec with ShouldMatchers with Logging {
@@ -132,14 +131,41 @@ class FOLDomainSpec extends Spec with ShouldMatchers with Logging {
 
 
       val signatureC1 = C1.signature
-      log.info("Signature of Clause C1 {} is : {}",C1,signatureC1)
+      log.info("Signature of Clause C1 {} is : {}", C1, signatureC1)
 
-     val signatureC2 = C2.signature
-      log.info("Signature of Clause C2 {} is : {}",C2,signatureC2)
+      val signatureC2 = C2.signature
+      log.info("Signature of Clause C2 {} is : {}", C2, signatureC2)
 
       // c2sig should be subset
-      signatureC1.containsAll(signatureC2) should be (true)
+      signatureC2.subsetOf(signatureC1) should be(true)
 
+
+
+
+
+
+
+      val C3 = Clause(Negation(Predicate("American", x)), Negation(Predicate("Weapon", y)),
+        Predicate("Sells", x, y, z), Negation(Predicate("Hostile", z)),
+        Predicate("Criminal", x))
+
+
+      val C4 = Clause(Negation(Predicate("American", x)), Negation(Predicate("Weapon", y)),
+        Negation(Predicate("Sells", x, y, z)),
+        Predicate("Criminal", x))
+
+
+      val signatureC3 = C3.signature
+      log.info("Signature of Clause C3 {} is : {}", C3, signatureC3)
+
+      val signatureC4 = C4.signature
+      log.info("Signature of Clause C4 {} is : {}", C4, signatureC4)
+
+
+      // same length but difference in sig
+
+      // c2sig should be subset
+      signatureC4.subsetOf(signatureC3) should be(false)
 
 
     }
