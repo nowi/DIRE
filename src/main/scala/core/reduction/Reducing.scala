@@ -2,7 +2,7 @@ package core.reduction
 
 
 import containers.{CNFClauseStore, ClauseStorage}
-import domain.fol.ast.{Variable, FOLNode, Clause}
+import domain.fol.ast._
 import helpers.Logging
 import org.slf4j.LoggerFactory
 import rewriting.Substitution
@@ -18,7 +18,7 @@ trait Reducing {
 }
 
 trait Subsumption {
-  def subsumes(c1: Clause, c2: Clause): Boolean
+  def subsumes(c1: FOLClause, c2: FOLClause): Boolean
 }
 
 class StillmannSubsumer(env: {val unificator: Unify; val substitutor: Substitution}) extends Subsumption {
@@ -26,7 +26,7 @@ class StillmannSubsumer(env: {val unificator: Unify; val substitutor: Substituti
   val substitutor = env.substitutor
 
 
-  def subsumes(c: Clause, d: Clause): Boolean = {
+  def subsumes(c: FOLClause, d: FOLClause): Boolean = {
     //    Let C = (L,, . . . , L,) and D = (Ki, . . . , Km).
     // init the map
     val emptyTheta = Map[Variable, FOLNode]()
@@ -58,10 +58,35 @@ class StillmannSubsumer(env: {val unificator: Unify; val substitutor: Substituti
     }
 
     def doesUnify(a: FOLNode, b: FOLNode): Boolean = {
-      getMGU(a, b) match {
-        case Some(t) => true
-        case None => false
+      def checkSubstitution(a: FOLNode, b: FOLNode): Boolean = {
+        getMGU(a, b) match {
+        // nonempty
+          case Some(t: Map[Variable, FOLNode]) if (!t.isEmpty) => { // if there was a substitution
+            // there is a unifier
+            // now check if this unfier did apply to the node if there was a unifier
+            if (!a.flatArgs.intersect(t.keys.toList).isEmpty) {
+              true
+            } else {
+              false
+            }
+          }
+
+          case Some(t: Map[Variable, FOLNode]) if (t.isEmpty) => { // empty theta == no substitution
+            true
+          }
+          case None => false
+        }
+
       }
+      // take the order of the arugments into consideration
+
+      // we can never unify a positive with a negative literal
+      (a, b) match {
+        case (PositiveFOLLiteral(x), PositiveFOLLiteral(y)) => checkSubstitution(a, b)
+        case (NegativeFOLLiteral(x), NegativeFOLLiteral(y)) => checkSubstitution(a, b)
+        case _ => false
+      }
+
 
     }
 
@@ -78,7 +103,14 @@ class StillmannSubsumer(env: {val unificator: Unify; val substitutor: Substituti
 
 
 trait SubsumptionDeletion extends Reducing {
-  def deleteSubsumptions(a: ClauseStorage, b: ClauseStorage): ClauseStorage
+  /**
+   * Apply subsumption deletion to all clauses from the inClauses that are subsumed by clauses
+   * from the fromClauses store
+   * @param inClauses : The clauses that should have subsumed clauses removed
+   * @param fromClauses : The clauses that should be subsumed agains
+   * @return the resulting clausestore
+   */
+  def deleteSubsumptions(inClauses: ClauseStorage, fromClauses: ClauseStorage): ClauseStorage
 
   /**
    * Apply subsumption deletion to all of the clauses in the clauseStore
@@ -92,11 +124,12 @@ class SubsumptionDeleter(env: {val subsumptionStrategy: Subsumption}) extends Su
 
   override def reduce(a: ClauseStorage) = deleteSubsumptions(a)
 
-  override def deleteSubsumptions(a: ClauseStorage, b: ClauseStorage): ClauseStorage = {
-    log.trace("Delete Subsumptions {} with {} ...  for now we check if a is contained in b", a, b)
-    // remove the intersection
-
-    a
+  override def deleteSubsumptions(inClauses: ClauseStorage, fromClauses: ClauseStorage): ClauseStorage = {
+    log.trace("Delete Subsumptions in Clauses {} that are subsumed by {} ...  for now we check if a is contained in b", inClauses, fromClauses)
+    val subsumed =
+    for (c1 <- fromClauses.clauses; c2 <- inClauses.clauses; if (c1 != c2); if (subsumer.subsumes(c1, c2))) yield c2
+    log.trace("Subsumption deletion identified subsumed clauses : {} ", subsumed)
+    inClauses -- CNFClauseStore(subsumed)
 
   }
 
@@ -106,11 +139,16 @@ class SubsumptionDeleter(env: {val subsumptionStrategy: Subsumption}) extends Su
    */
   override def deleteSubsumptions(a: ClauseStorage): ClauseStorage = {
     log.trace("Subsumption deletion to all of {}", a)
-    a
+    // interreduce all claueses
+    val subsumed =
+    for (c1 <- a.clauses; c2 <- a.clauses; if (c1 != c2); if (subsumer.subsumes(c1, c2))) yield c2
+    log.trace("Subsumption deletion identified subsumed clauses : {} ", subsumed)
+    a -- CNFClauseStore(subsumed)
+
   }
 
 
-  private def subsumes(c1: Clause, c2: Clause): Boolean = {
+  private def subsumes(c1: FOLClause, c2: FOLClause): Boolean = {
     if (c1 != c2) {
       // Filter 1
       // Ensure c1 has less literals total and that

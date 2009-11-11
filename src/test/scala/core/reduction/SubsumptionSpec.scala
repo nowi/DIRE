@@ -79,8 +79,19 @@ abstract class SubsumptionSpec extends Spec with ShouldMatchers with Logging {
       subsumer.subsumes(Clause(Predicate("Missile", x)), Clause(Predicate("Missile", m1))) should be(true)
 
 
+
+      // concrete missile should NOT subsume variable missile
+      subsumer.subsumes(Clause(Predicate("Missile", m1)), Clause(Predicate("Missile", x))) should be(false)
+
+
       // Missile variable should subsume concrete missile with negations
       subsumer.subsumes(Clause(Negation(Predicate("Missile", x))), Clause(Negation(Predicate("Missile", m1)))) should be(true)
+
+
+
+
+      // negated Missile variable should NOT subsume concrete missile
+      subsumer.subsumes(Clause(Negation(Predicate("Missile", x))), Clause(Predicate("Missile", m1))) should be(false)
 
 
 
