@@ -54,20 +54,21 @@ class ResolutionProover1(env: {val tautologyDeleter: TautologyDeletion; val subs
     var iteration = 1;
     while (!usable.isEmpty && !usable.containsEmptyClause) {
       log.trace("Inner Loop")
+      log.trace("Inner Loop")
       // 5. select a clause
       val given: ClauseStorage = choose(usable)
-      log.trace("After 5. Given Clause {}", given)
+      log.info("After 5. Given Clause {}", given)
 
       // 5. 6. add to workedoff, remove from usable       fa
       usable = usable -- given
       workedOff = workedOff ++ given
-      log.trace("After 5. 6.  usable : {}", usable)
-      log.trace("After 5. 6.  workedOff : {}", workedOff)
+      log.info("After 5. 6.  usable : {}", usable)
+      log.info("After 5. 6.  workedOff : {}", workedOff)
 
       // 7. all resolution inference conlusions between given and workedoff and all
       // factoring inference conclusions from given are stored in fresh
-      var fresh: ClauseStorage = resolve(given, workedOff) ++ factor(given)
-      log.trace("After 7. fresh Clause {}", fresh)
+      var fresh: ClauseStorage = resolve(given, workedOff) // ++ factor(given)
+      log.info("After 7. fresh Clause {}", fresh)
 
       // 8. - 11.  Perform reductions/forward contractions
       // remove all tautologies and subsumptions from fresh
@@ -85,8 +86,10 @@ class ResolutionProover1(env: {val tautologyDeleter: TautologyDeletion; val subs
       log.trace("After Backward Subsumption workedOff Clauses : {}", workedOff)
 
       // finally add the clauses from fresh to usable , theese are the kept clauses
+      log.info("Adding to usable FRESH : {}", fresh)
       usable = sub(usable, fresh) ++ fresh
-      log.trace("Usable Size after iteration %d : {}", iteration, usable.clauses.size)
+      log.info("Usable Size after iteration {} : {}", iteration, usable.clauses.size)
+      log.info("Workedof Size after iteration {} : {}", iteration, workedOff.clauses.size)
 
       log.trace("After Addition usable  Clauses are : {}", usable)
       iteration += 1
@@ -94,9 +97,11 @@ class ResolutionProover1(env: {val tautologyDeleter: TautologyDeletion; val subs
 
     if (usable.containsEmptyClause) {
       log.info("Proof found")
+      log.info("FINAL worked Off was {}", workedOff)
       ProofFound()
     } else if (usable.isEmpty) {
       log.info("Completion found")
+      log.info("FINAL worked Off was {}", workedOff)
       CompletionFound()
     } else {
       log.error("Some error occured during prooving, there has been no prooving result")
@@ -151,4 +156,4 @@ class ResolutionProover1(env: {val tautologyDeleter: TautologyDeletion; val subs
 
 case class ProvingResult
 case class CompletionFound extends ProvingResult
-case class ProofFound extends CompletionFound
+case class ProofFound extends ProvingResult

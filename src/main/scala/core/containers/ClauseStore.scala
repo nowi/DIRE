@@ -37,6 +37,7 @@ trait ClauseStorage {
 
 
 abstract class ClauseStore extends ClauseStorage {
+  override def toString = "ClauseStore : %s" format (clauses mkString ("(", "\n", ")"))
 }
 
 /**
@@ -76,6 +77,38 @@ object CNFClauseStore {
     CNFClauseStore(Set(params: _*))
   }
 
+}
+
+
+object EmptyClauseStore {
+  def unapply(clauseStore: ClauseStorage): Option[ClauseStorage] = {
+    if (clauseStore.isEmpty)
+      Some(clauseStore)
+    else
+      None
+
+  }
+}
+
+object ClauseStoreContainingEmptyClause {
+  def unapply(clauseStore: ClauseStorage): Option[ClauseStorage] = {
+    if (clauseStore.clauses.exists(_.isInstanceOf[EmptyClause]))
+      Some(clauseStore)
+    else
+      None
+
+  }
+}
+
+object NonEmptyClauseStore {
+  def unapply(clauseStore: ClauseStorage): Option[ClauseStorage] = {
+    clauseStore match {
+      case ClauseStoreContainingEmptyClause(x) => None
+      case _ if (!clauseStore.isEmpty) => Some(clauseStore)
+      case _ => None
+    }
+
+  }
 }
 
 

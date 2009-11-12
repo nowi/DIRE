@@ -2,7 +2,7 @@ package core.resolution
 
 
 import containers.{CNFClauseStore, ClauseStorage}
-import domain.fol.ast.{FOLClause, EmptyClause, Clause}
+import domain.fol.ast.{FOLNode, FOLClause, EmptyClause, Clause}
 import org.slf4j.LoggerFactory
 import reduction.Factoring
 import rewriting.Substitution
@@ -41,7 +41,7 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
 
     val resolvents2 = resolvents1 match {
       case x if (x.isEmpty) => {
-        log.trace("There are no resolvents for clausestorage {} , {}", a, b)
+        log.info("There are no resolvents for clausestorage {} , {}", a, b)
         Set[FOLClause]()
       }
       case _ => {
@@ -63,19 +63,34 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
    * clauses excluding the two literals in focus, and taking the union of the transformed literals.
    */
   override def resolve(a: FOLClause, b: FOLClause): Set[FOLClause] = {
-    // Apos , Bneg
     log.trace("Resolving the Clauses {},{}", a, b)
-
     // standardize apart the clauses
     val (aStand, bStand) = standardizer.standardizeApart(a, b)
 
-    val aPosLits = aStand.positiveLiterals
-    log.trace("Positive literals of standardized Clause {} are : {}", aStand, aPosLits)
-    val bNegLits = bStand.negativeLiterals
-    log.trace("Negative literals of standardized Clause {} are : {}", bStand, bNegLits)
+    // Apos , Bneg
 
-    val conclusions: Set[FOLClause] = (for (aPos <- aPosLits;
-                                            bNeg <- bNegLits;
+    val conclusions = doResolve(aStand, bStand) ++
+            doResolve(bStand, aStand)
+
+    if (!conclusions.isEmpty) {
+      log.trace("Resolved from clauses {} and {} --> {}", (a, b, conclusions))
+    } else {
+      log.trace("RESOLVED NOTHING from clauses {} and {} !", a, b)
+    }
+    conclusions
+
+  }
+
+
+  private def doResolve(aStand: FOLClause, bStand: FOLClause): Set[FOLClause] = {
+
+    val aLits = aStand.positiveLiterals
+    //    log.trace("Positive literals of standardized Clause {} are : {}", aStand, aLits)
+    val bLits = bStand.negativeLiterals
+    //    log.trace("Negative literals of standardized Clause {} are : {}", bStand, bLits)
+
+    val conclusions: Set[FOLClause] = (for (aPos <- aLits;
+                                            bNeg <- bLits;
                                             mgu = unificator.unify(aPos, bNeg);
                                             if (mgu != None))
     yield mgu match {
@@ -84,7 +99,7 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
           // apply it to the two clauses excluding the 2 focused
           log.trace("MGU for Literal : {} and Literal {} is {}", Array(aPos, bNeg, mgu))
           //            Let S_1 and S_2 be two clauses with no variables in common, let S_1 contain a positive literal L_1, S_2 contain a negative literal L_2, and let eta be the most general unifier of L_1 and L_2. Then
-          //(S_1eta-L_1eta) union (S_2eta-L_2eta)  
+          //(S_1eta-L_1eta) union (S_2eta-L_2eta)
 
           val S1 = substitutor.substitute(mgu, aStand)
           val aPosS = substitutor.substitute(mgu, aPos)
@@ -95,7 +110,7 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
           val binaryResolvent = (S1 - aPosS) ++ (S2 - bNegS)
 
           if (binaryResolvent.isEmpty) {
-            log.trace("EMPTY RESOLVENTS !!!")
+            log.info("EMPTY CLAUSE RESOLVED FROM {} and {}", aStand, bStand)
             EmptyClause()
           } else {
             binaryResolvent
@@ -108,12 +123,6 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
         }
       })
 
-
-    if (!conclusions.isEmpty) {
-      log.trace("Resolved from clauses {} and {} --> {}", (a, b, conclusions))
-    } else {
-      log.trace("RESOLVED NOTHING from clauses {} and {} !", a, b)
-    }
     conclusions
 
   }
@@ -136,8 +145,8 @@ class GeneralResolution(env: {val unificator: Unify}) extends Resolution {
    * Deﬁnition 8.5.2 Given two clauses A and B, a clause C is a resolvent of
    * A and B iﬀ the following holds:
    *
-   * (i) There is a subset A′ =                     { A1 , ..., Am } ⊆ A of literals all of the same sign,
-   * a subset B′ =                     { B1 , ..., Bn } ⊆ B of literals all of the opposite sign of the set A′ ,
+   * (i) There is a subset A′ =                       { A1 , ..., Am } ⊆ A of literals all of the same sign,
+   * a subset B′ =                       { B1 , ..., Bn } ⊆ B of literals all of the opposite sign of the set A′ ,
    * and a separating pair of substitutions (ρ, ρ′ ) such that the set |ρ(A′ ) ∪ ρ′ (B′ )|
    * is uniﬁable;
    *
