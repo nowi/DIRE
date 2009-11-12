@@ -209,5 +209,82 @@ class ResolutionSpec extends Spec with ShouldMatchers {
     }
 
 
+
+    it("should resolve the steps from the curiostiy kills the cat example") {
+      // init with the resolution example from the AIMA Book page 298
+
+
+      val x = Variable("x")
+      val y = Variable("y")
+      val z = Variable("z")
+      // the curiosity killed the cat domain
+      val tuna = Constant("Tuna")
+      val jack = Constant("Jack")
+      val curiosity = Constant("Curiosity")
+      val loves = (x: FOLNode, y: FOLNode) => Predicate("Loves", x, y)
+      val kills = (x: FOLNode, y: FOLNode) => Predicate("Kills", x, y)
+      val cat = (x: FOLNode) => Predicate("Cat", x)
+      val animal = (x: FOLNode) => Predicate("Animal", x)
+      val f = (x: FOLNode) => Predicate("F", x)
+      val g = (x: FOLNode) => Predicate("G", x)
+
+
+      val A1 = Clause(animal(f(x)), loves(g(x), x))
+      val A2 = Clause(Negation(loves(x, f(x))), loves(g(x), x))
+      val B = Clause(Negation(animal(y)), Negation(kills(x, y)), Negation(loves(z, x)))
+      val C = Clause(Negation(animal(x)), loves(jack, x))
+      val D = Clause(kills(jack, tuna), kills(curiosity, tuna))
+      val E = Clause(cat(tuna))
+      val F = Clause(Negation(cat(x)), animal(x))
+      val goalClauseCuriosity = Clause(Negation(kills(curiosity, tuna)))
+
+
+
+
+      // 1.) resolve goal clause with the C1
+      val R1 = resolver.resolve(E, F)
+      log.info("R1 : {}", R1)
+      R1 should have size (1)
+      R1.contains(Clause(animal(tuna))) should be(true)
+
+
+      val R2 = resolver.resolve(R1.toList.head, B)
+      log.info("R2 : {}", R2)
+      R2 should have size (1)
+      R2.contains(Clause(Negation(loves(z, x)), Negation(kills(x, tuna)))) should be(true)
+
+      val R2_1 = resolver.resolve(D, goalClauseCuriosity)
+      log.info("R2_1 : {}", R2_1)
+      R2_1 should have size (1)
+      R2_1.contains(Clause(kills(jack, tuna))) should be(true)
+
+
+      val R3 = resolver.resolve(R2.toList.head, R2_1.toList.head)
+      log.info("R3 : {}", R3)
+      R3 should have size (1)
+      R3.contains(Clause(Negation(loves(z, jack)))) should be(true)
+
+      val R3_1 = resolver.resolve(A2, C)
+      log.info("R3_1 : {}", R3_1)
+      R3_1 should have size (1)
+      R3_1.contains(Clause(Negation(animal(f(jack))), loves(g(jack), jack))) should be(true)
+
+
+      val R4 = resolver.resolve(R3_1.toList.head, A1)
+      log.info("R4 : {}", R4)
+      R4 should have size (1)
+      R4.contains(Clause(loves(g(jack), jack))) should be(true)
+
+
+
+      val R5 = resolver.resolve(R4.toList.head, R3.toList.head)
+      log.info("R5 : {}", R5)
+      R5 should have size (1)
+      R5.contains(EmptyClause()) should be(true)
+
+
+    }
+
+
   }
 }

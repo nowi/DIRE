@@ -99,9 +99,25 @@ abstract class ProovingSpec extends Spec with ShouldMatchers {
 
 
     // the curiosity killed the cat domain
+    val tuna = Constant("Tuna")
+    val jack = Constant("Jack")
+    val curiosity = Constant("Curiosity")
+    val loves = (x: FOLNode, y: FOLNode) => Predicate("Loves", x, y)
+    val kills = (x: FOLNode, y: FOLNode) => Predicate("Kills", x, y)
+    val cat = (x: FOLNode) => Predicate("Cat", x)
+    val animal = (x: FOLNode) => Predicate("Animal", x)
+    val f = (x: FOLNode) => Predicate("F", x)
+    val g = (x: FOLNode) => Predicate("G", x)
 
 
-
+    val A1 = Clause(animal(f(x)), loves(g(x), x))
+    val A2 = Clause(Negation(loves(x, f(x))), loves(g(x), x))
+    val B = Clause(Negation(animal(y)), Negation(kills(x, y)), Negation(loves(z, x)))
+    val C = Clause(Negation(animal(x)), loves(jack, x))
+    val D = Clause(kills(jack, tuna), kills(curiosity, tuna))
+    val E = Clause(cat(tuna))
+    val F = Clause(Negation(cat(x)), animal(x))
+    val goalClauseCuriosity = Clause(Negation(kills(curiosity, tuna)))
 
 
 
@@ -151,6 +167,14 @@ abstract class ProovingSpec extends Spec with ShouldMatchers {
       // create a proover
       resolutionProover.prove(CNFClauseStore(
         Clause(Predicate("Criminal", west)), C1, C2, C3, C4, C5, C6, C7, C8)) should not equal (ProofFound())
+
+
+    }
+
+
+    it("should prove that curiosity killed the cat") {
+      // create a proover
+      resolutionProover.prove(CNFClauseStore(A1, A2, B, C, D, E, F, goalClauseCuriosity)) should equal(ProofFound())
 
 
     }

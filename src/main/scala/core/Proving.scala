@@ -31,7 +31,7 @@ class ResolutionProover1(env: {val tautologyDeleter: TautologyDeletion; val subs
 
   val log = LoggerFactory getLogger (this getClass)
 
-  val rnd = new Random
+  val rnd = new Random(System.currentTimeMillis)
 
 
   val resolver = env.resolver
