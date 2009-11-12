@@ -21,113 +21,6 @@ class ResolutionSpec extends Spec with ShouldMatchers {
   val log = LoggerFactory getLogger (this getClass)
   val resolver = new BinaryResolver(TheoremProvingConfig1)
   describe("A object implementing the Resolution Trait") {
-    //    it("should factorize some clauses") {
-    //      // init with the resolution example from the AIMA Book page 298
-    //
-    //
-    //
-    //      val x = Variable("x")
-    //      val y = Variable("y")
-    //      val z = Variable("z")
-    //      val west = Constant("West")
-    //      val nono = Constant("Nono")
-    //      val m1 = Constant("M1")
-    //      val america = Constant("America")
-    //
-    //
-    //      val C1 = Clause(Negation(Predicate("American", x)), Predicate("Weapon", y),
-    //        Negation(Predicate("Sells", x, y, z)), Negation(Predicate("Hostile", z)),
-    //        Predicate("Criminal", x))
-    //
-    //      val C2 = Clause(
-    //        Negation(Predicate("Missile", x)),
-    //        Negation(Predicate("Owns", nono, x)),
-    //        Predicate("Sells", west, x, nono)
-    //        )
-    //
-    //      val C3 = Clause(
-    //        Negation(Predicate("Enemy", x, america)),
-    //        Predicate("Hostile", x)
-    //        )
-    //
-    //
-    //      val C4 = Clause(
-    //        Negation(Predicate("Missile", x)),
-    //        Predicate("Weapon", x)
-    //        )
-    //
-    //      val C5 = Clause(
-    //        Predicate("Owns", nono, m1)
-    //        )
-    //      val C6 = Clause(
-    //        Predicate("Missile", m1)
-    //        )
-    //      val C7 = Clause(
-    //        Predicate("American", west)
-    //        )
-    //
-    //      val C8 = Clause(
-    //        Predicate("Enemy", nono, america)
-    //        )
-    //
-    //
-    //
-    //
-    //      val clauseStore = CNFClauseStore(C1, C2, C3, C4, C5, C6, C7, C8)
-    //
-    //
-    //      // create a proover
-    //
-    //      // factorize a store
-    //      factorizer.factorize(clauseStore)
-    //
-    //
-    //    }
-
-    //    it("should resolve the 2 clauses from the http://www.enm.bris.ac.uk/ai/enjl/logic/sld034.html") {
-    //      // init with the resolution example from the AIMA Book page 298
-    //
-    //
-    //      val y = Variable("x")
-    //      val x = Variable("y")
-    //      val z = Variable("z")
-    //
-    //      val C1 = Clause(Predicate("man", x), Predicate("man", y), Negation(Predicate("in_love", x, y)))
-    //      // x gets rewritten to y  , we need logical equals methods
-    //      val C2 = Clause(Predicate("male", z), Negation(Predicate("man", z)))
-    //
-    //
-    //      // factorize
-    //      val conclusions = resolver.resolve(C1, C2)
-    //
-    //      log.trace("Resolved {} , {} --> {}", C1, C2, conclusions)
-    //
-    //
-    //    }
-    //
-    //    it("should resolve the 2 clauses from http://mathworld.wolfram.com/ResolutionPrinciple.html") {
-    //      // init with the resolution example from the AIMA Book page 298
-    //
-    //
-    //      val y = Variable("y")
-    //      val x = Variable("x")
-    //      val a = Constant("a")
-    //
-    //      val C1 = Clause(Predicate("P", x), Predicate("Q", x))
-    //      // x gets rewritten to y  , we need logical equals methods
-    //      val C2 = Clause(Negation(Predicate("P", a)), Predicate("R", y))
-    //
-    //
-    //      // factorize
-    //      val conclusions: Set[Clause] = resolver.resolve(C1, C2)
-    //      log.trace("Resolved {} , {} --> {}", C1, C2, conclusions)
-    //      conclusions should contain(Clause(Predicate("Q", a), Predicate("R", y)))
-    //      conclusions should have size (1)
-    //
-    //
-    //    }
-
-
     it("it should resolve the steps from the aima book page 298") {
       // init with the resolution example from the AIMA Book page 298
 
@@ -260,6 +153,57 @@ class ResolutionSpec extends Spec with ShouldMatchers {
       log.trace("R9 : {}", R9)
       //      R9 should contain(EmptyClause())
       R9.contains(EmptyClause()) should be(true)
+
+
+    }
+
+    it("some experiments") {
+      // init with the resolution example from the AIMA Book page 298
+
+
+      val x = Variable("x")
+      val y = Variable("y")
+      val z = Variable("z")
+      val west = Constant("West")
+      val nono = Constant("Nono")
+      val m1 = Constant("M1")
+      val america = Constant("America")
+      val sells = (x: FOLNode, y: FOLNode, z: FOLNode) => Predicate("Sells", x, y, z)
+      val weapon = (x: FOLNode) => Predicate("Weapon", x)
+      val american = (x: FOLNode) => Predicate("American", x)
+      val hostile = (x: FOLNode) => Predicate("Hostile", x)
+      val missile = (x: FOLNode) => Predicate("Missile", x)
+      val owns = (x: FOLNode, y: FOLNode) => Predicate("Owns", x, y)
+      val enemy = (x: FOLNode, y: FOLNode) => Predicate("Enemy", x, y)
+
+
+      val C1 = Clause(Negation(Predicate("American", x)), Negation(Predicate("Weapon", y)),
+        Negation(Predicate("Sells", x, y, z)), Negation(Predicate("Hostile", z)),
+        Predicate("Criminal", x))
+
+
+      val goalClause = Clause(
+        Negation(Predicate("Criminal", west))
+        )
+
+
+
+
+      // 1.) resolve goal clause with the C1
+      val R1 = resolver.resolve(C1, goalClause)
+      log.trace("R1 : {}", R1)
+      R1 should have size (1)
+      //      R1 should contain(Clause(Negation(sells(west, y, z)), Negation(weapon(y)), Negation(american(west)), Negation(hostile(z))))
+      R1.contains(Clause(Negation(sells(west, y, z)), Negation(weapon(y)), Negation(american(west)), Negation(hostile(z)))) should be(true)
+
+
+
+      // 1.) resolve goal clause with the C1
+      val R2 = resolver.resolve(goalClause, C1)
+      log.trace("R1 : {}", R2)
+      R2 should have size (1)
+      //      R1 should contain(Clause(Negation(sells(west, y, z)), Negation(weapon(y)), Negation(american(west)), Negation(hostile(z))))
+      R2.contains(Clause(Negation(sells(west, y, z)), Negation(weapon(y)), Negation(american(west)), Negation(hostile(z)))) should be(true)
 
 
     }
