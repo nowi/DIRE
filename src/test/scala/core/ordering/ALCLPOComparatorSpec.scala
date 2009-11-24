@@ -16,7 +16,7 @@ import org.scalatest.Spec
 import org.slf4j.LoggerFactory
 
 @RunWith(classOf[JUnit4Runner])
-class LiteralComparatorSpec extends Spec with ShouldMatchers {
+class ALCLPOComparatorSpec extends Spec with ShouldMatchers {
   describe("ALCLPOrderingComparator") {
 
     val log = LoggerFactory getLogger (this getClass)
@@ -28,12 +28,13 @@ class LiteralComparatorSpec extends Spec with ShouldMatchers {
     val a = Function("Knows", List(john, Variable("x")))
     val b = Function("Knows", List(john, jane))
     val b1 = Function("Knows", List(john))
+    val b2 = Function("Knows1", List(john))
     val c = Function("Knows", List(Variable("y"), leonid))
     val c1 = Function("Knows1", List(Variable("y"), leonid))
     val d = Function("Knows", List(Variable("y"), Function("Mother", List(Variable("y")))))
     val e = Function("Knows", List(Variable("x"), elizabeth))
 
-    val comparator: ALCLPComparator = new ALCLPComparator
+    val comparator: ALCLPOComparator = new ALCLPOComparator
 
     //    it("Literals that contain different variables are incomparable") {
     //      // should throw exception
@@ -47,37 +48,44 @@ class LiteralComparatorSpec extends Spec with ShouldMatchers {
     //    }
 
     it("Literals not containing function or predicate.") {
-      comparator.comparePartial(leonid, elizabeth) should equal(Some(1))
-      comparator.comparePartial(elizabeth, leonid) should equal(Some(-1))
-      comparator.comparePartial(leonid, leonid) should equal(Some(0))
+      comparator.compare(leonid, elizabeth) should equal(Some(1))
+      comparator.compare(elizabeth, leonid) should equal(Some(-1))
+      comparator.compare(leonid, leonid) should equal(Some(0))
     }
 
     it("Literals containing a function symbol precede literals that do not contain a function symbol.") {
-      comparator.comparePartial(c, leonid) should equal(Some(1))
-      comparator.comparePartial(leonid, c) should equal(Some(-1))
-      comparator.comparePartial(leonid, leonid) should equal(Some(0))
+      comparator.compare(c, leonid) should equal(None)
+      comparator.compare(leonid, c) should equal(None)
+      comparator.compare(leonid, leonid) should equal(Some(0))
     }
 
     it("Literals containing a function symbol are ordered according to the precedence of the function symbols.") {
-      comparator.comparePartial(c, c1) should equal(Some(-1))
-      comparator.comparePartial(c1, c) should equal(Some(1))
-      comparator.comparePartial(c1, c1) should equal(Some(0))
+      comparator.compare(c, c1) should equal(Some(-1))
+      comparator.compare(c1, c) should equal(Some(1))
+      comparator.compare(c1, c1) should equal(Some(0))
 
     }
 
+    //    it("Literals containing nested functions/predicates") {
+    //      comparator.compare(c, d) should equal(Some(-1))
+    //      comparator.compare(d, c) should equal(Some(1))
+    //      comparator.compare(d, d) should equal(Some(0))
+    //
+    //
+    //    }
 
-    it("Literals containing nested functions/predicates") {
-      comparator.comparePartial(c, d) should equal(Some(-1))
-      comparator.comparePartial(d, c) should equal(Some(1))
-      comparator.comparePartial(d, d) should equal(Some(0))
+    it("Functions with different arities but same function symbol") {
+      comparator.compare(b, b1) should equal(Some(0))
+      comparator.compare(b1, b) should equal(Some(0))
+      comparator.compare(b1, b1) should equal(Some(0))
 
 
     }
 
-    it("Functions with different arities") {
-      comparator.comparePartial(b, b1) should equal(Some(1))
-      comparator.comparePartial(b1, b) should equal(Some(-1))
-      comparator.comparePartial(b1, b1) should equal(Some(0))
+    it("Functions with different arities but different function symbol") {
+      comparator.compare(b, b2) should equal(Some(-1))
+      comparator.compare(b2, b) should equal(Some(1))
+      comparator.compare(b2, b2) should equal(Some(0))
 
 
     }
