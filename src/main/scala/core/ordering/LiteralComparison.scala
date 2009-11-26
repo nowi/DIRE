@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory
  * @author Philipp Nowakowski
  * @see Comparator
  */
-trait LiteralComparator {
+trait LiteralComparison {
   def compare(a: FOLNode, b: FOLNode): Option[Int]
 
   def isGreater(o1: FOLNode, o2: FOLNode): Boolean = {
@@ -244,14 +244,17 @@ trait LiteralComparator {
  *  2.) Literals containing a function symbol are ordered according to the precedence of the function symbols.
  *  3.) Literals not containing a function symbol are ordered according to the precedence of the predicate symbols.
  */
-class ALCLPOComparator extends LiteralComparator {
+class ALCLPOComparator extends LiteralComparison {
   val log = LoggerFactory getLogger (this getClass)
 
 
   def compare(a: FOLNode, b: FOLNode) = {
     //    Literals that contain different variables are incomparable
+    assert((a, b) match {
+      case (FOLLiteral(x), FOLLiteral(y)) => true
+      case _ => false
+    })
 
-    //
     val aVars = a.flatArgs.filter({_.isInstanceOf[Variable]})
     val bVars = b.flatArgs.filter({_.isInstanceOf[Variable]})
 
@@ -292,8 +295,20 @@ class ALCLPOComparator extends LiteralComparator {
               assert(aPreds.size == 1 && bPreds.size == 1)
               Some(comparePrecedence(aps, bps))
             }
+
             // 3.) Literals not containing a predaice must now be varisbles or constants , comparePrecedence
-            case (Nil, Nil) => Some(comparePrecedence(a, b))
+            case (Nil, Nil) => {
+
+              // check if its a negation,  negations have precedence over non functions/predicates
+              (a, b) match {
+                case (Negation(x), Negation(y)) => Some(comparePrecedence(x, y))
+                case (_, Negation(y)) => Some(-1)
+                case (Negation(x), _) => Some(1)
+                case (x, y) => Some(comparePrecedence(a, b))
+              }
+
+
+            }
 
           }
 
@@ -311,6 +326,7 @@ class ALCLPOComparator extends LiteralComparator {
   }
 
   def comparePrecedence(a: FOLNode, b: FOLNode): Int = {
+
     // compare lexical
     val result = a.asInstanceOf[Term].name.compareTo(b.asInstanceOf[Term].name)
     //    log.trace("Precedence comparison for {} and {} yielded %d", a, b, result)
