@@ -73,7 +73,7 @@ class VariableRewriter extends VariableRewriting {
     val rewrittenClauses = clause.literals.map({x: FOLNode => x.map(f(_: FOLNode, theta))})
     // apply this function partially , theta is fixed
     log.trace("Rewritten clauses are : {}", rewrittenClauses)
-    Clause(rewrittenClauses)
+    StandardClause(rewrittenClauses)
 
   }
 

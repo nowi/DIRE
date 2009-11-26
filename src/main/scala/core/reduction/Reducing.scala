@@ -127,7 +127,7 @@ class SubsumptionDeleter(env: {val subsumptionStrategy: Subsumption}) extends Su
     (a, b) match {
       case (NonEmptyClauseStore(inClauses), NonEmptyClauseStore(fromClauses)) => {
         log.trace("Delete Subsumptions in Clauses {} that are subsumed by {} ...  for now we check if a is contained in b", inClauses, fromClauses)
-        val subsumed = (for (c1 <- fromClauses.clauses; c2 <- inClauses.clauses; if (c1 != c2); if (subsumer.subsumes(c1, c2))) yield c2)
+        val subsumed = (for (c1 <- fromClauses.clauses; c2 <- inClauses.clauses; if (c1 != c2); if (!c1.isEmpty && !c2.isEmpty); if (subsumer.subsumes(c1, c2))) yield c2)
         log.trace("2. Subsumption deletion identified subsumed clauses : {} ", subsumed)
         inClauses -- CNFClauseStore(subsumed)
       }

@@ -34,45 +34,45 @@ abstract class SubsumptionDeletionSpec extends Spec with ShouldMatchers with Log
       val america = Constant("America")
 
 
-      val C1 = Clause(Negation(Predicate("American", x)), Predicate("Weapon", y),
+      val C1 = StandardClause(Negation(Predicate("American", x)), Predicate("Weapon", y),
         Negation(Predicate("Sells", x, y, z)), Negation(Predicate("Hostile", z)),
         Predicate("Criminal", x))
 
-      val C2 = Clause(
+      val C2 = StandardClause(
         Negation(Predicate("Missile", x)),
         Negation(Predicate("Owns", nono, x)),
         Predicate("Sells", west, x, nono)
         )
 
-      val C3 = Clause(
+      val C3 = StandardClause(
         Negation(Predicate("Enemy", x, america)),
         Predicate("Hostile", x)
         )
 
 
-      val C4 = Clause(
+      val C4 = StandardClause(
         Negation(Predicate("Missile", x)),
         Predicate("Weapon", x)
         )
 
-      val C5 = Clause(
+      val C5 = StandardClause(
         Predicate("Owns", nono, m1)
         )
-      val C6 = Clause(
+      val C6 = StandardClause(
         Predicate("Missile", m1)
         )
-      val C7 = Clause(
+      val C7 = StandardClause(
         Predicate("American", west)
         )
 
-      val C8 = Clause(
+      val C8 = StandardClause(
         Predicate("Enemy", nono, america)
         )
 
 
-      val clauseStore = CNFClauseStore(Clause(Negation(Predicate("Missile", x))), Clause(Negation(Predicate("Missile", m1))), Clause(Predicate("Missile", m1), Predicate("Missile", m2)))
+      val clauseStore = CNFClauseStore(StandardClause(Negation(Predicate("Missile", x))), StandardClause(Negation(Predicate("Missile", m1))), StandardClause(Predicate("Missile", m1), Predicate("Missile", m2)))
 
-      subsumptionDeleter.deleteSubsumptions(clauseStore) should equal(CNFClauseStore(Clause(Negation(Predicate("Missile", x)))))
+      subsumptionDeleter.deleteSubsumptions(clauseStore) should equal(CNFClauseStore(StandardClause(Negation(Predicate("Missile", x)))))
 
 
     }
@@ -89,44 +89,44 @@ abstract class SubsumptionDeletionSpec extends Spec with ShouldMatchers with Log
       val america = Constant("America")
 
 
-      val C1 = Clause(Negation(Predicate("American", x)), Predicate("Weapon", y),
+      val C1 = StandardClause(Negation(Predicate("American", x)), Predicate("Weapon", y),
         Negation(Predicate("Sells", x, y, z)), Negation(Predicate("Hostile", z)),
         Predicate("Criminal", x))
 
-      val C2 = Clause(
+      val C2 = StandardClause(
         Negation(Predicate("Missile", x)),
         Negation(Predicate("Owns", nono, x)),
         Predicate("Sells", west, x, nono)
         )
 
-      val C3 = Clause(
+      val C3 = StandardClause(
         Negation(Predicate("Enemy", x, america)),
         Predicate("Hostile", x)
         )
 
 
-      val C4 = Clause(
+      val C4 = StandardClause(
         Negation(Predicate("Missile", x)),
         Predicate("Weapon", x)
         )
 
-      val C5 = Clause(
+      val C5 = StandardClause(
         Predicate("Owns", nono, m1)
         )
-      val C6 = Clause(
+      val C6 = StandardClause(
         Predicate("Missile", m1)
         )
-      val C7 = Clause(
+      val C7 = StandardClause(
         Predicate("American", west)
         )
 
-      val C8 = Clause(
+      val C8 = StandardClause(
         Predicate("Enemy", nono, america)
         )
 
 
-      val inClauseStore = CNFClauseStore(Clause(Negation(Predicate("Missile", m1))), Clause(Predicate("Missile", m1), Predicate("Missile", m2)))
-      val fromClauseStore = CNFClauseStore(Clause(Negation(Predicate("Missile", x))))
+      val inClauseStore = CNFClauseStore(StandardClause(Negation(Predicate("Missile", m1))), StandardClause(Predicate("Missile", m1), Predicate("Missile", m2)))
+      val fromClauseStore = CNFClauseStore(StandardClause(Negation(Predicate("Missile", x))))
       // shoudl be completely reduzed
       subsumptionDeleter.deleteSubsumptions(inClauseStore, fromClauseStore) should equal(CNFClauseStore())
 

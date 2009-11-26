@@ -49,47 +49,47 @@ abstract class ProovingSpec extends Spec with ShouldMatchers {
     val enemy = (x: FOLNode, y: FOLNode) => Predicate("Enemy", x, y)
 
 
-    val C1 = Clause(Negation(Predicate("American", x)), Negation(Predicate("Weapon", y)),
+    val C1 = StandardClause(Negation(Predicate("American", x)), Negation(Predicate("Weapon", y)),
       Negation(Predicate("Sells", x, y, z)), Negation(Predicate("Hostile", z)),
       Predicate("Criminal", x))
 
-    val C2 = Clause(
+    val C2 = StandardClause(
       Negation(Predicate("Missile", x)),
       Negation(Predicate("Owns", nono, x)),
       Predicate("Sells", west, x, nono)
       )
 
-    val C3 = Clause(
+    val C3 = StandardClause(
       Negation(Predicate("Enemy", x, america)),
       Predicate("Hostile", x)
       )
 
 
-    val C4 = Clause(
+    val C4 = StandardClause(
       Negation(Predicate("Missile", x)),
       Predicate("Weapon", x)
       )
 
-    val C5 = Clause(
+    val C5 = StandardClause(
       Predicate("Owns", nono, m1)
       )
-    val C6 = Clause(
+    val C6 = StandardClause(
       Predicate("Missile", m1)
       )
-    val C7 = Clause(
+    val C7 = StandardClause(
       Predicate("American", west)
       )
 
-    val C8 = Clause(
+    val C8 = StandardClause(
       Predicate("Enemy", nono, america)
       )
 
-    val goalClause = Clause(
+    val goalClause = StandardClause(
       Negation(Predicate("Criminal", west))
       )
 
 
-    val goalClause2 = Clause(
+    val goalClause2 = StandardClause(
       Negation(Predicate("American", west))
       )
 
@@ -110,14 +110,14 @@ abstract class ProovingSpec extends Spec with ShouldMatchers {
     val g = (x: FOLNode) => Predicate("G", x)
 
 
-    val A1 = Clause(animal(f(x)), loves(g(x), x))
-    val A2 = Clause(Negation(loves(x, f(x))), loves(g(x), x))
-    val B = Clause(Negation(animal(y)), Negation(kills(x, y)), Negation(loves(z, x)))
-    val C = Clause(Negation(animal(x)), loves(jack, x))
-    val D = Clause(kills(jack, tuna), kills(curiosity, tuna))
-    val E = Clause(cat(tuna))
-    val F = Clause(Negation(cat(x)), animal(x))
-    val goalClauseCuriosity = Clause(Negation(kills(curiosity, tuna)))
+    val A1 = StandardClause(animal(f(x)), loves(g(x), x))
+    val A2 = StandardClause(Negation(loves(x, f(x))), loves(g(x), x))
+    val B = StandardClause(Negation(animal(y)), Negation(kills(x, y)), Negation(loves(z, x)))
+    val C = StandardClause(Negation(animal(x)), loves(jack, x))
+    val D = StandardClause(kills(jack, tuna), kills(curiosity, tuna))
+    val E = StandardClause(cat(tuna))
+    val F = StandardClause(Negation(cat(x)), animal(x))
+    val goalClauseCuriosity = StandardClause(Negation(kills(curiosity, tuna)))
 
 
 
@@ -158,7 +158,7 @@ abstract class ProovingSpec extends Spec with ShouldMatchers {
     it("should not refute that west is not american") {
       // create a proover
       resolutionProover.prove(CNFClauseStore(
-        Clause(Predicate("American", west)), C1, C2, C3, C4, C5, C6, C7, C8)) should not equal (ProofFound())
+        StandardClause(Predicate("American", west)), C1, C2, C3, C4, C5, C6, C7, C8)) should not equal (ProofFound())
 
 
     }
@@ -166,7 +166,7 @@ abstract class ProovingSpec extends Spec with ShouldMatchers {
     it("should not refute that west is not criminal") {
       // create a proover
       resolutionProover.prove(CNFClauseStore(
-        Clause(Predicate("Criminal", west)), C1, C2, C3, C4, C5, C6, C7, C8)) should not equal (ProofFound())
+        StandardClause(Predicate("Criminal", west)), C1, C2, C3, C4, C5, C6, C7, C8)) should not equal (ProofFound())
 
 
     }

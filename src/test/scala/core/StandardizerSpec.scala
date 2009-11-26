@@ -46,8 +46,8 @@ class StandardizerSpec extends Spec with ShouldMatchers {
       val a = Variable("a")
       val z = Variable("z")
       // A = {¬P (z , a), ¬P (z , x), ¬P (x, z )}
-      val A = Clause(Negation(Predicate("P", z, a)), Negation(Predicate("P", z, x)), Negation(Predicate("P", x, z)))
-      val B = Clause(Predicate("P", z, Function("f", z)), Predicate("P", z, a))
+      val A = StandardClause(Negation(Predicate("P", z, a)), Negation(Predicate("P", z, x)), Negation(Predicate("P", x, z)))
+      val B = StandardClause(Predicate("P", z, Function("f", z)), Predicate("P", z, a))
 
 
       val theta5 = standardizer.standardizeApart(A, B)

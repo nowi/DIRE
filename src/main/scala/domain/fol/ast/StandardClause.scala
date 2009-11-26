@@ -94,7 +94,7 @@ trait FOLClause {
  *
  * A standard clause == disjunction of literals == Literal OR Literal ...
  */
-case class Clause(literals: Set[FOLNode]) extends FOLClause {
+case class StandardClause(literals: Set[FOLNode]) extends FOLClause {
   // all folnodes have to be literals
   assert(literals forall ((_ match {
     case FOLLiteral(x) => true
@@ -107,22 +107,22 @@ case class Clause(literals: Set[FOLNode]) extends FOLClause {
 
 
   override def ++(that: FOLClause): FOLClause =
-    Clause(literals ++ that.literals)
+    StandardClause(literals ++ that.literals)
 
 
   override def --(that: FOLClause): FOLClause =
-    Clause(literals -- that.literals)
+    StandardClause(literals -- that.literals)
 
 
   override def -(that: FOLNode): FOLClause =
-    Clause(literals - that)
+    StandardClause(literals - that)
 
 
   override def +(that: FOLNode): FOLClause =
-    Clause(literals + that)
+    StandardClause(literals + that)
 
 
-  override def absoluteClause = Clause(absoluteLiterals)
+  override def absoluteClause = StandardClause(absoluteLiterals)
 
 
   override def toString = "Clause : %s" format (literals mkString ("[", "∨", "]"))
@@ -149,10 +149,12 @@ case class EmptyClause extends FOLClause {
   override def --(that: FOLClause) = EmptyClause()
 }
 
-object Clause {
-  def apply(params: FOLNode*): Clause = {
-    Clause(Set(params: _*))
+object StandardClause {
+  def apply(params: FOLNode*): StandardClause = {
+    StandardClause(Set(params: _*))
   }
+
+  implicit def FOLClauseToStandardClause(x: FOLClause): StandardClause = x.asInstanceOf[StandardClause]
 
 }
 

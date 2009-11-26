@@ -1,7 +1,7 @@
 package core.containers
 
 
-import domain.fol.ast.{FOLClause, EmptyClause, Sentence, Clause}
+import domain.fol.ast.{FOLClause, EmptyClause, Sentence}
 import rewriting.CNFRewriting
 
 /**

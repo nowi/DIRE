@@ -42,7 +42,7 @@ class FOLDomainSpec extends Spec with ShouldMatchers with Logging {
       val richard = Constant("richard");
       val john = Constant("john");
 
-      val clause = Clause(richard, john);
+      val clause = StandardClause(richard, john);
 
       println(clause)
 
@@ -56,7 +56,7 @@ class FOLDomainSpec extends Spec with ShouldMatchers with Logging {
 
       // create literals
 
-      val clause = Clause(richard, john)
+      val clause = StandardClause(richard, john)
 
       val positives = clause.positiveLiterals;
       log.trace("Positive Literals of CLause {} are {}", clause, positives)
@@ -120,12 +120,12 @@ class FOLDomainSpec extends Spec with ShouldMatchers with Logging {
       val enemy = (x: FOLNode, y: FOLNode) => Predicate("Enemy", x, y)
 
 
-      val C1 = Clause(Negation(Predicate("American", x)), Negation(Predicate("Weapon", y)),
+      val C1 = StandardClause(Negation(Predicate("American", x)), Negation(Predicate("Weapon", y)),
         Negation(Predicate("Sells", x, y, z)), Negation(Predicate("Hostile", z)),
         Predicate("Criminal", x))
 
 
-      val C2 = Clause(Negation(Predicate("American", x)), Negation(Predicate("Weapon", y)),
+      val C2 = StandardClause(Negation(Predicate("American", x)), Negation(Predicate("Weapon", y)),
         Negation(Predicate("Sells", x, y, z)),
         Predicate("Criminal", x))
 
@@ -145,12 +145,12 @@ class FOLDomainSpec extends Spec with ShouldMatchers with Logging {
 
 
 
-      val C3 = Clause(Negation(Predicate("American", x)), Negation(Predicate("Weapon", y)),
+      val C3 = StandardClause(Negation(Predicate("American", x)), Negation(Predicate("Weapon", y)),
         Predicate("Sells", x, y, z), Negation(Predicate("Hostile", z)),
         Predicate("Criminal", x))
 
 
-      val C4 = Clause(Negation(Predicate("American", x)), Negation(Predicate("Weapon", y)),
+      val C4 = StandardClause(Negation(Predicate("American", x)), Negation(Predicate("Weapon", y)),
         Negation(Predicate("Sells", x, y, z)),
         Predicate("Criminal", x))
 

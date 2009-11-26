@@ -33,38 +33,38 @@ class StandardFactoringSpec extends Spec with ShouldMatchers {
       val america = Constant("America")
 
 
-      val C1 = Clause(Negation(Predicate("American", x)), Predicate("Weapon", y),
+      val C1 = StandardClause(Negation(Predicate("American", x)), Predicate("Weapon", y),
         Negation(Predicate("Sells", x, y, z)), Negation(Predicate("Hostile", z)),
         Predicate("Criminal", x))
 
-      val C2 = Clause(
+      val C2 = StandardClause(
         Negation(Predicate("Missile", x)),
         Negation(Predicate("Owns", nono, x)),
         Predicate("Sells", west, x, nono)
         )
 
-      val C3 = Clause(
+      val C3 = StandardClause(
         Negation(Predicate("Enemy", x, america)),
         Predicate("Hostile", x)
         )
 
 
-      val C4 = Clause(
+      val C4 = StandardClause(
         Negation(Predicate("Missile", x)),
         Predicate("Weapon", x)
         )
 
-      val C5 = Clause(
+      val C5 = StandardClause(
         Predicate("Owns", nono, m1)
         )
-      val C6 = Clause(
+      val C6 = StandardClause(
         Predicate("Missile", m1)
         )
-      val C7 = Clause(
+      val C7 = StandardClause(
         Predicate("American", west)
         )
 
-      val C8 = Clause(
+      val C8 = StandardClause(
         Predicate("Enemy", nono, america)
         )
 
@@ -93,10 +93,10 @@ class StandardFactoringSpec extends Spec with ShouldMatchers {
       val p1 = Predicate("Loves", Function("G", jack), jack)
       val p2 = Predicate("Loves", Function("G", x), x)
 
-      val clause = Clause(p1, p2)
+      val clause = StandardClause(p1, p2)
       val y = Variable("y")
       // factorize
-      factorizer.factorize(clause) should equal(Clause(p1))
+      factorizer.factorize(clause) should equal(StandardClause(p1))
 
 
     }
@@ -109,9 +109,9 @@ class StandardFactoringSpec extends Spec with ShouldMatchers {
       val y = Variable("x")
       val x = Variable("y")
 
-      val C = Clause(Predicate("man", x), Predicate("man", y), Negation(Predicate("in_love", x, y)))
+      val C = StandardClause(Predicate("man", x), Predicate("man", y), Negation(Predicate("in_love", x, y)))
       // x gets rewritten to y  , we need logical equals methods
-      val C1 = Clause(Predicate("man", y), Negation(Predicate("in_love", y, y)))
+      val C1 = StandardClause(Predicate("man", y), Negation(Predicate("in_love", y, y)))
 
 
       // factorize

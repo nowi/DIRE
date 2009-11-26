@@ -33,38 +33,38 @@ abstract class SubsumptionSpec extends Spec with ShouldMatchers with Logging {
       val america = Constant("America")
 
 
-      val C1 = Clause(Negation(Predicate("American", x)), Predicate("Weapon", y),
+      val C1 = StandardClause(Negation(Predicate("American", x)), Predicate("Weapon", y),
         Negation(Predicate("Sells", x, y, z)), Negation(Predicate("Hostile", z)),
         Predicate("Criminal", x))
 
-      val C2 = Clause(
+      val C2 = StandardClause(
         Negation(Predicate("Missile", x)),
         Negation(Predicate("Owns", nono, x)),
         Predicate("Sells", west, x, nono)
         )
 
-      val C3 = Clause(
+      val C3 = StandardClause(
         Negation(Predicate("Enemy", x, america)),
         Predicate("Hostile", x)
         )
 
 
-      val C4 = Clause(
+      val C4 = StandardClause(
         Negation(Predicate("Missile", x)),
         Predicate("Weapon", x)
         )
 
-      val C5 = Clause(
+      val C5 = StandardClause(
         Predicate("Owns", nono, m1)
         )
-      val C6 = Clause(
+      val C6 = StandardClause(
         Predicate("Missile", m1)
         )
-      val C7 = Clause(
+      val C7 = StandardClause(
         Predicate("American", west)
         )
 
-      val C8 = Clause(
+      val C8 = StandardClause(
         Predicate("Enemy", nono, america)
         )
 
@@ -76,27 +76,27 @@ abstract class SubsumptionSpec extends Spec with ShouldMatchers with Logging {
 
 
       // Missile variable should subsume concrete missile
-      subsumer.subsumes(Clause(Predicate("Missile", x)), Clause(Predicate("Missile", m1))) should be(true)
+      subsumer.subsumes(StandardClause(Predicate("Missile", x)), StandardClause(Predicate("Missile", m1))) should be(true)
 
 
 
       // concrete missile should NOT subsume variable missile
-      subsumer.subsumes(Clause(Predicate("Missile", m1)), Clause(Predicate("Missile", x))) should be(false)
+      subsumer.subsumes(StandardClause(Predicate("Missile", m1)), StandardClause(Predicate("Missile", x))) should be(false)
 
 
       // Missile variable should subsume concrete missile with negations
-      subsumer.subsumes(Clause(Negation(Predicate("Missile", x))), Clause(Negation(Predicate("Missile", m1)))) should be(true)
+      subsumer.subsumes(StandardClause(Negation(Predicate("Missile", x))), StandardClause(Negation(Predicate("Missile", m1)))) should be(true)
 
 
 
 
       // negated Missile variable should NOT subsume concrete missile
-      subsumer.subsumes(Clause(Negation(Predicate("Missile", x))), Clause(Predicate("Missile", m1))) should be(false)
+      subsumer.subsumes(StandardClause(Negation(Predicate("Missile", x))), StandardClause(Predicate("Missile", m1))) should be(false)
 
 
 
       // subsumtion of redundant information
-      subsumer.subsumes(Clause(Predicate("Missile", m1)), Clause(Predicate("Missile", m1), Predicate("Missile", m2))) should be(true)
+      subsumer.subsumes(StandardClause(Predicate("Missile", m1)), StandardClause(Predicate("Missile", m1), Predicate("Missile", m2))) should be(true)
 
 
     }

@@ -129,23 +129,23 @@ class UnifierSpec extends Spec with ShouldMatchers {
       val a = Constant("a")
       val z = Variable("z")
       // A = {¬P (z , a), ¬P (z , x), ¬P (x, z )}
-      val A = Clause(Negation(Predicate("P", z, a)), Negation(Predicate("P", z, x)), Negation(Predicate("P", x, z)))
+      val A = StandardClause(Negation(Predicate("P", z, a)), Negation(Predicate("P", z, x)), Negation(Predicate("P", x, z)))
 
       //      B = {P (z , f (z )), P (z , a)}.
 
-      val B = Clause(Predicate("P", z, Function("f", z)), Predicate("P", z, a))
+      val B = StandardClause(Predicate("P", z, Function("f", z)), Predicate("P", z, a))
 
       //      A' = {¬P (z , a), ¬P (z , x)}
-      val AStrich = Clause(Negation(Predicate("P", z, a)), Negation(Predicate("P", z, x)))
+      val AStrich = StandardClause(Negation(Predicate("P", z, a)), Negation(Predicate("P", z, x)))
       // ′ = {P (z , a)}
-      val BStrich = Clause(Predicate("P", z, a), Predicate("P", z, Function("f", z)))
+      val BStrich = StandardClause(Predicate("P", z, a), Predicate("P", z, Function("f", z)))
 
 
       val anegstrich = A.negativeLiterals
       val bposstrich = B.positiveLiterals
 
       // unfiy a and e -- this will test the standardise apart case
-      val theta5 = unificator.unify(Clause(anegstrich).absoluteClause, Clause(bposstrich))
+      val theta5 = unificator.unify(StandardClause(anegstrich).absoluteClause, StandardClause(bposstrich))
 
       log.trace("MGU of union of a and b is {}", theta5)
       // the subsitutions should containt Some(Map(z_4 -> z_8, x -> a))
@@ -159,7 +159,7 @@ class UnifierSpec extends Spec with ShouldMatchers {
       val y = Variable("x")
       val x = Variable("y")
 
-      val C = Clause(Predicate("man", x), Predicate("man", y), Negation(Predicate("in_love", x, y)))
+      val C = StandardClause(Predicate("man", x), Predicate("man", y), Negation(Predicate("in_love", x, y)))
       //      val C1 = Clause(Predicate("man", x), Negation(Predicate("in_love", x, x)))
 
       // unfiy a and e -- this will test the standardise apart case
