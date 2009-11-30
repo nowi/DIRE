@@ -96,10 +96,10 @@ trait FOLClause {
  */
 case class StandardClause(literals: Set[FOLNode]) extends FOLClause {
   // all folnodes have to be literals
-  assert(literals forall ((_ match {
-    case FOLLiteral(x) => true
-    case _ => false
-  })), "FOL nodes passed into a clause can only be Literals")
+  //  assert(literals forall ((_ match {
+  //    case FOLLiteral(x) => true
+  //    case _ => false
+  //  })), "FOL nodes passed into a clause can only be Literals, but literals were : %s" format (literals))
 
 
 

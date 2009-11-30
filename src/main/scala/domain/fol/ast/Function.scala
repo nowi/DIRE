@@ -40,7 +40,7 @@ case class Function(name: String, terms: List[FOLNode]) extends Term {
 
   }
 
-  override def toString = "%s(%s)" format (name, terms)
+  override def toString = "%s%s" format (name, terms mkString ("(", ",", ")"))
 
 
 }

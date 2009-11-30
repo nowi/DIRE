@@ -25,8 +25,8 @@ object FOLDsl extends StandardTokenParsers {
 
   def connective: Parser[Sentence] = "(" ~> sentence ~ ("then" | "or" | "and" | "iff") ~ sentence <~ ")" ^^ {
     case s1 ~ "then" ~ s2 => ImplicationConnective(s1, s2)
-    case s1 ~ "or" ~ s2 => OrConnective(s1, s2)
-    case s1 ~ "and" ~ s2 => AndConnective(s1, s2)
+    case s1 ~ "or" ~ s2 => OrConnective(List(s1, s2))
+    case s1 ~ "and" ~ s2 => AndConnective(List(s1, s2))
     case s1 ~ "iff" ~ s2 => EqualityConnective(s1, s2)
   }
 

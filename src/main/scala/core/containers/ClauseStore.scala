@@ -45,8 +45,7 @@ abstract class ClauseStore extends ClauseStorage {
  * Date: 08.10.2009
  * Time: 09:41:59
  *
- * Conjunctive Normal Form (CNF) : a conjunction of clauses, where each
- * clause is a disjunction of literals.
+ * Conjunctive Normal Form (CNF) : a conjunction of clauses, CLAUSe AND CLAUSE AND CLAUSE
  *
  */
 case class CNFClauseStore(clauses: Set[FOLClause]) extends ClauseStore with CNFRewriting {
