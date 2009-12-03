@@ -33,12 +33,10 @@ trait ClauseStorage {
    */
   def --(aStore: ClauseStorage): ClauseStorage
 
-}
-
-
-abstract class ClauseStore extends ClauseStorage {
   override def toString = "ClauseStore : %s" format (clauses mkString ("(", "\n", ")"))
+
 }
+
 
 /**
  * User: nowi
@@ -48,7 +46,7 @@ abstract class ClauseStore extends ClauseStorage {
  * Conjunctive Normal Form (CNF) : a conjunction of clauses, CLAUSe AND CLAUSE AND CLAUSE
  *
  */
-case class CNFClauseStore(clauses: Set[FOLClause]) extends ClauseStore with CNFRewriting {
+case class CNFClauseStore(clauses: Set[FOLClause]) extends ClauseStorage with CNFRewriting {
   override lazy val isEmpty: Boolean = {
     clauses.isEmpty
   }

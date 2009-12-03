@@ -30,6 +30,15 @@ case class AndConnective(args: List[FOLNode]) extends Connective {
   }
 
   override def toString = "%s" format (args mkString ("(", "A", ")"))
+
+
+  def ++(connective: AndConnective): AndConnective = {
+    AndConnective(args ++ connective.args)
+  }
+
+  def --(connective: AndConnective): AndConnective = {
+    AndConnective(args -- connective.args)
+  }
 }
 case class OrConnective(args: List[FOLNode]) extends Connective {
   //require (args.size > 1)
@@ -44,6 +53,16 @@ case class OrConnective(args: List[FOLNode]) extends Connective {
   }
 
   override def toString = "%s" format (args mkString ("(", "∨", ")"))
+
+
+  def ++(connective: OrConnective): OrConnective = {
+    OrConnective(args ++ connective.args)
+  }
+
+  def --(connective: OrConnective): OrConnective = {
+    OrConnective(args -- connective.args)
+  }
+
 }
 
 

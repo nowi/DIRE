@@ -20,7 +20,7 @@ import resolution.Resolution
  */
 
 trait Proving {
-  def prove(clauses: ClauseStore): ProvingResult
+  def prove(clauses: ClauseStorage): ProvingResult
 }
 
 
@@ -39,7 +39,7 @@ class ResolutionProover1(env: {val tautologyDeleter: TautologyDeletion; val subs
   val subsumptionDeleter = env.subsumptionDeleter
   val factorizer = env.factorizer
 
-  override def prove(clauses: ClauseStore): ProvingResult = {
+  override def prove(clauses: ClauseStorage): ProvingResult = {
     log.info("Starting theorem proving on clause store {}", clauses)
 
 
