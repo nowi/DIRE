@@ -1,13 +1,6 @@
-package selection
-
-/**
- * User: nowi
- * Date: 24.11.2009
- * Time: 17:52:44
- */
 import com.jteigen.scalatest.JUnit4Runner
 
-import core.selection.{StandardClauseLiteralSelection, LiteralSelection}
+import core.selection.{ALCRSelector, LiteralSelection}
 import domain.fol.ast._
 import org.junit.runner.RunWith
 import org.scalatest.matchers.ShouldMatchers
@@ -15,10 +8,10 @@ import org.scalatest.Spec
 import org.slf4j.LoggerFactory
 
 @RunWith(classOf[JUnit4Runner])
-class SelectionSpec extends Spec with ShouldMatchers {
+class ALCRSelectorSpec extends Spec with ShouldMatchers {
   describe("ALCRSelectorSpec") {
     val log = LoggerFactory getLogger (this getClass)
-    val selector: LiteralSelection = new StandardClauseLiteralSelection
+    val selector: LiteralSelection = new ALCRSelector
 
     val x = Variable("x")
     val y = Variable("y")
@@ -27,7 +20,9 @@ class SelectionSpec extends Spec with ShouldMatchers {
     val nono = Constant("Nono")
     val m1 = Constant("M1")
     val america = Constant("America")
-    val sells = (x: FOLNode, y: FOLNode, z: FOLNode) => Predicate("Sells", x, y, z)
+    val sellsPred = Predicate("Sells", x, y, z)
+    val sellsFunc = Function("sells", x, y, z)
+
     val weapon = (x: FOLNode) => Predicate("Weapon", x)
     val american = (x: FOLNode) => Predicate("American", x)
     val hostile = (x: FOLNode) => Predicate("Hostile", x)
@@ -41,12 +36,13 @@ class SelectionSpec extends Spec with ShouldMatchers {
       Predicate("Criminal", x))
 
 
-
     it("Basic test") {
-
-      val selection = selector.selectedLiterals(C1)
-      log.debug("The selection for clause {} was {}", C1, selection)
-      assert(true)
+      val selection = selector.selectedLiterals(StandardClause(sellsPred, sellsFunc, Negation(sellsPred), Negation(sellsFunc)))
+      log.warn("The selection for clause {} was {}", C1, selection)
+      assert(selection.contains(Negation(sellsPred)))
+      assert(selection.contains(Negation(sellsFunc)))
+      assert(!selection.contains(sellsPred))
+      assert(!selection.contains(sellsFunc))
     }
   }
 }

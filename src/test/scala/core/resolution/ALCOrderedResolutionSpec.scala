@@ -17,10 +17,11 @@ import org.scalatest.Spec
 import org.slf4j.LoggerFactory
 
 @RunWith(classOf[JUnit4Runner])
-abstract class ResolutionSpec extends Spec with ShouldMatchers {
+abstract class ALCOrderedResolutionSpec extends Spec with ShouldMatchers {
   val log = LoggerFactory getLogger (this getClass)
   val resolver: Resolution
-  describe("A object implementing the Resolution Trait") {
+  describe("A object implementing the ALCOrderedResolution Spec") {
+
     it("it should resolve the steps from the aima book page 298") {
       // init with the resolution example from the AIMA Book page 298
 
@@ -81,7 +82,7 @@ abstract class ResolutionSpec extends Spec with ShouldMatchers {
         )
 
       // 1.) resolve goal clause with the C1
-      val R1 = resolver.resolve(goalClause, C1)
+      val R1 = resolver.resolve(C1, goalClause)
       log.trace("R1 : {}", R1)
       R1 should have size (1)
       //      R1 should contain(Clause(Negation(sells(west, y, z)), Negation(weapon(y)), Negation(american(west)), Negation(hostile(z))))
@@ -295,7 +296,7 @@ abstract class ResolutionSpec extends Spec with ShouldMatchers {
       val u = Variable("U")
       val clause1 = StandardClause(Negation(Predicate("Hydrophobic", u)), Predicate("Hydrophobicity", u))
       val clause2 = StandardClause(Negation(Predicate("F", u)), Predicate("Hydrophobic", Function("skf0197", u)))
-      val resolvent = StandardClause(Negation(Predicate("F", u)), Predicate("Hydrophobicity", Function("skf0197", u)))
+      val resolvent = StandardClause(Negation(Predicate("F", u)), Predicate("Hydrophobicity", Function("skf0197", Variable("U_4"))))
 
       resolver.resolve(clause1, clause2) should equal(Set(resolvent))
 

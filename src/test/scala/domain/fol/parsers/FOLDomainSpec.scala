@@ -131,10 +131,10 @@ class FOLDomainSpec extends Spec with ShouldMatchers with Logging {
 
 
       val signatureC1 = C1.signature
-      log.info("Signature of Clause C1 {} is : {}", C1, signatureC1)
+      log.debug("Signature of Clause C1 {} is : {}", C1, signatureC1)
 
       val signatureC2 = C2.signature
-      log.info("Signature of Clause C2 {} is : {}", C2, signatureC2)
+      log.debug("Signature of Clause C2 {} is : {}", C2, signatureC2)
 
       // c2sig should be subset
       signatureC2.subsetOf(signatureC1) should be(true)
@@ -156,10 +156,10 @@ class FOLDomainSpec extends Spec with ShouldMatchers with Logging {
 
 
       val signatureC3 = C3.signature
-      log.info("Signature of Clause C3 {} is : {}", C3, signatureC3)
+      log.debug("Signature of Clause C3 {} is : {}", C3, signatureC3)
 
       val signatureC4 = C4.signature
-      log.info("Signature of Clause C4 {} is : {}", C4, signatureC4)
+      log.debug("Signature of Clause C4 {} is : {}", C4, signatureC4)
 
 
       // same length but difference in sig

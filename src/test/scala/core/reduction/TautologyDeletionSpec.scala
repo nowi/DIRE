@@ -15,13 +15,13 @@ import org.scalatest.Spec
 import com.jteigen.scalatest.JUnit4Runner
 
 @RunWith(classOf[JUnit4Runner])
-abstract class SubsumptionDeletionSpec extends Spec with ShouldMatchers with Logging {
+abstract class TautologyDeletionSpec extends Spec with ShouldMatchers with Logging {
 
   // override in specific tests
-  val subsumptionDeleter: SubsumptionDeletion
+  val tautologyDeleter: TautologyDeletion
 
-  describe("A object implementing the SubsumptionDeletion Trait") {
-    it("should delete subsumptions from clause store") {
+  describe("A object implementing the TautologyDeletion Trait") {
+    it("should delete tautologies from clause store") {
       // init with the resolution example from the AIMA Book page 298
 
       val x = Variable("x")
@@ -70,13 +70,14 @@ abstract class SubsumptionDeletionSpec extends Spec with ShouldMatchers with Log
         )
 
 
-      val clauseStore = CNFClauseStore(StandardClause(Negation(Predicate("Missile", x))), StandardClause(Negation(Predicate("Missile", m1))), StandardClause(Predicate("Missile", m1), Predicate("Missile", m2)))
+      val clauseStore = CNFClauseStore(StandardClause(Negation(Predicate("American", x)), Predicate("American", x),
+        Negation(Predicate("Sells", x, y, z)), Negation(Predicate("Hostile", z)), Predicate("Criminal", x)))
 
-      subsumptionDeleter.deleteSubsumptions(clauseStore) should equal(CNFClauseStore(StandardClause(Negation(Predicate("Missile", x))), StandardClause(Predicate("Missile", m1), Predicate("Missile", m2))))
+      tautologyDeleter.deleteTautologies(clauseStore) should equal(CNFClauseStore())
 
 
     }
-    it("should delete subsumptions from clause store using other clause store as background kb") {
+    it("should delete tautologies from clause store but not all clauses") {
       // init with the resolution example from the AIMA Book page 298
 
       val x = Variable("x")
@@ -125,12 +126,19 @@ abstract class SubsumptionDeletionSpec extends Spec with ShouldMatchers with Log
         )
 
 
-      val inClauseStore = CNFClauseStore(StandardClause(Negation(Predicate("Missile", m1))), StandardClause(Predicate("Missile", m1), Predicate("Missile", m2)))
-      val fromClauseStore = CNFClauseStore(StandardClause(Negation(Predicate("Missile", x))))
-      subsumptionDeleter.deleteSubsumptions(inClauseStore, fromClauseStore) should equal(CNFClauseStore(StandardClause(Predicate("Missile", m1), Predicate("Missile", m2))))
+      val clauseStore = CNFClauseStore(StandardClause(Negation(Predicate("American", x)), Predicate("American", x),
+        Negation(Predicate("Sells", x, y, z)), Negation(Predicate("Hostile", z)), Predicate("Criminal", x)),
+        StandardClause(Negation(Predicate("American", x)),
+          Negation(Predicate("Sells", x, y, z)), Negation(Predicate("Hostile", z)), Predicate("Criminal", x))
+        )
+
+      tautologyDeleter.deleteTautologies(clauseStore) should equal(CNFClauseStore(StandardClause(Negation(Predicate("American", x)),
+        Negation(Predicate("Sells", x, y, z)), Negation(Predicate("Hostile", z)), Predicate("Criminal", x))
+        ))
 
 
     }
+
 
   }
 }

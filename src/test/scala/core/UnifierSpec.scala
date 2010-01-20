@@ -10,16 +10,16 @@ import com.jteigen.scalatest.JUnit4Runner
 
 import config.TheoremProvingConfig1
 import domain.fol.ast._
+import helpers.Logging
 import org.junit.runner.RunWith
 
 
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
-import org.slf4j.LoggerFactory
 import rewriting.Substitutor
 
 @RunWith(classOf[JUnit4Runner])
-class UnifierSpec extends Spec with ShouldMatchers {
+class UnifierSpec extends Spec with ShouldMatchers with Logging {
   describe("The FOL Term Unifier ") {
 
     // create unificator
@@ -28,8 +28,7 @@ class UnifierSpec extends Spec with ShouldMatchers {
     val substitutor = new Substitutor(TheoremProvingConfig1)
     //    Configgy.configureFromResource("config.conf")
 
-    // logger
-    val log = LoggerFactory getLogger (this getClass)
+
 
     it("should unificator.unify(Knows(John,x), Knows( John, Jane)) - {x/Jane}") {
       val john = Constant("John")
@@ -178,6 +177,26 @@ class UnifierSpec extends Spec with ShouldMatchers {
       log.trace("Second unifier of a and b is {}", secondUnifier)
       secondUnifier should equal(None)
       // the subsitutions should containt Some(Map(z_4 -> z_8, x -> a))
+    }
+
+    it("should Variable with nested function level 1") {
+      val u = Variable("U")
+      val u132 = Variable("U_1336")
+      val a = Predicate("Tiny", Function("skf0164", u132))
+      val b = Negation(Predicate("Tiny", u))
+      val mgu = unificator.unify(a, b)
+      log.warn("MGU is {}", mgu)
+      mgu should not equal (None)
+    }
+
+    it("should Variable with nested predicate level 1") {
+      val u = Variable("U")
+      val u132 = Variable("U_1336")
+      val a = Predicate("Tiny", Predicate("skf0164", u132))
+      val b = Negation(Predicate("Tiny", u))
+      val mgu = unificator.unify(a, b)
+      log.warn("MGU is {}", mgu)
+      mgu should not equal (None)
     }
 
 

@@ -121,6 +121,2538 @@ end_problem."""
     }
 
 
+
+
+
+    it("should parse randon TPPT") {
+      val text: String = """begin_problem(TPTP_Problem).
+
+list_of_descriptions.
+name({*[ File     : AGT001+1 : TPTP v3.1.0. Bugfixed v3.1.0.],[ Names    :]*}).
+author({*[ Source   : [Bar03]]*}).
+status(unknown).
+description({*[ Refs     : [Bar03] Barta, J. (2003), Email to G. Sutcliffe,          : [BT+03] Barta et al. (2003), Meta-Reasoning in CPlanT Multi-Ag,          : [TBP03] Tozicka et al. (2003), Meta-reasoning for Agents' Priv]*}).
+end_of_list.
+
+list_of_symbols.
+functions[(atheist,0), (centrallakecity,0), (centraltown,0), (christian,0), (christiancountrychumanitarianorganization,0), (christiansufferterrahumanitarianorganization,0), (citya,0), (cityb,0), (coastvillage,0), (countryacivilorganization,0), (countryafirstaidorganization,0), (countryahumanitarianorganization,0), (countryamedicalorganization,0), (countrybcivilorganization,0), (countrybhumanitarianorganization,0), (countryccivilorganization,0), (countrycmedicalorganization,0), (muslim,0), (muslimcountrybhumanitarianorganization,0), (n0,0), (n1,0), (n10,0), (n100,0), (n101,0), (n102,0), (n103,0), (n104,0), (n105,0), (n106,0), (n107,0), (n108,0), (n109,0), (n11,0), (n110,0), (n111,0), (n112,0), (n113,0), (n114,0), (n115,0), (n116,0), (n117,0), (n118,0), (n119,0), (n12,0), (n120,0), (n121,0), (n122,0), (n123,0), (n124,0), (n125,0), (n126,0), (n127,0), (n13,0), (n14,0), (n15,0), (n16,0), (n17,0), (n18,0), (n19,0), (n2,0), (n20,0), (n21,0), (n22,0), (n23,0), (n24,0), (n25,0), (n26,0), (n27,0), (n28,0), (n29,0), (n3,0), (n30,0), (n31,0), (n32,0), (n33,0), (n34,0), (n35,0), (n36,0), (n37,0), (n38,0), (n39,0), (n4,0), (n40,0), (n41,0), (n42,0), (n43,0), (n44,0), (n45,0), (n46,0), (n47,0), (n48,0), (n49,0), (n5,0), (n50,0), (n51,0), (n52,0), (n53,0), (n54,0), (n55,0), (n56,0), (n57,0), (n58,0), (n59,0), (n6,0), (n60,0), (n61,0), (n62,0), (n63,0), (n64,0), (n65,0), (n66,0), (n67,0), (n68,0), (n69,0), (n7,0), (n70,0), (n71,0), (n72,0), (n73,0), (n74,0), (n75,0), (n76,0), (n77,0), (n78,0), (n79,0), (n8,0), (n80,0), (n81,0), (n82,0), (n83,0), (n84,0), (n85,0), (n86,0), (n87,0), (n88,0), (n89,0), (n9,0), (n90,0), (n91,0), (n92,0), (n93,0), (n94,0), (n95,0), (n96,0), (n97,0), (n98,0), (n99,0), (native,0), (nn1,0), (nn10,0), (nn100,0), (nn101,0), (nn102,0), (nn103,0), (nn104,0), (nn105,0), (nn106,0), (nn107,0), (nn108,0), (nn109,0), (nn11,0), (nn110,0), (nn111,0), (nn112,0), (nn113,0), (nn114,0), (nn115,0), (nn116,0), (nn117,0), (nn118,0), (nn119,0), (nn12,0), (nn120,0), (nn121,0), (nn122,0), (nn123,0), (nn124,0), (nn125,0), (nn126,0), (nn127,0), (nn128,0), (nn13,0), (nn14,0), (nn15,0), (nn16,0), (nn17,0), (nn18,0), (nn19,0), (nn2,0), (nn20,0), (nn21,0), (nn22,0), (nn23,0), (nn24,0), (nn25,0), (nn26,0), (nn27,0), (nn28,0), (nn29,0), (nn3,0), (nn30,0), (nn31,0), (nn32,0), (nn33,0), (nn34,0), (nn35,0), (nn36,0), (nn37,0), (nn38,0), (nn39,0), (nn4,0), (nn40,0), (nn41,0), (nn42,0), (nn43,0), (nn44,0), (nn45,0), (nn46,0), (nn47,0), (nn48,0), (nn49,0), (nn5,0), (nn50,0), (nn51,0), (nn52,0), (nn53,0), (nn54,0), (nn55,0), (nn56,0), (nn57,0), (nn58,0), (nn59,0), (nn6,0), (nn60,0), (nn61,0), (nn62,0), (nn63,0), (nn64,0), (nn65,0), (nn66,0), (nn67,0), (nn68,0), (nn69,0), (nn7,0), (nn70,0), (nn71,0), (nn72,0), (nn73,0), (nn74,0), (nn75,0), (nn76,0), (nn77,0), (nn78,0), (nn79,0), (nn8,0), (nn80,0), (nn81,0), (nn82,0), (nn83,0), (nn84,0), (nn85,0), (nn86,0), (nn87,0), (nn88,0), (nn89,0), (nn9,0), (nn90,0), (nn91,0), (nn92,0), (nn93,0), (nn94,0), (nn95,0), (nn96,0), (nn97,0), (nn98,0), (nn99,0), (northport,0), (other,0), (rdn,2), (rdn_neg,1), (rdn_pos,1), (rdnn,1), (stjosephburgh,0), (sufferterragovernment,0), (suffertown,0), (sunnysideport,0), (sunsetpoint,0), (towna,0), (townb,0), (townc,0)].
+predicates[(accept_city,2), (accept_leader,2), (accept_number,2), (accept_population,3), (accept_team,4), (any_agent_in_all_proposed_teams,3), (less,2), (less_or_equal,2), (min_number_of_proposed_agents,2), (rdn_non_zero,1), (rdn_non_zero_digit,1), (rdn_positive_less,2), (rdn_translate,2), (sum,3), (the_agent_in_all_proposed_teams,3), (the_agent_not_in_any_proposed_teams,3)].
+end_of_list.
+
+list_of_formulae(axioms).
+
+formula(
+ forall([A,C,N,L],
+  equiv(
+   accept_team(A,L,C,N),
+   and(
+    accept_city(A,C),
+    and(
+     accept_leader(A,L),
+     accept_number(A,N))))),
+a1_1 ).
+
+formula(
+ forall([A,N,M],
+  implies(
+   and(
+    accept_number(A,N),
+    less(M,N)),
+   accept_number(A,M))),
+a1_2 ).
+
+formula(
+ forall([A,N,M,P],
+  implies(
+   and(
+    accept_population(A,P,N),
+    less(M,N)),
+   accept_population(A,P,M))),
+a1_3 ).
+
+formula(
+ forall([A,L,C],
+  implies(
+   the_agent_in_all_proposed_teams(A,L,C),
+   and(
+    accept_leader(A,L),
+    accept_city(A,C)))),
+a1_4 ).
+
+formula(
+ forall([A,L,C],
+  implies(
+   any_agent_in_all_proposed_teams(A,L,C),
+   accept_leader(A,L))),
+a1_5 ).
+
+formula(
+ forall([A,L,C],
+  implies(
+   the_agent_not_in_any_proposed_teams(A,L,C),
+   not(
+    and(
+     accept_city(A,C),
+     accept_leader(A,L))))),
+a1_6 ).
+
+formula(
+ forall([A,N],
+  implies(
+   min_number_of_proposed_agents(A,N),
+   accept_number(A,N))),
+a1_7 ).
+
+formula(
+ forall([A],
+  equiv(
+   and(
+    accept_population(A,atheist,n65),
+    and(
+     accept_population(A,christian,n20),
+     and(
+      accept_population(A,muslim,n7),
+      and(
+       accept_population(A,native,n4),
+       accept_population(A,other,n4))))),
+   accept_city(A,suffertown))),
+a2_1 ).
+
+formula(
+ forall([A],
+  equiv(
+   and(
+    accept_population(A,atheist,n54),
+    and(
+     accept_population(A,christian,n23),
+     and(
+      accept_population(A,muslim,n3),
+      and(
+       accept_population(A,native,n1),
+       accept_population(A,other,n9))))),
+   accept_city(A,centraltown))),
+a2_2 ).
+
+formula(
+ forall([A],
+  equiv(
+   and(
+    accept_population(A,atheist,n30),
+    and(
+     accept_population(A,christian,n8),
+     and(
+      accept_population(A,muslim,n60),
+      and(
+       accept_population(A,native,n1),
+       accept_population(A,other,n1))))),
+   accept_city(A,sunnysideport))),
+a2_3 ).
+
+formula(
+ forall([A],
+  equiv(
+   and(
+    accept_population(A,atheist,n70),
+    and(
+     accept_population(A,christian,n15),
+     and(
+      accept_population(A,muslim,n1),
+      and(
+       accept_population(A,native,n10),
+       accept_population(A,other,n4))))),
+   accept_city(A,centrallakecity))),
+a2_4 ).
+
+formula(
+ forall([A],
+  equiv(
+   and(
+    accept_population(A,atheist,n68),
+    and(
+     accept_population(A,christian,n16),
+     and(
+      accept_population(A,muslim,n1),
+      and(
+       accept_population(A,native,n11),
+       accept_population(A,other,n4))))),
+   accept_city(A,stjosephburgh))),
+a2_5 ).
+
+formula(
+ forall([A],
+  equiv(
+   and(
+    accept_population(A,atheist,n70),
+    and(
+     accept_population(A,christian,n13),
+     and(
+      accept_population(A,muslim,n0),
+      and(
+       accept_population(A,native,n15),
+       accept_population(A,other,n2))))),
+   accept_city(A,northport))),
+a2_6 ).
+
+formula(
+ forall([A],
+  equiv(
+   and(
+    accept_population(A,atheist,n12),
+    and(
+     accept_population(A,christian,n3),
+     and(
+      accept_population(A,muslim,n0),
+      and(
+       accept_population(A,native,n85),
+       accept_population(A,other,n0))))),
+   accept_city(A,coastvillage))),
+a2_7 ).
+
+formula(
+ forall([A],
+  equiv(
+   and(
+    accept_population(A,atheist,n0),
+    and(
+     accept_population(A,christian,n0),
+     and(
+      accept_population(A,muslim,n0),
+      and(
+       accept_population(A,native,n100),
+       accept_population(A,other,n0))))),
+   accept_city(A,sunsetpoint))),
+a2_8 ).
+
+formula(
+ forall([A],
+  equiv(
+   and(
+    accept_population(A,atheist,n75),
+    and(
+     accept_population(A,christian,n24),
+     and(
+      accept_population(A,muslim,n1),
+      and(
+       accept_population(A,native,n0),
+       accept_population(A,other,n0))))),
+   accept_city(A,towna))),
+a2_9 ).
+
+formula(
+ forall([A],
+  equiv(
+   and(
+    accept_population(A,atheist,n75),
+    and(
+     accept_population(A,christian,n25),
+     and(
+      accept_population(A,muslim,n0),
+      and(
+       accept_population(A,native,n0),
+       accept_population(A,other,n0))))),
+   accept_city(A,citya))),
+a2_10 ).
+
+formula(
+ forall([A],
+  equiv(
+   and(
+    accept_population(A,atheist,n70),
+    and(
+     accept_population(A,christian,n20),
+     and(
+      accept_population(A,muslim,n8),
+      and(
+       accept_population(A,native,n0),
+       accept_population(A,other,n2))))),
+   accept_city(A,townb))),
+a2_11 ).
+
+formula(
+ forall([A],
+  equiv(
+   and(
+    accept_population(A,atheist,n78),
+    and(
+     accept_population(A,christian,n20),
+     and(
+      accept_population(A,muslim,n1),
+      and(
+       accept_population(A,native,n0),
+       accept_population(A,other,n1))))),
+   accept_city(A,cityb))),
+a2_12 ).
+
+formula(
+ forall([A],
+  equiv(
+   and(
+    accept_population(A,atheist,n30),
+    and(
+     accept_population(A,christian,n0),
+     and(
+      accept_population(A,muslim,n65),
+      and(
+       accept_population(A,native,n0),
+       accept_population(A,other,n5))))),
+   accept_city(A,townc))),
+a2_13 ).
+
+formula(
+ accept_team(countryahumanitarianorganization,countryacivilorganization,cityb,n6),
+event_1 ).
+
+formula(
+ accept_team(countryahumanitarianorganization,countryacivilorganization,towna,n6),
+event_2 ).
+
+formula(
+ accept_team(countryahumanitarianorganization,countryacivilorganization,coastvillage,n6),
+event_3 ).
+
+formula(
+ accept_team(countryahumanitarianorganization,countryafirstaidorganization,coastvillage,n6),
+event_4 ).
+
+formula(
+ the_agent_in_all_proposed_teams(countryahumanitarianorganization,christiancountrychumanitarianorganization,coastvillage),
+event_5 ).
+
+formula(
+ any_agent_in_all_proposed_teams(countryahumanitarianorganization,christiancountrychumanitarianorganization,coastvillage),
+event_6 ).
+
+formula(
+ accept_team(countryccivilorganization,countrybhumanitarianorganization,cityb,n2),
+event_7 ).
+
+formula(
+ accept_team(muslimcountrybhumanitarianorganization,countrybhumanitarianorganization,cityb,n4),
+event_8 ).
+
+formula(
+ not(
+  accept_team(muslimcountrybhumanitarianorganization,countrycmedicalorganization,towna,n4)),
+event_9 ).
+
+formula(
+ not(
+  accept_team(muslimcountrybhumanitarianorganization,countrycmedicalorganization,towna,n5)),
+event_10 ).
+
+formula(
+ the_agent_not_in_any_proposed_teams(muslimcountrybhumanitarianorganization,countryacivilorganization,towna),
+event_11 ).
+
+formula(
+ any_agent_in_all_proposed_teams(muslimcountrybhumanitarianorganization,countryacivilorganization,towna),
+event_12 ).
+
+formula(
+ accept_team(muslimcountrybhumanitarianorganization,christiancountrychumanitarianorganization,coastvillage,n5),
+event_13 ).
+
+formula(
+ accept_team(countryamedicalorganization,countryacivilorganization,cityb,n6),
+event_14 ).
+
+formula(
+ accept_team(christiancountrychumanitarianorganization,countrybhumanitarianorganization,cityb,n4),
+event_15 ).
+
+formula(
+ accept_team(countryafirstaidorganization,countryacivilorganization,cityb,n6),
+event_16 ).
+
+formula(
+ accept_number(countrybhumanitarianorganization,n4),
+event_17 ).
+
+formula(
+ accept_team(countrybcivilorganization,countrybhumanitarianorganization,cityb,n4),
+event_18 ).
+
+formula(
+ accept_team(christiansufferterrahumanitarianorganization,countryacivilorganization,cityb,n6),
+event_19 ).
+
+formula(
+ accept_team(sufferterragovernment,countryacivilorganization,cityb,n6),
+event_20 ).
+
+formula(
+ accept_number(countrybhumanitarianorganization,n1),
+event_21 ).
+
+formula(
+ the_agent_in_all_proposed_teams(countrybhumanitarianorganization,countryacivilorganization,towna),
+event_22 ).
+
+formula(
+ any_agent_in_all_proposed_teams(countrybhumanitarianorganization,countryacivilorganization,towna),
+event_23 ).
+
+formula(
+ accept_team(countrybhumanitarianorganization,christiancountrychumanitarianorganization,coastvillage,n5),
+event_24 ).
+
+formula(
+ accept_team(countrybhumanitarianorganization,christiancountrychumanitarianorganization,coastvillage,n6),
+event_25 ).
+
+formula(
+ accept_team(christiansufferterrahumanitarianorganization,countryacivilorganization,towna,n6),
+event_26 ).
+
+formula(
+ accept_team(countryamedicalorganization,countryacivilorganization,towna,n6),
+event_27 ).
+
+formula(
+ accept_number(countryahumanitarianorganization,n2),
+event_28 ).
+
+formula(
+ not(
+  accept_team(countryamedicalorganization,countryahumanitarianorganization,coastvillage,n2)),
+event_29 ).
+
+formula(
+ not(
+  accept_team(countryamedicalorganization,countryafirstaidorganization,coastvillage,n2)),
+event_30 ).
+
+formula(
+ not(
+  accept_team(countryamedicalorganization,countryacivilorganization,coastvillage,n2)),
+event_31 ).
+
+formula(
+ not(
+  accept_team(countryamedicalorganization,christiansufferterrahumanitarianorganization,coastvillage,n2)),
+event_32 ).
+
+formula(
+ not(
+  accept_team(countryamedicalorganization,sufferterragovernment,coastvillage,n2)),
+event_33 ).
+
+formula(
+ not(
+  accept_team(countryamedicalorganization,countryahumanitarianorganization,coastvillage,n6)),
+event_34 ).
+
+formula(
+ not(
+  accept_team(countryamedicalorganization,countryacivilorganization,coastvillage,n6)),
+event_35 ).
+
+formula(
+ not(
+  accept_team(countryamedicalorganization,countryafirstaidorganization,coastvillage,n6)),
+event_36 ).
+
+formula(
+ the_agent_not_in_any_proposed_teams(countryamedicalorganization,christiancountrychumanitarianorganization,coastvillage),
+event_37 ).
+
+formula(
+ any_agent_in_all_proposed_teams(countryamedicalorganization,christiancountrychumanitarianorganization,coastvillage),
+event_38 ).
+
+formula(
+ accept_team(countryccivilorganization,countrycmedicalorganization,towna,n4),
+event_39 ).
+
+formula(
+ not(
+  accept_team(countryccivilorganization,countrycmedicalorganization,towna,n5)),
+event_40 ).
+
+formula(
+ the_agent_in_all_proposed_teams(countryccivilorganization,countryacivilorganization,towna),
+event_41 ).
+
+formula(
+ any_agent_in_all_proposed_teams(countryccivilorganization,countryacivilorganization,towna),
+event_42 ).
+
+formula(
+ accept_team(countrybcivilorganization,countrycmedicalorganization,towna,n4),
+event_43 ).
+
+formula(
+ accept_team(countrybcivilorganization,countrycmedicalorganization,towna,n5),
+event_44 ).
+
+formula(
+ accept_number(countrybcivilorganization,n5),
+event_45 ).
+
+formula(
+ the_agent_in_all_proposed_teams(countrybcivilorganization,countryacivilorganization,towna),
+event_46 ).
+
+formula(
+ any_agent_in_all_proposed_teams(countrybcivilorganization,countryacivilorganization,towna),
+event_47 ).
+
+formula(
+ accept_team(sufferterragovernment,countryacivilorganization,towna,n6),
+event_48 ).
+
+formula(
+ the_agent_in_all_proposed_teams(countrycmedicalorganization,countryacivilorganization,towna),
+event_49 ).
+
+formula(
+ any_agent_in_all_proposed_teams(countrycmedicalorganization,countryacivilorganization,towna),
+event_50 ).
+
+formula(
+ accept_team(countrycmedicalorganization,christiancountrychumanitarianorganization,coastvillage,n5),
+event_51 ).
+
+formula(
+ accept_number(countrycmedicalorganization,n4),
+event_52 ).
+
+formula(
+ accept_team(christiancountrychumanitarianorganization,countrycmedicalorganization,towna,n4),
+event_53 ).
+
+formula(
+ accept_number(countrycmedicalorganization,n5),
+event_54 ).
+
+formula(
+ accept_team(christiancountrychumanitarianorganization,countrycmedicalorganization,towna,n5),
+event_55 ).
+
+formula(
+ the_agent_in_all_proposed_teams(christiancountrychumanitarianorganization,countryacivilorganization,towna),
+event_56 ).
+
+formula(
+ any_agent_in_all_proposed_teams(christiancountrychumanitarianorganization,countryacivilorganization,towna),
+event_57 ).
+
+formula(
+ accept_team(countryafirstaidorganization,countryacivilorganization,towna,n6),
+event_58 ).
+
+formula(
+ accept_number(countryacivilorganization,n2),
+event_59 ).
+
+formula(
+ accept_team(countryacivilorganization,countryahumanitarianorganization,coastvillage,n5),
+event_60 ).
+
+formula(
+ accept_team(countryacivilorganization,countryahumanitarianorganization,coastvillage,n6),
+event_61 ).
+
+formula(
+ accept_team(countryacivilorganization,countryafirstaidorganization,coastvillage,n6),
+event_62 ).
+
+formula(
+ the_agent_in_all_proposed_teams(countryacivilorganization,christiancountrychumanitarianorganization,coastvillage),
+event_63 ).
+
+formula(
+ any_agent_in_all_proposed_teams(countryacivilorganization,christiancountrychumanitarianorganization,coastvillage),
+event_64 ).
+
+formula(
+ accept_number(countryafirstaidorganization,n2),
+event_65 ).
+
+formula(
+ accept_team(countryafirstaidorganization,countryahumanitarianorganization,coastvillage,n5),
+event_66 ).
+
+formula(
+ accept_team(countryafirstaidorganization,countryahumanitarianorganization,coastvillage,n6),
+event_67 ).
+
+formula(
+ accept_team(countryafirstaidorganization,countryacivilorganization,coastvillage,n6),
+event_68 ).
+
+formula(
+ the_agent_in_all_proposed_teams(countryafirstaidorganization,christiancountrychumanitarianorganization,coastvillage),
+event_69 ).
+
+formula(
+ any_agent_in_all_proposed_teams(countryafirstaidorganization,christiancountrychumanitarianorganization,coastvillage),
+event_70 ).
+
+formula(
+ not(
+  accept_team(countryccivilorganization,christiancountrychumanitarianorganization,coastvillage,n5)),
+event_71 ).
+
+formula(
+ not(
+  accept_team(countryccivilorganization,christiancountrychumanitarianorganization,coastvillage,n6)),
+event_72 ).
+
+formula(
+ accept_number(christiancountrychumanitarianorganization,n5),
+event_73 ).
+
+formula(
+ accept_team(countrybcivilorganization,christiancountrychumanitarianorganization,coastvillage,n5),
+event_74 ).
+
+formula(
+ accept_team(countrybcivilorganization,christiancountrychumanitarianorganization,coastvillage,n6),
+event_75 ).
+
+formula(
+ accept_team(countrybcivilorganization,muslimcountrybhumanitarianorganization,townc,n6),
+event_76 ).
+
+formula(
+ accept_team(countrybcivilorganization,countrybhumanitarianorganization,townc,n6),
+event_77 ).
+
+formula(
+ accept_team(countrybcivilorganization,christiancountrychumanitarianorganization,townc,n6),
+event_78 ).
+
+formula(
+ accept_team(countrybcivilorganization,countrycmedicalorganization,townc,n6),
+event_79 ).
+
+formula(
+ the_agent_in_all_proposed_teams(countrybcivilorganization,countryahumanitarianorganization,townc),
+event_80 ).
+
+formula(
+ any_agent_in_all_proposed_teams(countrybcivilorganization,countryahumanitarianorganization,townc),
+event_81 ).
+
+formula(
+ accept_team(sufferterragovernment,countryahumanitarianorganization,coastvillage,n5),
+event_82 ).
+
+formula(
+ accept_team(sufferterragovernment,countryahumanitarianorganization,coastvillage,n6),
+event_83 ).
+
+formula(
+ accept_team(sufferterragovernment,countryacivilorganization,coastvillage,n6),
+event_84 ).
+
+formula(
+ accept_team(sufferterragovernment,countryafirstaidorganization,coastvillage,n6),
+event_85 ).
+
+formula(
+ the_agent_in_all_proposed_teams(sufferterragovernment,christiancountrychumanitarianorganization,coastvillage),
+event_86 ).
+
+formula(
+ any_agent_in_all_proposed_teams(sufferterragovernment,christiancountrychumanitarianorganization,coastvillage),
+event_87 ).
+
+formula(
+ accept_number(christiansufferterrahumanitarianorganization,n2),
+event_88 ).
+
+formula(
+ accept_number(countryahumanitarianorganization,n5),
+event_89 ).
+
+formula(
+ accept_team(christiansufferterrahumanitarianorganization,countryahumanitarianorganization,coastvillage,n5),
+event_90 ).
+
+formula(
+ accept_team(christiansufferterrahumanitarianorganization,countryahumanitarianorganization,coastvillage,n6),
+event_91 ).
+
+formula(
+ accept_team(christiansufferterrahumanitarianorganization,countryacivilorganization,coastvillage,n6),
+event_92 ).
+
+formula(
+ accept_team(christiansufferterrahumanitarianorganization,countryafirstaidorganization,coastvillage,n6),
+event_93 ).
+
+formula(
+ the_agent_in_all_proposed_teams(christiansufferterrahumanitarianorganization,christiancountrychumanitarianorganization,coastvillage),
+event_94 ).
+
+formula(
+ any_agent_in_all_proposed_teams(christiansufferterrahumanitarianorganization,christiancountrychumanitarianorganization,coastvillage),
+event_95 ).
+
+formula(
+ accept_team(countrycmedicalorganization,christiancountrychumanitarianorganization,coastvillage,n6),
+event_96 ).
+
+formula(
+ accept_team(muslimcountrybhumanitarianorganization,christiancountrychumanitarianorganization,coastvillage,n6),
+event_97 ).
+
+formula(
+ accept_number(muslimcountrybhumanitarianorganization,n3),
+event_98 ).
+
+formula(
+ accept_team(muslimcountrybhumanitarianorganization,countryccivilorganization,townc,n4),
+event_99 ).
+
+formula(
+ accept_team(muslimcountrybhumanitarianorganization,countrybcivilorganization,townc,n6),
+event_100 ).
+
+formula(
+ accept_team(muslimcountrybhumanitarianorganization,countrybhumanitarianorganization,townc,n6),
+event_101 ).
+
+formula(
+ accept_team(muslimcountrybhumanitarianorganization,christiancountrychumanitarianorganization,townc,n6),
+event_102 ).
+
+formula(
+ accept_team(muslimcountrybhumanitarianorganization,countrycmedicalorganization,townc,n6),
+event_103 ).
+
+formula(
+ the_agent_in_all_proposed_teams(muslimcountrybhumanitarianorganization,countryahumanitarianorganization,townc),
+event_104 ).
+
+formula(
+ any_agent_in_all_proposed_teams(muslimcountrybhumanitarianorganization,countryahumanitarianorganization,townc),
+event_105 ).
+
+formula(
+ accept_team(countryacivilorganization,countryahumanitarianorganization,townc,n6),
+event_106 ).
+
+formula(
+ accept_team(countryafirstaidorganization,countryahumanitarianorganization,townc,n6),
+event_107 ).
+
+formula(
+ accept_team(christiancountrychumanitarianorganization,countryccivilorganization,townc,n4),
+event_108 ).
+
+formula(
+ accept_team(christiancountrychumanitarianorganization,muslimcountrybhumanitarianorganization,townc,n6),
+event_109 ).
+
+formula(
+ accept_team(christiancountrychumanitarianorganization,countrybcivilorganization,townc,n6),
+event_110 ).
+
+formula(
+ accept_team(christiancountrychumanitarianorganization,countrybhumanitarianorganization,townc,n6),
+event_111 ).
+
+formula(
+ accept_team(christiancountrychumanitarianorganization,countrycmedicalorganization,townc,n6),
+event_112 ).
+
+formula(
+ the_agent_in_all_proposed_teams(christiancountrychumanitarianorganization,countryahumanitarianorganization,townc),
+event_113 ).
+
+formula(
+ any_agent_in_all_proposed_teams(christiancountrychumanitarianorganization,countryahumanitarianorganization,townc),
+event_114 ).
+
+formula(
+ not(
+  accept_team(countryccivilorganization,muslimcountrybhumanitarianorganization,townc,n6)),
+event_115 ).
+
+formula(
+ not(
+  accept_team(countryccivilorganization,countrybcivilorganization,townc,n6)),
+event_116 ).
+
+formula(
+ not(
+  accept_team(countryccivilorganization,countrybhumanitarianorganization,townc,n6)),
+event_117 ).
+
+formula(
+ not(
+  accept_team(countryccivilorganization,christiancountrychumanitarianorganization,townc,n6)),
+event_118 ).
+
+formula(
+ not(
+  accept_team(countryccivilorganization,countrycmedicalorganization,townc,n6)),
+event_119 ).
+
+formula(
+ the_agent_in_all_proposed_teams(countryccivilorganization,countryahumanitarianorganization,townc),
+event_120 ).
+
+formula(
+ any_agent_in_all_proposed_teams(countryccivilorganization,countryahumanitarianorganization,townc),
+event_121 ).
+
+formula(
+ accept_team(countrybhumanitarianorganization,countrybcivilorganization,townc,n2),
+event_122 ).
+
+formula(
+ accept_team(countrybhumanitarianorganization,muslimcountrybhumanitarianorganization,townc,n6),
+event_123 ).
+
+formula(
+ accept_team(sufferterragovernment,countryahumanitarianorganization,townc,n6),
+event_124 ).
+
+formula(
+ accept_team(christiansufferterrahumanitarianorganization,countryahumanitarianorganization,townc,n6),
+event_125 ).
+
+formula(
+ accept_team(countryamedicalorganization,countryahumanitarianorganization,townc,n6),
+event_126 ).
+
+formula(
+ accept_team(countrycmedicalorganization,countryccivilorganization,townc,n4),
+event_127 ).
+
+formula(
+ accept_team(countrycmedicalorganization,muslimcountrybhumanitarianorganization,townc,n6),
+event_128 ).
+
+formula(
+ accept_team(countrycmedicalorganization,countrybcivilorganization,townc,n6),
+event_129 ).
+
+formula(
+ accept_team(countrycmedicalorganization,countrybhumanitarianorganization,townc,n6),
+event_130 ).
+
+formula(
+ accept_team(countrycmedicalorganization,christiancountrychumanitarianorganization,townc,n6),
+event_131 ).
+
+formula(
+ the_agent_in_all_proposed_teams(countrycmedicalorganization,countryahumanitarianorganization,townc),
+event_132 ).
+
+formula(
+ any_agent_in_all_proposed_teams(countrycmedicalorganization,countryahumanitarianorganization,townc),
+event_133 ).
+
+formula(
+ accept_team(countrybhumanitarianorganization,countrybcivilorganization,townc,n6),
+event_134 ).
+
+formula(
+ accept_team(countrybhumanitarianorganization,christiancountrychumanitarianorganization,townc,n6),
+event_135 ).
+
+formula(
+ accept_team(countrybhumanitarianorganization,countrycmedicalorganization,townc,n6),
+event_136 ).
+
+formula(
+ the_agent_in_all_proposed_teams(countrybhumanitarianorganization,countryahumanitarianorganization,townc),
+event_137 ).
+
+formula(
+ any_agent_in_all_proposed_teams(countrybhumanitarianorganization,countryahumanitarianorganization,townc),
+event_138 ).
+
+formula(
+ accept_team(christiansufferterrahumanitarianorganization,countryahumanitarianorganization,cityb,n6),
+event_139 ).
+
+formula(
+ accept_number(christiansufferterrahumanitarianorganization,n6),
+event_140 ).
+
+formula(
+ the_agent_in_all_proposed_teams(christiansufferterrahumanitarianorganization,countrybhumanitarianorganization,cityb),
+event_141 ).
+
+formula(
+ any_agent_in_all_proposed_teams(christiansufferterrahumanitarianorganization,countrybhumanitarianorganization,cityb),
+event_142 ).
+
+formula(
+ not(
+  accept_team(countryccivilorganization,countrybhumanitarianorganization,cityb,n5)),
+event_143 ).
+
+formula(
+ not(
+  accept_team(countryccivilorganization,countrybhumanitarianorganization,cityb,n6)),
+event_144 ).
+
+formula(
+ accept_team(sufferterragovernment,countryahumanitarianorganization,cityb,n6),
+event_145 ).
+
+formula(
+ the_agent_in_all_proposed_teams(sufferterragovernment,countrybhumanitarianorganization,cityb),
+event_146 ).
+
+formula(
+ any_agent_in_all_proposed_teams(sufferterragovernment,countrybhumanitarianorganization,cityb),
+event_147 ).
+
+formula(
+ accept_team(countryafirstaidorganization,countryahumanitarianorganization,cityb,n6),
+event_148 ).
+
+formula(
+ accept_number(countryafirstaidorganization,n6),
+event_149 ).
+
+formula(
+ the_agent_in_all_proposed_teams(countryafirstaidorganization,countrybhumanitarianorganization,cityb),
+event_150 ).
+
+formula(
+ any_agent_in_all_proposed_teams(countryafirstaidorganization,countrybhumanitarianorganization,cityb),
+event_151 ).
+
+formula(
+ accept_team(countryafirstaidorganization,sufferterragovernment,towna,n5),
+event_152 ).
+
+formula(
+ accept_team(countryafirstaidorganization,sufferterragovernment,towna,n6),
+event_153 ).
+
+formula(
+ accept_team(countrycmedicalorganization,countrybhumanitarianorganization,cityb,n5),
+event_154 ).
+
+formula(
+ accept_team(countrycmedicalorganization,countrybhumanitarianorganization,cityb,n6),
+event_155 ).
+
+formula(
+ accept_team(countryamedicalorganization,countryahumanitarianorganization,cityb,n6),
+event_156 ).
+
+formula(
+ accept_number(countryamedicalorganization,n6),
+event_157 ).
+
+formula(
+ the_agent_in_all_proposed_teams(countryamedicalorganization,countrybhumanitarianorganization,cityb),
+event_158 ).
+
+formula(
+ any_agent_in_all_proposed_teams(countryamedicalorganization,countrybhumanitarianorganization,cityb),
+event_159 ).
+
+formula(
+ accept_team(countrybcivilorganization,countrybhumanitarianorganization,cityb,n5),
+event_160 ).
+
+formula(
+ accept_team(countrybcivilorganization,countrybhumanitarianorganization,cityb,n6),
+event_161 ).
+
+formula(
+ accept_team(christiancountrychumanitarianorganization,countrybhumanitarianorganization,cityb,n5),
+event_162 ).
+
+formula(
+ accept_team(christiancountrychumanitarianorganization,countrybhumanitarianorganization,cityb,n6),
+event_163 ).
+
+formula(
+ the_agent_in_all_proposed_teams(countryahumanitarianorganization,countrybhumanitarianorganization,cityb),
+event_164 ).
+
+formula(
+ any_agent_in_all_proposed_teams(countryahumanitarianorganization,countrybhumanitarianorganization,cityb),
+event_165 ).
+
+formula(
+ accept_number(countryahumanitarianorganization,n6),
+event_166 ).
+
+formula(
+ accept_team(countryacivilorganization,countryahumanitarianorganization,cityb,n6),
+event_167 ).
+
+formula(
+ accept_number(countryacivilorganization,n6),
+event_168 ).
+
+formula(
+ the_agent_in_all_proposed_teams(countryacivilorganization,countrybhumanitarianorganization,cityb),
+event_169 ).
+
+formula(
+ any_agent_in_all_proposed_teams(countryacivilorganization,countrybhumanitarianorganization,cityb),
+event_170 ).
+
+formula(
+ accept_number(countrybhumanitarianorganization,n5),
+event_171 ).
+
+formula(
+ accept_team(muslimcountrybhumanitarianorganization,countrybhumanitarianorganization,cityb,n5),
+event_172 ).
+
+formula(
+ accept_team(muslimcountrybhumanitarianorganization,countrybhumanitarianorganization,cityb,n6),
+event_173 ).
+
+formula(
+ not(
+  accept_team(muslimcountrybhumanitarianorganization,countrybcivilorganization,towna,n2)),
+event_174 ).
+
+formula(
+ not(
+  accept_team(muslimcountrybhumanitarianorganization,countrycmedicalorganization,towna,n2)),
+event_175 ).
+
+formula(
+ not(
+  accept_team(muslimcountrybhumanitarianorganization,christiancountrychumanitarianorganization,towna,n2)),
+event_176 ).
+
+formula(
+ not(
+  accept_team(muslimcountrybhumanitarianorganization,countryccivilorganization,towna,n2)),
+event_177 ).
+
+formula(
+ not(
+  accept_team(muslimcountrybhumanitarianorganization,countrybcivilorganization,towna,n3)),
+event_178 ).
+
+formula(
+ not(
+  accept_team(muslimcountrybhumanitarianorganization,christiancountrychumanitarianorganization,towna,n3)),
+event_179 ).
+
+formula(
+ not(
+  accept_team(muslimcountrybhumanitarianorganization,countrycmedicalorganization,towna,n3)),
+event_180 ).
+
+formula(
+ not(
+  accept_team(muslimcountrybhumanitarianorganization,countryccivilorganization,towna,n3)),
+event_181 ).
+
+formula(
+ not(
+  accept_team(muslimcountrybhumanitarianorganization,countrybhumanitarianorganization,towna,n2)),
+event_182 ).
+
+formula(
+ accept_number(muslimcountrybhumanitarianorganization,n2),
+event_183 ).
+
+formula(
+ not(
+  accept_team(muslimcountrybhumanitarianorganization,countryccivilorganization,towna,n4)),
+event_184 ).
+
+formula(
+ not(
+  accept_team(muslimcountrybhumanitarianorganization,countrybcivilorganization,towna,n6)),
+event_185 ).
+
+formula(
+ not(
+  accept_team(muslimcountrybhumanitarianorganization,countrybhumanitarianorganization,towna,n6)),
+event_186 ).
+
+formula(
+ not(
+  accept_team(muslimcountrybhumanitarianorganization,christiancountrychumanitarianorganization,towna,n6)),
+event_187 ).
+
+formula(
+ accept_team(countryamedicalorganization,sufferterragovernment,towna,n5),
+event_188 ).
+
+formula(
+ accept_team(countryamedicalorganization,sufferterragovernment,towna,n6),
+event_189 ).
+
+formula(
+ accept_team(countryahumanitarianorganization,sufferterragovernment,towna,n5),
+event_190 ).
+
+formula(
+ accept_team(countryahumanitarianorganization,sufferterragovernment,towna,n6),
+event_191 ).
+
+formula(
+ accept_number(christiancountrychumanitarianorganization,n2),
+event_192 ).
+
+formula(
+ accept_team(countrybhumanitarianorganization,countrybcivilorganization,towna,n3),
+event_193 ).
+
+formula(
+ accept_team(countrybhumanitarianorganization,christiancountrychumanitarianorganization,towna,n3),
+event_194 ).
+
+formula(
+ accept_team(countrybhumanitarianorganization,countrycmedicalorganization,towna,n3),
+event_195 ).
+
+formula(
+ accept_team(countrybhumanitarianorganization,countryccivilorganization,towna,n3),
+event_196 ).
+
+formula(
+ accept_number(countrybhumanitarianorganization,n2),
+event_197 ).
+
+formula(
+ accept_team(countrybhumanitarianorganization,countrybcivilorganization,towna,n6),
+event_198 ).
+
+formula(
+ accept_team(countrybhumanitarianorganization,christiancountrychumanitarianorganization,towna,n6),
+event_199 ).
+
+formula(
+ accept_team(countrybhumanitarianorganization,countrycmedicalorganization,towna,n6),
+event_200 ).
+
+formula(
+ the_agent_in_all_proposed_teams(countrybhumanitarianorganization,sufferterragovernment,towna),
+event_201 ).
+
+formula(
+ any_agent_in_all_proposed_teams(countrybhumanitarianorganization,sufferterragovernment,towna),
+event_202 ).
+
+formula(
+ accept_number(countrybcivilorganization,n2),
+event_203 ).
+
+formula(
+ accept_number(countrybcivilorganization,n3),
+event_204 ).
+
+formula(
+ accept_team(countrybcivilorganization,countryccivilorganization,towna,n4),
+event_205 ).
+
+formula(
+ accept_team(countrybcivilorganization,countrybhumanitarianorganization,towna,n6),
+event_206 ).
+
+formula(
+ accept_team(countrybcivilorganization,christiancountrychumanitarianorganization,towna,n6),
+event_207 ).
+
+formula(
+ accept_team(countrybcivilorganization,countrycmedicalorganization,towna,n6),
+event_208 ).
+
+formula(
+ the_agent_in_all_proposed_teams(countrybcivilorganization,sufferterragovernment,towna),
+event_209 ).
+
+formula(
+ any_agent_in_all_proposed_teams(countrybcivilorganization,sufferterragovernment,towna),
+event_210 ).
+
+formula(
+ accept_number(sufferterragovernment,n2),
+event_211 ).
+
+formula(
+ not(
+  accept_team(christiansufferterrahumanitarianorganization,sufferterragovernment,towna,n2)),
+event_212 ).
+
+formula(
+ not(
+  accept_team(christiansufferterrahumanitarianorganization,sufferterragovernment,towna,n6)),
+event_213 ).
+
+formula(
+ accept_number(countryccivilorganization,n2),
+event_214 ).
+
+formula(
+ accept_number(countryccivilorganization,n3),
+event_215 ).
+
+formula(
+ not(
+  accept_team(countryccivilorganization,countrybcivilorganization,towna,n6)),
+event_216 ).
+
+formula(
+ not(
+  accept_team(countryccivilorganization,countrybhumanitarianorganization,towna,n6)),
+event_217 ).
+
+formula(
+ not(
+  accept_team(countryccivilorganization,christiancountrychumanitarianorganization,towna,n6)),
+event_218 ).
+
+formula(
+ not(
+  accept_team(countryccivilorganization,countrycmedicalorganization,towna,n6)),
+event_219 ).
+
+formula(
+ the_agent_in_all_proposed_teams(countryccivilorganization,sufferterragovernment,towna),
+event_220 ).
+
+formula(
+ any_agent_in_all_proposed_teams(countryccivilorganization,sufferterragovernment,towna),
+event_221 ).
+
+formula(
+ accept_number(sufferterragovernment,n5),
+event_222 ).
+
+formula(
+ accept_team(countryacivilorganization,sufferterragovernment,towna,n5),
+event_223 ).
+
+formula(
+ accept_number(sufferterragovernment,n6),
+event_224 ).
+
+formula(
+ accept_team(countryacivilorganization,sufferterragovernment,towna,n6),
+event_225 ).
+
+formula(
+ accept_number(countrycmedicalorganization,n2),
+event_226 ).
+
+formula(
+ accept_number(countrycmedicalorganization,n3),
+event_227 ).
+
+formula(
+ accept_team(countrycmedicalorganization,countryccivilorganization,towna,n4),
+event_228 ).
+
+formula(
+ accept_team(countrycmedicalorganization,countrybcivilorganization,towna,n6),
+event_229 ).
+
+formula(
+ accept_team(countrycmedicalorganization,countrybhumanitarianorganization,towna,n6),
+event_230 ).
+
+formula(
+ accept_team(countrycmedicalorganization,christiancountrychumanitarianorganization,towna,n6),
+event_231 ).
+
+formula(
+ the_agent_in_all_proposed_teams(countrycmedicalorganization,sufferterragovernment,towna),
+event_232 ).
+
+formula(
+ any_agent_in_all_proposed_teams(countrycmedicalorganization,sufferterragovernment,towna),
+event_233 ).
+
+formula(
+ accept_number(christiancountrychumanitarianorganization,n3),
+event_234 ).
+
+formula(
+ accept_number(countryccivilorganization,n4),
+event_235 ).
+
+formula(
+ accept_team(christiancountrychumanitarianorganization,countryccivilorganization,towna,n4),
+event_236 ).
+
+formula(
+ accept_number(countrybcivilorganization,n6),
+event_237 ).
+
+formula(
+ accept_team(christiancountrychumanitarianorganization,countrybcivilorganization,towna,n6),
+event_238 ).
+
+formula(
+ accept_number(countrybhumanitarianorganization,n6),
+event_239 ).
+
+formula(
+ accept_team(christiancountrychumanitarianorganization,countrybhumanitarianorganization,towna,n6),
+event_240 ).
+
+formula(
+ accept_team(christiancountrychumanitarianorganization,countrycmedicalorganization,towna,n6),
+event_241 ).
+
+formula(
+ accept_number(christiancountrychumanitarianorganization,n6),
+event_242 ).
+
+formula(
+ the_agent_in_all_proposed_teams(christiancountrychumanitarianorganization,sufferterragovernment,towna),
+event_243 ).
+
+formula(
+ any_agent_in_all_proposed_teams(christiancountrychumanitarianorganization,sufferterragovernment,towna),
+event_244 ).
+
+formula(
+ accept_number(countrycmedicalorganization,n6),
+event_245 ).
+
+formula(
+ not(
+  accept_team(muslimcountrybhumanitarianorganization,countrycmedicalorganization,towna,n6)),
+event_246 ).
+
+formula(
+ accept_number(muslimcountrybhumanitarianorganization,n6),
+event_247 ).
+
+formula(
+ the_agent_not_in_any_proposed_teams(muslimcountrybhumanitarianorganization,sufferterragovernment,towna),
+event_248 ).
+
+formula(
+ any_agent_in_all_proposed_teams(muslimcountrybhumanitarianorganization,sufferterragovernment,towna),
+event_249 ).
+
+formula(
+ rdn_translate(n0,rdn_pos(rdnn(n0))),
+rdn0 ).
+
+formula(
+ rdn_translate(n1,rdn_pos(rdnn(n1))),
+rdn1 ).
+
+formula(
+ rdn_translate(n2,rdn_pos(rdnn(n2))),
+rdn2 ).
+
+formula(
+ rdn_translate(n3,rdn_pos(rdnn(n3))),
+rdn3 ).
+
+formula(
+ rdn_translate(n4,rdn_pos(rdnn(n4))),
+rdn4 ).
+
+formula(
+ rdn_translate(n5,rdn_pos(rdnn(n5))),
+rdn5 ).
+
+formula(
+ rdn_translate(n6,rdn_pos(rdnn(n6))),
+rdn6 ).
+
+formula(
+ rdn_translate(n7,rdn_pos(rdnn(n7))),
+rdn7 ).
+
+formula(
+ rdn_translate(n8,rdn_pos(rdnn(n8))),
+rdn8 ).
+
+formula(
+ rdn_translate(n9,rdn_pos(rdnn(n9))),
+rdn9 ).
+
+formula(
+ rdn_translate(n10,rdn_pos(rdn(rdnn(n0),rdnn(n1)))),
+rdn10 ).
+
+formula(
+ rdn_translate(n11,rdn_pos(rdn(rdnn(n1),rdnn(n1)))),
+rdn11 ).
+
+formula(
+ rdn_translate(n12,rdn_pos(rdn(rdnn(n2),rdnn(n1)))),
+rdn12 ).
+
+formula(
+ rdn_translate(n13,rdn_pos(rdn(rdnn(n3),rdnn(n1)))),
+rdn13 ).
+
+formula(
+ rdn_translate(n14,rdn_pos(rdn(rdnn(n4),rdnn(n1)))),
+rdn14 ).
+
+formula(
+ rdn_translate(n15,rdn_pos(rdn(rdnn(n5),rdnn(n1)))),
+rdn15 ).
+
+formula(
+ rdn_translate(n16,rdn_pos(rdn(rdnn(n6),rdnn(n1)))),
+rdn16 ).
+
+formula(
+ rdn_translate(n17,rdn_pos(rdn(rdnn(n7),rdnn(n1)))),
+rdn17 ).
+
+formula(
+ rdn_translate(n18,rdn_pos(rdn(rdnn(n8),rdnn(n1)))),
+rdn18 ).
+
+formula(
+ rdn_translate(n19,rdn_pos(rdn(rdnn(n9),rdnn(n1)))),
+rdn19 ).
+
+formula(
+ rdn_translate(n20,rdn_pos(rdn(rdnn(n0),rdnn(n2)))),
+rdn20 ).
+
+formula(
+ rdn_translate(n21,rdn_pos(rdn(rdnn(n1),rdnn(n2)))),
+rdn21 ).
+
+formula(
+ rdn_translate(n22,rdn_pos(rdn(rdnn(n2),rdnn(n2)))),
+rdn22 ).
+
+formula(
+ rdn_translate(n23,rdn_pos(rdn(rdnn(n3),rdnn(n2)))),
+rdn23 ).
+
+formula(
+ rdn_translate(n24,rdn_pos(rdn(rdnn(n4),rdnn(n2)))),
+rdn24 ).
+
+formula(
+ rdn_translate(n25,rdn_pos(rdn(rdnn(n5),rdnn(n2)))),
+rdn25 ).
+
+formula(
+ rdn_translate(n26,rdn_pos(rdn(rdnn(n6),rdnn(n2)))),
+rdn26 ).
+
+formula(
+ rdn_translate(n27,rdn_pos(rdn(rdnn(n7),rdnn(n2)))),
+rdn27 ).
+
+formula(
+ rdn_translate(n28,rdn_pos(rdn(rdnn(n8),rdnn(n2)))),
+rdn28 ).
+
+formula(
+ rdn_translate(n29,rdn_pos(rdn(rdnn(n9),rdnn(n2)))),
+rdn29 ).
+
+formula(
+ rdn_translate(n30,rdn_pos(rdn(rdnn(n0),rdnn(n3)))),
+rdn30 ).
+
+formula(
+ rdn_translate(n31,rdn_pos(rdn(rdnn(n1),rdnn(n3)))),
+rdn31 ).
+
+formula(
+ rdn_translate(n32,rdn_pos(rdn(rdnn(n2),rdnn(n3)))),
+rdn32 ).
+
+formula(
+ rdn_translate(n33,rdn_pos(rdn(rdnn(n3),rdnn(n3)))),
+rdn33 ).
+
+formula(
+ rdn_translate(n34,rdn_pos(rdn(rdnn(n4),rdnn(n3)))),
+rdn34 ).
+
+formula(
+ rdn_translate(n35,rdn_pos(rdn(rdnn(n5),rdnn(n3)))),
+rdn35 ).
+
+formula(
+ rdn_translate(n36,rdn_pos(rdn(rdnn(n6),rdnn(n3)))),
+rdn36 ).
+
+formula(
+ rdn_translate(n37,rdn_pos(rdn(rdnn(n7),rdnn(n3)))),
+rdn37 ).
+
+formula(
+ rdn_translate(n38,rdn_pos(rdn(rdnn(n8),rdnn(n3)))),
+rdn38 ).
+
+formula(
+ rdn_translate(n39,rdn_pos(rdn(rdnn(n9),rdnn(n3)))),
+rdn39 ).
+
+formula(
+ rdn_translate(n40,rdn_pos(rdn(rdnn(n0),rdnn(n4)))),
+rdn40 ).
+
+formula(
+ rdn_translate(n41,rdn_pos(rdn(rdnn(n1),rdnn(n4)))),
+rdn41 ).
+
+formula(
+ rdn_translate(n42,rdn_pos(rdn(rdnn(n2),rdnn(n4)))),
+rdn42 ).
+
+formula(
+ rdn_translate(n43,rdn_pos(rdn(rdnn(n3),rdnn(n4)))),
+rdn43 ).
+
+formula(
+ rdn_translate(n44,rdn_pos(rdn(rdnn(n4),rdnn(n4)))),
+rdn44 ).
+
+formula(
+ rdn_translate(n45,rdn_pos(rdn(rdnn(n5),rdnn(n4)))),
+rdn45 ).
+
+formula(
+ rdn_translate(n46,rdn_pos(rdn(rdnn(n6),rdnn(n4)))),
+rdn46 ).
+
+formula(
+ rdn_translate(n47,rdn_pos(rdn(rdnn(n7),rdnn(n4)))),
+rdn47 ).
+
+formula(
+ rdn_translate(n48,rdn_pos(rdn(rdnn(n8),rdnn(n4)))),
+rdn48 ).
+
+formula(
+ rdn_translate(n49,rdn_pos(rdn(rdnn(n9),rdnn(n4)))),
+rdn49 ).
+
+formula(
+ rdn_translate(n50,rdn_pos(rdn(rdnn(n0),rdnn(n5)))),
+rdn50 ).
+
+formula(
+ rdn_translate(n51,rdn_pos(rdn(rdnn(n1),rdnn(n5)))),
+rdn51 ).
+
+formula(
+ rdn_translate(n52,rdn_pos(rdn(rdnn(n2),rdnn(n5)))),
+rdn52 ).
+
+formula(
+ rdn_translate(n53,rdn_pos(rdn(rdnn(n3),rdnn(n5)))),
+rdn53 ).
+
+formula(
+ rdn_translate(n54,rdn_pos(rdn(rdnn(n4),rdnn(n5)))),
+rdn54 ).
+
+formula(
+ rdn_translate(n55,rdn_pos(rdn(rdnn(n5),rdnn(n5)))),
+rdn55 ).
+
+formula(
+ rdn_translate(n56,rdn_pos(rdn(rdnn(n6),rdnn(n5)))),
+rdn56 ).
+
+formula(
+ rdn_translate(n57,rdn_pos(rdn(rdnn(n7),rdnn(n5)))),
+rdn57 ).
+
+formula(
+ rdn_translate(n58,rdn_pos(rdn(rdnn(n8),rdnn(n5)))),
+rdn58 ).
+
+formula(
+ rdn_translate(n59,rdn_pos(rdn(rdnn(n9),rdnn(n5)))),
+rdn59 ).
+
+formula(
+ rdn_translate(n60,rdn_pos(rdn(rdnn(n0),rdnn(n6)))),
+rdn60 ).
+
+formula(
+ rdn_translate(n61,rdn_pos(rdn(rdnn(n1),rdnn(n6)))),
+rdn61 ).
+
+formula(
+ rdn_translate(n62,rdn_pos(rdn(rdnn(n2),rdnn(n6)))),
+rdn62 ).
+
+formula(
+ rdn_translate(n63,rdn_pos(rdn(rdnn(n3),rdnn(n6)))),
+rdn63 ).
+
+formula(
+ rdn_translate(n64,rdn_pos(rdn(rdnn(n4),rdnn(n6)))),
+rdn64 ).
+
+formula(
+ rdn_translate(n65,rdn_pos(rdn(rdnn(n5),rdnn(n6)))),
+rdn65 ).
+
+formula(
+ rdn_translate(n66,rdn_pos(rdn(rdnn(n6),rdnn(n6)))),
+rdn66 ).
+
+formula(
+ rdn_translate(n67,rdn_pos(rdn(rdnn(n7),rdnn(n6)))),
+rdn67 ).
+
+formula(
+ rdn_translate(n68,rdn_pos(rdn(rdnn(n8),rdnn(n6)))),
+rdn68 ).
+
+formula(
+ rdn_translate(n69,rdn_pos(rdn(rdnn(n9),rdnn(n6)))),
+rdn69 ).
+
+formula(
+ rdn_translate(n70,rdn_pos(rdn(rdnn(n0),rdnn(n7)))),
+rdn70 ).
+
+formula(
+ rdn_translate(n71,rdn_pos(rdn(rdnn(n1),rdnn(n7)))),
+rdn71 ).
+
+formula(
+ rdn_translate(n72,rdn_pos(rdn(rdnn(n2),rdnn(n7)))),
+rdn72 ).
+
+formula(
+ rdn_translate(n73,rdn_pos(rdn(rdnn(n3),rdnn(n7)))),
+rdn73 ).
+
+formula(
+ rdn_translate(n74,rdn_pos(rdn(rdnn(n4),rdnn(n7)))),
+rdn74 ).
+
+formula(
+ rdn_translate(n75,rdn_pos(rdn(rdnn(n5),rdnn(n7)))),
+rdn75 ).
+
+formula(
+ rdn_translate(n76,rdn_pos(rdn(rdnn(n6),rdnn(n7)))),
+rdn76 ).
+
+formula(
+ rdn_translate(n77,rdn_pos(rdn(rdnn(n7),rdnn(n7)))),
+rdn77 ).
+
+formula(
+ rdn_translate(n78,rdn_pos(rdn(rdnn(n8),rdnn(n7)))),
+rdn78 ).
+
+formula(
+ rdn_translate(n79,rdn_pos(rdn(rdnn(n9),rdnn(n7)))),
+rdn79 ).
+
+formula(
+ rdn_translate(n80,rdn_pos(rdn(rdnn(n0),rdnn(n8)))),
+rdn80 ).
+
+formula(
+ rdn_translate(n81,rdn_pos(rdn(rdnn(n1),rdnn(n8)))),
+rdn81 ).
+
+formula(
+ rdn_translate(n82,rdn_pos(rdn(rdnn(n2),rdnn(n8)))),
+rdn82 ).
+
+formula(
+ rdn_translate(n83,rdn_pos(rdn(rdnn(n3),rdnn(n8)))),
+rdn83 ).
+
+formula(
+ rdn_translate(n84,rdn_pos(rdn(rdnn(n4),rdnn(n8)))),
+rdn84 ).
+
+formula(
+ rdn_translate(n85,rdn_pos(rdn(rdnn(n5),rdnn(n8)))),
+rdn85 ).
+
+formula(
+ rdn_translate(n86,rdn_pos(rdn(rdnn(n6),rdnn(n8)))),
+rdn86 ).
+
+formula(
+ rdn_translate(n87,rdn_pos(rdn(rdnn(n7),rdnn(n8)))),
+rdn87 ).
+
+formula(
+ rdn_translate(n88,rdn_pos(rdn(rdnn(n8),rdnn(n8)))),
+rdn88 ).
+
+formula(
+ rdn_translate(n89,rdn_pos(rdn(rdnn(n9),rdnn(n8)))),
+rdn89 ).
+
+formula(
+ rdn_translate(n90,rdn_pos(rdn(rdnn(n0),rdnn(n9)))),
+rdn90 ).
+
+formula(
+ rdn_translate(n91,rdn_pos(rdn(rdnn(n1),rdnn(n9)))),
+rdn91 ).
+
+formula(
+ rdn_translate(n92,rdn_pos(rdn(rdnn(n2),rdnn(n9)))),
+rdn92 ).
+
+formula(
+ rdn_translate(n93,rdn_pos(rdn(rdnn(n3),rdnn(n9)))),
+rdn93 ).
+
+formula(
+ rdn_translate(n94,rdn_pos(rdn(rdnn(n4),rdnn(n9)))),
+rdn94 ).
+
+formula(
+ rdn_translate(n95,rdn_pos(rdn(rdnn(n5),rdnn(n9)))),
+rdn95 ).
+
+formula(
+ rdn_translate(n96,rdn_pos(rdn(rdnn(n6),rdnn(n9)))),
+rdn96 ).
+
+formula(
+ rdn_translate(n97,rdn_pos(rdn(rdnn(n7),rdnn(n9)))),
+rdn97 ).
+
+formula(
+ rdn_translate(n98,rdn_pos(rdn(rdnn(n8),rdnn(n9)))),
+rdn98 ).
+
+formula(
+ rdn_translate(n99,rdn_pos(rdn(rdnn(n9),rdnn(n9)))),
+rdn99 ).
+
+formula(
+ rdn_translate(n100,rdn_pos(rdn(rdnn(n0),rdn(rdnn(n0),rdnn(n1))))),
+rdn100 ).
+
+formula(
+ rdn_translate(n101,rdn_pos(rdn(rdnn(n1),rdn(rdnn(n0),rdnn(n1))))),
+rdn101 ).
+
+formula(
+ rdn_translate(n102,rdn_pos(rdn(rdnn(n2),rdn(rdnn(n0),rdnn(n1))))),
+rdn102 ).
+
+formula(
+ rdn_translate(n103,rdn_pos(rdn(rdnn(n3),rdn(rdnn(n0),rdnn(n1))))),
+rdn103 ).
+
+formula(
+ rdn_translate(n104,rdn_pos(rdn(rdnn(n4),rdn(rdnn(n0),rdnn(n1))))),
+rdn104 ).
+
+formula(
+ rdn_translate(n105,rdn_pos(rdn(rdnn(n5),rdn(rdnn(n0),rdnn(n1))))),
+rdn105 ).
+
+formula(
+ rdn_translate(n106,rdn_pos(rdn(rdnn(n6),rdn(rdnn(n0),rdnn(n1))))),
+rdn106 ).
+
+formula(
+ rdn_translate(n107,rdn_pos(rdn(rdnn(n7),rdn(rdnn(n0),rdnn(n1))))),
+rdn107 ).
+
+formula(
+ rdn_translate(n108,rdn_pos(rdn(rdnn(n8),rdn(rdnn(n0),rdnn(n1))))),
+rdn108 ).
+
+formula(
+ rdn_translate(n109,rdn_pos(rdn(rdnn(n9),rdn(rdnn(n0),rdnn(n1))))),
+rdn109 ).
+
+formula(
+ rdn_translate(n110,rdn_pos(rdn(rdnn(n0),rdn(rdnn(n1),rdnn(n1))))),
+rdn110 ).
+
+formula(
+ rdn_translate(n111,rdn_pos(rdn(rdnn(n1),rdn(rdnn(n1),rdnn(n1))))),
+rdn111 ).
+
+formula(
+ rdn_translate(n112,rdn_pos(rdn(rdnn(n2),rdn(rdnn(n1),rdnn(n1))))),
+rdn112 ).
+
+formula(
+ rdn_translate(n113,rdn_pos(rdn(rdnn(n3),rdn(rdnn(n1),rdnn(n1))))),
+rdn113 ).
+
+formula(
+ rdn_translate(n114,rdn_pos(rdn(rdnn(n4),rdn(rdnn(n1),rdnn(n1))))),
+rdn114 ).
+
+formula(
+ rdn_translate(n115,rdn_pos(rdn(rdnn(n5),rdn(rdnn(n1),rdnn(n1))))),
+rdn115 ).
+
+formula(
+ rdn_translate(n116,rdn_pos(rdn(rdnn(n6),rdn(rdnn(n1),rdnn(n1))))),
+rdn116 ).
+
+formula(
+ rdn_translate(n117,rdn_pos(rdn(rdnn(n7),rdn(rdnn(n1),rdnn(n1))))),
+rdn117 ).
+
+formula(
+ rdn_translate(n118,rdn_pos(rdn(rdnn(n8),rdn(rdnn(n1),rdnn(n1))))),
+rdn118 ).
+
+formula(
+ rdn_translate(n119,rdn_pos(rdn(rdnn(n9),rdn(rdnn(n1),rdnn(n1))))),
+rdn119 ).
+
+formula(
+ rdn_translate(n120,rdn_pos(rdn(rdnn(n0),rdn(rdnn(n2),rdnn(n1))))),
+rdn120 ).
+
+formula(
+ rdn_translate(n121,rdn_pos(rdn(rdnn(n1),rdn(rdnn(n2),rdnn(n1))))),
+rdn121 ).
+
+formula(
+ rdn_translate(n122,rdn_pos(rdn(rdnn(n2),rdn(rdnn(n2),rdnn(n1))))),
+rdn122 ).
+
+formula(
+ rdn_translate(n123,rdn_pos(rdn(rdnn(n3),rdn(rdnn(n2),rdnn(n1))))),
+rdn123 ).
+
+formula(
+ rdn_translate(n124,rdn_pos(rdn(rdnn(n4),rdn(rdnn(n2),rdnn(n1))))),
+rdn124 ).
+
+formula(
+ rdn_translate(n125,rdn_pos(rdn(rdnn(n5),rdn(rdnn(n2),rdnn(n1))))),
+rdn125 ).
+
+formula(
+ rdn_translate(n126,rdn_pos(rdn(rdnn(n6),rdn(rdnn(n2),rdnn(n1))))),
+rdn126 ).
+
+formula(
+ rdn_translate(n127,rdn_pos(rdn(rdnn(n7),rdn(rdnn(n2),rdnn(n1))))),
+rdn127 ).
+
+formula(
+ rdn_translate(nn1,rdn_neg(rdnn(n1))),
+rdnn1 ).
+
+formula(
+ rdn_translate(nn2,rdn_neg(rdnn(n2))),
+rdnn2 ).
+
+formula(
+ rdn_translate(nn3,rdn_neg(rdnn(n3))),
+rdnn3 ).
+
+formula(
+ rdn_translate(nn4,rdn_neg(rdnn(n4))),
+rdnn4 ).
+
+formula(
+ rdn_translate(nn5,rdn_neg(rdnn(n5))),
+rdnn5 ).
+
+formula(
+ rdn_translate(nn6,rdn_neg(rdnn(n6))),
+rdnn6 ).
+
+formula(
+ rdn_translate(nn7,rdn_neg(rdnn(n7))),
+rdnn7 ).
+
+formula(
+ rdn_translate(nn8,rdn_neg(rdnn(n8))),
+rdnn8 ).
+
+formula(
+ rdn_translate(nn9,rdn_neg(rdnn(n9))),
+rdnn9 ).
+
+formula(
+ rdn_translate(nn10,rdn_neg(rdn(rdnn(n0),rdnn(n1)))),
+rdnn10 ).
+
+formula(
+ rdn_translate(nn11,rdn_neg(rdn(rdnn(n1),rdnn(n1)))),
+rdnn11 ).
+
+formula(
+ rdn_translate(nn12,rdn_neg(rdn(rdnn(n2),rdnn(n1)))),
+rdnn12 ).
+
+formula(
+ rdn_translate(nn13,rdn_neg(rdn(rdnn(n3),rdnn(n1)))),
+rdnn13 ).
+
+formula(
+ rdn_translate(nn14,rdn_neg(rdn(rdnn(n4),rdnn(n1)))),
+rdnn14 ).
+
+formula(
+ rdn_translate(nn15,rdn_neg(rdn(rdnn(n5),rdnn(n1)))),
+rdnn15 ).
+
+formula(
+ rdn_translate(nn16,rdn_neg(rdn(rdnn(n6),rdnn(n1)))),
+rdnn16 ).
+
+formula(
+ rdn_translate(nn17,rdn_neg(rdn(rdnn(n7),rdnn(n1)))),
+rdnn17 ).
+
+formula(
+ rdn_translate(nn18,rdn_neg(rdn(rdnn(n8),rdnn(n1)))),
+rdnn18 ).
+
+formula(
+ rdn_translate(nn19,rdn_neg(rdn(rdnn(n9),rdnn(n1)))),
+rdnn19 ).
+
+formula(
+ rdn_translate(nn20,rdn_neg(rdn(rdnn(n0),rdnn(n2)))),
+rdnn20 ).
+
+formula(
+ rdn_translate(nn21,rdn_neg(rdn(rdnn(n1),rdnn(n2)))),
+rdnn21 ).
+
+formula(
+ rdn_translate(nn22,rdn_neg(rdn(rdnn(n2),rdnn(n2)))),
+rdnn22 ).
+
+formula(
+ rdn_translate(nn23,rdn_neg(rdn(rdnn(n3),rdnn(n2)))),
+rdnn23 ).
+
+formula(
+ rdn_translate(nn24,rdn_neg(rdn(rdnn(n4),rdnn(n2)))),
+rdnn24 ).
+
+formula(
+ rdn_translate(nn25,rdn_neg(rdn(rdnn(n5),rdnn(n2)))),
+rdnn25 ).
+
+formula(
+ rdn_translate(nn26,rdn_neg(rdn(rdnn(n6),rdnn(n2)))),
+rdnn26 ).
+
+formula(
+ rdn_translate(nn27,rdn_neg(rdn(rdnn(n7),rdnn(n2)))),
+rdnn27 ).
+
+formula(
+ rdn_translate(nn28,rdn_neg(rdn(rdnn(n8),rdnn(n2)))),
+rdnn28 ).
+
+formula(
+ rdn_translate(nn29,rdn_neg(rdn(rdnn(n9),rdnn(n2)))),
+rdnn29 ).
+
+formula(
+ rdn_translate(nn30,rdn_neg(rdn(rdnn(n0),rdnn(n3)))),
+rdnn30 ).
+
+formula(
+ rdn_translate(nn31,rdn_neg(rdn(rdnn(n1),rdnn(n3)))),
+rdnn31 ).
+
+formula(
+ rdn_translate(nn32,rdn_neg(rdn(rdnn(n2),rdnn(n3)))),
+rdnn32 ).
+
+formula(
+ rdn_translate(nn33,rdn_neg(rdn(rdnn(n3),rdnn(n3)))),
+rdnn33 ).
+
+formula(
+ rdn_translate(nn34,rdn_neg(rdn(rdnn(n4),rdnn(n3)))),
+rdnn34 ).
+
+formula(
+ rdn_translate(nn35,rdn_neg(rdn(rdnn(n5),rdnn(n3)))),
+rdnn35 ).
+
+formula(
+ rdn_translate(nn36,rdn_neg(rdn(rdnn(n6),rdnn(n3)))),
+rdnn36 ).
+
+formula(
+ rdn_translate(nn37,rdn_neg(rdn(rdnn(n7),rdnn(n3)))),
+rdnn37 ).
+
+formula(
+ rdn_translate(nn38,rdn_neg(rdn(rdnn(n8),rdnn(n3)))),
+rdnn38 ).
+
+formula(
+ rdn_translate(nn39,rdn_neg(rdn(rdnn(n9),rdnn(n3)))),
+rdnn39 ).
+
+formula(
+ rdn_translate(nn40,rdn_neg(rdn(rdnn(n0),rdnn(n4)))),
+rdnn40 ).
+
+formula(
+ rdn_translate(nn41,rdn_neg(rdn(rdnn(n1),rdnn(n4)))),
+rdnn41 ).
+
+formula(
+ rdn_translate(nn42,rdn_neg(rdn(rdnn(n2),rdnn(n4)))),
+rdnn42 ).
+
+formula(
+ rdn_translate(nn43,rdn_neg(rdn(rdnn(n3),rdnn(n4)))),
+rdnn43 ).
+
+formula(
+ rdn_translate(nn44,rdn_neg(rdn(rdnn(n4),rdnn(n4)))),
+rdnn44 ).
+
+formula(
+ rdn_translate(nn45,rdn_neg(rdn(rdnn(n5),rdnn(n4)))),
+rdnn45 ).
+
+formula(
+ rdn_translate(nn46,rdn_neg(rdn(rdnn(n6),rdnn(n4)))),
+rdnn46 ).
+
+formula(
+ rdn_translate(nn47,rdn_neg(rdn(rdnn(n7),rdnn(n4)))),
+rdnn47 ).
+
+formula(
+ rdn_translate(nn48,rdn_neg(rdn(rdnn(n8),rdnn(n4)))),
+rdnn48 ).
+
+formula(
+ rdn_translate(nn49,rdn_neg(rdn(rdnn(n9),rdnn(n4)))),
+rdnn49 ).
+
+formula(
+ rdn_translate(nn50,rdn_neg(rdn(rdnn(n0),rdnn(n5)))),
+rdnn50 ).
+
+formula(
+ rdn_translate(nn51,rdn_neg(rdn(rdnn(n1),rdnn(n5)))),
+rdnn51 ).
+
+formula(
+ rdn_translate(nn52,rdn_neg(rdn(rdnn(n2),rdnn(n5)))),
+rdnn52 ).
+
+formula(
+ rdn_translate(nn53,rdn_neg(rdn(rdnn(n3),rdnn(n5)))),
+rdnn53 ).
+
+formula(
+ rdn_translate(nn54,rdn_neg(rdn(rdnn(n4),rdnn(n5)))),
+rdnn54 ).
+
+formula(
+ rdn_translate(nn55,rdn_neg(rdn(rdnn(n5),rdnn(n5)))),
+rdnn55 ).
+
+formula(
+ rdn_translate(nn56,rdn_neg(rdn(rdnn(n6),rdnn(n5)))),
+rdnn56 ).
+
+formula(
+ rdn_translate(nn57,rdn_neg(rdn(rdnn(n7),rdnn(n5)))),
+rdnn57 ).
+
+formula(
+ rdn_translate(nn58,rdn_neg(rdn(rdnn(n8),rdnn(n5)))),
+rdnn58 ).
+
+formula(
+ rdn_translate(nn59,rdn_neg(rdn(rdnn(n9),rdnn(n5)))),
+rdnn59 ).
+
+formula(
+ rdn_translate(nn60,rdn_neg(rdn(rdnn(n0),rdnn(n6)))),
+rdnn60 ).
+
+formula(
+ rdn_translate(nn61,rdn_neg(rdn(rdnn(n1),rdnn(n6)))),
+rdnn61 ).
+
+formula(
+ rdn_translate(nn62,rdn_neg(rdn(rdnn(n2),rdnn(n6)))),
+rdnn62 ).
+
+formula(
+ rdn_translate(nn63,rdn_neg(rdn(rdnn(n3),rdnn(n6)))),
+rdnn63 ).
+
+formula(
+ rdn_translate(nn64,rdn_neg(rdn(rdnn(n4),rdnn(n6)))),
+rdnn64 ).
+
+formula(
+ rdn_translate(nn65,rdn_neg(rdn(rdnn(n5),rdnn(n6)))),
+rdnn65 ).
+
+formula(
+ rdn_translate(nn66,rdn_neg(rdn(rdnn(n6),rdnn(n6)))),
+rdnn66 ).
+
+formula(
+ rdn_translate(nn67,rdn_neg(rdn(rdnn(n7),rdnn(n6)))),
+rdnn67 ).
+
+formula(
+ rdn_translate(nn68,rdn_neg(rdn(rdnn(n8),rdnn(n6)))),
+rdnn68 ).
+
+formula(
+ rdn_translate(nn69,rdn_neg(rdn(rdnn(n9),rdnn(n6)))),
+rdnn69 ).
+
+formula(
+ rdn_translate(nn70,rdn_neg(rdn(rdnn(n0),rdnn(n7)))),
+rdnn70 ).
+
+formula(
+ rdn_translate(nn71,rdn_neg(rdn(rdnn(n1),rdnn(n7)))),
+rdnn71 ).
+
+formula(
+ rdn_translate(nn72,rdn_neg(rdn(rdnn(n2),rdnn(n7)))),
+rdnn72 ).
+
+formula(
+ rdn_translate(nn73,rdn_neg(rdn(rdnn(n3),rdnn(n7)))),
+rdnn73 ).
+
+formula(
+ rdn_translate(nn74,rdn_neg(rdn(rdnn(n4),rdnn(n7)))),
+rdnn74 ).
+
+formula(
+ rdn_translate(nn75,rdn_neg(rdn(rdnn(n5),rdnn(n7)))),
+rdnn75 ).
+
+formula(
+ rdn_translate(nn76,rdn_neg(rdn(rdnn(n6),rdnn(n7)))),
+rdnn76 ).
+
+formula(
+ rdn_translate(nn77,rdn_neg(rdn(rdnn(n7),rdnn(n7)))),
+rdnn77 ).
+
+formula(
+ rdn_translate(nn78,rdn_neg(rdn(rdnn(n8),rdnn(n7)))),
+rdnn78 ).
+
+formula(
+ rdn_translate(nn79,rdn_neg(rdn(rdnn(n9),rdnn(n7)))),
+rdnn79 ).
+
+formula(
+ rdn_translate(nn80,rdn_neg(rdn(rdnn(n0),rdnn(n8)))),
+rdnn80 ).
+
+formula(
+ rdn_translate(nn81,rdn_neg(rdn(rdnn(n1),rdnn(n8)))),
+rdnn81 ).
+
+formula(
+ rdn_translate(nn82,rdn_neg(rdn(rdnn(n2),rdnn(n8)))),
+rdnn82 ).
+
+formula(
+ rdn_translate(nn83,rdn_neg(rdn(rdnn(n3),rdnn(n8)))),
+rdnn83 ).
+
+formula(
+ rdn_translate(nn84,rdn_neg(rdn(rdnn(n4),rdnn(n8)))),
+rdnn84 ).
+
+formula(
+ rdn_translate(nn85,rdn_neg(rdn(rdnn(n5),rdnn(n8)))),
+rdnn85 ).
+
+formula(
+ rdn_translate(nn86,rdn_neg(rdn(rdnn(n6),rdnn(n8)))),
+rdnn86 ).
+
+formula(
+ rdn_translate(nn87,rdn_neg(rdn(rdnn(n7),rdnn(n8)))),
+rdnn87 ).
+
+formula(
+ rdn_translate(nn88,rdn_neg(rdn(rdnn(n8),rdnn(n8)))),
+rdnn88 ).
+
+formula(
+ rdn_translate(nn89,rdn_neg(rdn(rdnn(n9),rdnn(n8)))),
+rdnn89 ).
+
+formula(
+ rdn_translate(nn90,rdn_neg(rdn(rdnn(n0),rdnn(n9)))),
+rdnn90 ).
+
+formula(
+ rdn_translate(nn91,rdn_neg(rdn(rdnn(n1),rdnn(n9)))),
+rdnn91 ).
+
+formula(
+ rdn_translate(nn92,rdn_neg(rdn(rdnn(n2),rdnn(n9)))),
+rdnn92 ).
+
+formula(
+ rdn_translate(nn93,rdn_neg(rdn(rdnn(n3),rdnn(n9)))),
+rdnn93 ).
+
+formula(
+ rdn_translate(nn94,rdn_neg(rdn(rdnn(n4),rdnn(n9)))),
+rdnn94 ).
+
+formula(
+ rdn_translate(nn95,rdn_neg(rdn(rdnn(n5),rdnn(n9)))),
+rdnn95 ).
+
+formula(
+ rdn_translate(nn96,rdn_neg(rdn(rdnn(n6),rdnn(n9)))),
+rdnn96 ).
+
+formula(
+ rdn_translate(nn97,rdn_neg(rdn(rdnn(n7),rdnn(n9)))),
+rdnn97 ).
+
+formula(
+ rdn_translate(nn98,rdn_neg(rdn(rdnn(n8),rdnn(n9)))),
+rdnn98 ).
+
+formula(
+ rdn_translate(nn99,rdn_neg(rdn(rdnn(n9),rdnn(n9)))),
+rdnn99 ).
+
+formula(
+ rdn_translate(nn100,rdn_neg(rdn(rdnn(n0),rdn(rdnn(n0),rdnn(n1))))),
+rdnn100 ).
+
+formula(
+ rdn_translate(nn101,rdn_neg(rdn(rdnn(n1),rdn(rdnn(n0),rdnn(n1))))),
+rdnn101 ).
+
+formula(
+ rdn_translate(nn102,rdn_neg(rdn(rdnn(n2),rdn(rdnn(n0),rdnn(n1))))),
+rdnn102 ).
+
+formula(
+ rdn_translate(nn103,rdn_neg(rdn(rdnn(n3),rdn(rdnn(n0),rdnn(n1))))),
+rdnn103 ).
+
+formula(
+ rdn_translate(nn104,rdn_neg(rdn(rdnn(n4),rdn(rdnn(n0),rdnn(n1))))),
+rdnn104 ).
+
+formula(
+ rdn_translate(nn105,rdn_neg(rdn(rdnn(n5),rdn(rdnn(n0),rdnn(n1))))),
+rdnn105 ).
+
+formula(
+ rdn_translate(nn106,rdn_neg(rdn(rdnn(n6),rdn(rdnn(n0),rdnn(n1))))),
+rdnn106 ).
+
+formula(
+ rdn_translate(nn107,rdn_neg(rdn(rdnn(n7),rdn(rdnn(n0),rdnn(n1))))),
+rdnn107 ).
+
+formula(
+ rdn_translate(nn108,rdn_neg(rdn(rdnn(n8),rdn(rdnn(n0),rdnn(n1))))),
+rdnn108 ).
+
+formula(
+ rdn_translate(nn109,rdn_neg(rdn(rdnn(n9),rdn(rdnn(n0),rdnn(n1))))),
+rdnn109 ).
+
+formula(
+ rdn_translate(nn110,rdn_neg(rdn(rdnn(n0),rdn(rdnn(n1),rdnn(n1))))),
+rdnn110 ).
+
+formula(
+ rdn_translate(nn111,rdn_neg(rdn(rdnn(n1),rdn(rdnn(n1),rdnn(n1))))),
+rdnn111 ).
+
+formula(
+ rdn_translate(nn112,rdn_neg(rdn(rdnn(n2),rdn(rdnn(n1),rdnn(n1))))),
+rdnn112 ).
+
+formula(
+ rdn_translate(nn113,rdn_neg(rdn(rdnn(n3),rdn(rdnn(n1),rdnn(n1))))),
+rdnn113 ).
+
+formula(
+ rdn_translate(nn114,rdn_neg(rdn(rdnn(n4),rdn(rdnn(n1),rdnn(n1))))),
+rdnn114 ).
+
+formula(
+ rdn_translate(nn115,rdn_neg(rdn(rdnn(n5),rdn(rdnn(n1),rdnn(n1))))),
+rdnn115 ).
+
+formula(
+ rdn_translate(nn116,rdn_neg(rdn(rdnn(n6),rdn(rdnn(n1),rdnn(n1))))),
+rdnn116 ).
+
+formula(
+ rdn_translate(nn117,rdn_neg(rdn(rdnn(n7),rdn(rdnn(n1),rdnn(n1))))),
+rdnn117 ).
+
+formula(
+ rdn_translate(nn118,rdn_neg(rdn(rdnn(n8),rdn(rdnn(n1),rdnn(n1))))),
+rdnn118 ).
+
+formula(
+ rdn_translate(nn119,rdn_neg(rdn(rdnn(n9),rdn(rdnn(n1),rdnn(n1))))),
+rdnn119 ).
+
+formula(
+ rdn_translate(nn120,rdn_neg(rdn(rdnn(n0),rdn(rdnn(n2),rdnn(n1))))),
+rdnn120 ).
+
+formula(
+ rdn_translate(nn121,rdn_neg(rdn(rdnn(n1),rdn(rdnn(n2),rdnn(n1))))),
+rdnn121 ).
+
+formula(
+ rdn_translate(nn122,rdn_neg(rdn(rdnn(n2),rdn(rdnn(n2),rdnn(n1))))),
+rdnn122 ).
+
+formula(
+ rdn_translate(nn123,rdn_neg(rdn(rdnn(n3),rdn(rdnn(n2),rdnn(n1))))),
+rdnn123 ).
+
+formula(
+ rdn_translate(nn124,rdn_neg(rdn(rdnn(n4),rdn(rdnn(n2),rdnn(n1))))),
+rdnn124 ).
+
+formula(
+ rdn_translate(nn125,rdn_neg(rdn(rdnn(n5),rdn(rdnn(n2),rdnn(n1))))),
+rdnn125 ).
+
+formula(
+ rdn_translate(nn126,rdn_neg(rdn(rdnn(n6),rdn(rdnn(n2),rdnn(n1))))),
+rdnn126 ).
+
+formula(
+ rdn_translate(nn127,rdn_neg(rdn(rdnn(n7),rdn(rdnn(n2),rdnn(n1))))),
+rdnn127 ).
+
+formula(
+ rdn_translate(nn128,rdn_neg(rdn(rdnn(n8),rdn(rdnn(n2),rdnn(n1))))),
+rdnn128 ).
+
+formula(
+ rdn_non_zero_digit(rdnn(n1)),
+rdn_digit1 ).
+
+formula(
+ rdn_non_zero_digit(rdnn(n2)),
+rdn_digit2 ).
+
+formula(
+ rdn_non_zero_digit(rdnn(n3)),
+rdn_digit3 ).
+
+formula(
+ rdn_non_zero_digit(rdnn(n4)),
+rdn_digit4 ).
+
+formula(
+ rdn_non_zero_digit(rdnn(n5)),
+rdn_digit5 ).
+
+formula(
+ rdn_non_zero_digit(rdnn(n6)),
+rdn_digit6 ).
+
+formula(
+ rdn_non_zero_digit(rdnn(n7)),
+rdn_digit7 ).
+
+formula(
+ rdn_non_zero_digit(rdnn(n8)),
+rdn_digit8 ).
+
+formula(
+ rdn_non_zero_digit(rdnn(n9)),
+rdn_digit9 ).
+
+formula(
+ rdn_positive_less(rdnn(n0),rdnn(n1)),
+rdn_positive_less01 ).
+
+formula(
+ rdn_positive_less(rdnn(n1),rdnn(n2)),
+rdn_positive_less12 ).
+
+formula(
+ rdn_positive_less(rdnn(n2),rdnn(n3)),
+rdn_positive_less23 ).
+
+formula(
+ rdn_positive_less(rdnn(n3),rdnn(n4)),
+rdn_positive_less34 ).
+
+formula(
+ rdn_positive_less(rdnn(n4),rdnn(n5)),
+rdn_positive_less45 ).
+
+formula(
+ rdn_positive_less(rdnn(n5),rdnn(n6)),
+rdn_positive_less56 ).
+
+formula(
+ rdn_positive_less(rdnn(n6),rdnn(n7)),
+rdn_positive_less67 ).
+
+formula(
+ rdn_positive_less(rdnn(n7),rdnn(n8)),
+rdn_positive_less78 ).
+
+formula(
+ rdn_positive_less(rdnn(n8),rdnn(n9)),
+rdn_positive_less89 ).
+
+formula(
+ forall([X,Y,Z],
+  implies(
+   and(
+    rdn_positive_less(rdnn(X),rdnn(Y)),
+    rdn_positive_less(rdnn(Y),rdnn(Z))),
+   rdn_positive_less(rdnn(X),rdnn(Z)))),
+rdn_positive_less_transitivity ).
+
+formula(
+ forall([Ds,Os,Db,Ob],
+  implies(
+   rdn_positive_less(Os,Ob),
+   rdn_positive_less(rdn(rdnn(Ds),Os),rdn(rdnn(Db),Ob)))),
+rdn_positive_less_multi_digit_high ).
+
+formula(
+ forall([Ds,O,Db],
+  implies(
+   and(
+    rdn_positive_less(rdnn(Ds),rdnn(Db)),
+    rdn_non_zero(O)),
+   rdn_positive_less(rdn(rdnn(Ds),O),rdn(rdnn(Db),O)))),
+rdn_positive_less_multi_digit_low ).
+
+formula(
+ forall([D,Db,Ob],
+  implies(
+   rdn_non_zero(Ob),
+   rdn_positive_less(rdnn(D),rdn(rdnn(Db),Ob)))),
+rdn_extra_digits_positive_less ).
+
+formula(
+ forall([X],
+  implies(
+   rdn_non_zero_digit(rdnn(X)),
+   rdn_non_zero(rdnn(X)))),
+rdn_non_zero_by_digit ).
+
+formula(
+ forall([D,O],
+  implies(
+   rdn_non_zero(O),
+   rdn_non_zero(rdn(rdnn(D),O)))),
+rdn_non_zero_by_structure ).
+
+formula(
+ forall([X,Y,RDN_X,RDN_Y],
+  implies(
+   and(
+    rdn_translate(X,rdn_pos(RDN_X)),
+    and(
+     rdn_translate(Y,rdn_pos(RDN_Y)),
+     rdn_positive_less(RDN_X,RDN_Y))),
+   less(X,Y))),
+less_entry_point_pos_pos ).
+
+formula(
+ forall([X,Y,RDN_X,RDN_Y],
+  implies(
+   and(
+    rdn_translate(X,rdn_neg(RDN_X)),
+    rdn_translate(Y,rdn_pos(RDN_Y))),
+   less(X,Y))),
+less_entry_point_neg_pos ).
+
+formula(
+ forall([X,Y,RDN_X,RDN_Y],
+  implies(
+   and(
+    rdn_translate(X,rdn_neg(RDN_X)),
+    and(
+     rdn_translate(Y,rdn_neg(RDN_Y)),
+     rdn_positive_less(RDN_Y,RDN_X))),
+   less(X,Y))),
+less_entry_point_neg_neg ).
+
+formula(
+ forall([X,Y],
+  equiv(
+   less(X,Y),
+   and(
+    not(
+     less(Y,X)),
+    not(
+     equal(Y,X))))),
+less_property ).
+
+formula(
+ forall([X,Y],
+  equiv(
+   less_or_equal(X,Y),
+   or(
+    less(X,Y),
+    equal(X,Y)))),
+less_or_equal ).
+
+formula(
+ forall([X,Y,Z],
+  implies(
+   and(
+    sum(X,n1,Y),
+    less(Z,Y)),
+   less_or_equal(Z,X))),
+less_successor ).
+
+end_of_list.
+
+list_of_formulae(conjectures).
+
+formula(  %(conjecture)
+ accept_team(countryamedicalorganization,countryacivilorganization,towna,n6),
+query_1 ).
+
+end_of_list.
+
+end_problem."""
+      // parse
+      assert(SPASSParser.parse(text))
+
+    }
+
+
   }
 
 }
