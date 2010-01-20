@@ -1,7 +1,7 @@
 package core.resolution
 
 
-import containers.{CNFClauseStore, ClauseStorage}
+import containers.{MatchingClausesRetrieval, CNFClauseStore, ClauseStorage}
 import domain.fol.ast._
 import ordering.LiteralComparison
 import org.slf4j.LoggerFactory
@@ -9,17 +9,24 @@ import reduction.Factoring
 import rewriting.Substitution
 import selection.LiteralSelection
 
+
 /**
  * User: nowi
  * Date: 02.11.2009
  * Time: 16:15:37
  */
 
-trait Resolution {
+trait Resolution extends InferenceRecording {
   def resolve(a: ClauseStorage, b: ClauseStorage): ClauseStorage
 
+  def resolve(a: FOLClause, b: ClauseStorage): ClauseStorage
+
+
   def resolve(a: FOLClause, b: FOLClause): Set[FOLClause]
+
 }
+
+
 
 class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val standardizer: Standardizing; val substitutor: Substitution}) extends Resolution {
   val unificator = env.unificator
@@ -28,30 +35,31 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
   val substitutor = env.substitutor
 
 
+  def resolve(a: FOLClause, b: MatchingClausesRetrieval) = null
+
   val log = LoggerFactory getLogger (this getClass)
 
   override def resolve(a: ClauseStorage, b: ClauseStorage): ClauseStorage = {
     log.trace("Resolving {} with {}", a, b)
     // resolve
 
-    val resolvents1 = (for (clause1 <- a.clauses;
-                            clause2 <- b.clauses;
-                            if (clause1 != clause2);
-                            resolvent = resolve(clause1, clause2))
-    yield resolvent)
+    (for (clause1 <- a;
+          clause2 <- b;
+          if (clause1 != clause2);
+          resolvent = CNFClauseStore(resolve(clause1, clause2)))
+    yield resolvent).reduceLeft(_ ::: _)
 
 
-    val resolvents2 = resolvents1 match {
-      case x if (x.isEmpty) => {
-        log.info("There are no resolvents for clausestorage {} , {}", a, b)
-        Set[FOLClause]()
-      }
-      case _ => {
-        resolvents1.reduceLeft(_ ++ _)
-      }
-    }
+  }
 
-    CNFClauseStore(resolvents2)
+  override def resolve(a: FOLClause, b: ClauseStorage): ClauseStorage = {
+    log.trace("Resolving {} with {}", a, b)
+    // resolve
+
+    (for (clause2 <- b;
+          if (a != clause2);
+          resolvent = CNFClauseStore(resolve(a, clause2)))
+    yield resolvent).reduceLeft(_ ::: _)
 
 
   }
@@ -75,7 +83,7 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
             doResolve(bStand, aStand)
 
     if (!conclusions.isEmpty) {
-      log.trace("Resolved from clauses {} and {} --> {}", (a, b, conclusions))
+      log.info("{} + {} --> {}", (a, b, conclusions))
     } else {
       log.trace("RESOLVED NOTHING from clauses {} and {} !", a, b)
     }
@@ -84,12 +92,12 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
   }
 
 
-  private def doResolve(aStand: FOLClause, bStand: FOLClause): Set[FOLClause] = {
+  private def doResolve(a: FOLClause, b: FOLClause): Set[FOLClause] = {
 
-    val aLits = aStand.positiveLiterals
-    //    log.trace("Positive literals of standardized Clause {} are : {}", aStand, aLits)
-    val bLits = bStand.negativeLiterals
-    //    log.trace("Negative literals of standardized Clause {} are : {}", bStand, bLits)
+    val aLits = a.positiveLiterals
+    //    log.trace("Positive literals of standardized Clause {} are : {}", a, aLits)
+    val bLits = b.negativeLiterals
+    //    log.trace("Negative literals of standardized Clause {} are : {}", b, bLits)
 
     val conclusions: Set[FOLClause] = (for (aPos <- aLits;
                                             bNeg <- bLits;
@@ -103,19 +111,29 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
           //            Let S_1 and S_2 be two clauses with no variables in common, let S_1 contain a positive literal L_1, S_2 contain a negative literal L_2, and let eta be the most general unifier of L_1 and L_2. Then
           //(S_1eta-L_1eta) union (S_2eta-L_2eta)
 
-          val S1 = substitutor.substitute(mgu, aStand)
-          val aPosS = substitutor.substitute(mgu, aPos)
-          val S2 = substitutor.substitute(mgu, bStand)
-          val bNegS = substitutor.substitute(mgu, bNeg)
+          val sC = (clause: FOLClause) => substitutor.substitute(mgu, clause)
+          val sN = (node: FOLNode) => substitutor.substitute(mgu, node)
 
 
-          val binaryResolvent = (S1 - aPosS) ++ (S2 - bNegS)
+          val S1 = sC(a)
+          val aPosS = sN(aPos)
+          val S2 = sC(b)
+          val bNegS = sN(bNeg)
 
-          if (binaryResolvent.isEmpty) {
-            log.info("EMPTY CLAUSE RESOLVED FROM {} and {}", aStand, bStand)
+          log.warn("a : {}", S1)
+          log.warn("aPos : {}", aPosS)
+          log.warn("S2 : {}", S2)
+          log.warn("bNegS : {}", bNegS)
+
+          val resolvent: FOLClause = (S1 - aPosS) ++ (S2 - bNegS)
+
+
+
+          if (resolvent.isEmpty) {
+            log.debug("EMPTY CLAUSE RESOLVED FROM {} and {}", a, b)
             EmptyClause()
           } else {
-            binaryResolvent
+            resolvent
           }
 
         }
@@ -132,14 +150,16 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
 
 }
 
-class OrderedResolver(env: {val unificator: Unify; val factorizer: Factoring; val standardizer: Standardizing; val substitutor: Substitution; val selector: LiteralSelection; val comparator: LiteralComparison}) extends Resolution {
+
+class OrderedResolver(env: {val useIndexing: Boolean; val recordProofSteps: Boolean; val unificator: Unify; val factorizer: Factoring; val standardizer: Standardizing; val substitutor: Substitution; val selector: LiteralSelection; val literalComparator: LiteralComparison}) extends Resolution {
   val unificator = env.unificator
   val factorizer = env.factorizer
   val standardizer = env.standardizer
   val substitutor = env.substitutor
   val selector = env.selector
-  val comparator = env.comparator
-
+  val literalComparator = env.literalComparator
+  val recordProofSteps = env.recordProofSteps
+  val useIndexing = env.useIndexing
 
   // ordered resolver needs a clause comparator
 
@@ -149,29 +169,96 @@ class OrderedResolver(env: {val unificator: Unify; val factorizer: Factoring; va
   val log = LoggerFactory getLogger (this getClass)
 
 
+  override def resolve(a: FOLClause, b: ClauseStorage) = {
+    b match {
+      case store: MatchingClausesRetrieval if (useIndexing) => resolveWithMatchingIndex(a, store)
+      case _ => resolveWithoutIndex(a, b)
+    }
+
+    log.trace("Resolving {} with {}", a, b)
+    // resolve
+    val resolvents = (for (clause2 <- b;
+                           if (a != clause2);
+                           resolvent = CNFClauseStore(resolve(a, clause2)))
+    yield resolvent)
+
+    resolvents match {
+      case x if (x.size == 0) => CNFClauseStore()
+      case x => x.reduceLeft(_ ::: _)
+
+    }
+
+
+  }
+
+  private def resolveWithoutIndex(a: FOLClause, b: ClauseStorage) = {
+    log.trace("Resolving {} with {}", a, b)
+    // resolve
+    val resolvents = (for (clause2 <- b;
+                           if (a != clause2);
+                           resolvent = CNFClauseStore(resolve(a, clause2)))
+    yield resolvent)
+
+    resolvents match {
+      case x if (x.size == 0) => CNFClauseStore()
+      case x => x.reduceLeft(_ ::: _)
+
+    }
+
+
+  }
+
+  private def resolveWithMatchingIndex(a: FOLClause, b: MatchingClausesRetrieval): ClauseStorage = {
+    log.trace("Resolving with MatchingIndexSupport {} with {}", a, b)
+
+
+    // get the matching claueses , substruct the query clause a
+    val matchingClauses = a.literals.map({lit: FOLNode => b.getMatchingClauses(lit).getOrElse(Set()) ++ b.getMatchingClauses(Negation(lit)).getOrElse(Set())}).reduceLeft(_ ++ _) - a
+
+    matchingClauses match {
+      case clauses: Set[FOLClause] if (clauses.isEmpty) => CNFClauseStore()
+      case clauses: Set[FOLClause] => {
+        val resolvents = (for (clause2 <- clauses;
+                               if (a != clause2);
+                               resolvent = CNFClauseStore(resolve(a, clause2)))
+        yield resolvent)
+
+        resolvents match {
+          case x if (x.size == 0) => CNFClauseStore()
+          case x => x.reduceLeft(_ ::: _)
+
+        }
+
+      }
+
+    }
+
+
+  }
+
+  //  def resolveWithIndex(a: FOLClause, b: ImPerfectFilteringFOLClauseIndex) = {
+  //    log.trace("Resolving {} with {}", a, b)
+  //    // resolve
+  //    (for (clause2 <- b;
+  //                            if (a != clause2);
+  //                            resolvent = CNFClauseStore(resolve(a, clause2)))
+  //    yield resolvent).reduceLeft(_ ::: _)
+  //
+  //  }
+
+
+
+
   override def resolve(a: ClauseStorage, b: ClauseStorage): ClauseStorage = {
     log.trace("Resolving {} with {}", a, b)
     // resolve
 
-    val resolvents1 = (for (clause1 <- a.clauses;
-                            clause2 <- b.clauses;
-                            if (clause1 != clause2);
-                            resolvent = resolve(clause1, clause2))
-    yield resolvent)
 
-
-    val resolvents2 = resolvents1 match {
-      case x if (x.isEmpty) => {
-        log.info("There are no resolvents for clausestorage {} , {}", a, b)
-        Set[FOLClause]()
-      }
-      case _ => {
-        resolvents1.reduceLeft(_ ++ _)
-      }
-    }
-
-    CNFClauseStore(resolvents2)
-
+    (for (clause1 <- a;
+          clause2 <- b;
+          if (clause1 != clause2);
+          resolvent = CNFClauseStore(resolve(clause1, clause2)))
+    yield resolvent).reduceLeft(_ ::: _)
 
   }
 
@@ -185,35 +272,42 @@ class OrderedResolver(env: {val unificator: Unify; val factorizer: Factoring; va
    */
   override def resolve(a: FOLClause, b: FOLClause): Set[FOLClause] = {
     log.trace("Resolving the Clauses {},{}", a, b)
-    // standardize apart the clauses
+
     val (aStand, bStand) = standardizer.standardizeApart(a, b)
 
-    // Apos , Bneg
+    val conclusions: Set[FOLClause] =
+    (doResolve(aStand, bStand)
+            ++ doResolve(bStand, aStand)
+            )
+            .filter({
+      _ match {
+        case Some(c) => true
+        case _ => false
+      }
+    })
+            .map({_.get})
 
-    val conclusions = doResolve(aStand, bStand) ++
-            doResolve(bStand, aStand)
+    if (!conclusions.isEmpty)
+      log.debug("%s + %s --> %s" format (a, b, conclusions))
 
-    if (!conclusions.isEmpty) {
-      log.trace("Resolved from clauses {} and {} --> {}", (a, b, conclusions))
-    } else {
-      log.trace("RESOLVED NOTHING from clauses {} and {} !", a, b)
-    }
+
     conclusions
+
 
   }
 
 
-  private def doResolve(a: FOLClause, b: FOLClause): Set[FOLClause] = {
+  private def doResolve(a: FOLClause, b: FOLClause): Set[Option[FOLClause]] = {
     val aLits = a.positiveLiterals
     //    log.trace("Positive literals of standardized Clause {} are : {}", a, aLits)
     val bLits = b.negativeLiterals
     //    log.trace("Negative literals of standardized Clause {} are : {}", b, bLits)
 
-    val conclusions: Set[FOLClause] = (for (aPos <- aLits;
-                                            bNeg <- bLits;
-                                            mgu = unificator.unify(aPos, bNeg);
-                                            if (mgu != None))
-
+    val conclusions: Set[Option[FOLClause]] = (for (
+      aPos <- aLits;
+      bNeg <- bLits;
+      (aPosStand, bNegStand) = standardizer.standardizeApart(aPos, bNeg);
+      mgu = unificator.unify(aPos, bNeg))
     yield mgu match {
         case Some(x) => {
           // we have a mgu
@@ -221,7 +315,8 @@ class OrderedResolver(env: {val unificator: Unify; val factorizer: Factoring; va
           // check the ordererd resolution preconditions
           if (checkSidePremise(a, aPos, mgu) && checkMainPremise(b, bNeg, mgu)) {
             // apply it to the two clauses excluding the 2 focused
-            log.trace("MGU for Literal : {} and Literal {} is {}", Array(aPos, bNeg, mgu))
+            log.debug("Resolving on literal {}", bNeg)
+            log.debug("MGU for Literal : %s and Literal %s is %s" format (aPos, bNeg, mgu))
             //            Let S_1 and S_2 be two clauses with no variables in common, let S_1 contain a positive literal L_1, S_2 contain a negative literal L_2, and let eta be the most general unifier of L_1 and L_2. Then
             //(S_1eta-L_1eta) union (S_2eta-L_2eta)
             // substition function
@@ -235,24 +330,39 @@ class OrderedResolver(env: {val unificator: Unify; val factorizer: Factoring; va
             val S2 = sC(b)
             val bNegS = sN(bNeg)
 
-            val binaryResolvent = (S1 - aPosS) ++ (S2 - bNegS)
+            log.debug("a : {}", S1)
+            log.debug("aPos : {}", aPosS)
+            log.debug("S2 : {}", S2)
+            log.debug("bNegS : {}", bNegS)
 
-            if (binaryResolvent.isEmpty) {
-              log.info("EMPTY CLAUSE RESOLVED FROM {} and {}", a, b)
-              EmptyClause()
+            val resolvent: FOLClause = (S1 - aPosS) ++ (S2 - bNegS)
+
+
+
+            if (resolvent.isEmpty) {
+              log.debug("EMPTY CLAUSE RESOLVED FROM {} and {}", a, b)
+              Some(EmptyClause())
             } else {
-              binaryResolvent
+              log.debug("Resolved {} , from Literals {},{}", List(resolvent, aPos, bNeg))
+              // do backsubstitution
+
+              if (recordProofSteps) {
+                inferenceLog += (resolvent -> (a, b))
+              }
+
+
+              Some(resolvent)
             }
 
           } else {
-            log.info("Not satisfying ordering constaraints , not resolving Literals {},{}", aPos, bNeg)
-            domain.fol.ast.StandardClause()
+            log.debug("Not satisfying ordering constaraints , not resolving Literals {},{}", aPos, bNeg)
+            None
           }
 
         }
         case None => {
-          log.trace("Could not resolve Literals {},{}", aPos, bNeg)
-          domain.fol.ast.StandardClause()
+          log.debug("Could not resolve Literals {},{}", aPos, bNeg)
+          None
         }
       })
 
@@ -266,9 +376,12 @@ class OrderedResolver(env: {val unificator: Unify; val factorizer: Factoring; va
     //1.) we only resolve on the maximal litaral A
     // A has to be maximal in the side premise a V a AND the side premise contains
     // no seleted (negative) atoms
+
+
+
     if (selector.selectedLiterals(premise).isEmpty) {
       // get maximal lit of a
-      val compare = comparator.compare(_, _)
+      val compare = literalComparator.compare(_, _)
       // substition function
       val s = (node: FOLNode) => substitutor.substitute(mgu, node)
 
@@ -285,16 +398,19 @@ class OrderedResolver(env: {val unificator: Unify; val factorizer: Factoring; va
       greaterThanLiteral match {
         case None => {
           // we have found nothing greater
+          log.debug("We have NOT found a greater Lit : {} is Striclty Maximal in sidepremise: {}", literal, premise)
           true
         }
         case _ => {
-          log.info("We have found a greater Lit : {} in sidePremise : {}", greaterThanLiteral, premise)
+          log.debug("We have found a greater/greaterequal Lit : {} therefore {} is not maximal", greaterThanLiteral, literal)
           false
         }
       }
 
 
-    } else {
+    }
+    else {
+      log.debug("Selected Literals : {} in sidePremise : {} were not empty ! ", selector.selectedLiterals(premise), premise)
       false
     }
 
@@ -302,21 +418,21 @@ class OrderedResolver(env: {val unificator: Unify; val factorizer: Factoring; va
   }
 
   private def checkMainPremise(premise: FOLClause, literal: FOLNode, mgu: Option[Map[Variable, FOLNode]]): Boolean = {
-    // either B is selected in D ∨¬B or else nothing is selected in D ∨¬B and Bσ is maximal 
+    // either B is selected in D ∨¬B or else nothing is selected in D ∨¬B and Bσ is maximal
     // w.r.t. Dσ
 
     // lit has to be a NegativeFOLLiteral
-    assert((literal match {
-      case NegativeFOLLiteral(x) => true
-      case _ => false
-    }), "Literal passed to the mainpremise check must be negative")
+    //    assert((literal match {
+    //      case NegativeFOLLiteral(x) => true
+    //      case _ => false
+    //    }), "Literal passed to the mainpremise check must be negative")
 
 
     if (selector.isSelected(literal, premise)) {
       true
-    } else {
+    } else if (selector.selectedLiterals(premise).isEmpty) {
       // get maximal lit of a
-      val compare = comparator.compare(_, _)
+      val compare = literalComparator.compare(_, _)
       // substition function
       val s = (node: FOLNode) => substitutor.substitute(mgu, node)
 
@@ -330,15 +446,18 @@ class OrderedResolver(env: {val unificator: Unify; val factorizer: Factoring; va
       greaterThanLiteral match {
         case None => {
           // we have found nothing greater
+          log.debug("We have NOT found a greater Lit : {} is Striclty Maximal in mainpremise: {}", literal, premise)
           true
         }
         case _ => {
-          log.info("We have found a greater Lit : {} in mainPremise : {}", greaterThanLiteral, premise)
+          log.debug("We have found a greater/greaterequal Lit : {} therefore {} is not maximal", greaterThanLiteral, literal)
           false
         }
       }
 
 
+    } else {
+      false
     }
 
 
@@ -359,19 +478,24 @@ class GeneralResolution(env: {val unificator: Unify}) extends Resolution {
     a
   }
 
+  def resolve(a: FOLClause, b: MatchingClausesRetrieval) = null
 
   /**
    * Deﬁnition 8.5.2 Given two clauses A and B, a clause C is a resolvent of
    * A and B iﬀ the following holds:
    *
-   * (i) There is a subset A′ =                                { A1 , ..., Am } ⊆ A of literals all of the same sign,
-   * a subset B′ =                                { B1 , ..., Bn } ⊆ B of literals all of the opposite sign of the set A′ ,
+   * (i) There is a subset A′ =                                                  { A1 , ..., Am } ⊆ A of literals all of the same sign,
+   * a subset B′ =                                                  { B1 , ..., Bn } ⊆ B of literals all of the opposite sign of the set A′ ,
    * and a separating pair of substitutions (ρ, ρ′ ) such that the set |ρ(A′ ) ∪ ρ′ (B′ )|
    * is uniﬁable;
    *
    * (ii) For some most general uniﬁer σ of the set |ρ(A′ ) ∪ ρ′ (B′ )|, we have
    * C = σ(ρ(A − A′ ) ∪ ρ′ (B − B′ )).
    */
+
+
+  def resolve(a: FOLClause, b: ClauseStorage) = null
+
   override def resolve(a: FOLClause, b: FOLClause): Set[FOLClause] = {
     Set(a)
   }
