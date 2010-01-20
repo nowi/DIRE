@@ -119,7 +119,7 @@ object SPASSIntermediateFormatParser extends StandardTokenParsers with Logging {
 
   def variableList: Parser[List[Variable]] = "[" ~ repsep(variable, ",") ~ "]" ^^ {
     case "[" ~ vars ~ "]" => {
-      log.info("Created variable list : {}", vars)
+      log.debug("Created variable list : {}", vars)
       vars
     }
   }
@@ -136,7 +136,7 @@ object SPASSIntermediateFormatParser extends StandardTokenParsers with Logging {
   //  }
 
   def clause: Parser[StandardClause] = "clause" ~ "(" ~ (cnfclause | dnfclause) ~ "," ~ label ~ ")." ^^ {
-    case "clause" ~ "(" ~ c ~ "," ~ l ~ ")." => StandardClause(c)
+    case "clause" ~ "(" ~ c ~ "," ~ l ~ ")." => StandardClause(c.args: _*)
   }
 
   def clausetype = "cnf" | "dnf"
@@ -160,21 +160,21 @@ object SPASSIntermediateFormatParser extends StandardTokenParsers with Logging {
   def universalCNFClause: Parser[OrConnective] = opt(rep(predicate)) ~ "->" ~ opt(rep(predicate)) ^^ {
     case Some(negativeLiterals) ~ "->" ~ Some(positiveLiterals) => {
       val x = OrConnective(negativeLiterals.map({Negation(_)})) ++ OrConnective(positiveLiterals)
-      log.info("Crated universal cnf clause {}", x)
+      log.debug("Crated universal cnf clause {}", x)
       x
 
     }
 
     case None ~ "->" ~ Some(positiveLiterals) => {
       val x = OrConnective(positiveLiterals)
-      log.info("Crated universal cnf clause {}", x)
+      log.debug("Crated universal cnf clause {}", x)
       x
 
     }
 
     case Some(negativeLiterals) ~ "->" ~ None => {
       val x = OrConnective(negativeLiterals.map({Negation(_)}))
-      log.info("Crated universal cnf clause {}", x)
+      log.debug("Crated universal cnf clause {}", x)
       x
 
     }
@@ -232,7 +232,7 @@ object SPASSIntermediateFormatParser extends StandardTokenParsers with Logging {
     // "*" --> "'"
     // remove line breaks
 
-    input.replace("_", "").replace("'", "").replace("*", "'").replace(", ", ",").replace("\n", " ").replace("\t", "")
+    input.replace("_", "").replace("'", "").replace("*", "'").replace(", ", ",").replace("\n", " ").replace("\t", "").replace("||", "")
 
   }
 
