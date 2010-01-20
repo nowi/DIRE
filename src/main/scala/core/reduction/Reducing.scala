@@ -1,6 +1,7 @@
 package core.reduction
 
 
+import collection.mutable.ListBuffer
 import containers.{NonEmptyClauseStore, CNFClauseStore, ClauseStorage}
 import domain.fol.ast._
 import helpers.Logging
@@ -111,6 +112,10 @@ trait SubsumptionDeletion extends Reducing {
    */
   def deleteSubsumptions(inClauses: ClauseStorage, fromClauses: ClauseStorage): ClauseStorage
 
+
+  def subsumptions(inClauses: ClauseStorage, fromClauses: ClauseStorage): ClauseStorage
+
+
   /**
    * Apply subsumption deletion to all of the clauses in the clauseStore
    * and return the resulting clausestore
@@ -127,12 +132,40 @@ class SubsumptionDeleter(env: {val subsumptionStrategy: Subsumption}) extends Su
     (a, b) match {
       case (NonEmptyClauseStore(inClauses), NonEmptyClauseStore(fromClauses)) => {
         log.trace("Delete Subsumptions in Clauses {} that are subsumed by {} ...  for now we check if a is contained in b", inClauses, fromClauses)
-        val subsumed = (for (c1 <- fromClauses.clauses; c2 <- inClauses.clauses; if (c1 != c2); if (!c1.isEmpty && !c2.isEmpty); if (subsumer.subsumes(c1, c2))) yield c2)
+        val subsumed = new ListBuffer[FOLClause]
+
+        for (c1 <- fromClauses;
+             c2 <- inClauses;
+             if (c1 != c2);
+             if (!c1.isEmpty && !c2.isEmpty);
+             if (subsumer.subsumes(c1, c2))) {
+          subsumed.append(c2)
+        }
         log.trace("2. Subsumption deletion identified subsumed clauses : {} ", subsumed)
-        inClauses -- CNFClauseStore(subsumed)
+
+        // return clauses that where not subsumed
+
+        inClauses.filterClauses {!subsumed.contains(_)}
       }
       case _ => {
-        log.info("Passed in empty clauseStorage into subsumtpion deletion method")
+        log.debug("Passed in empty clauseStorage into subsumtpion deletion method")
+        a
+      }
+    }
+
+
+  }
+
+  override def subsumptions(a: ClauseStorage, b: ClauseStorage): ClauseStorage = {
+    (a, b) match {
+      case (NonEmptyClauseStore(inClauses), NonEmptyClauseStore(fromClauses)) => {
+        log.trace("Delete Subsumptions in Clauses {} that are subsumed by {} ...  for now we check if a is contained in b", inClauses, fromClauses)
+        val subsumed = (for (c1 <- fromClauses; c2 <- inClauses; if (c1 != c2); if (!c1.isEmpty && !c2.isEmpty); if (subsumer.subsumes(c1, c2))) yield c2)
+        log.trace("2. Subsumption deletion identified subsumed clauses : {} ", subsumed)
+        CNFClauseStore(subsumed: _*)
+      }
+      case _ => {
+        log.debug("Passed in empty clauseStorage into subsumtpion deletion method")
         a
       }
     }
@@ -144,16 +177,33 @@ class SubsumptionDeleter(env: {val subsumptionStrategy: Subsumption}) extends Su
    * Apply subsumption deletion to all of the clauses in the clauseStore
    * and return the resulting clausestore
    */
-  override def deleteSubsumptions(a: ClauseStorage): ClauseStorage = {
-    if (a == NonEmptyClauseStore) {
-      log.trace("Subsumption deletion to all of {}", a)
-      // interreduce all claueses
-      val subsumed =
-      for (c1 <- a.clauses; c2 <- a.clauses; if (c1 != c2); if (subsumer.subsumes(c1, c2))) yield c2
-      log.info("1. Subsumption deletion identified subsumed clauses : {} ", subsumed)
-      a -- CNFClauseStore(subsumed)
-    } else
-      a
+  override def deleteSubsumptions(c: ClauseStorage): ClauseStorage = {
+    log.trace("Subsumption deletion to all of {}", c)
+    c match {
+      case NonEmptyClauseStore(clauses: ClauseStorage) => {
+        // interreduce all claueses
+        val buffer = new ListBuffer[FOLClause]
+        for (c1 <- clauses;
+             c2 <- clauses;
+             if (c1 != c2);
+             if (subsumer.subsumes(c1, c2))) {
+          buffer.append(c2)
+        }
+        val subsumed = buffer.toList
+        log.debug("1. Subsumption deletion identified subsumed clauses : {} ", buffer)
+
+
+        // return clauses that where not subsumed
+
+        c.filterClauses {!subsumed.contains(_)}
+
+
+      }
+
+
+      case _ => c
+    }
+
 
   }
 
@@ -177,18 +227,18 @@ class SubsumptionDeleter(env: {val subsumptionStrategy: Subsumption}) extends Su
 
         } else {
           // not a subset regarding symbolicnames and arity
-          log.info("not a subset regarding symbolicnames and arity")
+          log.debug("not a subset regarding symbolicnames and arity")
           false
         }
 
       } else {
         // is not smaller , in groundcase this means cannot subsume
-        log.info("is not smaller , in groundcase this means cannot subsume")
+        log.debug("is not smaller , in groundcase this means cannot subsume")
         false
 
       }
     } else {
-      log.info("they are equal")
+      log.debug("they are equal")
       false
     }
   }
@@ -207,14 +257,12 @@ class TautologyDeleter extends TautologyDeletion with Logging {
     clauses match {
       case NonEmptyClauseStore(clauseStore) => {
         log.trace("Tautology elemination on {} by {}", clauseStore, this)
-        val tautologies =
-        for (c <- clauseStore.clauses; if (isTautology(c))) yield c
-        log.info("1. Tautlogy eleimation identified tautology clauses : {} ", tautologies)
-        clauseStore -- CNFClauseStore(tautologies)
+        clauseStore.filterClauses {!isTautology(_)}
+
       }
 
       case _ => {
-        log.info("1. Tautlogy eleimation skipped on clause store : {}", clauses)
+        log.debug("1. Tautlogy eleimation skipped on clause store : {}", clauses)
         clauses
       }
     }
@@ -223,7 +271,11 @@ class TautologyDeleter extends TautologyDeletion with Logging {
 
 
   private def isTautology(clause: FOLClause): Boolean = {
-    val tautLits: Set[Boolean] = for (nLit <- clause.negativeLiterals; pLit <- clause.positiveLiterals)
+
+    val negLits = clause.negativeLiterals.asInstanceOf[Set[Negation]].map({x: Negation => x.filler})
+    val posLits = clause.positiveLiterals
+
+    val tautLits: Set[Boolean] = for (nLit <- negLits; pLit <- posLits)
     yield (pLit == nLit)
     (Set(false) ++ tautLits).reduceLeft(_ || _)
   }
