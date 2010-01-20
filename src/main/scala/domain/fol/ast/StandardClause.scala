@@ -1,5 +1,8 @@
 package domain.fol.ast
 
+
+import core.ordering.LiteralComparison
+
 trait FOLClause {
   // all folnodes have to be literals
   val literals: Set[FOLNode]
@@ -16,6 +19,43 @@ trait FOLClause {
   def +(that: FOLNode): FOLClause
 
   def absoluteClause: FOLClause
+
+  lazy val size: Int = literals.size
+
+  // maximal literal depends on the compereator used
+  protected var maxLiterals: Map[LiteralComparison, FOLNode] = Map[LiteralComparison, FOLNode]()
+
+
+  def maxLit(comperator: LiteralComparison): FOLNode = {
+    assert(!isEmpty, "There cannot be a max Lit in Empty Clause")
+    // do lookup
+    maxLiterals.get(comperator) match {
+      case Some(lit) => lit
+      case None => {
+        // we have no max for this comparator , determine the max and cache it
+        var maxLiteral = literals.toList.head
+
+        val iter = literals.elements
+        while (iter.hasNext) {
+          val lit = iter.next
+          comperator.compare(lit, maxLiteral) match {
+            case Some(1) => maxLiteral = lit
+            case Some(0) => None
+            case Some(-1) => None
+            case None => {
+              None
+            }
+          }
+
+        }
+        // save this max lit
+        maxLiterals += (comperator -> maxLiteral)
+        maxLiteral
+      }
+
+    }
+
+  }
 
 
   lazy val absoluteLiterals: Set[FOLNode] = {
@@ -36,11 +76,11 @@ trait FOLClause {
 
   }
   lazy val negativeLiterals: Set[FOLNode] = {
-    literals filter (_ match {
+    (literals filter (_ match {
       case NegativeFOLLiteral(_) => true
       case _ => false
 
-    })
+    }))
 
   }
 
@@ -73,8 +113,6 @@ trait FOLClause {
   }
 
 
-  lazy val size: Int = literals.size
-
   lazy val isEmpty = literals.isEmpty
 
   lazy val isUnit = literals.size == 1
@@ -96,10 +134,10 @@ trait FOLClause {
  */
 case class StandardClause(literals: Set[FOLNode]) extends FOLClause {
   // all folnodes have to be literals
-  //  assert(literals forall ((_ match {
-  //    case FOLLiteral(x) => true
-  //    case _ => false
-  //  })), "FOL nodes passed into a clause can only be Literals, but literals were : %s" format (literals))
+  assert(literals forall ((_ match {
+    case FOLLiteral(x) => true
+    case _ => false
+  })), "FOL nodes passed into a clause can only be Literals, but literals were : %s" format (literals))
 
 
 
@@ -125,7 +163,15 @@ case class StandardClause(literals: Set[FOLNode]) extends FOLClause {
   override def absoluteClause = StandardClause(absoluteLiterals)
 
 
-  override def toString = "Clause : %s" format (literals mkString ("[", "∨", "]"))
+  override def toString = {
+    val litStrings = literals.map({
+      _ match {
+        case x if (maxLiterals.values.contains(x)) => x.toString + "+"
+        case x => x.toString
+      }
+    })
+    "%s" format (litStrings mkString ("[", "∨", "]"))
+  }
 
 
 }
