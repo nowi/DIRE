@@ -26,7 +26,7 @@ class StandardClauseLiteralSelection extends LiteralSelection {
 
   def isSelected(atom: FOLNode, clause: StandardClause) = {
     //    clause.negativeLiterals.toList contains atom
-    (clause.negativeLiterals.toList == List(atom))
+    clause.negativeLiterals.toList.contains(atom)
 
   }
 
