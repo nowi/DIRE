@@ -6,9 +6,17 @@ package domain.fol.ast
  * Time: 17:17:26
  */
 
-case class Negation(filler: Sentence) extends Sentence {
+case class Negation(x: Sentence) extends Sentence {
   val symbolicName = "not"
+
+  // simplyfiy double negation
+  val filler = x match {
+    case Negation(f) => f
+    case _ => x
+  }
+
   val args = List(filler)
+
 
   override def flatArgs: List[FOLNode] = {
     args.map({x: FOLNode => x.flatArgs}).flatten
