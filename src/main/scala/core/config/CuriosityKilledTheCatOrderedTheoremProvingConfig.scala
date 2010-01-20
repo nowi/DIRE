@@ -41,6 +41,7 @@ object CuriosityKilledTheCatOrderedTheoremProvingConfig {
   val useLightesClauseHeuristic = true
   val usableBackSubsumption = true
   val dropSeenClauses = false
+  val useIndexing = true
 
 
   override def toString = List(tautologyDeleter, variableRewriter, subsumptionDeleter, standardizer, unificator, substitutor, factorizer, resolver, subsumptionStrategy, literalComparator, selector, removeDuplicates, useLightesClauseHeuristic)
