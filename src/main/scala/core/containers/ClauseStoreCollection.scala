@@ -9,5 +9,5 @@ package core.containers
  *
  */
 
-case class ClauseStoreCollection(clauseStores: Set[ClauseStore]) {
+case class ClauseStoreCollection(clauseStores: Set[ClauseStorage]) {
 }
