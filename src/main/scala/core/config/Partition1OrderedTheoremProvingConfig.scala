@@ -8,7 +8,7 @@ import ordering.{CustomSPASSModule1Precedence, ALCLPOComparator}
 import reduction._
 import resolution.{OrderedResolver}
 import rewriting.{Substitutor, VariableRewriter}
-import selection.{ALCRSelector}
+import selection.{NegativeLiteralsSelection}
 
 /**
  * User: nowi
@@ -49,20 +49,21 @@ object Partition1OrderedTheoremProvingConfig {
   // ordered resolution needs comparator and selection too
   lazy val precedence = new CustomSPASSModule1Precedence
   lazy val literalComparator = new ALCLPOComparator(this)
-  lazy val selector = new ALCRSelector()
+  lazy val selector = new NegativeLiteralsSelection()
 
   // settings
   val recordProofSteps = true
   val removeDuplicates = false
   val useLightesClauseHeuristic = true
-  val usableBackSubsumption = true
+  val usableBackSubsumption = false
+  val forwardSubsumption = true
   val dropSeenClauses = false
   val useIndexing = true
 
 
   override def toString = List(tautologyDeleter, variableRewriter, subsumptionDeleter, standardizer, unificator, substitutor, factorizer, resolver, subsumptionStrategy, literalComparator, selector, removeDuplicates, useLightesClauseHeuristic)
           .map({_.toString})
-          .reduceLeft(_ + ",\n" + _)
+          .reduceLeft(_ + ",\n" + _) + ("Precendece : \n %s" format (precedence))
 }
 
 

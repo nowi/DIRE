@@ -15,7 +15,7 @@ object FOLLiteral {
     }
   }
 }
-
+// TODO something is wrong here , check this        
 object NegativeFOLLiteral {
   def unapply(node: FOLNode): Option[FOLNode] = {
     node match {

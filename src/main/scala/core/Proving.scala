@@ -42,6 +42,7 @@ class ResolutionProover1(env: {
   val resolver: Resolution;
   val removeDuplicates: Boolean;
   val usableBackSubsumption: Boolean;
+  val forwardSubsumption: Boolean;
   val literalComparator: LiteralComparison;
   val dropSeenClauses: Boolean;
   val useLightesClauseHeuristic: Boolean})
@@ -64,6 +65,7 @@ class ResolutionProover1(env: {
   val removeDuplicates = env.removeDuplicates;
   val useLightesClauseHeuristic = env.useLightesClauseHeuristic
   val usableBackSubsumption = env.usableBackSubsumption
+  val forwardSubsumption = env.forwardSubsumption
   val dropSeenClauses = env.dropSeenClauses
 
   val recordProofSteps = env.recordProofSteps
@@ -81,6 +83,7 @@ class ResolutionProover1(env: {
 
   override def prove(goalClause: FOLClause) = {
     log.info("Configuration is  {}", env)
+
     log.info("Starting refutation proof on clause store {}", initialClauses)
     saturate(goalClause :: initialClauses)
   }
@@ -131,15 +134,7 @@ class ResolutionProover1(env: {
             log.debug("After 5. 6.  usable : {}", usable)
             log.debug("After 5. 6.  workedOff : {}", workedOff)
             //Hydrophilic(U) -> Hydrophobicity(U)*.
-            val u = Variable("U")
-            if (headClause == StandardClause(Predicate("NEWATOMIC6", u), Predicate("PositiveChargedAminoAcid", u))) {
-              log.warn("NEWATOMIC6(U) PositiveChargedAminoAcid(U)*., there should be something derived from it")
-            }
 
-            //Hydrophobicity(U)* -> RefiningFeature(U).
-            if (headClause == StandardClause(Negation(Predicate("Hydrophobicity", u)), Predicate("RefiningFeature", u))) {
-              log.warn("HEADCLAUSE IS NOW Hydrophobicity(U)* -> RefiningFeature(U). , there should be something derived from it")
-            }
 
             // 7. all resolution inference conlusions between given and workedoff and all
             // factoring inference conclusions from given are stored in fresh
@@ -164,12 +159,23 @@ class ResolutionProover1(env: {
                     removeDups2(newClause, usable, workedOff) match {
                       case NonEmptyClauseStore(uniqueDerived) => {
                         // forward subsupmtion on fresh
-                        val keptClauses = sub(sub(uniqueDerived, workedOff), usable)
+
+                        val keptClauses = forwardSubsumption match {
+                          case true => {
+                            sub(sub(uniqueDerived, workedOff), usable)
+                          }
+                          case false => uniqueDerived
+                        }
+
                         log.trace("After Forward Subsumption Fresh Clause {}", keptClauses)
 
 
                         // clasuse remaining in fresh are then used for backward subsumtion
-                        workedOff = sub(workedOff, keptClauses)
+                        workedOff = usableBackSubsumption match {
+                          case true => sub(workedOff, keptClauses)
+                          case false => workedOff
+                        }
+
                         log.trace("After Backward Subsumption workedOff Clauses : {}", workedOff)
 
                         // backwardsubsumption on usable based on fresh clause
@@ -183,7 +189,7 @@ class ResolutionProover1(env: {
                         //                        }
 
                         if (recordProofSteps) {
-                          log.trace(printClauses(keptClauses, resolver))
+                          log.info(printClauses(keptClauses, resolver))
                         }
                         usable.enqueue(keptClauses)
                         keptClausesCount = keptClausesCount + keptClauses.size
@@ -233,7 +239,7 @@ class ResolutionProover1(env: {
         log.info("Iteration : {}  Usable size :  {}", iteration, usable.size)
         log.info("Iteration : {}  Derived Clauses :  {}", iteration, derivedClausesCount)
         log.info("Iteration : {}  Kept Clauses :  {}", iteration, keptClausesCount)
-        val runtime = System.currentTimeMillis - startTime
+        val runtime: Double = System.currentTimeMillis - startTime
         log.info("Derived Clauses Per Second : {}  ", derivedClausesCount / (runtime / 1000), keptClausesCount)
       }
     }

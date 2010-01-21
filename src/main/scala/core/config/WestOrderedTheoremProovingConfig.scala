@@ -37,6 +37,7 @@ object WestOrderedTheoremProovingConfig {
   val removeDuplicates = false
   val useLightesClauseHeuristic = true
   val usableBackSubsumption = true
+  val forwardSubsumption = true
   val dropSeenClauses = false
   val useIndexing = true
 
