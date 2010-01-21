@@ -8,7 +8,6 @@ package core.resolution
 
 import com.jteigen.scalatest.JUnit4Runner
 
-import config.TheoremProvingConfig1
 import containers.{CNFClauseStore}
 import domain.fol.ast._
 import org.junit.runner.RunWith

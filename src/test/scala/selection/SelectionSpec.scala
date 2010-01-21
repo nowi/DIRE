@@ -7,7 +7,7 @@ package selection
  */
 import com.jteigen.scalatest.JUnit4Runner
 
-import core.selection.{StandardClauseLiteralSelection, LiteralSelection}
+import core.selection.{NegativeLiteralsSelection, LiteralSelection}
 import domain.fol.ast._
 import org.junit.runner.RunWith
 import org.scalatest.matchers.ShouldMatchers
@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory
 class SelectionSpec extends Spec with ShouldMatchers {
   describe("ALCRSelectorSpec") {
     val log = LoggerFactory getLogger (this getClass)
-    val selector: LiteralSelection = new StandardClauseLiteralSelection
+    val selector: LiteralSelection = new NegativeLiteralsSelection
 
     val x = Variable("x")
     val y = Variable("y")

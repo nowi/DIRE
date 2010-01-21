@@ -7,8 +7,6 @@ package core.containers
  */
 import com.jteigen.scalatest.JUnit4Runner
 
-import config.OrderedTheoremProvingConfig1
-import containers.{CNFClauseStore}
 import domain.fol.ast._
 import org.junit.runner.RunWith
 import org.scalatest.matchers.ShouldMatchers

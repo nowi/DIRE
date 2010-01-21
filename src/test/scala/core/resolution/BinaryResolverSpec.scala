@@ -7,11 +7,11 @@ package core.resolution
  */
 import com.jteigen.scalatest.JUnit4Runner
 
-import config.TheoremProvingConfig1
+import config.{WestOrderedTheoremProovingConfig}
 import containers.{CNFClauseStore}
 import org.junit.runner.RunWith
 
 @RunWith(classOf[JUnit4Runner])
 class BinaryResolverSpec extends ResolutionSpec {
-  override val resolver = new BinaryResolver(TheoremProvingConfig1)
+  override val resolver = new BinaryResolver(WestOrderedTheoremProovingConfig)
 }

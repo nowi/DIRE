@@ -7,7 +7,6 @@
 package core.reduction
 
 
-import config.TheoremProvingConfig1
 import containers.{CNFClauseStore}
 import org.junit.runner.RunWith
 import com.jteigen.scalatest.JUnit4Runner

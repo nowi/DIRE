@@ -8,7 +8,6 @@ package core
 
 import com.jteigen.scalatest.JUnit4Runner
 
-import config.TheoremProvingConfig1
 import domain.fol.ast._
 import helpers.Logging
 import org.junit.runner.RunWith
@@ -16,30 +15,36 @@ import org.junit.runner.RunWith
 
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
-import rewriting.Substitutor
+import rewriting.{VariableRewriter, Substitutor}
 
 @RunWith(classOf[JUnit4Runner])
 class UnifierSpec extends Spec with ShouldMatchers with Logging {
   describe("The FOL Term Unifier ") {
+    val john = Constant("John")
+    val jane = Constant("Jane")
+    val leonid = Constant("Leonid")
+    val elizabeth = Constant("Elizabeth")
+    val a = Function("Knows", List(john, Variable("x")))
+    val b = Function("Knows", List(john, jane))
+    val c = Function("Knows", List(Variable("y"), leonid))
+    val d = Function("Knows", List(Variable("y"), Function("Mother", List(Variable("y")))))
+    val e = Function("Knows", List(Variable("x"), elizabeth)) // standardise apart
+
+    // adhoc config
+    val config = new Object {
+      lazy val variableRewriter = new VariableRewriter()
+      lazy val standardizer = new Standardizer(this)
+      lazy val unificator = new Unificator(this)
+      lazy val substitutor = new Substitutor(this)
+
+    }
 
     // create unificator
-    val unificator = new Unificator(TheoremProvingConfig1)
-
-    val substitutor = new Substitutor(TheoremProvingConfig1)
-    //    Configgy.configureFromResource("config.conf")
-
-
+    val unificator = new Unificator(config)
+    val substitutor = new Substitutor(config)
 
     it("should unificator.unify(Knows(John,x), Knows( John, Jane)) - {x/Jane}") {
-      val john = Constant("John")
-      val jane = Constant("Jane")
-      val leonid = Constant("Leonid")
-      val elizabeth = Constant("Elizabeth")
-      val a = Function("Knows", List(john, Variable("x")))
-      val b = Function("Knows", List(john, jane))
-      val c = Function("Knows", List(Variable("y"), leonid))
-      val d = Function("Knows", List(Variable("y"), Function("Mother", List(Variable("y")))))
-      val e = Function("Knows", List(Variable("x"), elizabeth)) // standardise apart
+
 
       // unificator.unify a and b
       val theta = unificator.unify(a, b)
@@ -186,7 +191,7 @@ class UnifierSpec extends Spec with ShouldMatchers with Logging {
       val b = Negation(Predicate("Tiny", u))
       val mgu = unificator.unify(a, b)
       log.warn("MGU is {}", mgu)
-      mgu should not equal (None)
+      mgu should equal(Map(u -> Function("skf0164", u)))
     }
 
     it("should Variable with nested predicate level 1") {
@@ -196,7 +201,7 @@ class UnifierSpec extends Spec with ShouldMatchers with Logging {
       val b = Negation(Predicate("Tiny", u))
       val mgu = unificator.unify(a, b)
       log.warn("MGU is {}", mgu)
-      mgu should not equal (None)
+      mgu should equal(Map(u -> Predicate("skf0164", u)))
     }
 
 

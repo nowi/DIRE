@@ -7,7 +7,6 @@ package core
  */
 import com.jteigen.scalatest.JUnit4Runner
 
-import config.OrderedTheoremProvingConfig1
 import containers.{NaiveFOLClauseIndex, FOLClauseIndex, CNFClauseStore}
 import org.junit.runner.RunWith
 
