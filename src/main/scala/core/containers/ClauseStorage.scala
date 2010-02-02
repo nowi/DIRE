@@ -19,15 +19,6 @@ import domain.fol.ast.{FOLNode, FOLClause, Sentence}
 trait ClauseStorage extends Seq[FOLClause] {
   def values: Set[FOLClause] = Set(elements.toList: _*)
 
-  override def hashCode = values.hashCode
-
-  override def equals(that: Any): Boolean = that match {
-    case other: ClauseStorage =>
-      this.size == other.size && values == other.values
-    case _ =>
-      false
-  }
-
 
   val containsEmptyClause: Boolean
 
@@ -85,4 +76,11 @@ trait ClauseStorage extends Seq[FOLClause] {
 
 
   def filterClauses(f: Function1[FOLClause, Boolean]): ClauseStorage
+
+
+  def signature: Set[String] = {
+    values.flatMap({_.literals}).map({literal: FOLNode => literal.symbolicName})
+  }
+
+
 }

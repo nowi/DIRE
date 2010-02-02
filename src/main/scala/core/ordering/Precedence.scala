@@ -2,7 +2,6 @@ package core.ordering
 
 
 import containers.ClauseStorage
-import domain.fol.ast.FOLNode
 
 /**
  * User: nowi
@@ -41,9 +40,7 @@ class LexicographicPrecedence(env: {
       case result: Int if (result == 0) => false
       case result: Int if (result > 0) => false
     }
-    val literals: Set[FOLNode] = clauses.values.flatMap({_.literals})
-    val symbolicNames: Set[String] = literals.map({literal: FOLNode => literal.symbolicName})
-    symbolicNames.toList.sort(comparator)
+    clauses.signature.toList.sort(comparator)
 
   }
 

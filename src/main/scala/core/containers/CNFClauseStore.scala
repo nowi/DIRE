@@ -14,7 +14,7 @@ import rewriting.CNFRewriting
  * Conjunctive Normal Form (CNF) : a conjunction of clauses, CLAUSe AND CLAUSE AND CLAUSE
  *
  */
-class CNFClauseStore(c: List[FOLClause])
+case class CNFClauseStore(c: List[FOLClause])
         extends ClauseStorage with CNFRewriting {
   private val clauses: List[FOLClause] = c
 
@@ -79,9 +79,6 @@ object CNFClauseStore {
     CNFClauseStore(List(params: _*))
   }
 
-  def apply(list: List[FOLClause]): ClauseStorage = {
-    new CNFClauseStore(list)
-  }
 
   def apply(set: Set[FOLClause]): ClauseStorage = {
     CNFClauseStore(List() ++ set)
