@@ -18,7 +18,7 @@ trait LiteralSelection {
 /**
  * A standard clause selection function 
  */
-class StandardClauseLiteralSelection extends LiteralSelection {
+class NegativeLiteralsSelection extends LiteralSelection {
   def selectedLiterals(clause: StandardClause) = {
     // return the set of nonempty sequences of negative atoms of the standard clause
     clause.negativeLiterals.toList
