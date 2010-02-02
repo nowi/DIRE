@@ -1,10 +1,10 @@
 package core.reduction
 
 
-import config.TheoremProvingConfig1
 import containers.{CNFClauseStore}
 import org.junit.runner.RunWith
 import com.jteigen.scalatest.JUnit4Runner
+import rewriting.{VariableRewriter, Substitutor}
 
 /**
  * User: nowi
@@ -13,5 +13,12 @@ import com.jteigen.scalatest.JUnit4Runner
  */
 @RunWith(classOf[JUnit4Runner])
 class StillmannSubsumerSpec extends SubsumptionSpec {
-  override val subsumer = new StillmannSubsumer(TheoremProvingConfig1)
+  val config = new Object {
+    val standardizer = new Standardizer(this)
+    val variableRewriter = new VariableRewriter()
+    val unificator = new Unificator(this)
+    val substitutor = new Substitutor(this)
+  }
+
+  override val subsumer = new StillmannSubsumer(config)
 }

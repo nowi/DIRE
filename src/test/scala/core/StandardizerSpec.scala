@@ -8,7 +8,6 @@ package core
 
 import com.jteigen.scalatest.JUnit4Runner
 
-import config.TheoremProvingConfig1
 import domain.fol.ast._
 import org.junit.runner.RunWith
 
@@ -16,10 +15,15 @@ import org.junit.runner.RunWith
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
 import org.slf4j.LoggerFactory
+import rewriting.VariableRewriter
 
 @RunWith(classOf[JUnit4Runner])
 class StandardizerSpec extends Spec with ShouldMatchers {
-  val standardizer = new Standardizer(TheoremProvingConfig1)
+  val config = new Object {
+    val variableRewriter = new VariableRewriter()
+  }
+
+  val standardizer = new Standardizer(config)
 
   val log = LoggerFactory getLogger (this getClass)
   describe("The Standardizer") {

@@ -8,20 +8,30 @@ package core.reduction
 
 import com.jteigen.scalatest.JUnit4Runner
 
-import config.TheoremProvingConfig1
 import containers.{CNFClauseStore}
 import domain.fol.ast._
 import org.junit.runner.RunWith
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
+import rewriting.{VariableRewriter, Substitutor}
 
 @RunWith(classOf[JUnit4Runner])
 class StandardFactoringSpec extends Spec with ShouldMatchers {
+  val config = new Object {
+    val standardizer = new Standardizer(this)
+    val variableRewriter = new VariableRewriter()
+    val unificator = new Unificator(this)
+    val substitutor = new Substitutor(this)
+  }
+
   describe("A object implementing the StandardFactoring Trait") {
     it("should factorize some clauses") {
       // init with the resolution example from the AIMA Book page 298
 
-      val factorizer = new StandardFactorizer(TheoremProvingConfig1)
+
+
+
+      val factorizer = new StandardFactorizer(config)
 
 
       val x = Variable("x")
@@ -85,7 +95,7 @@ class StandardFactoringSpec extends Spec with ShouldMatchers {
     it("should factorize Loves(G(Jack),Jack) OR Loves(G(x),x)") {
       // init with the resolution example from the AIMA Book page 298
 
-      val factorizer = new StandardFactorizer(TheoremProvingConfig1)
+      val factorizer = new StandardFactorizer(config)
 
 
       val jack = Constant("Jack")
@@ -104,7 +114,7 @@ class StandardFactoringSpec extends Spec with ShouldMatchers {
     it("should factorize sentence with double variable predicate") {
       // init with the resolution example from the AIMA Book page 298
 
-      val factorizer = new StandardFactorizer(TheoremProvingConfig1)
+      val factorizer = new StandardFactorizer(config)
 
       val y = Variable("x")
       val x = Variable("y")
