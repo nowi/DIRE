@@ -24,7 +24,7 @@ import resolution.Resolution
  * from the Automated Theorem Proving Book Volume II
  */
 
-trait Proving {
+trait FOLProving {
   def prove(goalClause: FOLClause): ProvingResult
 
   def satisfy(): ProvingResult
@@ -46,7 +46,7 @@ class ResolutionProover1(env: {
   val literalComparator: LiteralComparison;
   val dropSeenClauses: Boolean;
   val useLightesClauseHeuristic: Boolean})
-        extends Proving
+        extends FOLProving
                 with Logging with ClauseFormatting {
   Configgy.configure("/Users/nowi/workspace/DIRE/DIRE/config.conf")
 

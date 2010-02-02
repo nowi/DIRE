@@ -18,7 +18,7 @@ import org.scalatest.Spec
 @RunWith(classOf[JUnit4Runner])
 abstract class CuriosityDomainProovingSpec extends Spec with ShouldMatchers {
   // create a proover
-  val resolutionProover: Proving
+  val resolutionProover: FOLProving
   describe("CuriosityDomainProoving") {
     it("should prove that curiosity killed the cat") {
       // create a proover

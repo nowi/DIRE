@@ -18,7 +18,7 @@ import org.scalatest.Spec
 @RunWith(classOf[JUnit4Runner])
 abstract class WestDomainProvingSpec extends Spec with ShouldMatchers {
   // create a proover
-  val resolutionProover: Proving
+  val resolutionProover: FOLProving
   describe("WestDomainProving") {
     it("should prove that west is a criminal") {
       // prove that west is a criminal
