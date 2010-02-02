@@ -3,6 +3,7 @@ package domain.fol.parsers
 import ast._
 import core.containers.{ClauseStorage, CNFClauseStore}
 import helpers.Logging
+import java.io.File
 import scala.util.parsing.combinator.syntactical._
 
 /**
@@ -272,5 +273,20 @@ object SPASSIntermediateFormatParser extends StandardTokenParsers with Logging {
 
 
     }
+
+
+  def parseFromFile(file: File): ClauseStorage = {
+    val lines = scala.io.Source.fromFile(file).mkString
+    val text: String = lines // parse
+    val clauses = SPASSIntermediateFormatParser.parseClauseStore(text)
+
+    clauses match {
+      case None => throw new IllegalStateException("Could not load clauses from file")
+      case Some(clauseStore) => {
+        clauseStore
+      }
+    }
+
+  }
 
 }
