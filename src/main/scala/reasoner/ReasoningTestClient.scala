@@ -8,14 +8,7 @@ import se.scalablesolutions.akka.actor.Actor
  * Time: 18:37:41
  */
 class ReasoningTestClient(val name: String, reasoners: List[Actor]) {
-  def startSatisfy {
-    reasoners.foreach {_ ! StartSatisfy("blabla")}
-  }
-
-  def stopSatisfy {
-    reasoners.foreach {_ ! StopSatisfy("blabla")}
-  }
-  //  def entails =                 reasoner.DALCReasoningServer ! Entail(StandardClause(domain.fol.ast.Predicate("Hi",Variable("migo"))))
+  
 
 }
 

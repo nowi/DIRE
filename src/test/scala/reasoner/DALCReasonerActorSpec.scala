@@ -28,7 +28,7 @@ class DALCReasonerActorSpec extends Spec with ShouldMatchers {
       //      DALCReasoningServer.start
       //      val client = new ReasoningTestClient("jonas")
       //      client.startSatisfy
-      ////      client.entails
+      ////      client.entail
       //      client.stopSatisfy
 
     }
