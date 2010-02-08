@@ -381,182 +381,6 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/scala-tools/testing/scalatest/0.9.5/scalatest-0.9.5-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: net.lag:configgy:1.4.3">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/lag/configgy/1.4.3/configgy-1.4.3.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/net/lag/configgy/1.4.3/configgy-1.4.3-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/lag/configgy/1.4.3/configgy-1.4.3-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.scala-lang:scala-compiler:2.7.5">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-compiler/2.7.5/scala-compiler-2.7.5.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-compiler/2.7.5/scala-compiler-2.7.5-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-compiler/2.7.5/scala-compiler-2.7.5-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: com.google.collections:google-collections:1.0-rc2">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/collections/google-collections/1.0-rc2/google-collections-1.0-rc2.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/collections/google-collections/1.0-rc2/google-collections-1.0-rc2-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/collections/google-collections/1.0-rc2/google-collections-1.0-rc2-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: de.huxhorn.lilith:de.huxhorn.lilith.logback.logging-adapter:0.9.36">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/lilith/de.huxhorn.lilith.logback.logging-adapter/0.9.36/de.huxhorn.lilith.logback.logging-adapter-0.9.36.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/lilith/de.huxhorn.lilith.logback.logging-adapter/0.9.36/de.huxhorn.lilith.logback.logging-adapter-0.9.36-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/lilith/de.huxhorn.lilith.logback.logging-adapter/0.9.36/de.huxhorn.lilith.logback.logging-adapter-0.9.36-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: de.huxhorn.lilith:de.huxhorn.lilith.data.logging:0.9.36">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/lilith/de.huxhorn.lilith.data.logging/0.9.36/de.huxhorn.lilith.data.logging-0.9.36.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/lilith/de.huxhorn.lilith.data.logging/0.9.36/de.huxhorn.lilith.data.logging-0.9.36-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/lilith/de.huxhorn.lilith.data.logging/0.9.36/de.huxhorn.lilith.data.logging-0.9.36-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: de.huxhorn.lilith:de.huxhorn.lilith.data.eventsource:0.9.36">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/lilith/de.huxhorn.lilith.data.eventsource/0.9.36/de.huxhorn.lilith.data.eventsource-0.9.36.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/lilith/de.huxhorn.lilith.data.eventsource/0.9.36/de.huxhorn.lilith.data.eventsource-0.9.36-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/lilith/de.huxhorn.lilith.data.eventsource/0.9.36/de.huxhorn.lilith.data.eventsource-0.9.36-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: de.huxhorn.lilith:de.huxhorn.lilith.logback.classic:0.9.36">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/lilith/de.huxhorn.lilith.logback.classic/0.9.36/de.huxhorn.lilith.logback.classic-0.9.36.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/lilith/de.huxhorn.lilith.logback.classic/0.9.36/de.huxhorn.lilith.logback.classic-0.9.36-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/lilith/de.huxhorn.lilith.logback.classic/0.9.36/de.huxhorn.lilith.logback.classic-0.9.36-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: de.huxhorn.sulky:de.huxhorn.sulky.codec:0.9.8">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/sulky/de.huxhorn.sulky.codec/0.9.8/de.huxhorn.sulky.codec-0.9.8.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/sulky/de.huxhorn.sulky.codec/0.9.8/de.huxhorn.sulky.codec-0.9.8-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/sulky/de.huxhorn.sulky.codec/0.9.8/de.huxhorn.sulky.codec-0.9.8-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.slf4j:slf4j-api:1.5.8">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.5.8/slf4j-api-1.5.8.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.5.8/slf4j-api-1.5.8-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.5.8/slf4j-api-1.5.8-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: ch.qos.logback:logback-classic:0.9.16">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/ch/qos/logback/logback-classic/0.9.16/logback-classic-0.9.16.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/ch/qos/logback/logback-classic/0.9.16/logback-classic-0.9.16-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/ch/qos/logback/logback-classic/0.9.16/logback-classic-0.9.16-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: de.huxhorn.lilith:de.huxhorn.lilith.logback.appender.multiplex-classic:0.9.36">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/lilith/de.huxhorn.lilith.logback.appender.multiplex-classic/0.9.36/de.huxhorn.lilith.logback.appender.multiplex-classic-0.9.36.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/lilith/de.huxhorn.lilith.logback.appender.multiplex-classic/0.9.36/de.huxhorn.lilith.logback.appender.multiplex-classic-0.9.36-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/lilith/de.huxhorn.lilith.logback.appender.multiplex-classic/0.9.36/de.huxhorn.lilith.logback.appender.multiplex-classic-0.9.36-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: de.huxhorn.lilith:de.huxhorn.lilith.data.logging.protobuf:0.9.36">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/lilith/de.huxhorn.lilith.data.logging.protobuf/0.9.36/de.huxhorn.lilith.data.logging.protobuf-0.9.36.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/lilith/de.huxhorn.lilith.data.logging.protobuf/0.9.36/de.huxhorn.lilith.data.logging.protobuf-0.9.36-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/lilith/de.huxhorn.lilith.data.logging.protobuf/0.9.36/de.huxhorn.lilith.data.logging.protobuf-0.9.36-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: de.huxhorn.lilith:de.huxhorn.lilith.logback.appender.multiplex-core:0.9.36">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/lilith/de.huxhorn.lilith.logback.appender.multiplex-core/0.9.36/de.huxhorn.lilith.logback.appender.multiplex-core-0.9.36.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/lilith/de.huxhorn.lilith.logback.appender.multiplex-core/0.9.36/de.huxhorn.lilith.logback.appender.multiplex-core-0.9.36-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/lilith/de.huxhorn.lilith.logback.appender.multiplex-core/0.9.36/de.huxhorn.lilith.logback.appender.multiplex-core-0.9.36-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: de.huxhorn.lilith:de.huxhorn.lilith.sender:0.9.36">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/lilith/de.huxhorn.lilith.sender/0.9.36/de.huxhorn.lilith.sender-0.9.36.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/lilith/de.huxhorn.lilith.sender/0.9.36/de.huxhorn.lilith.sender-0.9.36-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/lilith/de.huxhorn.lilith.sender/0.9.36/de.huxhorn.lilith.sender-0.9.36-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: de.huxhorn.sulky:de.huxhorn.sulky.io:0.9.8">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/sulky/de.huxhorn.sulky.io/0.9.8/de.huxhorn.sulky.io-0.9.8.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/sulky/de.huxhorn.sulky.io/0.9.8/de.huxhorn.sulky.io-0.9.8-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/sulky/de.huxhorn.sulky.io/0.9.8/de.huxhorn.sulky.io-0.9.8-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: ch.qos.logback:logback-core:0.9.17">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/ch/qos/logback/logback-core/0.9.17/logback-core-0.9.17.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/ch/qos/logback/logback-core/0.9.17/logback-core-0.9.17-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/ch/qos/logback/logback-core/0.9.17/logback-core-0.9.17-sources.jar!/" />
-      </SOURCES>
-    </library>
     <library name="Maven: org.multiverse:multiverse-alpha:jar-with-dependencies:0.3">
       <CLASSES>
         <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies.jar!/" />
@@ -565,6 +389,20 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies.jar!/" />
         <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies.jar!/" />
         <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies.jar!/" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-javadoc.jar!/" />
@@ -573,8 +411,36 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-javadoc.jar!/" />
         <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-javadoc.jar!/" />
         <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-sources.jar!/" />
         <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-sources.jar!/" />
         <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-sources.jar!/" />
         <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies-sources.jar!/" />
@@ -622,17 +488,6 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$MAVEN_REPOSITORY$/org/guiceyfruit/guice-core/2.0-beta-4/guice-core-2.0-beta-4-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: com.google.code.google-collections:google-collect:snapshot-20080530">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/code/google-collections/google-collect/snapshot-20080530/google-collect-snapshot-20080530.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/code/google-collections/google-collect/snapshot-20080530/google-collect-snapshot-20080530-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/code/google-collections/google-collect/snapshot-20080530/google-collect-snapshot-20080530-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: cglib:cglib:2.2">
@@ -897,6 +752,39 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$MAVEN_REPOSITORY$/jgroups/jgroups/2.8.0.CR7/jgroups-2.8.0.CR7-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: com.google.code.google-collections:google-collect:snapshot-20080530">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/code/google-collections/google-collect/snapshot-20080530/google-collect-snapshot-20080530.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/code/google-collections/google-collect/snapshot-20080530/google-collect-snapshot-20080530-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/code/google-collections/google-collect/snapshot-20080530/google-collect-snapshot-20080530-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: net.lag:configgy:1.4.7">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/net/lag/configgy/1.4.7/configgy-1.4.7.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/net/lag/configgy/1.4.7/configgy-1.4.7-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/net/lag/configgy/1.4.7/configgy-1.4.7-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.scala-lang:scala-compiler:2.7.6">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-compiler/2.7.6/scala-compiler-2.7.6.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-compiler/2.7.6/scala-compiler-2.7.6-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-compiler/2.7.6/scala-compiler-2.7.6-sources.jar!/" />
       </SOURCES>
     </library>
   </component>

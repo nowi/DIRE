@@ -2,7 +2,6 @@ package allocation
 
 
 import core.containers.ClauseStorage
-import reasoner.{Reasoning}
 import se.scalablesolutions.akka.actor.Actor
 
 /**
@@ -16,5 +15,5 @@ import se.scalablesolutions.akka.actor.Actor
  */
 
 trait Allocating {
-  def allocate(modules: List[ClauseStorage], reasoners: List[Actor with Reasoning]): Map[ClauseStorage, Actor]
+  def allocate(modules: List[ClauseStorage], reasoners: List[Actor]): Map[ClauseStorage, Actor]
 }

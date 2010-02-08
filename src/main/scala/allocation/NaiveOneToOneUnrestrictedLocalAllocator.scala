@@ -2,7 +2,7 @@ package allocation
 
 
 import core.containers.ClauseStorage
-import reasoner.{Reasoning}
+import helpers.Logging
 import se.scalablesolutions.akka.actor.Actor
 
 /**
@@ -11,8 +11,9 @@ import se.scalablesolutions.akka.actor.Actor
  * Time: 15:09:44
  */
 
-class NaiveOneToOneUnrestrictedLocalAllocator extends Allocating {
-  override def allocate(modules: List[ClauseStorage], reasoners: List[Actor with Reasoning]): Map[ClauseStorage, Actor with Reasoning] = {
+class NaiveOneToOneUnrestrictedLocalAllocator extends Allocating with Logging {
+  override def allocate(modules: List[ClauseStorage], reasoners: List[Actor]): Map[ClauseStorage, Actor] = {
+    log.info("%s is allocating modules %s to reasoners %s", this, modules, reasoners)
     // size has to match
     require(modules.size == reasoners.size)
     // create naive 1 to 1 mapping

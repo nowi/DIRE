@@ -51,29 +51,6 @@
 
 
     <dependencies>
-
-
-        <!--<dependency>-->
-        <!--<groupId>org.scala-lang</groupId>-->
-        <!--<artifactId>scala-library</artifactId>-->
-        <!--<version>2.7.4</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>org.scala-lang</groupId>-->
-        <!--<artifactId>scala-compiler</artifactId>-->
-        <!--<version>2.7.4</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<artifactId>akka-core</artifactId>-->
-        <!--<groupId>se.scalablesolutions.akka</groupId>-->
-        <!--<version>0.6</version>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-        <!--<artifactId>akka-kernel</artifactId>-->
-        <!--<groupId>se.scalablesolutions.akka</groupId>-->
-        <!--<version>0.6</version>-->
-        <!--</dependency>-->
         <dependency>
             <artifactId>akka-core</artifactId>
             <groupId>se.scalablesolutions.akka</groupId>
@@ -84,35 +61,6 @@
             <artifactId>akka-cluster-jgroups</artifactId>
             <groupId>se.scalablesolutions.akka</groupId>
             <version>0.6</version>
-        </dependency>
-        <dependency>
-            <groupId>de.huxhorn.lilith</groupId>
-            <artifactId>de.huxhorn.lilith.logback.logging-adapter</artifactId>
-            <version>0.9.36</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.huxhorn.lilith</groupId>
-            <artifactId>de.huxhorn.lilith.logback.appender.multiplex-classic</artifactId>
-            <version>0.9.36</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <version>0.9.17</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.lag</groupId>
-            <artifactId>configgy</artifactId>
-            <version>1.4.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.collections</groupId>
-            <artifactId>google-collections</artifactId>
-            <version>1.0-rc2</version>
         </dependency>
 
 
@@ -134,6 +82,8 @@
 
 
     <build>
+        <sourceDirectory>src/main/scala</sourceDirectory>
+        <testSourceDirectory>src/test/scala</testSourceDirectory>
         <pluginManagement>
             <plugins>
                 <plugin>
