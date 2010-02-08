@@ -151,7 +151,7 @@ class UnifierSpec extends Spec with ShouldMatchers with Logging {
       // unfiy a and e -- this will test the standardise apart case
       val theta5 = unificator.unify(StandardClause(anegstrich).absoluteClause, StandardClause(bposstrich))
 
-      log.trace("MGU of union of a and b is {}", theta5)
+      log.trace("MGU of union of a and b is %s", theta5)
       // the subsitutions should containt Some(Map(z_4 -> z_8, x -> a))
       theta5 should not equal (None)
 
@@ -169,17 +169,17 @@ class UnifierSpec extends Spec with ShouldMatchers with Logging {
       // unfiy a and e -- this will test the standardise apart case
       val firstUnfier = unificator.firstUnifier(C)
 
-      log.trace("First unifier of a and b is {}", firstUnfier)
+      log.trace("First unifier of a and b is %s", firstUnfier)
       firstUnfier should not equal (None)
 
       // now rewrite the C clause with the first unifier
       val C1 = substitutor.substitute(firstUnfier, C)
-      log.trace("Rewritten C to C1 using unifer {} == {}", firstUnfier, C1)
+      log.trace("Rewritten C to C1 using unifer %s == %s", firstUnfier, C1)
       C1 should not equal (C)
 
       // check if there are more substitions , should be none
       val secondUnifier = unificator.firstUnifier(C1)
-      log.trace("Second unifier of a and b is {}", secondUnifier)
+      log.trace("Second unifier of a and b is %s", secondUnifier)
       secondUnifier should equal(None)
       // the subsitutions should containt Some(Map(z_4 -> z_8, x -> a))
     }
@@ -190,7 +190,7 @@ class UnifierSpec extends Spec with ShouldMatchers with Logging {
       val a = Predicate("Tiny", Function("skf0164", u132))
       val b = Negation(Predicate("Tiny", u))
       val mgu = unificator.unify(a, b)
-      log.warn("MGU is {}", mgu)
+      log.warning("MGU is %s", mgu)
       mgu should equal(Map(u -> Function("skf0164", u)))
     }
 
@@ -200,7 +200,7 @@ class UnifierSpec extends Spec with ShouldMatchers with Logging {
       val a = Predicate("Tiny", Predicate("skf0164", u132))
       val b = Negation(Predicate("Tiny", u))
       val mgu = unificator.unify(a, b)
-      log.warn("MGU is {}", mgu)
+      log.warning("MGU is %s", mgu)
       mgu should equal(Map(u -> Predicate("skf0164", u)))
     }
 
@@ -224,7 +224,7 @@ class UnifierSpec extends Spec with ShouldMatchers with Logging {
     //      val theta5 = unificator.unify(p1)
     //
     //
-    //      log.trace("MGU of Clause : {} is {}", p1, theta5)
+    //      log.trace("MGU of Clause : %s is %s", p1, theta5)
     //      theta5 should not equal (None)
     //
     //

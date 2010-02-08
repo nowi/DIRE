@@ -1,7 +1,8 @@
 package core
 
 import domain.fol.ast._
-import org.slf4j.LoggerFactory
+
+import helpers.Logging
 import rewriting.{Substitution}
 
 /**
@@ -33,15 +34,14 @@ trait Unify {
 }
 
 // standard unification implementation
-class Unificator(env: {val substitutor: Substitution; val standardizer: Standardizing}) extends Unify {
+class Unificator(env: {val substitutor: Substitution; val standardizer: Standardizing}) extends Unify with Logging {
   val substitutor = env.substitutor
   val standardizer = env.standardizer
-  val log = LoggerFactory getLogger (this getClass)
 
   override def unify(x: FOLNode, y: FOLNode): Option[Map[Variable, FOLNode]] = {
     // standardize apart the terms           rd
     if (x == y) {
-      log.trace("{} trivially unified equal nodes : {} , {}", (this, x, y))
+      log.trace("%s trivially unified equal nodes : %s , %s", (this, x, y))
       Some(Map[Variable, FOLNode]())
     }
     val (xr, yr) = standardizer.standardizeApart(x, y)
@@ -67,20 +67,20 @@ class Unificator(env: {val substitutor: Substitution; val standardizer: Standard
             unify(l1, l2, Some(globalTheta)) match {
               case Some(x) => {
                 // there was a unification , set this as our new theta
-                log.trace("Success unifying literals : {} with {} ...", l1, l2)
-                log.trace("New global theta is : {} ", x)
+                log.trace("Success unifying literals : %s with %s ...", l1, l2)
+                log.trace("New global theta is : %s ", x)
                 globalTheta = x
               }
               case None => {
                 // ignore
-                log.trace("Could not unify literal : {} with {} ... ignoring", l1, l2)
+                log.trace("Could not unify literal : %s with %s ... ignoring", l1, l2)
               }
 
             }
           }
 
 
-        log.trace("Final global theta : {}", globalTheta);
+        log.trace("Final global theta : %s", globalTheta);
         Some(globalTheta)
       }
       case _ => None
@@ -102,13 +102,13 @@ class Unificator(env: {val substitutor: Substitution; val standardizer: Standard
     ) yield unify(l1, l2, Some(Map[Variable, FOLNode]())) match {
         case Some(x) => {
           // there was a unification , set this as our new theta
-          log.trace("Success unifying literals : {} with {} ...", l1, l2)
+          log.trace("Success unifying literals : %s with %s ...", l1, l2)
           Some(x)
 
         }
         case None => {
           // ignore
-          log.trace("Could not unify literal : {} with {} ... ignoring", l1, l2)
+          log.trace("Could not unify literal : %s with %s ... ignoring", l1, l2)
           None
         }
 
@@ -118,7 +118,7 @@ class Unificator(env: {val substitutor: Substitution; val standardizer: Standard
 
 
     if (!thetas.isEmpty) {
-      log.trace("Found first Unifier : {}", thetas.head);
+      log.trace("Found first Unifier : %s", thetas.head);
       thetas.head
     }
     else None
@@ -142,25 +142,25 @@ class Unificator(env: {val substitutor: Substitution; val standardizer: Standard
         unify(l1, l2, Some(globalTheta)) match {
           case Some(x) => {
             // there was a unification , set this as our new theta
-            log.trace("Success unifying literals : {} with {} ...", l1, l2)
-            log.trace("New global theta is : {} ", x)
+            log.trace("Success unifying literals : %s with %s ...", l1, l2)
+            log.trace("New global theta is : %s ", x)
             globalTheta = x
           }
           case None => {
             // ignore
-            log.trace("Could not unify literal : {} with {} ... ignoring", l1, l2)
+            log.trace("Could not unify literal : %s with %s ... ignoring", l1, l2)
           }
 
         }
       }
 
 
-    log.trace("Final global theta : {}", globalTheta);
+    log.trace("Final global theta : %s", globalTheta);
     Some(globalTheta)
 
     //    globalTheta match {
     //      case Some(x) => {
-    //        log.trace("Final global theta : {}",globalTheta);
+    //        log.trace("Final global theta : %s",globalTheta);
     //        Some(x)
     //      }
     //      case None => {
@@ -272,14 +272,14 @@ class Unificator(env: {val substitutor: Substitution; val standardizer: Standard
       case Some(t) => {
 
         val theta2: Map[Variable, FOLNode] = t + (v -> term)
-        log.trace("Creating substitution {} -- > {} .., theta = {}", (v, term, theta2))
+        log.trace("Creating substitution %s -- > %s .., theta = %s", (v, term, theta2))
         val theta3 = (for (key <- theta2.keySet) yield Map(key -> substitutor.substitute(Some(theta2),
           theta2.get(key) match {
             case Some(value) => value
           })))
 
         val theta4 = theta3.reduceLeft((map1, map2) => map1 ++ map2)
-        log.trace("Cascading substitution {} -- > {} .., theta = {}", (v, term, theta4))
+        log.trace("Cascading substitution %s -- > %s .., theta = %s", (v, term, theta4))
         Some(theta4)
 
 

@@ -3,8 +3,9 @@ package core
 
 import com.google.common.collect.{HashMultiset, Multiset}
 import domain.fol.ast._
+import helpers.Logging
 import java.util.Random
-import org.slf4j.LoggerFactory
+
 import rewriting.VariableRewriting
 
 /**
@@ -44,13 +45,12 @@ trait Standardizing {
 }
 
 
-class Standardizer(env: {val variableRewriter: VariableRewriting}) extends Standardizing {
+class Standardizer(env: {val variableRewriter: VariableRewriting}) extends Standardizing with Logging {
   val variableRewriter = env.variableRewriter
   lazy val randomizer: Random = new Random(System.currentTimeMillis)
 
-  lazy val variableBag: Multiset[String] = HashMultiset.create()
+  val variableBag: Multiset[String] = new com.google.common.collect.HashMultiset[String]()
 
-  val log = LoggerFactory getLogger (this getClass)
 
   /**
    * Make variablesnames unique with in context of the 2 nodes
@@ -62,7 +62,7 @@ class Standardizer(env: {val variableRewriter: VariableRewriting}) extends Stand
     // check terms need standardizing
     commonVars(x, y) match {
       case List() => { // empty list
-        log.trace("Tuple({},{}) needs no standardizing" format (x, y))
+        //log.trace("Tuple(%s,%s) needs no standardizing" format (x, y))
         (x, y)
       }
       case cvs: List[Variable] => {
@@ -71,7 +71,7 @@ class Standardizer(env: {val variableRewriter: VariableRewriting}) extends Stand
         // rewirte the smaller node , we default to x for now
         // TODO rewriteClause only the smaller node
         val xr = variableRewriter.rewrite(x, theta)
-        log.trace("Tuple({},{}) has been standardized apart to ({},{}) by {}" format (x, y, xr, y, this))
+        //log.trace("Tuple(%s,%s) has been standardized apart to (%s,%s) by %s" format (x, y, xr, y, this))
         (xr, y)
       }
     }
@@ -83,7 +83,7 @@ class Standardizer(env: {val variableRewriter: VariableRewriting}) extends Stand
     // check terms need standardizing
     commonVars(c1, c2) match {
       case List() => { // empty list
-        log.trace("clauses {} and {} need no standardizing", c1, c2)
+        log.trace("clauses %s and %s need no standardizing", c1, c2)
         (c1, c2)
       }
       case cvs: List[Variable] => {
@@ -93,7 +93,7 @@ class Standardizer(env: {val variableRewriter: VariableRewriting}) extends Stand
         // rewririte all nodes
         val cr1 = variableRewriter.rewriteClause(c1, theta1)
         val cr2 = variableRewriter.rewriteClause(c2, theta2)
-        log.trace("Clauses have been standardized apart and rewritten to {} by {}" format (cr1, cr2, this))
+        log.trace("Clauses have been standardized apart and rewritten to %s by %s" format (cr1, cr2, this))
 
         (cr1, cr2)
       }

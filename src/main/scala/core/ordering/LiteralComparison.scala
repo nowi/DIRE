@@ -1,8 +1,8 @@
 package core.ordering
 
-
+     import helpers.Logging
 import domain.fol.ast._
-import org.slf4j.LoggerFactory
+
 
 /**
  * User: nowi
@@ -54,8 +54,7 @@ trait LiteralComparison {
  *  3.) Literals not containing a function symbol are ordered according to the precedence of the predicate symbols.
  */
 class ALCLPOComparator(env: {
-  val precedence: Precedence}) extends LiteralComparison {
-  val log = LoggerFactory getLogger (this getClass)
+  val precedence: Precedence}) extends LiteralComparison with Logging {
   val precedence = env.precedence
 
   def compare(x: FOLNode, y: FOLNode) = {
@@ -88,7 +87,7 @@ class ALCLPOComparator(env: {
     //    if (aVars != bVars) {
     if (false) {
       //    Literals that contain different variables are incomparable
-      log.debug("The literals {} and {} are incomparable because they contain different variables ", aVars, bVars)
+      log.debug("The literals %s and %s are incomparable because they contain different variables ", aVars, bVars)
       None
     } else {
       // 1.) Literals containing a function symbol precede literals that do not contain a function symbol.
@@ -141,7 +140,7 @@ class ALCLPOComparator(env: {
         }
 
         case _ => {
-          log.error("Could not compare {} and {} , this seems not right")
+          log.error("Could not compare %s and %s , this seems not right")
           None
         }
       }

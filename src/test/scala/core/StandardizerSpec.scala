@@ -14,18 +14,19 @@ import org.junit.runner.RunWith
 
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
-import org.slf4j.LoggerFactory
+
 import rewriting.VariableRewriter
+import helpers.Logging
 
 @RunWith(classOf[JUnit4Runner])
-class StandardizerSpec extends Spec with ShouldMatchers {
+class StandardizerSpec extends Spec with ShouldMatchers with Logging{
   val config = new Object {
     val variableRewriter = new VariableRewriter()
   }
 
   val standardizer = new Standardizer(config)
 
-  val log = LoggerFactory getLogger (this getClass)
+
   describe("The Standardizer") {
     it("should stardize (Knows(John,x), Know s(x, Elizabeth))") {
       val john = Constant("John")
@@ -56,7 +57,7 @@ class StandardizerSpec extends Spec with ShouldMatchers {
 
       val theta5 = standardizer.standardizeApart(A, B)
 
-      log.trace("Standardized Apart tuple of clause A and B : {} is {}", A, theta5)
+      log.trace("Standardized Apart tuple of clause A and B : %s is %s", A, theta5)
       theta5 should not equal ((A, B))
 
       // and there should be no vars in common

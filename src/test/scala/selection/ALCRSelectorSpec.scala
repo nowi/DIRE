@@ -2,15 +2,16 @@ import com.jteigen.scalatest.JUnit4Runner
 
 import core.selection.{ALCRSelector, LiteralSelection}
 import domain.fol.ast._
+import helpers.Logging
 import org.junit.runner.RunWith
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
-import org.slf4j.LoggerFactory
+
 
 @RunWith(classOf[JUnit4Runner])
-class ALCRSelectorSpec extends Spec with ShouldMatchers {
+class ALCRSelectorSpec extends Spec with ShouldMatchers with Logging{
   describe("ALCRSelectorSpec") {
-    val log = LoggerFactory getLogger (this getClass)
+
     val selector: LiteralSelection = new ALCRSelector
 
     val x = Variable("x")
@@ -38,7 +39,7 @@ class ALCRSelectorSpec extends Spec with ShouldMatchers {
 
     it("Basic test") {
       val selection = selector.selectedLiterals(StandardClause(sellsPred, sellsFunc, Negation(sellsPred), Negation(sellsFunc)))
-      log.warn("The selection for clause {} was {}", C1, selection)
+      log.warning("The selection for clause %s was %s", C1, selection)
       assert(selection.contains(Negation(sellsPred)))
       assert(selection.contains(Negation(sellsFunc)))
       assert(!selection.contains(sellsPred))

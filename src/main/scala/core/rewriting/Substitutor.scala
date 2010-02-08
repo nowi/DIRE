@@ -2,7 +2,8 @@ package core.rewriting
 
 
 import domain.fol.ast._
-import org.slf4j.LoggerFactory
+import helpers.Logging
+
 
 /**
  * User: nowi                         ov
@@ -26,7 +27,7 @@ trait Substitution {
   def substitute(theta: Option[Map[Variable, FOLNode]], node: FOLNode): FOLNode
 
 
-  def reverseSubstitute(theta: Option[Map[Variable, FOLNode]], node: FOLNode): FOLNode
+//  def reverseSubstitute(theta: Option[Map[Variable, FOLNode]], node: FOLNode): FOLNode
 
 
   /**
@@ -43,14 +44,13 @@ trait Substitution {
    */
   def substitute(theta: Option[Map[Variable, FOLNode]], clause: FOLClause): FOLClause
 
-  def reverseSubstitute(theta: Option[Map[Variable, FOLNode]], clause: FOLClause): FOLClause
+//  def reverseSubstitute(theta: Option[Map[Variable, FOLNode]], clause: FOLClause): FOLClause
 
 
 }
 
 // dependends on VariableRewriter
-class Substitutor(env: {val variableRewriter: VariableRewriting}) extends Substitution {
-  val log = LoggerFactory getLogger (this getClass)
+class Substitutor(env: {val variableRewriter: VariableRewriting}) extends Substitution with Logging {
   val variableRewriter = env.variableRewriter
 
   /**
@@ -70,28 +70,28 @@ class Substitutor(env: {val variableRewriter: VariableRewriting}) extends Substi
     theta match {
       case Some(map) => variableRewriter.rewrite(node, map)
       case None => {
-        //        log.trace("No substition map theata specified , not rewriting term : {}" node)
+        //        log.trace("No substition map theata specified , not rewriting term : %s" node)
         node
       }
     }
   }
 
 
-  def reverseSubstitute(theta: Option[Map[Variable, FOLNode]], node: FOLNode) = {
-    // use a variable rewriter
-    theta match {
-      case Some(map) => {
-        // we need to reverse the map
-        val reversedMap = (for ((key, value) <- map) yield Map(value -> key)).reduceLeft(_ ++ _)
-
-        variableRewriter.rewrite2(node, reversedMap)
-      }
-      case None => {
-        //        log.trace("No substition map theata specified , not rewriting term : {}" node)
-        node
-      }
-    }
-  }
+//  def reverseSubstitute(theta: Option[Map[Variable, FOLNode]], node: FOLNode) = {
+//    // use a variable rewriter
+//    theta match {
+//      case Some(map) => {
+//        // we need to reverse the map
+//        val reversedMap = (for ((key, value) <- map) yield Map(value -> key)).reduceLeft(_ ++ _)
+//
+//        variableRewriter.rewrite2(node, reversedMap)
+//      }
+//      case None => {
+//        //        log.trace("No substition map theata specified , not rewriting term : %s" node)
+//        node
+//      }
+//    }
+//  }
 
 
   /**
@@ -112,26 +112,26 @@ class Substitutor(env: {val variableRewriter: VariableRewriting}) extends Substi
     theta match {
       case Some(map) => variableRewriter.rewriteClause(clause, map)
       case None => {
-        //        log.trace("No substition map theata specified , not rewriting clause : {}" clause)
+        //        log.trace("No substition map theata specified , not rewriting clause : %s" clause)
         clause
       }
     }
   }
 
 
-  def reverseSubstitute(theta: Option[Map[Variable, FOLNode]], clause: FOLClause) = {
-    theta match {
-      case Some(map) => {
-        // we need to reverse the map
-        val reversedMap = (for ((key, value) <- map) yield Map(value -> key)).reduceLeft(_ ++ _)
-        variableRewriter.rewriteClause2(clause, reversedMap)
-      }
-      case None => {
-        //        log.trace("No substition map theata specified , not rewriting clause : {}" clause)
-        clause
-      }
-    }
-
-  }
+//  def reverseSubstitute(theta: Option[Map[Variable, FOLNode]], clause: FOLClause) = {
+//    theta match {
+//      case Some(map) => {
+//        // we need to reverse the map
+//        val reversedMap = (for ((key, value) <- map) yield Map(value -> key)).reduceLeft(_ ++ _)
+//        variableRewriter.rewriteClause2(clause, reversedMap)
+//      }
+//      case None => {
+//        //        log.trace("No substition map theata specified , not rewriting clause : %s" clause)
+//        clause
+//      }
+//    }
+//
+//  }
 }
 

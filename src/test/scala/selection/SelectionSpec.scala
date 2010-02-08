@@ -12,12 +12,13 @@ import domain.fol.ast._
 import org.junit.runner.RunWith
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
-import org.slf4j.LoggerFactory
+import helpers.Logging
+
 
 @RunWith(classOf[JUnit4Runner])
-class SelectionSpec extends Spec with ShouldMatchers {
+class SelectionSpec extends Spec with ShouldMatchers with Logging{
   describe("ALCRSelectorSpec") {
-    val log = LoggerFactory getLogger (this getClass)
+
     val selector: LiteralSelection = new NegativeLiteralsSelection
 
     val x = Variable("x")
@@ -45,7 +46,7 @@ class SelectionSpec extends Spec with ShouldMatchers {
     it("Basic test") {
 
       val selection = selector.selectedLiterals(C1)
-      log.debug("The selection for clause {} was {}", C1, selection)
+      log.debug("The selection for clause %s was %s", C1, selection)
       assert(true)
     }
   }

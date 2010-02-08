@@ -13,6 +13,7 @@ import containers.{CNFClauseStore}
 import org.junit.runner.RunWith
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
+import ProvingResult._
 
 
 @RunWith(classOf[JUnit4Runner])
@@ -20,10 +21,10 @@ abstract class CuriosityDomainProovingSpec extends Spec with ShouldMatchers {
   // create a proover
   val resolutionProover: FOLProving
   describe("CuriosityDomainProoving") {
-    it("should prove that curiosity killed the cat") {
+    it("should entail that curiosity killed the cat") {
       // create a proover
 
-      resolutionProover.prove(CuriosityDomain.curiosityKilledTunaGoalClause) should equal(ProofFound())
+      resolutionProover.entail(CuriosityDomain.curiosityKilledTunaGoalClause) should equal(PROOF)
 
 
     }

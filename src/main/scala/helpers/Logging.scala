@@ -1,7 +1,7 @@
 package helpers
 
 
-import org.slf4j.LoggerFactory
+import se.scalablesolutions.akka.util.Logging
 
 /**
  * User: nowi
@@ -9,6 +9,5 @@ import org.slf4j.LoggerFactory
  * Time: 13:57:53
  */
 
-trait Logging {
-  val log = LoggerFactory getLogger (this getClass)
+trait Logging extends se.scalablesolutions.akka.util.Logging{
 }

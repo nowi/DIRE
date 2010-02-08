@@ -1,7 +1,7 @@
 package domain.fol.ast
 
 
-import org.slf4j.LoggerFactory
+
 
 /**
  * User: nowi
@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory
  */
 
 case class Predicate(name: String, terms: List[FOLNode]) extends Term {
-  val log = LoggerFactory getLogger (this getClass)
   val symbolicName = name
   val args = terms
 

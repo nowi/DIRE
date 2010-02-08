@@ -117,7 +117,7 @@ object SPASSParser extends StandardTokenParsers with Logging {
 
   def variableList: Parser[List[Variable]] = "[" ~ repsep(variable, ",") ~ "]" ^^ {
     case "[" ~ vars ~ "]" => {
-      log.debug("Created variable list : {}", vars)
+      log.debug("Created variable list : %s", vars)
       vars
     }
   }
@@ -144,7 +144,7 @@ object SPASSParser extends StandardTokenParsers with Logging {
   def universalCNFClause: Parser[UniversalQuantifer] = "forall" ~ "(" ~ variableList ~ "," ~ orConnective ~ ")" ^^ {
     case "forall" ~ "(" ~ vars ~ "," ~ connective ~ ")" => {
       val x = UniversalQuantifer(connective, vars)
-      log.debug("Crated universal cnf clause {}", x)
+      log.debug("Crated universal cnf clause %s", x)
       x
 
     }

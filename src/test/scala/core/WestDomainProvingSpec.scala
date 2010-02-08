@@ -14,25 +14,26 @@ import org.junit.runner.RunWith
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
 
+import ProvingResult._
 
 @RunWith(classOf[JUnit4Runner])
 abstract class WestDomainProvingSpec extends Spec with ShouldMatchers {
   // create a proover
   val resolutionProover: FOLProving
   describe("WestDomainProving") {
-    it("should prove that west is a criminal") {
-      // prove that west is a criminal
-      resolutionProover.prove(WestDomain.CriminalWestGoalClause) should equal(ProofFound()) // prove that west is a criminal
+    it("should entail that west is a criminal") {
+      // entail that west is a criminal
+      resolutionProover.entail(WestDomain.CriminalWestGoalClause) should equal(PROOF) // entail that west is a criminal
     }
 
-    it("should prove that west is an american") {
-      // prove that west is an american
-      resolutionProover.prove(WestDomain.AmericanWestGoalClause) should equal(ProofFound())
+    it("should entail that west is an american") {
+      // entail that west is an american
+      resolutionProover.entail(WestDomain.AmericanWestGoalClause) should equal(PROOF)
     }
 
 
     it("should not refute that west is not criminal") {
-      resolutionProover.prove(WestDomain.NotCriminalWestGoalClause) should not equal (ProofFound())
+      resolutionProover.entail(WestDomain.NotCriminalWestGoalClause) should not equal (PROOF)
 
     }
 

@@ -3,8 +3,9 @@ package core.resolution
 
 import containers.{MatchingClausesRetrieval, CNFClauseStore, ClauseStorage}
 import domain.fol.ast._
+import helpers.Logging
 import ordering.LiteralComparison
-import org.slf4j.LoggerFactory
+
 import reduction.Factoring
 import rewriting.Substitution
 import selection.LiteralSelection
@@ -28,7 +29,7 @@ trait Resolution extends InferenceRecording {
 
 
 
-class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val standardizer: Standardizing; val substitutor: Substitution}) extends Resolution {
+class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val standardizer: Standardizing; val substitutor: Substitution}) extends Resolution with Logging{
   val unificator = env.unificator
   val factorizer = env.factorizer
   val standardizer = env.standardizer
@@ -37,10 +38,9 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
 
   def resolve(a: FOLClause, b: MatchingClausesRetrieval) = null
 
-  val log = LoggerFactory getLogger (this getClass)
 
   override def resolve(a: ClauseStorage, b: ClauseStorage): ClauseStorage = {
-    log.trace("Resolving {} with {}", a, b)
+    log.trace("Resolving %s with %s", a, b)
     // resolve
 
     (for (clause1 <- a;
@@ -53,7 +53,7 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
   }
 
   override def resolve(a: FOLClause, b: ClauseStorage): ClauseStorage = {
-    log.trace("Resolving {} with {}", a, b)
+    log.trace("Resolving %s with %s", a, b)
     // resolve
 
     (for (clause2 <- b;
@@ -73,7 +73,7 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
    * clauses excluding the two literals in focus, and taking the union of the transformed literals.
    */
   override def resolve(a: FOLClause, b: FOLClause): Set[FOLClause] = {
-    log.trace("Resolving the Clauses {},{}", a, b)
+    log.trace("Resolving the Clauses %s,%s", a, b)
     // standardize apart the clauses
     val (aStand, bStand) = standardizer.standardizeApart(a, b)
 
@@ -83,9 +83,9 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
             doResolve(bStand, aStand)
 
     if (!conclusions.isEmpty) {
-      log.info("{} + {} --> {}", (a, b, conclusions))
+      log.info("%s + %s --> %s", (a, b, conclusions))
     } else {
-      log.trace("RESOLVED NOTHING from clauses {} and {} !", a, b)
+      log.trace("RESOLVED NOTHING from clauses %s and %s !", a, b)
     }
     conclusions
 
@@ -95,9 +95,9 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
   private def doResolve(a: FOLClause, b: FOLClause): Set[FOLClause] = {
 
     val aLits = a.positiveLiterals
-    //    log.trace("Positive literals of standardized Clause {} are : {}", a, aLits)
+    //    log.trace("Positive literals of standardized Clause %s are : %s", a, aLits)
     val bLits = b.negativeLiterals
-    //    log.trace("Negative literals of standardized Clause {} are : {}", b, bLits)
+    //    log.trace("Negative literals of standardized Clause %s are : %s", b, bLits)
 
     val conclusions: Set[FOLClause] = (for (aPos <- aLits;
                                             bNeg <- bLits;
@@ -107,7 +107,7 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
         case Some(x) => {
           // we have a mgu
           // apply it to the two clauses excluding the 2 focused
-          log.trace("MGU for Literal : {} and Literal {} is {}", Array(aPos, bNeg, mgu))
+          log.trace("MGU for Literal : %s and Literal %s is %s", Array(aPos, bNeg, mgu))
           //            Let S_1 and S_2 be two clauses with no variables in common, let S_1 contain a positive literal L_1, S_2 contain a negative literal L_2, and let eta be the most general unifier of L_1 and L_2. Then
           //(S_1eta-L_1eta) union (S_2eta-L_2eta)
 
@@ -120,17 +120,17 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
           val S2 = sC(b)
           val bNegS = sN(bNeg)
 
-          log.warn("a : {}", S1)
-          log.warn("aPos : {}", aPosS)
-          log.warn("S2 : {}", S2)
-          log.warn("bNegS : {}", bNegS)
+          log.warning("a : %s", S1)
+          log.warning("aPos : %s", aPosS)
+          log.warning("S2 : %s", S2)
+          log.warning("bNegS : %s", bNegS)
 
           val resolvent: FOLClause = (S1 - aPosS) ++ (S2 - bNegS)
 
 
 
           if (resolvent.isEmpty) {
-            log.debug("EMPTY CLAUSE RESOLVED FROM {} and {}", a, b)
+            log.debug("EMPTY CLAUSE RESOLVED FROM %s and %s", a, b)
             EmptyClause()
           } else {
             resolvent
@@ -138,7 +138,7 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
 
         }
         case None => {
-          log.trace("Could not resolve Literals {},{}", aPos, bNeg)
+          log.trace("Could not resolve Literals %s,%s", aPos, bNeg)
           domain.fol.ast.StandardClause()
         }
       })
@@ -151,7 +151,7 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
 }
 
 
-class OrderedResolver(env: {val useIndexing: Boolean; val recordProofSteps: Boolean; val unificator: Unify; val factorizer: Factoring; val standardizer: Standardizing; val substitutor: Substitution; val selector: LiteralSelection; val literalComparator: LiteralComparison}) extends Resolution {
+class OrderedResolver(env: {val useIndexing: Boolean; val recordProofSteps: Boolean; val unificator: Unify; val factorizer: Factoring; val standardizer: Standardizing; val substitutor: Substitution; val selector: LiteralSelection; val literalComparator: LiteralComparison}) extends Resolution with Logging {
   val unificator = env.unificator
   val factorizer = env.factorizer
   val standardizer = env.standardizer
@@ -166,7 +166,6 @@ class OrderedResolver(env: {val useIndexing: Boolean; val recordProofSteps: Bool
   // literal selector
 
 
-  val log = LoggerFactory getLogger (this getClass)
 
 
   override def resolve(a: FOLClause, b: ClauseStorage) = {
@@ -175,24 +174,13 @@ class OrderedResolver(env: {val useIndexing: Boolean; val recordProofSteps: Bool
       case _ => resolveWithoutIndex(a, b)
     }
 
-    log.trace("Resolving {} with {}", a, b)
-    // resolve
-    val resolvents = (for (clause2 <- b;
-                           if (a != clause2);
-                           resolvent = CNFClauseStore(resolve(a, clause2)))
-    yield resolvent)
-
-    resolvents match {
-      case x if (x.size == 0) => CNFClauseStore()
-      case x => x.reduceLeft(_ ::: _)
-
-    }
+    
 
 
   }
 
   private def resolveWithoutIndex(a: FOLClause, b: ClauseStorage) = {
-    log.trace("Resolving {} with {}", a, b)
+    log.trace("Resolving %s with %s", a, b)
     // resolve
     val resolvents = (for (clause2 <- b;
                            if (a != clause2);
@@ -209,7 +197,7 @@ class OrderedResolver(env: {val useIndexing: Boolean; val recordProofSteps: Bool
   }
 
   private def resolveWithMatchingIndex(a: FOLClause, b: MatchingClausesRetrieval): ClauseStorage = {
-    log.trace("Resolving with MatchingIndexSupport {} with {}", a, b)
+    log.trace("Resolving with MatchingIndexSupport %s with %s", a, b)
 
 
     // get the matching claueses , substruct the query clause a
@@ -237,7 +225,7 @@ class OrderedResolver(env: {val useIndexing: Boolean; val recordProofSteps: Bool
   }
 
   //  def resolveWithIndex(a: FOLClause, b: ImPerfectFilteringFOLClauseIndex) = {
-  //    log.trace("Resolving {} with {}", a, b)
+  //    log.trace("Resolving %s with %s", a, b)
   //    // resolve
   //    (for (clause2 <- b;
   //                            if (a != clause2);
@@ -250,7 +238,7 @@ class OrderedResolver(env: {val useIndexing: Boolean; val recordProofSteps: Bool
 
 
   override def resolve(a: ClauseStorage, b: ClauseStorage): ClauseStorage = {
-    log.trace("Resolving {} with {}", a, b)
+    log.trace("Resolving %s with %s", a, b)
     // resolve
 
 
@@ -271,7 +259,7 @@ class OrderedResolver(env: {val useIndexing: Boolean; val recordProofSteps: Bool
    * clauses excluding the two literals in focus, and taking the union of the transformed literals.
    */
   override def resolve(a: FOLClause, b: FOLClause): Set[FOLClause] = {
-    log.trace("Resolving the Clauses {},{}", a, b)
+    log.trace("Resolving the Clauses %s,%s", a, b)
 
     val (aStand, bStand) = standardizer.standardizeApart(a, b)
 
@@ -299,9 +287,9 @@ class OrderedResolver(env: {val useIndexing: Boolean; val recordProofSteps: Bool
 
   private def doResolve(a: FOLClause, b: FOLClause): Set[Option[FOLClause]] = {
     val aLits = a.positiveLiterals
-    //    log.trace("Positive literals of standardized Clause {} are : {}", a, aLits)
+    //    log.trace("Positive literals of standardized Clause %s are : %s", a, aLits)
     val bLits = b.negativeLiterals
-    //    log.trace("Negative literals of standardized Clause {} are : {}", b, bLits)
+    //    log.trace("Negative literals of standardized Clause %s are : %s", b, bLits)
 
     val conclusions: Set[Option[FOLClause]] = (for (
       aPos <- aLits;
@@ -315,7 +303,7 @@ class OrderedResolver(env: {val useIndexing: Boolean; val recordProofSteps: Bool
           // check the ordererd resolution preconditions
           if (checkSidePremise(a, aPos, mgu) && checkMainPremise(b, bNeg, mgu)) {
             // apply it to the two clauses excluding the 2 focused
-            log.debug("Resolving on literal {}", bNeg)
+            log.debug("Resolving on literal %s", bNeg)
             log.debug("MGU for Literal : %s and Literal %s is %s" format (aPos, bNeg, mgu))
             //            Let S_1 and S_2 be two clauses with no variables in common, let S_1 contain a positive literal L_1, S_2 contain a negative literal L_2, and let eta be the most general unifier of L_1 and L_2. Then
             //(S_1eta-L_1eta) union (S_2eta-L_2eta)
@@ -330,20 +318,20 @@ class OrderedResolver(env: {val useIndexing: Boolean; val recordProofSteps: Bool
             val S2 = sC(b)
             val bNegS = sN(bNeg)
 
-            log.debug("a : {}", S1)
-            log.debug("aPos : {}", aPosS)
-            log.debug("S2 : {}", S2)
-            log.debug("bNegS : {}", bNegS)
+            log.debug("a : %s", S1)
+            log.debug("aPos : %s", aPosS)
+            log.debug("S2 : %s", S2)
+            log.debug("bNegS : %s", bNegS)
 
             val resolvent: FOLClause = (S1 - aPosS) ++ (S2 - bNegS)
 
 
 
             if (resolvent.isEmpty) {
-              log.debug("EMPTY CLAUSE RESOLVED FROM {} and {}", a, b)
+              log.debug("EMPTY CLAUSE RESOLVED FROM %s and %s", a, b)
               Some(EmptyClause())
             } else {
-              log.debug("Resolved {} , from Literals {},{}", List(resolvent, aPos, bNeg))
+              log.debug("Resolved %s , from Literals %s,%s", List(resolvent, aPos, bNeg))
               // do backsubstitution
 
               if (recordProofSteps) {
@@ -355,13 +343,13 @@ class OrderedResolver(env: {val useIndexing: Boolean; val recordProofSteps: Bool
             }
 
           } else {
-            log.debug("Not satisfying ordering constaraints , not resolving Literals {},{}", aPos, bNeg)
+            log.debug("Not satisfying ordering constaraints , not resolving Literals %s,%s", aPos, bNeg)
             None
           }
 
         }
         case None => {
-          log.debug("Could not resolve Literals {},{}", aPos, bNeg)
+          log.debug("Could not resolve Literals %s,%s", aPos, bNeg)
           None
         }
       })
@@ -398,11 +386,11 @@ class OrderedResolver(env: {val useIndexing: Boolean; val recordProofSteps: Bool
       greaterThanLiteral match {
         case None => {
           // we have found nothing greater
-          log.debug("We have NOT found a greater Lit : {} is Striclty Maximal in sidepremise: {}", literal, premise)
+          log.debug("We have NOT found a greater Lit : %s is Striclty Maximal in sidepremise: %s", literal, premise)
           true
         }
         case _ => {
-          log.debug("We have found a greater/greaterequal Lit : {} therefore {} is not maximal", greaterThanLiteral, literal)
+          log.debug("We have found a greater/greaterequal Lit : %s therefore %s is not maximal", greaterThanLiteral, literal)
           false
         }
       }
@@ -410,7 +398,7 @@ class OrderedResolver(env: {val useIndexing: Boolean; val recordProofSteps: Bool
 
     }
     else {
-      log.debug("Selected Literals : {} in sidePremise : {} were not empty ! ", selector.selectedLiterals(premise), premise)
+      log.debug("Selected Literals : %s in sidePremise : %s were not empty ! ", selector.selectedLiterals(premise), premise)
       false
     }
 
@@ -446,11 +434,11 @@ class OrderedResolver(env: {val useIndexing: Boolean; val recordProofSteps: Bool
       greaterThanLiteral match {
         case None => {
           // we have found nothing greater
-          log.debug("We have NOT found a greater Lit : {} is Striclty Maximal in mainpremise: {}", literal, premise)
+          log.debug("We have NOT found a greater Lit : %s is Striclty Maximal in mainpremise: %s", literal, premise)
           true
         }
         case _ => {
-          log.debug("We have found a greater/greaterequal Lit : {} therefore {} is not maximal", greaterThanLiteral, literal)
+          log.debug("We have found a greater/greaterequal Lit : %s therefore %s is not maximal", greaterThanLiteral, literal)
           false
         }
       }
@@ -468,13 +456,12 @@ class OrderedResolver(env: {val useIndexing: Boolean; val recordProofSteps: Bool
 
 
 
-class GeneralResolution(env: {val unificator: Unify}) extends Resolution {
+class GeneralResolution(env: {val unificator: Unify}) extends Resolution with Logging {
   val unificator = env.unificator
 
-  val log = LoggerFactory getLogger (this getClass)
 
   override def resolve(a: ClauseStorage, b: ClauseStorage): ClauseStorage = {
-    log.trace("Resolving {} with {}", a, b)
+    log.trace("Resolving %s with %s", a, b)
     a
   }
 

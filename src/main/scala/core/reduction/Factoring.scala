@@ -4,7 +4,7 @@ import containers.{ClauseStorage, CNFClauseStore}
 import domain.fol.ast._
 import helpers.Logging
 import ordering.LiteralComparison
-import org.slf4j.LoggerFactory
+
 import rewriting.Substitution
 import selection.LiteralSelection
 
@@ -38,17 +38,17 @@ class OrderedFactorizer(env: {val unificator: Unify; val standardizer: Standardi
   val literalComparator = env.literalComparator
 
   override def factorize(clause: FOLClause): FOLClause = {
-    log.trace("Ordered Factoring by {} on clause {}", this, clause)
+    log.trace("Ordered Factoring by %s on clause %s", this, clause)
     // as long as there are unfiers , rewirte the clause
     // Aσ is maximal with respect to C σ ∨ Bσ
     def rule1(premise: FOLClause, a: FOLNode) = {
       // get the max
 
       if (premise.maxLit(literalComparator) == a) {
-        log.warn("Rule 1 answering TRUE , {} is the maxLit of {} ", a, premise)
+        log.warning("Rule 1 answering TRUE , %s is the maxLit of %s ", a, premise)
         true
       } else {
-        log.warn("Rule 1 answering FALSE , {} is NOT the maxLit of {} ", a, premise)
+        log.warning("Rule 1 answering FALSE , %s is NOT the maxLit of %s ", a, premise)
         false
 
       }
@@ -58,10 +58,10 @@ class OrderedFactorizer(env: {val unificator: Unify; val standardizer: Standardi
     //(3) nothing is selected in C σ ∨ Aσ ∨ Bσ
     def rule2(premise: FOLClause) = {
       if (selector.selectedLiterals(premise).isEmpty) {
-        log.warn("Rule 2 answering TRUE , there are no selected literals in premise {} ", premise)
+        log.warning("Rule 2 answering TRUE , there are no selected literals in premise %s ", premise)
         true
       } else {
-        log.warn("Rule 2 answering FALSE, there are selected literals in premise {} ", premise)
+        log.warning("Rule 2 answering FALSE, there are selected literals in premise %s ", premise)
         false
       }
     }
@@ -77,22 +77,22 @@ class OrderedFactorizer(env: {val unificator: Unify; val standardizer: Standardi
 
       yield {
           val clauseSubs = substitutor.substitute(mgu, clause)
-          log.warn("Substitued clauses is {}", clauseSubs)
+          log.warning("Substitued clauses is %s", clauseSubs)
           val aSubs = substitutor.substitute(mgu, a)
-          log.warn("Subs a is {}", aSubs)
+          log.warning("Subs a is %s", aSubs)
 
           val bSubs = substitutor.substitute(mgu, b)
-          log.warn("Subs B is {}", bSubs)
+          log.warning("Subs B is %s", bSubs)
 
           if (rule1(clauseSubs, aSubs) && rule2(clauseSubs)) {
-            log.warn("ORdered Factoring allowed , creating inference .. ")
+            log.warning("ORdered Factoring allowed , creating inference .. ")
             //C σ ∨ Aσ
             Some(clauseSubs - bSubs)
           } else None
 
         })
 
-      log.info("Factorized clauses are {}", factorizedClauses)
+      log.info("Factorized clauses are %s", factorizedClauses)
       clause
 
     } else {
@@ -104,7 +104,7 @@ class OrderedFactorizer(env: {val unificator: Unify; val standardizer: Standardi
 
   def factorize(clauses: ClauseStorage): ClauseStorage = {
     assert(clauses.size == 1, "ClauseStorage has more than one clause !")
-    log.trace("Ordered Factoring on clauses {} ", clauses)
+    log.trace("Ordered Factoring on clauses %s ", clauses)
     CNFClauseStore(factorize(clauses.head))
   }
 
@@ -113,14 +113,14 @@ class OrderedFactorizer(env: {val unificator: Unify; val standardizer: Standardi
 
 
 // depends on unifier and substitutor
-class StandardFactorizer(env: {val unificator: Unify; val substitutor: Substitution}) extends Factoring {
+class StandardFactorizer(env: {val unificator: Unify; val substitutor: Substitution}) extends Factoring with Logging{
   val unificator: Unify = env.unificator
   val substitutor: Substitution = env.substitutor
 
-  val log = LoggerFactory getLogger (this getClass)
+  //
 
   override def factorize(clause: FOLClause): FOLClause = {
-    log.trace("Standard Factoring on clause {}", clause)
+    log.trace("Standard Factoring on clause %s", clause)
     // as long as there are unfiers , rewirte the clause
     var factorizedClause = clause
     var mgu = unificator.firstUnifier(factorizedClause)
@@ -134,7 +134,7 @@ class StandardFactorizer(env: {val unificator: Unify; val substitutor: Substitut
 
 
   override def factorize(clause: FOLClause, mgu: Option[Map[Variable, FOLNode]]): FOLClause = {
-    log.trace("Standard Factoring on clause {} with given mgu : {}", clause, mgu)
+    log.trace("Standard Factoring on clause %s with given mgu : %s", clause, mgu)
     mgu match {
       case Some(x) => {
         // apply the factorization on this clause with the given mgu

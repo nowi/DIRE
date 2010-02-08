@@ -1,8 +1,8 @@
 package core.rewriting
 
 import domain.fol.ast._
-import org.slf4j.LoggerFactory
 
+  import helpers.Logging
 
 /**
  * User: nowi
@@ -23,8 +23,7 @@ trait VariableRewriting {
   def rewriteClause(clause: FOLClause, theta: Map[Variable, FOLNode]): FOLClause
 }
 
-class VariableRewriter extends VariableRewriting {
-  val log = LoggerFactory getLogger (this getClass)
+class VariableRewriter extends VariableRewriting with Logging {
 
   /**Rewrite based on mapping theta
    * @param theta - the mapping
@@ -57,7 +56,7 @@ class VariableRewriter extends VariableRewriting {
    */
   def rewriteClause(clause: FOLClause, theta: Map[Variable, FOLNode]): FOLClause = {
     // check all possible fol types
-    log.trace("Rewriting Clause {}", clause)
+    log.trace("Rewriting Clause %s", clause)
 
     // define the replacement function
     val f = (node: FOLNode, theta: Map[Variable, FOLNode]) => {
@@ -72,7 +71,6 @@ class VariableRewriter extends VariableRewriting {
 
     val rewrittenClauses = clause.literals.map({x: FOLNode => x.map(f(_: FOLNode, theta))})
     // apply this function partially , theta is fixed
-    log.trace("Rewritten clauses are : {}", rewrittenClauses)
     StandardClause(rewrittenClauses)
 
   }

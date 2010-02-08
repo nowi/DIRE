@@ -59,10 +59,10 @@ class FOLDomainSpec extends Spec with ShouldMatchers with Logging {
       val clause = StandardClause(richard, john)
 
       val positives = clause.positiveLiterals;
-      log.trace("Positive Literals of CLause {} are {}", clause, positives)
+      log.trace("Positive Literals of CLause %s are %s", clause, positives)
 
       val negatives = clause.negativeLiterals;
-      log.trace("Negative Literals of CLause {} are {}", clause, negatives)
+      log.trace("Negative Literals of CLause %s are %s", clause, negatives)
 
       // should contain richard
       assert(positives contains richard);
@@ -131,10 +131,10 @@ class FOLDomainSpec extends Spec with ShouldMatchers with Logging {
 
 
       val signatureC1 = C1.signature
-      log.debug("Signature of Clause C1 {} is : {}", C1, signatureC1)
+      log.debug("Signature of Clause C1 %s is : %s", C1, signatureC1)
 
       val signatureC2 = C2.signature
-      log.debug("Signature of Clause C2 {} is : {}", C2, signatureC2)
+      log.debug("Signature of Clause C2 %s is : %s", C2, signatureC2)
 
       // c2sig should be subset
       signatureC2.subsetOf(signatureC1) should be(true)
@@ -156,10 +156,10 @@ class FOLDomainSpec extends Spec with ShouldMatchers with Logging {
 
 
       val signatureC3 = C3.signature
-      log.debug("Signature of Clause C3 {} is : {}", C3, signatureC3)
+      log.debug("Signature of Clause C3 %s is : %s", C3, signatureC3)
 
       val signatureC4 = C4.signature
-      log.debug("Signature of Clause C4 {} is : {}", C4, signatureC4)
+      log.debug("Signature of Clause C4 %s is : %s", C4, signatureC4)
 
 
       // same length but difference in sig

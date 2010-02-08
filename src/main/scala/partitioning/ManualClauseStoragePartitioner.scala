@@ -4,6 +4,7 @@ package partitioning
 import core.containers.{CNFClauseStore, ClauseStorage}
 import domain.fol.ast.{FOLNode, FOLClause}
 import domain.fol.parsers.SPASSIntermediateFormatParser
+import helpers.Logging
 import java.io.File
 
 /**
@@ -12,14 +13,15 @@ import java.io.File
  * Time: 19:48:14
  */
 
-class ManualClauseStoragePartitioner(filenames: List[String]) extends ClauseStoragePartitioning {
+class ManualClauseStoragePartitioner(filenames: List[String]) extends ClauseStoragePartitioning with Logging{
   // parser
   // TODO externalize this
   val parser = SPASSIntermediateFormatParser
 
   override def partition(clauses: ClauseStorage) = {
-    val file = new File("input/conf/merged.dire")
+    val file = new File("/Users/nowi/workspace/DIRE/DIRE/input/conf/merged.dire")
     val clauses = SPASSIntermediateFormatParser.parseFromFile(file)
+    log.info("%s is partitioning Ontology from File : %s",this,file)
     // clauses is the big merged conf ontology
     // the partitions are O0 O1 O2 O3 O4
     // each predicate has the partitions it belongs to as prefix to its symbolic name
