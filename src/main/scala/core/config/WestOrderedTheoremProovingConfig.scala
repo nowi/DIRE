@@ -41,6 +41,8 @@ object WestOrderedTheoremProovingConfig {
   val dropSeenClauses = false
   val useIndexing = true
 
+  val timeLimit: Long = 0
+
 
   override def toString = List(tautologyDeleter, variableRewriter, subsumptionDeleter, standardizer, unificator, substitutor, factorizer, resolver, subsumptionStrategy, literalComparator, selector, removeDuplicates, useLightesClauseHeuristic)
           .map({_.toString})
