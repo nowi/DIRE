@@ -1,12 +1,13 @@
 package core
 
 
+import helpers.{Subject, Logging}
+import ProvingResult._
 import collection.immutable.{TreeSet, SortedSet}
 import collection.mutable.ListBuffer
 import containers._
 import domain.fol.ast._
 import formatting.ClauseFormatting
-import helpers.Logging
 import net.lag.configgy.Configgy
 import ordering.LiteralComparison
 import reduction.{Factoring, SubsumptionDeletion, TautologyDeletion}
@@ -24,10 +25,23 @@ import resolution.Resolution
  * from the Automated Theorem Proving Book Volume II
  */
 
-trait FOLProving {
-  def prove(goalClause: FOLClause): ProvingResult
 
-  def satisfy(): ProvingResult
+
+
+trait FOLProving {
+  def entail(clause: FOLClause): (ProvingResult,ClauseStorage)
+  def saturate(): (ProvingResult,ClauseStorage)
+
+  /**
+   * Saturation without background knowledge
+   */
+  def saturate(clauses: ClauseStorage): (ProvingResult,ClauseStorage)
+
+  /**
+   * Saturation with background knowledge
+   */
+  def saturate(clauses: ClauseStorage, backgroundClauses : ClauseStorage): (ProvingResult,ClauseStorage)
+
 }
 
 
@@ -44,10 +58,11 @@ class ResolutionProover1(env: {
   val usableBackSubsumption: Boolean;
   val forwardSubsumption: Boolean;
   val literalComparator: LiteralComparison;
+  val timeLimit: Long;
   val dropSeenClauses: Boolean;
   val useLightesClauseHeuristic: Boolean})
         extends FOLProving
-                with Logging with ClauseFormatting {
+                with Logging with ClauseFormatting with Subject{
   Configgy.configure("/Users/nowi/workspace/DIRE/DIRE/config.conf")
 
 
@@ -70,25 +85,29 @@ class ResolutionProover1(env: {
 
   val recordProofSteps = env.recordProofSteps
 
+  val timeLimit: Long = env.timeLimit;
 
-  override def satisfy() = {
-    log.info("Configuration is  {}", env)
-    log.info("Starting saturation on clause store {}", initialClauses)
-    // all candidate clauses to generate inferences
-    // perform input reduction
-    //var usable: OrderedSet[FOLClause] = taut(sub(clauses))
+
+  override def entail(clause: FOLClause) = {
+    log.info("Configuration is  %s", env)
+    log.info("Starting entailment proof on clause store %s", initialClauses)
+    saturate(clause :: initialClauses)
+  }
+
+  override def saturate() = {
+    log.info("Configuration is  %s", env)
     saturate(initialClauses)
-
   }
 
-  override def prove(goalClause: FOLClause) = {
-    log.info("Configuration is  {}", env)
 
-    log.info("Starting refutation proof on clause store {}", initialClauses)
-    saturate(goalClause :: initialClauses)
+  def saturate(clauses: ClauseStorage) = {
+    saturate(clauses,CNFClauseStore())
   }
 
-  private def saturate(clauses: ClauseStorage): ProvingResult = {
+  override def saturate(clauses: ClauseStorage,backgroundClauses : ClauseStorage) = {
+    // init time
+
+    log.debug("Starting saturation of clause store %s", clauses)
     var usable: UsableClauseStore = new UsableClauseStore(List[FOLClause]())
     var workedOff: ClauseStorage = new WorkedOffClauseStore
 
@@ -97,13 +116,25 @@ class ResolutionProover1(env: {
     // all candidate clauses to generate inferences
     // perform input reduction
     //var usable: OrderedSet[FOLClause] = taut(sub(clauses))
-    usable = taut(clauses) ::: usable
+    workedOff = backgroundClauses ::: workedOff
+
+
+    // tatology deletion and self subsumptoin removal on usable
+    val cleaned = taut(sub(clauses))
+    usable.enqueue(cleaned)
+
+    // forward reducation on usable based on background clauses
+    usable = backgroundClauses match {
+      case NonEmptyClauseStore(clauses) if(forwardSubsumption) => sub(usable, workedOff).asInstanceOf[UsableClauseStore]
+      case _ => usable
+    }
+
 
     var derivedClausesCount: Int = 0
     var keptClausesCount: Int = 0
     var iteration = 1;
     val startTime = System.currentTimeMillis
-    while (!usable.isEmpty && !containsEmptyClause(usable)) {
+    while (!usable.isEmpty && !containsEmptyClause(usable) && !isTimeUp(startTime)) {
       log.trace("Inner Loop")
       // 5. select a clause
       // sort the list and remove duplicates
@@ -113,26 +144,26 @@ class ResolutionProover1(env: {
 
       CNFClauseStore(headClause) match {
         case NonEmptyClauseStore(given) => {
-          log.debug("Current Given clause is  {}", given)
+          log.debug("Current Given clause is  %s", given)
 
 
           // get the maxLiteral of given
 
           val maxLit = headClause.maxLit(literalComparator)
 
-          log.trace("Maximum literal of given Clause {} is {}", headClause, maxLit)
+          log.trace("Maximum literal of given Clause %s is %s", headClause, maxLit)
 
 
 
           if (seenClauses.contains(headClause) && dropSeenClauses) {
-            log.warn("Already have seen this clause : {}.. dropping it", headClause)
+            log.warning("Already have seen this clause : %s.. dropping it", headClause)
           } else {
 
             // 5. 6. add to workedoff, remove from usable       fa
             workedOff = given ::: workedOff
             seenClauses += headClause
-            log.debug("After 5. 6.  usable : {}", usable)
-            log.debug("After 5. 6.  workedOff : {}", workedOff)
+            log.debug("After 5. 6.  usable : %s", usable)
+            log.debug("After 5. 6.  workedOff : %s", workedOff)
             //Hydrophilic(U) -> Hydrophobicity(U)*.
 
 
@@ -143,7 +174,7 @@ class ResolutionProover1(env: {
 
 
             // we have some derived clauses
-            log.debug("We have successfully derived claueses {}", resolved)
+            log.debug("We have successfully derived claueses %s", resolved)
 
             // 8. - 11.  Perform reductions/forward contractions
             // remove all tautologies and subsumptions from fresh
@@ -167,7 +198,7 @@ class ResolutionProover1(env: {
                           case false => uniqueDerived
                         }
 
-                        log.trace("After Forward Subsumption Fresh Clause {}", keptClauses)
+                        log.trace("After Forward Subsumption Fresh Clause %s", keptClauses)
 
 
                         // clasuse remaining in fresh are then used for backward subsumtion
@@ -176,7 +207,7 @@ class ResolutionProover1(env: {
                           case false => workedOff
                         }
 
-                        log.trace("After Backward Subsumption workedOff Clauses : {}", workedOff)
+                        log.trace("After Backward Subsumption workedOff Clauses : %s", workedOff)
 
                         // backwardsubsumption on usable based on fresh clause
                         //                        if (usableBackSubsumption) {
@@ -184,14 +215,16 @@ class ResolutionProover1(env: {
                         //                          usable = sub(usable, keptClauses)
                         //                          val delta = beforeSize - usable.size
                         //                          if (delta > 0) {
-                        //                            log.warn("Backwardsubsumption on usable has deleted {} clauses", delta)
+                        //                            log.warning("Backwardsubsumption on usable has deleted %s clauses", delta)
                         //                          }
                         //                        }
 
                         if (recordProofSteps) {
-                          log.info(printClauses(keptClauses, resolver))
+                          log.debug(printClauses(keptClauses, resolver))
                         }
                         usable.enqueue(keptClauses)
+                        // notify listeners
+                        notifyObservers(keptClauses)
                         keptClausesCount = keptClausesCount + keptClauses.size
 
                         // dont add dups
@@ -215,7 +248,7 @@ class ResolutionProover1(env: {
               }
 
               case _ => {
-                log.debug("Nothing  has been derived given clause : {}", given)
+                log.debug("Nothing  has been derived given clause : %s", given)
               }
 
 
@@ -228,38 +261,45 @@ class ResolutionProover1(env: {
         }
 
         case _ => {
-          log.warn("Given clause was empty , this does not seem right")
+          log.warning("Given clause was empty , this does not seem right")
         }
       }
 
       iteration += 1
 
       if (iteration % 50 == 0) {
-        log.info("Iteration : {}  WorkedOff size :  {}", iteration, workedOff.size)
-        log.info("Iteration : {}  Usable size :  {}", iteration, usable.size)
-        log.info("Iteration : {}  Derived Clauses :  {}", iteration, derivedClausesCount)
-        log.info("Iteration : {}  Kept Clauses :  {}", iteration, keptClausesCount)
+        log.debug("Iteration : %s  WorkedOff size :  %s", iteration, workedOff.size)
+        log.debug("Iteration : %s  Usable size :  %s", iteration, usable.size)
+        log.debug("Iteration : %s  Derived Clauses :  %s", iteration, derivedClausesCount)
+        log.debug("Iteration : %s  Kept Clauses :  %s", iteration, keptClausesCount)
         val runtime: Double = System.currentTimeMillis - startTime
-        log.info("Derived Clauses Per Second : {}  ", derivedClausesCount / (runtime / 1000), keptClausesCount)
+        log.debug("Derived Clauses Per Second : %s  ", derivedClausesCount / (runtime / 1000), keptClausesCount)
       }
     }
 
     if (containsEmptyClause(usable)) {
       log.info("Proof found")
-      log.info("WorkedOff size :  {}", workedOff.size)
-      log.info("Derived Clauses Count :  {}", derivedClausesCount)
-      log.info("Kept Clauses Are :  {}", workedOff)
-      ProofFound()
+      log.info("WorkedOff size :  %s", workedOff.size)
+      log.info("Derived Clauses Count :  %s", derivedClausesCount)
+      log.info("Kept Clauses Are :  %s", workedOff)
+      (PROOF,workedOff)
     } else if (usable.isEmpty) {
       log.info("Completion found")
-      log.info("WorkedOff size :  {}", workedOff.size)
-      log.info("Derived Clauses Count :  {}", derivedClausesCount)
-      log.info("Kept Clauses Are :  {}", workedOff)
-      CompletionFound()
+      log.info("WorkedOff size :  %s", workedOff.size)
+      log.info("Derived Clauses Count :  %s", derivedClausesCount)
+      log.info("Kept Clauses Are :  %s", workedOff)
+      (COMPLETION,workedOff)
     } else {
-      log.error("Some error occured during prooving, there has been no prooving result")
-      error("Some error occured during prooving, there has been no prooving result")
+      // time up
+      log.info("Completion found")
+      log.info("WorkedOff size :  %s", workedOff.size)
+      log.info("Derived Clauses Count :  %s", derivedClausesCount)
+      log.info("Kept Clauses Are :  %s", workedOff)
+      (TIMEUP,workedOff)
+
     }
+
+
 
 
   }
@@ -268,6 +308,13 @@ class ResolutionProover1(env: {
     //val literals : List[FOLNode] = clauses.map
 
 
+  }
+
+
+  def isTimeUp(startingTime : Long) : Boolean = {
+    if(timeLimit > 0) {
+      (System.currentTimeMillis - startingTime) > timeLimit
+    } else false
   }
 
 
@@ -300,13 +347,14 @@ class ResolutionProover1(env: {
     })))
 
 
+
   }
 
   def resolve(a: FOLClause, b: ClauseStorage): ClauseStorage = {
     b match {
       case NonEmptyClauseStore(clauses) => {
         val resolved = resolver.resolve(a, clauses)
-        log.debug("Resolved : {}", resolved)
+        log.debug("Resolved : %s", resolved)
         resolved
       }
       case _ => CNFClauseStore()
@@ -318,7 +366,7 @@ class ResolutionProover1(env: {
   def choose(clauses: ClauseStorage): ClauseStorage = {
 
     val choosen = clauses(rnd.nextInt(clauses.size))
-    log.trace("Naively choosing clause : {} from clauses store : {}", choosen, clauses)
+    log.trace("Naively choosing clause : %s from clauses store : %s", choosen, clauses)
     CNFClauseStore(choosen)
   }
 
@@ -347,8 +395,3 @@ class ResolutionProover1(env: {
 }
 
 
-
-
-case class ProvingResult
-case class CompletionFound extends ProvingResult
-case class ProofFound extends ProvingResult
