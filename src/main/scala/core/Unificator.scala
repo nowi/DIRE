@@ -24,8 +24,12 @@ trait Unify {
    */
   def unify(x: FOLNode, y: FOLNode): Option[Map[Variable, FOLNode]]
 
+  def unifyReverseRenaming(x: FOLNode, y: FOLNode): (Option[Map[Variable, FOLNode]]) 
+
   def unify(c1: FOLClause, c2: FOLClause): Option[Map[Variable, FOLNode]]
 
+  def unifyReverseRenaming(c1: FOLClause, c2: FOLClause) : Option[Map[Variable, FOLNode]]
+  
   def unify(c1: FOLClause, c2: FOLClause, theta: Option[Map[Variable, FOLNode]]): Option[Map[Variable, FOLNode]]
 
   def unify(x: FOLNode, y: FOLNode, theta: Option[Map[Variable, FOLNode]]): Option[Map[Variable, FOLNode]]
@@ -44,8 +48,94 @@ class Unificator(env: {val substitutor: Substitution; val standardizer: Standard
       log.trace("%s trivially unified equal nodes : %s , %s", (this, x, y))
       Some(Map[Variable, FOLNode]())
     }
-    val (xr, yr) = standardizer.standardizeApart(x, y)
+    val (xr, yr,renamings) = standardizer.standardizeApart(x, y)
     unify(xr, yr, Some(Map[Variable, FOLNode]()))
+
+  }
+
+
+
+  def unifyReverseRenaming(c1: FOLClause, c2: FOLClause) : Option[Map[Variable, FOLNode]] = {
+val (cs1, cs2,renamings) = standardizer.standardizeApart(c1, c2)
+
+
+
+    // we need a global theta for this
+    var globalTheta: Map[Variable, FOLNode] = Map[Variable, FOLNode]()
+
+    // unify all literals of these clauess
+    val thetas = for (l1 <- cs1.literals;
+                      l2 <- cs2.literals;
+                      if (l1 != l2)
+    ) {
+        unify(l1, l2, Some(globalTheta)) match {
+          case Some(x) => {
+            // there was a unification , set this as our new theta
+            log.trace("Success unifying literals : %s with %s ...", l1, l2)
+            log.trace("New global theta is : %s ", x)
+            globalTheta = x
+          }
+          case None => {
+            // ignore
+            log.trace("Could not unify literal : %s with %s ... ignoring", l1, l2)
+          }
+
+        }
+      }
+
+
+    if(globalTheta.size > 0) {
+      val mgu = Some(globalTheta)
+
+      if(renamings.size > 0) {
+        val renamedMgu :Option[Map[Variable, FOLNode]] = mgu match {
+          case Some(unifier : Map[Variable, FOLNode]) => {
+            // apply reverse renaming
+            Some((for((key,value) <- unifier)
+            yield (key,substitutor.substitute(Some(renamings),value))
+                    ).foldLeft(Map[Variable, FOLNode]())(_ + _))
+          }
+
+        }
+        renamedMgu
+
+      } else {
+        mgu
+      }
+
+    } else {
+      None
+    }
+
+  }
+
+
+  override def unifyReverseRenaming(x: FOLNode, y: FOLNode): (Option[Map[Variable, FOLNode]]) = {
+    // standardize apart the terms           rd
+    if (x == y) {
+      log.trace("%s trivially unified equal nodes : %s , %s", (this, x, y))
+      Some(Map[Variable, FOLNode]())
+    }
+    val (xr, yr,renamings) = standardizer.standardizeApart(x, y)
+    val mgu = unify(xr, yr, Some(Map[Variable, FOLNode]()))
+
+    if(renamings.size > 0) {
+      val renamedMgu :Option[Map[Variable, FOLNode]] = mgu match {
+        case Some(unifier : Map[Variable, FOLNode]) => {
+          // apply reverse renaming
+          Some((for((key,value) <- unifier)
+          yield (key,substitutor.substitute(Some(renamings),value))
+                  ).foldLeft(Map[Variable, FOLNode]())(_ + _))
+        }
+        case None => {
+          None
+        }     
+      }
+      renamedMgu
+
+    } else {
+      mgu
+    }
 
   }
 
@@ -55,7 +145,7 @@ class Unificator(env: {val substitutor: Substitution; val standardizer: Standard
     t match {
       case Some(theta) => {
         // first standardize both clauses
-        val (cs1, cs2) = standardizer.standardizeApart(c1, c2)
+        val (cs1, cs2,renamings) = standardizer.standardizeApart(c1, c2)
         // we need a global theta for this
         var globalTheta: Map[Variable, FOLNode] = theta
 
@@ -127,7 +217,7 @@ class Unificator(env: {val substitutor: Substitution; val standardizer: Standard
 
   override def unify(c1: FOLClause, c2: FOLClause): Option[Map[Variable, FOLNode]] = {
     // first standardize both clauses
-    val (cs1, cs2) = standardizer.standardizeApart(c1, c2)
+    val (cs1, cs2,renamings) = standardizer.standardizeApart(c1, c2)
 
 
 

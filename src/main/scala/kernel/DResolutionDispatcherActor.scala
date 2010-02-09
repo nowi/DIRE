@@ -19,9 +19,9 @@ import se.scalablesolutions.akka.dispatch.Dispatchers
 class DResolutionDispatcherActor extends DispatchingActor {
 
   override def determineDestination(clauses: ClauseStorage, allocation: Map[Set[String], String]) = {
-    log.trace("Reasoner: %s  clauses %s to reasoners : ", this, clauses,reasoners)
+    //log.trace("Reasoner: %s  clauses %s to reasoners : ", this, clauses,reasoners)
     // get the unique resolvable literal of this clause
-
+    val reasoners = ActorRegistry.actorsFor("kernel.DistributedALCReasoner")
     // create dispatching mapping
 
     // return mapping allClauses --> allReasoenrs

@@ -71,7 +71,7 @@ class OrderedFactorizer(env: {val unificator: Unify; val standardizer: Standardi
       val factorizedClauses = (for (a <- clause.literals.toList;
                                     b <- clause.literals.toList;
                                     if (a != b);
-                                    (aS, bS) = standardizer.standardizeApart(a, b);
+                                    (aS, bS,renamings) = standardizer.standardizeApart(a, b);
                                     mgu = unificator.unify(aS, bS);
                                     if (mgu != None))
 

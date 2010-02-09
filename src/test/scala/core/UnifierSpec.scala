@@ -122,7 +122,7 @@ class UnifierSpec extends Spec with ShouldMatchers with Logging {
 
 
       // unfiy a and e -- this will test the standardise apart case
-      val theta4 = unificator.unify(a, e)
+      val theta4 = unificator.unifyReverseRenaming(a, e)
       theta4 should not equal (None)
 
     }
@@ -149,7 +149,7 @@ class UnifierSpec extends Spec with ShouldMatchers with Logging {
       val bposstrich = B.positiveLiterals
 
       // unfiy a and e -- this will test the standardise apart case
-      val theta5 = unificator.unify(StandardClause(anegstrich).absoluteClause, StandardClause(bposstrich))
+      val theta5 = unificator.unifyReverseRenaming(StandardClause(anegstrich).absoluteClause, StandardClause(bposstrich))
 
       log.trace("MGU of union of a and b is %s", theta5)
       // the subsitutions should containt Some(Map(z_4 -> z_8, x -> a))
@@ -184,25 +184,27 @@ class UnifierSpec extends Spec with ShouldMatchers with Logging {
       // the subsitutions should containt Some(Map(z_4 -> z_8, x -> a))
     }
 
-    it("should Variable with nested function level 1") {
+
+    // 47[0:Inp] || NEWATOMIC14(U) -> Tiny(skf0_164(U))*.
+    // 13[0:Inp] || Tiny(U)* -> Size(U).
+
+     // unify Tiny(U)*  Tiny(skf0_164(U))*
+
+    // U --> skf0_164(U)
+
+    // 667[0:Res:47.1,13.0] || NEWATOMIC14(U) -> Size(skf0_164(U))*.
+
+    it("unify Tiny(U)*  Tiny(skf0_164(U))*  U --> skf0_164(U)") {
       val u = Variable("U")
-      val u132 = Variable("U_1336")
-      val a = Predicate("Tiny", Function("skf0164", u132))
+      //val u132 = Variable("U_1336")
+      val a = Predicate("Tiny", Function("skf0164", u))
       val b = Negation(Predicate("Tiny", u))
-      val mgu = unificator.unify(a, b)
+      val mgu = unificator.unifyReverseRenaming(a, b)
       log.warning("MGU is %s", mgu)
-      mgu should equal(Map(u -> Function("skf0164", u)))
+      mgu should equal(Some(Map(u -> Function("skf0164", u))))
     }
 
-    it("should Variable with nested predicate level 1") {
-      val u = Variable("U")
-      val u132 = Variable("U_1336")
-      val a = Predicate("Tiny", Predicate("skf0164", u132))
-      val b = Negation(Predicate("Tiny", u))
-      val mgu = unificator.unify(a, b)
-      log.warning("MGU is %s", mgu)
-      mgu should equal(Map(u -> Predicate("skf0164", u)))
-    }
+
 
 
 

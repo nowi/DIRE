@@ -1,6 +1,8 @@
 package core
 
 
+import collection.jcl.MutableIterator.Wrapper
+import collection.mutable.{Map => MMap}
 import com.google.common.collect.{HashMultiset, Multiset}
 import domain.fol.ast._
 import helpers.Logging
@@ -28,7 +30,7 @@ trait Standardizing {
    * @param y - folnode
    * @returns Tupel of rewritten FOLNodes that have unique varnames with respect to each other
    */
-  def standardizeApart(x: FOLNode, y: FOLNode): (FOLNode, FOLNode)
+  def standardizeApart(x: FOLNode, y: FOLNode): (FOLNode, FOLNode,Map[Variable,FOLNode])
 
 
   /**
@@ -37,7 +39,7 @@ trait Standardizing {
    * @param c2 - clause
    * @returns rewritten clauses pair
    */
-  def standardizeApart(c1: FOLClause, c2: FOLClause): (FOLClause, FOLClause)
+  def standardizeApart(c1: FOLClause, c2: FOLClause): (FOLClause, FOLClause,Map[Variable,FOLNode])
 
   def needStandardizing(x: FOLNode, y: FOLNode): Boolean
 
@@ -49,7 +51,7 @@ class Standardizer(env: {val variableRewriter: VariableRewriting}) extends Stand
   val variableRewriter = env.variableRewriter
   lazy val randomizer: Random = new Random(System.currentTimeMillis)
 
-  val variableBag: Multiset[String] = new com.google.common.collect.HashMultiset[String]()
+
 
 
   /**
@@ -58,44 +60,54 @@ class Standardizer(env: {val variableRewriter: VariableRewriting}) extends Stand
    * @param y - folnode
    * @returns Tupel of rewritten FOLNodes that have unique varnames with respect to each other
    */
-  def standardizeApart(x: FOLNode, y: FOLNode): (FOLNode, FOLNode) = {
+  def standardizeApart(x: FOLNode, y: FOLNode): (FOLNode, FOLNode,Map[Variable,FOLNode]) = {
+
     // check terms need standardizing
     commonVars(x, y) match {
       case List() => { // empty list
         //log.trace("Tuple(%s,%s) needs no standardizing" format (x, y))
-        (x, y)
+        (x, y,Map())
       }
       case cvs: List[Variable] => {
+        // get the replacement map
+        val renamed   = MMap[Variable,FOLNode]()
+        val variableBag: Multiset[String] = new com.google.common.collect.HashMultiset[String]()
         // create the substition transform
-        val theta = cvs.map({old: Variable => (old -> renameVar(old))}).foldLeft(Map[Variable, Variable]())(_ + _)
+        val theta = cvs.map({old: Variable => (old -> renameVar(old,variableBag,renamed))}).foldLeft(Map[Variable, Variable]())(_ + _)
         // rewirte the smaller node , we default to x for now
         // TODO rewriteClause only the smaller node
         val xr = variableRewriter.rewrite(x, theta)
         //log.trace("Tuple(%s,%s) has been standardized apart to (%s,%s) by %s" format (x, y, xr, y, this))
-        (xr, y)
+
+
+
+
+        (xr, y,Map() ++ renamed)
       }
     }
 
   }
 
 
-  def standardizeApart(c1: FOLClause, c2: FOLClause): (FOLClause, FOLClause) = {
+  def standardizeApart(c1: FOLClause, c2: FOLClause): (FOLClause, FOLClause,Map[Variable,FOLNode]) = {
     // check terms need standardizing
     commonVars(c1, c2) match {
       case List() => { // empty list
         log.trace("clauses %s and %s need no standardizing", c1, c2)
-        (c1, c2)
+        (c1, c2,Map())
       }
       case cvs: List[Variable] => {
+         val variableBag: Multiset[String] = new com.google.common.collect.HashMultiset[String]()
+        val renamed   = MMap[Variable,FOLNode]()
         // create the substition transform
-        val theta1 = cvs.map({old: Variable => (old -> renameVar(old))}).foldLeft(Map[Variable, Variable]())(_ + _)
-        val theta2 = cvs.map({old: Variable => (old -> renameVar(old))}).foldLeft(Map[Variable, Variable]())(_ + _)
+        val theta1 = cvs.map({old: Variable => (old -> renameVar(old,variableBag,renamed))}).foldLeft(Map[Variable, Variable]())(_ + _)
+        val theta2 = cvs.map({old: Variable => (old -> renameVar(old,variableBag,renamed))}).foldLeft(Map[Variable, Variable]())(_ + _)
         // rewririte all nodes
         val cr1 = variableRewriter.rewriteClause(c1, theta1)
         val cr2 = variableRewriter.rewriteClause(c2, theta2)
         log.trace("Clauses have been standardized apart and rewritten to %s by %s" format (cr1, cr2, this))
 
-        (cr1, cr2)
+        (cr1, cr2,Map() ++ renamed)
       }
     }
   }
@@ -103,11 +115,14 @@ class Standardizer(env: {val variableRewriter: VariableRewriting}) extends Stand
   /**
    * Perfom renaming to random name
    */
-  private def renameVar(x: Variable): Variable = {
+  private def renameVar(x: Variable,variableBag : Multiset[String],renamingMap : scala.collection.mutable.Map[Variable,FOLNode]) : Variable= {
     // first add this variable to the bag
     variableBag.add(x.name)
     val newVarName = x.name + "_" + variableBag.count(x.name)
-    Variable(newVarName)
+    // register in relacment map
+    val newVariable = Variable(newVarName)
+    renamingMap.put(newVariable,x.asInstanceOf[FOLNode])
+    newVariable
 
   }
 
@@ -136,6 +151,4 @@ class Standardizer(env: {val variableRewriter: VariableRewriting}) extends Stand
     val cv = (commonVars(c1.literals.toList) intersect commonVars(c2.literals.toList))
     cv
   }
-
-
 }

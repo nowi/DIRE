@@ -75,7 +75,7 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
   override def resolve(a: FOLClause, b: FOLClause): Set[FOLClause] = {
     log.trace("Resolving the Clauses %s,%s", a, b)
     // standardize apart the clauses
-    val (aStand, bStand) = standardizer.standardizeApart(a, b)
+    val (aStand, bStand,renamings) = standardizer.standardizeApart(a, b)
 
     // Apos , Bneg
 
@@ -261,7 +261,7 @@ class OrderedResolver(env: {val useIndexing: Boolean; val recordProofSteps: Bool
   override def resolve(a: FOLClause, b: FOLClause): Set[FOLClause] = {
     log.trace("Resolving the Clauses %s,%s", a, b)
 
-    val (aStand, bStand) = standardizer.standardizeApart(a, b)
+    val (aStand, bStand,renamings) = standardizer.standardizeApart(a, b)
 
     val conclusions: Set[FOLClause] =
     (doResolve(aStand, bStand)
@@ -294,7 +294,7 @@ class OrderedResolver(env: {val useIndexing: Boolean; val recordProofSteps: Bool
     val conclusions: Set[Option[FOLClause]] = (for (
       aPos <- aLits;
       bNeg <- bLits;
-      (aPosStand, bNegStand) = standardizer.standardizeApart(aPos, bNeg);
+      (aPosStand, bNegStand,renamings) = standardizer.standardizeApart(aPos, bNeg);
       mgu = unificator.unify(aPos, bNeg))
     yield mgu match {
         case Some(x) => {

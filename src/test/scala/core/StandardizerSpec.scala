@@ -41,7 +41,7 @@ class StandardizerSpec extends Spec with ShouldMatchers with Logging{
 
 
       // standardize a and e
-      val (x, y) = standardizer.standardizeApart(a, e)
+      val (x, y,renamings) = standardizer.standardizeApart(a, e)
       (x, y) should not equal ((a, e))
 
     }
