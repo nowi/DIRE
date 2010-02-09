@@ -11,6 +11,11 @@ trait DispatchingActor extends Actor  {
   // reference to directory service actor
   var allocationTable: Map[Set[String], String] = Map()
 
+
+  override protected def init = {
+    log.debug("%s initialized",this)
+  }
+
   protected def receive = {
     // handle incoming allocation table updates
     case (LoadAllocation(allocation),forwarder : Actor) => {
@@ -54,45 +59,14 @@ trait DispatchingActor extends Actor  {
  * Broadcasts clauses to all reasoners known in our allocation table , this dispatcher is just
  * an example and not really usefull
  */
-class BroadCastDispatchingActor extends DispatchingActor {
 
 
 
 
-  override protected def determineDestination(clauses: ClauseStorage, allocation: Map[Set[String], String]) = {
-    val reasonersUUids = allocation.values.toList
-
-    // TODO this is idiotic , seems like a bug in akka registry
-
-    val reasoners = ActorRegistry.actorsFor("kernel.DistributedALCReasoner")
-
-    log.trace("Reasoner: %s Broadcasting clauses %s to reasoners : ", this, clauses,reasoners)
-    // broadcast those clasuses to all known resoners , this is
-    // return mapping allClauses --> allReasoenrs
-    reasoners.map({reasoner: Actor => Map(reasoner -> clauses)}).reduceLeft(_ ++ _)
-
-  }
-
-}
 
 
 
-/**
- * Broadcasts clauses to into nirvana
- */
-class ToVoidDispatchingActor extends DispatchingActor {
 
-  override def determineDestination(clauses: ClauseStorage, allocation: Map[Set[String], String]) = {
-    val reasonersUUids = allocation.values.toList
-    val reasoners = ActorRegistry.actorsFor("kernel.DistributedALCReasoner")
-    log.trace("Reasoner: %s Broadcasting clauses %s to reasoners : ", this, clauses,reasoners)
-    // broadcast those clasuses to all known resoners , this is
-    // return mapping allClauses --> allReasoenrs
-    reasoners.map({reasoner: Actor => Map(reasoner -> CNFClauseStore())}).reduceLeft(_ ++ _)
-
-  }
-
-}
 
 
 
