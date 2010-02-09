@@ -48,10 +48,6 @@ class DIREShell extends Actor with Logging {
     for (reasoner <- reasoners) reasoner ! GetKeptClauses(System.currentTimeMillis.toString)
   }
 
-  def keptClausesSync(reasoner: Actor) = {
-    (rasoners !! GetKeptClauses("SdSD"))
-    for (reasoner <- reasoners) reasoner ! GetKeptClauses(System.currentTimeMillis.toString)
-  }
 
   def broadcast(message: Event, destinations: Actor*) {
     for (destionation <- destinations)

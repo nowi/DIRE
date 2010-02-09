@@ -15,7 +15,6 @@ import domain.fol.ast.FOLClause
  * Reasoners 's internal events.
  */
 sealed trait Event
-
 case class StartSatisfy(bla: String) extends Event
 case class StopSatisfy(bla: String) extends Event
 case class Entail(clauses: ClauseStorage) extends Event
