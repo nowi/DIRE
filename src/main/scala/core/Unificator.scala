@@ -45,7 +45,7 @@ class Unificator(env: {val substitutor: Substitution; val standardizer: Standard
   override def unify(x: FOLNode, y: FOLNode): Option[Map[Variable, FOLNode]] = {
     // standardize apart the terms           rd
     if (x == y) {
-      log.trace("%s trivially unified equal nodes : %s , %s", (this, x, y))
+      log.trace("%s trivially unified equal nodes : %s , %s", this, x, y)
       Some(Map[Variable, FOLNode]())
     }
     val (xr, yr,renamings) = standardizer.standardizeApart(x, y)
@@ -113,7 +113,7 @@ val (cs1, cs2,renamings) = standardizer.standardizeApart(c1, c2)
   override def unifyReverseRenaming(x: FOLNode, y: FOLNode): (Option[Map[Variable, FOLNode]]) = {
     // standardize apart the terms           rd
     if (x == y) {
-      log.trace("%s trivially unified equal nodes : %s , %s", (this, x, y))
+      log.trace("%s trivially unified equal nodes : %s , %s", this, x, y)
       Some(Map[Variable, FOLNode]())
     }
     val (xr, yr,renamings) = standardizer.standardizeApart(x, y)
@@ -362,14 +362,14 @@ val (cs1, cs2,renamings) = standardizer.standardizeApart(c1, c2)
       case Some(t) => {
 
         val theta2: Map[Variable, FOLNode] = t + (v -> term)
-        log.trace("Creating substitution %s -- > %s .., theta = %s", (v, term, theta2))
+        log.trace("Creating substitution %s -- > %s .., theta = %s",v, term, theta2)
         val theta3 = (for (key <- theta2.keySet) yield Map(key -> substitutor.substitute(Some(theta2),
           theta2.get(key) match {
             case Some(value) => value
           })))
 
         val theta4 = theta3.reduceLeft((map1, map2) => map1 ++ map2)
-        log.trace("Cascading substitution %s -- > %s .., theta = %s", (v, term, theta4))
+        log.trace("Cascading substitution %s -- > %s .., theta = %s", v, term, theta4)
         Some(theta4)
 
 
