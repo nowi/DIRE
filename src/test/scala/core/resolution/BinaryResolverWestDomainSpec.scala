@@ -12,6 +12,6 @@ import containers.{CNFClauseStore}
 import org.junit.runner.RunWith
 
 @RunWith(classOf[JUnit4Runner])
-class BinaryResolverSpec extends ResolutionSpec {
+class BinaryResolverWestDomainSpec extends ResolutionSpec {
   override val resolver = new BinaryResolver(WestOrderedTheoremProovingConfig)
 }

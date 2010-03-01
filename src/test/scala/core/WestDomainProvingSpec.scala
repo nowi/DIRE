@@ -23,17 +23,26 @@ abstract class WestDomainProvingSpec extends Spec with ShouldMatchers {
   describe("WestDomainProving") {
     it("should entail that west is a criminal") {
       // entail that west is a criminal
-      resolutionProover.entail(WestDomain.CriminalWestGoalClause) should equal(PROOF) // entail that west is a criminal
+      resolutionProover.entail(WestDomain.CriminalWestGoalClause) match {
+        case (PROOF,_) => assert(true)
+        case _ => assert(false)
+      }
     }
 
     it("should entail that west is an american") {
       // entail that west is an american
-      resolutionProover.entail(WestDomain.AmericanWestGoalClause) should equal(PROOF)
+      resolutionProover.entail(WestDomain.AmericanWestGoalClause) match {
+        case (PROOF,_) => assert(true)
+        case _ => assert(false)
+      }
     }
 
 
     it("should not refute that west is not criminal") {
-      resolutionProover.entail(WestDomain.NotCriminalWestGoalClause) should not equal (PROOF)
+      resolutionProover.entail(WestDomain.NotCriminalWestGoalClause)  match {
+        case (PROOF,_) => assert(false)
+        case _ => assert(true)
+      }
 
     }
 

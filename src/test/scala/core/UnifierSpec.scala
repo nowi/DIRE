@@ -30,6 +30,22 @@ class UnifierSpec extends Spec with ShouldMatchers with Logging {
     val d = Function("Knows", List(Variable("y"), Function("Mother", List(Variable("y")))))
     val e = Function("Knows", List(Variable("x"), elizabeth)) // standardise apart
 
+
+    val x = Variable("x")
+      val y = Variable("y")
+      val z = Variable("z")
+      val west = Constant("West")
+      val nono = Constant("Nono")
+      val m1 = Constant("M1")
+      val america = Constant("America")
+      val sells = (x: FOLNode, y: FOLNode, z: FOLNode) => Predicate("Sells", x, y, z)
+      val weapon = (x: FOLNode) => Predicate("Weapon", x)
+      val american = (x: FOLNode) => Predicate("American", x)
+      val hostile = (x: FOLNode) => Predicate("Hostile", x)
+      val missile = (x: FOLNode) => Predicate("Missile", x)
+      val owns = (x: FOLNode, y: FOLNode) => Predicate("Owns", x, y)
+      val enemy = (x: FOLNode, y: FOLNode) => Predicate("Enemy", x, y)
+
     // adhoc config
     val config = new Object {
       lazy val variableRewriter = new VariableRewriter()
@@ -47,7 +63,7 @@ class UnifierSpec extends Spec with ShouldMatchers with Logging {
 
 
       // unificator.unify a and b
-      val theta = unificator.unify(a, b)
+      val theta = unificator.unifyReverseRenaming(a, b)
       println(theta)
       theta should equal(Some(Map(Variable("x") -> jane)))
 
@@ -64,7 +80,7 @@ class UnifierSpec extends Spec with ShouldMatchers with Logging {
       val P2 = Predicate("P", a)
 
       // unificator.unify a and b
-      val theta = unificator.unify(P1, P2)
+      val theta = unificator.unifyReverseRenaming(P1, P2)
       println(theta)
       theta should equal(Some(Map(y -> a)))
 
@@ -82,7 +98,7 @@ class UnifierSpec extends Spec with ShouldMatchers with Logging {
       val e = Function("Knows", List(Variable("x"), elizabeth)) // standardise apart
 
       // unificator.unify a and c
-      val theta2 = unificator.unify(a, c)
+      val theta2 = unificator.unifyReverseRenaming(a, c)
       println(theta2)
       theta2 should equal(Some(Map(Variable("x") -> leonid, Variable("y") -> john)))
 
@@ -101,7 +117,7 @@ class UnifierSpec extends Spec with ShouldMatchers with Logging {
       val e = Function("Knows", List(Variable("x"), elizabeth)) // standardise apart
 
       // unificator.unify a and d  -- this will test cascaded substituion ...
-      val theta3 = unificator.unify(a, d)
+      val theta3 = unificator.unifyReverseRenaming(a, d)
       println(theta3)
       theta3 should equal(Some(Map(Variable("y") -> john, Variable("x") -> Function("Mother", List(john)))))
 
@@ -205,6 +221,22 @@ class UnifierSpec extends Spec with ShouldMatchers with Logging {
     }
 
 
+    it("first unification form the west domain") {
+      val C1 = StandardClause(Negation(Predicate("American", x)), Negation(Predicate("Weapon", y)),
+        Negation(Predicate("Sells", x, y, z)), Negation(Predicate("Hostile", z)),
+        Predicate("Criminal", x))
+
+
+      val goalClause = StandardClause(
+        Negation(Predicate("Criminal", west))
+        )
+
+      // 1.) resolve goal clause with the C1
+      val mgu = unificator.unifyReverseRenaming(C1, goalClause)
+      log.warning("MGU is %s", mgu)
+      mgu should equal(Some(Map(x -> west)))
+
+    }
 
 
 

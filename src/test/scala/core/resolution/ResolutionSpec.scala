@@ -22,11 +22,7 @@ abstract class ResolutionSpec extends Spec with ShouldMatchers with Logging {
   
   val resolver: Resolution
   describe("A object implementing the Resolution Trait") {
-    it("it should resolve the steps from the aima book page 298") {
-      // init with the resolution example from the AIMA Book page 298
-
-
-      val x = Variable("x")
+     val x = Variable("x")
       val y = Variable("y")
       val z = Variable("z")
       val west = Constant("West")
@@ -80,6 +76,70 @@ abstract class ResolutionSpec extends Spec with ShouldMatchers with Logging {
       val goalClause = StandardClause(
         Negation(Predicate("Criminal", west))
         )
+
+
+
+ 
+      // the curiosity killed the cat domain
+      val tuna = Constant("Tuna")
+      val jack = Constant("Jack")
+      val curiosity = Constant("Curiosity")
+      val loves = (x: FOLNode, y: FOLNode) => Predicate("Loves", x, y)
+      val kills = (x: FOLNode, y: FOLNode) => Predicate("Kills", x, y)
+      val cat = (x: FOLNode) => Predicate("Cat", x)
+      val animal = (x: FOLNode) => Predicate("Animal", x)
+      val f = (x: FOLNode) => Predicate("F", x)
+      val g = (x: FOLNode) => Predicate("G", x)
+
+
+      val A1 = StandardClause(animal(f(x)), loves(g(x), x))
+      val A2 = StandardClause(Negation(loves(x, f(x))), loves(g(x), x))
+      val B = StandardClause(Negation(animal(y)), Negation(kills(x, y)), Negation(loves(z, x)))
+      val C = StandardClause(Negation(animal(x)), loves(jack, x))
+      val D = StandardClause(kills(jack, tuna), kills(curiosity, tuna))
+      val E = StandardClause(cat(tuna))
+      val F = StandardClause(Negation(cat(x)), animal(x))
+      val goalClauseCuriosity = StandardClause(Negation(kills(curiosity, tuna)))
+
+
+
+    it("should resolve [¬(Hydrophobic(U))∨Hydrophobicity(U)+] + [¬(F(U))∨Hydrophobic(skf0197(U))+] --> Set([¬(F(skf0197(U_192)))∨Hydrophobicity(skf0197(U_192))])") {
+      // [¬(Hydrophobic(U))∨Hydrophobicity(U)+] + [¬(F(U))∨Hydrophobic(skf0197(U))+]
+      // --> Set([¬(F(skf0197(U_192)))∨Hydrophobicity(skf0197(U_192))])
+
+      // should be Derived: 104[0:Res:28.1,4.0] || F(U) -> Hydrophobicity(skf0_197(U))*.
+
+      val u = Variable("U")
+      val clause1 = StandardClause(Negation(Predicate("Hydrophobic", u)), Predicate("Hydrophobicity", u))
+      val clause2 = StandardClause(Negation(Predicate("F", u)), Predicate("Hydrophobic", Function("skf0197", u)))
+      val resolvent = StandardClause(Negation(Predicate("F", u)), Predicate("Hydrophobicity", Function("skf0197", u)))
+
+      resolver.resolve(clause1, clause2) should equal(Set(resolvent))
+
+
+    }
+
+    it("should resolve cascaded substitution example") {
+      val R3_1 = resolver.resolve(A2, C)
+      log.debug("R3_1 : %s", R3_1)
+      R3_1 should have size (1)
+      R3_1.contains(StandardClause(Negation(animal(f(jack))), loves(g(jack), jack))) should be(true)
+    }
+
+    it("should resolve ") {
+      val R2_1 = resolver.resolve(D, goalClauseCuriosity)
+      log.debug("R2_1 : %s", R2_1)
+      R2_1 should have size (1)
+      R2_1.contains(StandardClause(kills(jack, tuna))) should be(true)
+    }
+
+
+
+    it("it should resolve the steps from the aima book page 298") {
+      // init with the resolution example from the AIMA Book page 298
+
+
+
 
       // 1.) resolve goal clause with the C1
       val R1 = resolver.resolve(goalClause, C1)
@@ -215,29 +275,7 @@ abstract class ResolutionSpec extends Spec with ShouldMatchers with Logging {
       // init with the resolution example from the AIMA Book page 298
 
 
-      val x = Variable("x")
-      val y = Variable("y")
-      val z = Variable("z")
-      // the curiosity killed the cat domain
-      val tuna = Constant("Tuna")
-      val jack = Constant("Jack")
-      val curiosity = Constant("Curiosity")
-      val loves = (x: FOLNode, y: FOLNode) => Predicate("Loves", x, y)
-      val kills = (x: FOLNode, y: FOLNode) => Predicate("Kills", x, y)
-      val cat = (x: FOLNode) => Predicate("Cat", x)
-      val animal = (x: FOLNode) => Predicate("Animal", x)
-      val f = (x: FOLNode) => Predicate("F", x)
-      val g = (x: FOLNode) => Predicate("G", x)
 
-
-      val A1 = StandardClause(animal(f(x)), loves(g(x), x))
-      val A2 = StandardClause(Negation(loves(x, f(x))), loves(g(x), x))
-      val B = StandardClause(Negation(animal(y)), Negation(kills(x, y)), Negation(loves(z, x)))
-      val C = StandardClause(Negation(animal(x)), loves(jack, x))
-      val D = StandardClause(kills(jack, tuna), kills(curiosity, tuna))
-      val E = StandardClause(cat(tuna))
-      val F = StandardClause(Negation(cat(x)), animal(x))
-      val goalClauseCuriosity = StandardClause(Negation(kills(curiosity, tuna)))
 
 
 
@@ -287,21 +325,7 @@ abstract class ResolutionSpec extends Spec with ShouldMatchers with Logging {
     }
 
 
-    it("should resolve [¬(Hydrophobic(U))∨Hydrophobicity(U)+] + [¬(F(U))∨Hydrophobic(skf0197(U))+] --> Set([¬(F(skf0197(U_192)))∨Hydrophobicity(skf0197(U_192))])") {
-      // [¬(Hydrophobic(U))∨Hydrophobicity(U)+] + [¬(F(U))∨Hydrophobic(skf0197(U))+]
-      // --> Set([¬(F(skf0197(U_192)))∨Hydrophobicity(skf0197(U_192))])
 
-      // should be Derived: 104[0:Res:28.1,4.0] || F(U) -> Hydrophobicity(skf0_197(U))*.
-
-      val u = Variable("U")
-      val clause1 = StandardClause(Negation(Predicate("Hydrophobic", u)), Predicate("Hydrophobicity", u))
-      val clause2 = StandardClause(Negation(Predicate("F", u)), Predicate("Hydrophobic", Function("skf0197", u)))
-      val resolvent = StandardClause(Negation(Predicate("F", u)), Predicate("Hydrophobicity", Function("skf0197", u)))
-
-      resolver.resolve(clause1, clause2) should equal(Set(resolvent))
-
-
-    }
 
 
   }

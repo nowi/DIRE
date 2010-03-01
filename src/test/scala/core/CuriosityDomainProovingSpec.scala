@@ -15,7 +15,7 @@ import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
 import ProvingResult._
 
-
+                              
 @RunWith(classOf[JUnit4Runner])
 abstract class CuriosityDomainProovingSpec extends Spec with ShouldMatchers {
   // create a proover
@@ -24,7 +24,10 @@ abstract class CuriosityDomainProovingSpec extends Spec with ShouldMatchers {
     it("should entail that curiosity killed the cat") {
       // create a proover
 
-      resolutionProover.entail(CuriosityDomain.curiosityKilledTunaGoalClause) should equal(PROOF)
+      resolutionProover.entail(CuriosityDomain.curiosityKilledTunaGoalClause) match {
+        case (PROOF,_) => assert(true)
+        case _ => assert(false)
+      }
 
 
     }

@@ -11,7 +11,7 @@ import config.WestOrderedTheoremProovingConfig
 import org.junit.runner.RunWith
 
 @RunWith(classOf[JUnit4Runner])
-class OrderedResolverSpec extends ALCOrderedResolutionSpec {
+class OrderedResolverWestDomainSpec extends ALCOrderedResolutionSpec {
   override val resolver = new OrderedResolver(WestOrderedTheoremProovingConfig)
 
 }
