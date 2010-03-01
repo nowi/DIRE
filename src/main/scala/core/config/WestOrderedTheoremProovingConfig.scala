@@ -6,8 +6,7 @@ import ordering.{LexicographicPrecedence, ALCLPOComparator}
 import reduction._
 import resolution.{OrderedResolver}
 import rewriting.{Substitutor, VariableRewriter}
-import selection.{ALCRSelector}
-
+import selection.{NegativeLiteralsSelection, ALCRSelector}
 object WestOrderedTheoremProovingConfig {
   // the initial clause store
   lazy val initialClauses = {
@@ -30,7 +29,7 @@ object WestOrderedTheoremProovingConfig {
   // ordered resolution needs comparator and selection too
   lazy val precedence = new LexicographicPrecedence(this)
   lazy val literalComparator = new ALCLPOComparator(this)
-  lazy val selector = new ALCRSelector()
+  lazy val selector = new NegativeLiteralsSelection()
 
   // settings
   val recordProofSteps = true

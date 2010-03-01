@@ -6,8 +6,7 @@ import ordering.{LexicographicPrecedence, ALCLPOComparator}
 import reduction._
 import resolution.{OrderedResolver}
 import rewriting.{Substitutor, VariableRewriter}
-import selection.{ALCRSelector}
-
+import selection.{NegativeLiteralsSelection, ALCRSelector}
 object CuriosityKilledTheCatOrderedTheoremProvingConfig {
   // the initial clause store
 
@@ -33,7 +32,7 @@ object CuriosityKilledTheCatOrderedTheoremProvingConfig {
   // ordered resolution needs comparator and selection too
   lazy val precedence = new LexicographicPrecedence(this)
   lazy val literalComparator = new ALCLPOComparator(this)
-  lazy val selector = new ALCRSelector()
+  lazy val selector = new NegativeLiteralsSelection()
 
   // settings
   val recordProofSteps = true
@@ -44,6 +43,7 @@ object CuriosityKilledTheCatOrderedTheoremProvingConfig {
   val dropSeenClauses = false
   val useIndexing = true
 
+  val timeLimit : Long = 0
 
   override def toString = List(tautologyDeleter, variableRewriter, subsumptionDeleter, standardizer, unificator, substitutor, factorizer, resolver, subsumptionStrategy, literalComparator, selector, removeDuplicates, useLightesClauseHeuristic)
           .map({_.toString})
