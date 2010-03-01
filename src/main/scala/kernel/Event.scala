@@ -21,7 +21,7 @@ case class Entail(clauses: ClauseStorage) extends Event
 case class Result(result : ProvingResult) extends Event
 case class LoadClauses(clauseStorage: ClauseStorage) extends Event
 case class GetKeptClauses(bla : String) extends Event
-case class KeptClauses(claues : ClauseStorage) extends Event
+case class KeptClauses(clauses : ClauseStorage) extends Event
 
 
 // administrative messages

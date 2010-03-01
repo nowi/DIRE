@@ -12,12 +12,12 @@
       <sourceFolder url="file://$MODULE_DIR$/config" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/scala" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/scala" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/input/dfg" />
       <excludeFolder url="file://$MODULE_DIR$/out" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Scala 2.7.6" level="application" />
     <orderEntry type="library" exported="" name="Maven: se.scalablesolutions.akka:akka-core:0.6" level="project" />
     <orderEntry type="library" exported="" name="Maven: se.scalablesolutions.akka:akka-util-java:0.6" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.guiceyfruit:guice-core:2.0-beta-4" level="project" />
