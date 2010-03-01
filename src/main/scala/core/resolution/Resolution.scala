@@ -29,7 +29,7 @@ trait Resolution extends InferenceRecording {
 
 
 
-class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val standardizer: Standardizing; val substitutor: Substitution}) extends Resolution with Logging{
+class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val standardizer: Standardizing; val substitutor: Substitution}) extends Resolution with Logging {
   val unificator = env.unificator
   val factorizer = env.factorizer
   val standardizer = env.standardizer
@@ -75,15 +75,23 @@ class BinaryResolver(env: {val unificator: Unify; val factorizer: Factoring; val
   override def resolve(a: FOLClause, b: FOLClause): Set[FOLClause] = {
     log.trace("Resolving the Clauses %s,%s", a, b)
     // standardize apart the clauses
-    val (aStand, bStand,renamings) = standardizer.standardizeApart(a, b)
 
+    // TODO CEHCK THIS
+    val (aStand, bStand, renamings) = standardizer.standardizeApart(a, b)
+    //val (aStand, bStand) = (a, b)
     // Apos , Bneg
 
-    val conclusions = doResolve(aStand, bStand) ++
-            doResolve(bStand, aStand)
+    // check if there where renamings , if so reverse them
+    val conclusions = if (renamings.isEmpty)
+      (doResolve(aStand, bStand) ++ doResolve(bStand, aStand))
+    else
+      (doResolve(aStand, bStand) ++ doResolve(bStand, aStand)).map(substitutor.substitute(Some(renamings), _))
+
+
 
     if (!conclusions.isEmpty) {
-      log.info("%s + %s --> %s", (a, b, conclusions))
+      // appl
+      log.info("%s + %s --> %s", a, b, conclusions)
     } else {
       log.trace("RESOLVED NOTHING from clauses %s and %s !", a, b)
     }
@@ -174,8 +182,6 @@ class OrderedResolver(env: {val useIndexing: Boolean; val recordProofSteps: Bool
       case _ => resolveWithoutIndex(a, b)
     }
 
-    
-
 
   }
 
@@ -261,25 +267,32 @@ class OrderedResolver(env: {val useIndexing: Boolean; val recordProofSteps: Bool
   override def resolve(a: FOLClause, b: FOLClause): Set[FOLClause] = {
     log.trace("Resolving the Clauses %s,%s", a, b)
 
-    val (aStand, bStand,renamings) = standardizer.standardizeApart(a, b)
+    // TODO CEHCK THIS
+    val (aStand, bStand, renamings) = standardizer.standardizeApart(a, b)
 
+    // filter out option clauses
     val conclusions: Set[FOLClause] =
-    (doResolve(aStand, bStand)
-            ++ doResolve(bStand, aStand)
-            )
-            .filter({
-      _ match {
-        case Some(c) => true
-        case _ => false
-      }
-    })
-            .map({_.get})
+    (doResolve(aStand, bStand) // resolve one way
+            ++ doResolve(bStand, aStand)) // resolve other way
+            .filter(_.isDefined) // filter out options
+            .map({_.get}) // convert Option[Map] --> Map
+
 
     if (!conclusions.isEmpty)
       log.debug("%s + %s --> %s" format (a, b, conclusions))
 
+    // check if there where renamings , if so reverse them
+    val renamedConclusions = if (renamings.isEmpty)
+      conclusions
+    else
+      conclusions.map(substitutor.substitute(Some(renamings), _))
 
-    conclusions
+    // log clauses
+    if (recordProofSteps) {
+      renamedConclusions.foreach(addInferredClause(a, b, _))
+    }
+
+    renamedConclusions
 
 
   }
@@ -294,7 +307,6 @@ class OrderedResolver(env: {val useIndexing: Boolean; val recordProofSteps: Bool
     val conclusions: Set[Option[FOLClause]] = (for (
       aPos <- aLits;
       bNeg <- bLits;
-      (aPosStand, bNegStand,renamings) = standardizer.standardizeApart(aPos, bNeg);
       mgu = unificator.unify(aPos, bNeg))
     yield mgu match {
         case Some(x) => {
@@ -331,14 +343,8 @@ class OrderedResolver(env: {val useIndexing: Boolean; val recordProofSteps: Bool
               log.debug("EMPTY CLAUSE RESOLVED FROM %s and %s", a, b)
               Some(EmptyClause())
             } else {
-              log.debug("Resolved %s , from Literals %s,%s", List(resolvent, aPos, bNeg))
+              log.debug("Resolved %s , from Literals %s,%s", resolvent, aPos, bNeg)
               // do backsubstitution
-
-              if (recordProofSteps) {
-                inferenceLog += (resolvent -> (a, b))
-              }
-
-
               Some(resolvent)
             }
 
@@ -471,8 +477,8 @@ class GeneralResolution(env: {val unificator: Unify}) extends Resolution with Lo
    * Deﬁnition 8.5.2 Given two clauses A and B, a clause C is a resolvent of
    * A and B iﬀ the following holds:
    *
-   * (i) There is a subset A′ =                                                  { A1 , ..., Am } ⊆ A of literals all of the same sign,
-   * a subset B′ =                                                  { B1 , ..., Bn } ⊆ B of literals all of the opposite sign of the set A′ ,
+   * (i) There is a subset A′ =                                                      { A1 , ..., Am } ⊆ A of literals all of the same sign,
+   * a subset B′ =                                                      { B1 , ..., Bn } ⊆ B of literals all of the opposite sign of the set A′ ,
    * and a separating pair of substitutions (ρ, ρ′ ) such that the set |ρ(A′ ) ∪ ρ′ (B′ )|
    * is uniﬁable;
    *

@@ -26,21 +26,20 @@ import resolution.Resolution
  */
 
 
-
-
 trait FOLProving {
-  def entail(clause: FOLClause): (ProvingResult,ClauseStorage)
-  def saturate(): (ProvingResult,ClauseStorage)
+  def entail(clause: FOLClause): (ProvingResult, ClauseStorage)
+
+  def saturate(): (ProvingResult, ClauseStorage)
 
   /**
    * Saturation without background knowledge
    */
-  def saturate(clauses: ClauseStorage): (ProvingResult,ClauseStorage)
+  def saturate(clauses: ClauseStorage): (ProvingResult, ClauseStorage)
 
   /**
    * Saturation with background knowledge
    */
-  def saturate(clauses: ClauseStorage, backgroundClauses : ClauseStorage): (ProvingResult,ClauseStorage)
+  def saturate(clauses: ClauseStorage, backgroundClauses: ClauseStorage): (ProvingResult, ClauseStorage)
 
 }
 
@@ -62,7 +61,7 @@ class ResolutionProover1(env: {
   val dropSeenClauses: Boolean;
   val useLightesClauseHeuristic: Boolean})
         extends FOLProving
-                with Logging with ClauseFormatting with Subject{
+                with Logging with ClauseFormatting with Subject {
   Configgy.configure("/Users/nowi/workspace/DIRE/DIRE/config.conf")
 
 
@@ -101,17 +100,17 @@ class ResolutionProover1(env: {
 
 
   def saturate(clauses: ClauseStorage) = {
-    saturate(clauses,CNFClauseStore())
+    saturate(clauses, CNFClauseStore())
   }
 
-  override def saturate(clauses: ClauseStorage,backgroundClauses : ClauseStorage) = {
+  override def saturate(clauses: ClauseStorage, backgroundClauses: ClauseStorage) = {
     // init time
 
-    log.debug("Starting saturation of clause store %s", clauses)
     var usable: UsableClauseStore = new UsableClauseStore(List[FOLClause]())
     var workedOff: ClauseStorage = new WorkedOffClauseStore
 
     var seenClauses = Set[FOLClause]()
+
 
     // all candidate clauses to generate inferences
     // perform input reduction
@@ -120,12 +119,22 @@ class ResolutionProover1(env: {
 
 
     // tatology deletion and self subsumptoin removal on usable
+    if(recordProofSteps){
+      // TODO this will loose history
+      // register all clauses in log
+      backgroundClauses.foreach(resolver.addInitialClause(_))
+      clauses.foreach(resolver.addInitialClause(_))
+
+    }
+
+    log.debug("Starting saturation of clause store %s", formatClauseStore(clauses,false))
+
     val cleaned = taut(sub(clauses))
     usable.enqueue(cleaned)
 
     // forward reducation on usable based on background clauses
     usable = backgroundClauses match {
-      case NonEmptyClauseStore(clauses) if(forwardSubsumption) => sub(usable, workedOff).asInstanceOf[UsableClauseStore]
+      case NonEmptyClauseStore(clauses) if (forwardSubsumption) => sub(usable, workedOff).asInstanceOf[UsableClauseStore]
       case _ => usable
     }
 
@@ -191,9 +200,9 @@ class ResolutionProover1(env: {
                       case NonEmptyClauseStore(uniqueDerived) => {
                         // forward subsupmtion on fresh
 
-                        val keptClauses = forwardSubsumption match {
+                        val keptClauses: ClauseStorage = forwardSubsumption match {
                           case true => {
-                            sub(sub(uniqueDerived, workedOff), usable)
+                            sub(sub(uniqueDerived, workedOff), usable) // TODO FIX THIS
                           }
                           case false => uniqueDerived
                         }
@@ -210,22 +219,25 @@ class ResolutionProover1(env: {
                         log.trace("After Backward Subsumption workedOff Clauses : %s", workedOff)
 
                         // backwardsubsumption on usable based on fresh clause
-                        //                        if (usableBackSubsumption) {
-                        //                          val beforeSize = usable.size
-                        //                          usable = sub(usable, keptClauses)
-                        //                          val delta = beforeSize - usable.size
-                        //                          if (delta > 0) {
-                        //                            log.warning("Backwardsubsumption on usable has deleted %s clauses", delta)
-                        //                          }
-                        //                        }
+                        // TODO REENABLE BACKWARD SUBSUMPTION WITH INDEX SUPPORT
+
 
                         if (recordProofSteps) {
-                          log.debug(printClauses(keptClauses, resolver))
+                          log.info(formatClauseStore(keptClauses, true))
                         }
-                        usable.enqueue(keptClauses)
-                        // notify listeners
-                        notifyObservers(keptClauses)
-                        keptClausesCount = keptClausesCount + keptClauses.size
+
+                        val unique: ClauseStorage = CNFClauseStore(keptClauses.values.filter({x : FOLClause => !usable.contains(x) && !workedOff.contains(x)}))
+                        if (unique != keptClauses) {
+                          log.info("!! We have derived clauses that are already contained in usable or workedoff")
+                          log.info("this is poor mans backward subs till index support is added")
+                        }
+                        if (unique.size > 0) {
+                          usable.enqueue(unique)
+                          // notify listeners
+                          notifyObservers(keptClauses)
+                          keptClausesCount = keptClausesCount + keptClauses.size
+                        }
+
 
                         // dont add dups
 
@@ -282,27 +294,27 @@ class ResolutionProover1(env: {
       log.info("WorkedOff size :  %s", workedOff.size)
       log.info("Derived Clauses Count :  %s", derivedClausesCount)
       log.info("Kept Clauses Are :  %s", workedOff)
-      (PROOF,workedOff)
+      (PROOF, workedOff)
     } else if (usable.isEmpty) {
       log.info("Completion found")
       log.info("WorkedOff size :  %s", workedOff.size)
       log.info("Derived Clauses Count :  %s", derivedClausesCount)
       log.info("Kept Clauses Are :  %s", workedOff)
-      (COMPLETION,workedOff)
+      (COMPLETION, workedOff)
     } else {
       // time up
       log.info("Completion found")
       log.info("WorkedOff size :  %s", workedOff.size)
       log.info("Derived Clauses Count :  %s", derivedClausesCount)
       log.info("Kept Clauses Are :  %s", workedOff)
-      (TIMEUP,workedOff)
+      (TIMEUP, workedOff)
 
     }
 
 
-
-
   }
+
+
 
   private def printOutPrecedence(clauses: List[FOLClause]) {
     //val literals : List[FOLNode] = clauses.map
@@ -310,9 +322,14 @@ class ResolutionProover1(env: {
 
   }
 
+  def formatClauseStore(clauses : ClauseStorage,showParents : Boolean) : String = {
+     log.info(formatClauseStore(clauses,showParents))
 
-  def isTimeUp(startingTime : Long) : Boolean = {
-    if(timeLimit > 0) {
+  }
+
+
+  def isTimeUp(startingTime: Long): Boolean = {
+    if (timeLimit > 0) {
       (System.currentTimeMillis - startingTime) > timeLimit
     } else false
   }
@@ -345,7 +362,6 @@ class ResolutionProover1(env: {
       case EmptyClause() => true
       case _ => false
     })))
-
 
 
   }
@@ -388,7 +404,11 @@ class ResolutionProover1(env: {
    * and return the resulting clausestore
    */
   def sub(a: ClauseStorage): ClauseStorage = {
-    subsumptionDeleter.deleteSubsumptions(a)
+    if(containsEmptyClause(a.values))
+      a
+    else {
+      subsumptionDeleter.deleteSubsumptions(a)
+    }
   }
 
 

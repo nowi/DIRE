@@ -1,5 +1,7 @@
 package core.resolution
 
+import collection.mutable.ListBuffer
+import collection.mutable.{Map => MMap}
 import containers.{CNFClauseStore}
 import domain.fol.ast._
 
@@ -8,12 +10,58 @@ import domain.fol.ast._
  * Date: 20.01.2010
  * Time: 18:49:37
  */
+case class ClauseRecord(a:Option[FOLClause],b:Option[FOLClause],resolvent:FOLClause,resolver : Option[Resolution]) {
+
+  val timestamp = System.currentTimeMillis
+}
 
 trait InferenceRecording {
-  var inferenceTrees: Map[FOLClause, InferenceStep[FOLClause]] = Map[FOLClause, InferenceStep[FOLClause]]()
+  self : core.resolution.Resolution =>
+  private var inferenceTrees: Map[FOLClause, InferenceStep[FOLClause]] = Map[FOLClause, InferenceStep[FOLClause]]()
 
 
-  var inferenceLog: Map[FOLClause, Tuple2[FOLClause, FOLClause]] = Map[FOLClause, Tuple2[FOLClause, FOLClause]]()
+  private var inferenceLog: Map[FOLClause, Tuple2[FOLClause, FOLClause]] = Map[FOLClause, Tuple2[FOLClause, FOLClause]]()
+
+  private val clausesHistory : ListBuffer[ClauseRecord] = new ListBuffer[ClauseRecord]()
+
+  private val clauseIndex = MMap[FOLClause,ClauseRecord]()
+
+
+
+  def addInferredClause(parent1 : FOLClause,parent2 : FOLClause , resolvent : FOLClause) = {
+    // put into log
+    inferenceLog += (resolvent -> (parent1, parent2))
+
+    val record = ClauseRecord(Some(parent1),Some(parent2),resolvent,Some(this))
+
+    // create and add inference record , insert into history buffer
+    clausesHistory.append(record)
+
+    // index the record on the derived clause
+    clauseIndex.put(resolvent,record)
+
+
+
+  }
+
+  def addInitialClause(clause: FOLClause) = {
+    val record = ClauseRecord(None,None,clause,None)
+    // create and add inference record , insert into history buffer
+    clausesHistory.append(record)
+    // index the record on the derived clause
+    clauseIndex.put(clause,record)
+
+  }
+
+
+  def indexOf(clause : FOLClause) = {
+    clausesHistory.indexOf(clauseIndex(clause))
+  }
+
+  def recordOf(clause : FOLClause) = {
+    clauseIndex(clause)
+  }
+
 
 
   def inferenceSteps(c: FOLClause): InferenceStep[FOLClause] = {

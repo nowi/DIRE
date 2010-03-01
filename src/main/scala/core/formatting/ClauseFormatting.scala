@@ -4,6 +4,7 @@ package core.formatting
 import containers.ClauseStorage
 import domain.fol.ast.FOLClause
 import resolution.{InferenceStep, InferenceRecording}
+import core.containers.ClauseStorage
 
 /**
  * User: nowi
@@ -12,25 +13,35 @@ import resolution.{InferenceStep, InferenceRecording}
  */
 
 trait ClauseFormatting {
-  def printClauses(clauses: ClauseStorage, inferenceRecorder: InferenceRecording): String = {
+  def formatClauses(clauses: ClauseStorage, inferenceRecorder: InferenceRecording,showParents : Boolean): String = {
     val buffer = new StringBuffer()
 
-    clauses.map({clause: FOLClause => printInferenceStep(inferenceRecorder.inferenceSteps(clause))})
+    showParents match {
+      case true => clauses.map({clause: FOLClause => printInferenceStep(inferenceRecorder.inferenceSteps(clause),inferenceRecorder)})
             .foreach {buffer.append(_)}
+      case false =>  clauses.map({clause: FOLClause => "[%s]\t%s\n" format (inferenceRecorder.indexOf(clause),clause) })
+            .foreach {buffer.append(_)}
+    }
 
     buffer.toString
 
   }
 
 
-  def printInferenceStep(is: InferenceStep[FOLClause]): String = {
+  def printInferenceStep(is: InferenceStep[FOLClause],inferenceRecorder: InferenceRecording): String = {
     is match {
       case InferenceStep(value, Some(left), Some(right)) => {
-        "%s\n\t\t ==> %s\n%s\n" format (left.value, "\t" + value, right.value)
+        val leftIndex = inferenceRecorder.indexOf(left.value)
+        val rightIndex = inferenceRecorder.indexOf(right.value)
+        val resolvedIndex = inferenceRecorder.indexOf(value)
+
+
+        "[%s]%s\n\t\t ==> [%s]%s\n[%s]%s\n" format (leftIndex,left.value,resolvedIndex, "\t" + value,rightIndex, right.value)
       }
 
       case InferenceStep(value, None, None) => {
-        "%s" format (value)
+        val resolvedIndex = inferenceRecorder.indexOf(value)
+        "[%s]%s" format (resolvedIndex,value)
       }
     }
 
