@@ -50,8 +50,8 @@ class DIREShell extends Actor with Logging {
 
 
   def broadcast(message: Event, destinations: Actor*) {
-    for (destionation <- destinations)
-      send(destionation, message)
+    for (destination <- destinations)
+      send(destination, message)
 
   }
 
@@ -132,7 +132,7 @@ object DIREShell {
     rs
   }
 
-  def createAndLoadManualPartionedScenarioWithoutDispatching() = {
+  def createAndLoadManualPartitionedScenarioWithoutDispatching() = {
     val rs = (for(x <- 0 until 5) yield createDefaultReasonerNoDispatching).toList
     rs.foreach(_ start)
     loadOnotologiesAndAllocations(rs)

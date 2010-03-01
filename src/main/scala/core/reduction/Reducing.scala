@@ -27,6 +27,7 @@ class StillmannSubsumer(env: {val unificator: Unify; val substitutor: Substituti
 
 
   def subsumes(c: FOLClause, d: FOLClause): Boolean = {
+    require(c.literals.size > 0 && d.literals.size > 0,"Argument clauses to Stillman algorithm cannot be empty")
     //    Let C = (L,, . . . , L,) and D = (Ki, . . . , Km).
     // init the map
     val emptyTheta = Map[Variable, FOLNode]()

@@ -166,7 +166,7 @@ case class StandardClause(literals: Set[FOLNode]) extends FOLClause {
   override def toString = {
     val litStrings = literals.map({
       _ match {
-        case x if (maxLiterals.values.contains(x)) => x.toString + "+"
+        case x if (maxLiterals.values.contains(x)) => x.toString + "*"
         case x => x.toString
       }
     })

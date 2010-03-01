@@ -73,7 +73,10 @@ class UsableClauseStore(c: List[FOLClause])
   }
 
 
-  override def isEmpty = matchingClausesIndex.isEmpty
+  override def isEmpty = headOption match {
+    case Some(clause) =>false
+    case _  => true
+  }
 
 
   // get the next clause , default only ligites clause, override this if
