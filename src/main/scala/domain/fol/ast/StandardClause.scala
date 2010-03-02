@@ -22,35 +22,42 @@ trait FOLClause {
 
   lazy val size: Int = literals.size
 
-  // maximal literal depends on the compereator used
-  protected var maxLiterals: Map[LiteralComparison, FOLNode] = Map[LiteralComparison, FOLNode]()
+  // maximal literal cache comperator --> maxLiterals
+  protected var maxLiterals: Map[LiteralComparison, List[FOLNode]] = Map[LiteralComparison, List[FOLNode]]()
 
 
-  def maxLit(comperator: LiteralComparison): FOLNode = {
+  def maxLits(comperator: LiteralComparison): List[FOLNode] = {
     assert(!isEmpty, "There cannot be a max Lit in Empty Clause")
     // do lookup
     maxLiterals.get(comperator) match {
       case Some(lit) => lit
       case None => {
         // we have no max for this comparator , determine the max and cache it
-        var maxLiteral = literals.toList.head
+        var maximumLiterals : List[FOLNode] = List(literals.toList.head)
 
         val iter = literals.elements
         while (iter.hasNext) {
           val lit = iter.next
-          comperator.compare(lit, maxLiteral) match {
-            case Some(1) => maxLiteral = lit
-            case Some(0) => None
-            case Some(-1) => None
-            case None => {
-              None
+          val max = maximumLiterals.head
+          if(lit != max) {
+            comperator.compare(lit, maximumLiterals.head) match {
+              case Some(1) => maximumLiterals = List(lit) // found a greater lit , this is new maxLit
+              case Some(0) => maximumLiterals = lit :: maximumLiterals// found same as current max , add to maxlits
+              case Some(-1) => None
+              case None => {
+                None
+              }
             }
+
           }
 
         }
-        // save this max lit
-        maxLiterals += (comperator -> maxLiteral)
-        maxLiteral
+
+        // make maximum litera
+
+        // cache this this max lit
+        maxLiterals += (comperator -> maximumLiterals)
+        maximumLiterals
       }
 
     }
