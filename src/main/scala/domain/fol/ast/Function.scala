@@ -10,7 +10,7 @@ package domain.fol.ast
  */
 
 case class Function(name: String, terms: List[FOLNode]) extends Term {
-  val args = terms
+  override val args = terms
   val symbolicName = name
 
   override def arity = terms.size

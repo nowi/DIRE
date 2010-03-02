@@ -11,7 +11,7 @@ package domain.fol.ast
 
 case class Predicate(name: String, terms: List[FOLNode]) extends Term {
   val symbolicName = name
-  val args = terms
+  override val args = terms
 
   override def arity = terms.size
 
