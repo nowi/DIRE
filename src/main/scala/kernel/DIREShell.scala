@@ -69,10 +69,19 @@ class DIREShell extends Actor with Logging {
 
   }
 
-  def createDefaultReasonerNoDispatching(): Actor = {
+  def createOrderedResolutionReasonerNoDispatching(): Actor = {
     val config = new Object {
       val dispatcherActor = new ToVoidDispatchingActor;
       val provingActor = new OrderedResolutionProver1Actor(dispatcherActor)
+    }
+    new DistributedALCReasoner(config)
+
+  }
+
+  def createDALCReasonerNoDispatching(): Actor = {
+    val config = new Object {
+      val dispatcherActor = new ToVoidDispatchingActor;
+      val provingActor = new DALCProverActor(dispatcherActor)
     }
     new DistributedALCReasoner(config)
 
@@ -133,14 +142,14 @@ object DIREShell {
   }
 
   def createAndLoadManualPartitionedScenarioWithoutDispatching() = {
-    val rs = (for(x <- 0 until 5) yield createDefaultReasonerNoDispatching).toList
+    val rs = (for(x <- 0 until 5) yield createDALCReasonerNoDispatching).toList
     rs.foreach(_ start)
     loadOnotologiesAndAllocations(rs)
     rs
   }
 
   def createDefaultReasonerWithBroadCastDispatcher() = shell.createDefaultReasonerWithBroadCastDispatcher
-  def createDefaultReasonerNoDispatching() = shell.createDefaultReasonerNoDispatching
+  def createDALCReasonerNoDispatching() = shell.createDALCReasonerNoDispatching
 
   def help = shell.help
 
