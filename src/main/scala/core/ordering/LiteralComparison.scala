@@ -1,6 +1,6 @@
 package core.ordering
 
-     import helpers.Logging
+import helpers.Logging
 import domain.fol.ast._
 
 
@@ -61,8 +61,10 @@ class ALCLPOComparator(env: {
 
     (x, y) match {
       case (Negation(a), Negation(b)) => compareLiterals(a, b)
-      case (_, Negation(y)) => Some(1)
-      case (Negation(x), _) => Some(-1)
+      case (_, Negation(b)) if (x == b) => Some(1)
+      case (Negation(a), _) if (y == a) => Some(-1)
+      case (_, Negation(b)) => compareLiterals(x, b)
+      case (Negation(a), _) => compareLiterals(a, y)
       case _ => compareLiterals(x, y)
 
     }
@@ -80,72 +82,52 @@ class ALCLPOComparator(env: {
 
 
 
-    val aVars = Set() ++ a.flatArgs.filter({_.isInstanceOf[Variable]})
-    val bVars = Set() ++ b.flatArgs.filter({_.isInstanceOf[Variable]})
+    // TODO more simplification based on ALCDR assumptions here !
+    // 1.) Literals containing a function symbol precede literals that do not contain a function symbol.
+    val aFuns = a.args.filter({_.isInstanceOf[Function]})
+    val bFuns = b.args.filter({_.isInstanceOf[Function]})
+    // first compare if any of the lits does not contain a function symbol
+    (aFuns, bFuns) match {
+    // 1.) Literals containing a function symbol precede literals that do not contain a function symbol.
+      case (Nil, bfs :: bFuns) => Some(-1)
+      case (afs :: aFuns, Nil) => Some(1)
+      // 2.) Literals containing a function symbol are ordered according to the precedence of the function symbols.
+      case (afs :: aFuns, bfs :: bFuns) => {
+        // assert that there is only one function symbol per literal
+        // --> no nesting
+        assert(aFuns.size == 1 && bFuns.size == 1)
+        Some(comparePrecedence(afs, bfs))
+      }
+      // 3.) Literals not containing a function symbol are ordered according to the precedence of the predicate symbols.
+      case (Nil, Nil) => {
+        val aPreds = a.args.filter({_.isInstanceOf[Predicate]})
+        val bPreds = b.args.filter({_.isInstanceOf[Predicate]})
 
+        (aPreds, bPreds) match {
+        // 1.) Literals containing a predicate symbol precede literals that do not contain a predicate symbol.
+          case (Nil, bps :: bPreds) => Some(-1)
+          case (aps :: aPreds, Nil) => Some(1)
+          // 2.) Literals containing a predicate symbol are ordered according to the precedence of the predicate symbols.
+          case (aps :: aPreds, bps :: bPreds) => {
+            // assert that there is only one predicate symbol per literal
+            // --> no nesting
+            assert(aPreds.size == 1 && bPreds.size == 1)
+            Some(comparePrecedence(aps, bps))
+          }
 
-    //    if (aVars != bVars) {
-    if (false) {
-      //    Literals that contain different variables are incomparable
-      log.debug("The literals %s and %s are incomparable because they contain different variables ", aVars, bVars)
-      None
-    } else {
-      // 1.) Literals containing a function symbol precede literals that do not contain a function symbol.
-      val aFuns = a.flatArgs.filter({_.isInstanceOf[Function]})
-      val bFuns = b.flatArgs.filter({_.isInstanceOf[Function]})
-      // first compare if any of the lits does not contain a function symbol
-      (aFuns, bFuns) match {
-      // 1.) Literals containing a function symbol precede literals that do not contain a function symbol.
-        case (Nil, bfs :: bFuns) => Some(-1)
-        case (afs :: aFuns, Nil) => Some(1)
-        // 2.) Literals containing a function symbol are ordered according to the precedence of the function symbols.
-        case (afs :: aFuns, bfs :: bFuns) => {
-          // assert that there is only one function symbol per literal
-          // --> no nesting
-          assert(aFuns.size == 1 && bFuns.size == 1)
-          Some(comparePrecedence(afs, bfs))
-        }
-        // 3.) Literals not containing a function symbol are ordered according to the precedence of the predicate symbols.
-        case (Nil, Nil) => {
-          val aPreds = a.flatArgs.filter({_.isInstanceOf[Predicate]})
-          val bPreds = b.flatArgs.filter({_.isInstanceOf[Predicate]})
-
-          (aPreds, bPreds) match {
-          // 1.) Literals containing a predicate symbol precede literals that do not contain a predicate symbol.
-            case (Nil, bps :: bPreds) => Some(-1)
-            case (aps :: aPreds, Nil) => Some(1)
-            // 2.) Literals containing a predicate symbol are ordered according to the precedence of the predicate symbols.
-            case (aps :: aPreds, bps :: bPreds) => {
-              // assert that there is only one predicate symbol per literal
-              // --> no nesting
-              assert(aPreds.size == 1 && bPreds.size == 1)
-              Some(comparePrecedence(aps, bps))
-            }
-
-            // 3.) Literals not containing a predaice must now be varisbles or constants , comparePrecedence
-            case (Nil, Nil) => {
-
-              // check if its a negation,  negations have lowest precedence over non functions/predicates
-              (a, b) match {
-                case (Negation(x), Negation(y)) => Some(comparePrecedence(x, y))
-
-                case (x, y) => Some(comparePrecedence(a, b))
-              }
-
-
-            }
-
+          // 3.) Literals not containing a predaice must now be varisbles or constants , comparePrecedence
+          case (Nil, Nil) => {
+            Some(comparePrecedence(a, b))
           }
 
         }
 
-        case _ => {
-          log.error("Could not compare %s and %s , this seems not right")
-          None
-        }
       }
 
-
+      case _ => {
+        log.error("Could not compare %s and %s , this seems not right")
+        None
+      }
     }
 
 
