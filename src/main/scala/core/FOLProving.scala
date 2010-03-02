@@ -26,7 +26,7 @@ import resolution.Resolution
  */
 
 
-trait FOLProving {
+trait FOLProving extends Subject {
   def entail(clause: FOLClause): (ProvingResult, ClauseStorage)
 
   def saturate(): (ProvingResult, ClauseStorage)
@@ -61,7 +61,7 @@ class ResolutionProover1(env: {
   val dropSeenClauses: Boolean;
   val useLightesClauseHeuristic: Boolean})
         extends FOLProving
-                with Logging with ClauseFormatting with Subject {
+                with Logging with ClauseFormatting {
   Configgy.configure("/Users/nowi/workspace/DIRE/DIRE/config.conf")
 
 
@@ -158,7 +158,7 @@ class ResolutionProover1(env: {
 
           // get the maxLiteral of given
 
-          val maxLit = headClause.maxLit(literalComparator)
+          val maxLit = headClause.maxLits(literalComparator)
 
           log.trace("Maximum literal of given Clause %s is %s", headClause, maxLit)
 
@@ -323,8 +323,7 @@ class ResolutionProover1(env: {
   }
 
   def formatClauseStore(clauses : ClauseStorage,showParents : Boolean) : String = {
-     log.info(formatClauseStore(clauses,showParents))
-
+    formatClauses(clauses,resolver,showParents)
   }
 
 
