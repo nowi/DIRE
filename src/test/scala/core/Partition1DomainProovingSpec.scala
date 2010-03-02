@@ -18,7 +18,6 @@ import ProvingResult._
 
 @RunWith(classOf[JUnit4Runner])
 abstract class Partition1DomainProovingSpec extends Spec with ShouldMatchers {
-  val clauseStore: ClauseStorage
   // create a proover
   val resolutionProover: FOLProving
   describe("Partition1DomainProoving") {

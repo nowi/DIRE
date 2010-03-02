@@ -25,7 +25,7 @@ class CustomSPASSModule1PrecedenceSpec extends Spec with ShouldMatchers {
     val clauses = SPASSIntermediateFormatParser.parseClauseStore(text).getOrElse(CNFClauseStore())
 
     // build the precedence
-    val precedence = new CustomSPASSModule1Precedence
+    val precedence = new CustomConferencePartitionedPrecedence
 
     println("Precedence : " + precedence)
 

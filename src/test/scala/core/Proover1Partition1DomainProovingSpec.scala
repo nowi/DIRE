@@ -12,7 +12,9 @@ import config.{Partition1OrderedTheoremProvingConfig}
 import containers.{CNFClauseStore}
 import org.junit.runner.RunWith
 
+
+
 @RunWith(classOf[JUnit4Runner])
-class Proover1Partition1DomainProovingSpec extends CuriosityDomainProovingSpec {
+class Proover1Partition1DomainProovingSpec extends Partition1DomainProovingSpec {
   override val resolutionProover = new ResolutionProover1(Partition1OrderedTheoremProvingConfig)
 }

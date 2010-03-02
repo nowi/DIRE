@@ -6,7 +6,7 @@ import ordering.{LexicographicPrecedence, ALCLPOComparator}
 import reduction._
 import resolution.{OrderedResolver}
 import rewriting.{Substitutor, VariableRewriter}
-import selection.{NegativeLiteralsSelection, ALCRSelector}
+import selection.{NegativeLiteralsSelection, DALCRSelector}
 object WestOrderedTheoremProovingConfig {
   // the initial clause store
   lazy val initialClauses = {

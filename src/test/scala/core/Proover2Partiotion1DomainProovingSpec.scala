@@ -1,24 +1,27 @@
-package core.config
-
-
-import containers.{CNFClauseStore}
-import domain.fol.parsers.SPASSIntermediateFormatParser
-import java.io.File
-import ordering.{CustomConferencePartitionedPrecedence, CustomSPASSModule1Precedence, ALCLPOComparator}
-import reduction._
-import resolution.{OrderedResolver}
-import rewriting.{Substitutor, VariableRewriter}
-import selection.{NegativeLiteralsSelection}
+package core
 
 /**
  * User: nowi
- * Date: 02.11.2009
- * Time: 14:44:06
+ * Date: 01.03.2010
+ * Time: 18:13:40
  */
+import com.jteigen.scalatest.JUnit4Runner
 
-
-object Partition1OrderedTheoremProvingConfig {
-  // the initial clause store
+import config.{Partition1OrderedTheoremProvingConfig}
+import containers.{CNFClauseStore}
+import ordering.{CustomConferencePartitionedPrecedence, CustomSPASSModule1Precedence, ALCLPOComparator}
+import org.junit.runner.RunWith
+import containers.{CNFClauseStore}
+import domain.fol.parsers.SPASSIntermediateFormatParser
+import java.io.File
+import reduction._
+import resolution.{DALCResolver, OrderedResolver}
+import rewriting.{Substitutor, VariableRewriter}
+import selection.{DALCRSelector, NegativeLiteralsSelection}
+@RunWith(classOf[JUnit4Runner])
+class Proover2Partiotion1DomainProovingSpec extends Partition1DomainProovingSpec {
+  val config = new Object {
+     // the initial clause store
   lazy val initialClauses = {
     // the curiosity killed the cat domain
     val file = new File("input/partitioned1clauses.spass")
@@ -43,13 +46,13 @@ object Partition1OrderedTheoremProvingConfig {
   lazy val unificator = new Unificator(this)
   lazy val substitutor = new Substitutor(this)
   lazy val factorizer = new OrderedFactorizer(this)
-  lazy val resolver = new OrderedResolver(this)
+  lazy val resolver = new DALCResolver(this)
   lazy val subsumptionStrategy = new StillmannSubsumer(this)
 
   // ordered resolution needs comparator and selection too
   lazy val precedence = new CustomConferencePartitionedPrecedence
   lazy val literalComparator = new ALCLPOComparator(this)
-  lazy val selector = new NegativeLiteralsSelection()
+  lazy val selector = new DALCRSelector()
 
   // settings
   val recordProofSteps = true
@@ -65,6 +68,7 @@ object Partition1OrderedTheoremProvingConfig {
   override def toString = List(tautologyDeleter, variableRewriter, subsumptionDeleter, standardizer, unificator, substitutor, factorizer, resolver, subsumptionStrategy, literalComparator, selector, removeDuplicates, useLightesClauseHeuristic)
           .map({_.toString})
           .reduceLeft(_ + ",\n" + _) + ("Precendece : \n %s" format (precedence))
+
+  }
+  override val resolutionProover = new ResolutionProover1(config)
 }
-
-

@@ -44,7 +44,7 @@ class OrderedFactorizer(env: {val unificator: Unify; val standardizer: Standardi
     def rule1(premise: FOLClause, a: FOLNode) = {
       // get the max
 
-      if (premise.maxLit(literalComparator) == a) {
+      if (premise.maxLits(literalComparator) == a) {
         log.warning("Rule 1 answering TRUE , %s is the maxLit of %s ", a, premise)
         true
       } else {

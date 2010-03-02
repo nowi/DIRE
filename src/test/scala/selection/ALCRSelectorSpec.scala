@@ -1,6 +1,6 @@
 import com.jteigen.scalatest.JUnit4Runner
 
-import core.selection.{ALCRSelector, LiteralSelection}
+import core.selection.{DALCRSelector, LiteralSelection}
 import domain.fol.ast._
 import helpers.Logging
 import org.junit.runner.RunWith
@@ -12,7 +12,7 @@ import org.scalatest.Spec
 class ALCRSelectorSpec extends Spec with ShouldMatchers with Logging{
   describe("ALCRSelectorSpec") {
 
-    val selector: LiteralSelection = new ALCRSelector
+    val selector: LiteralSelection = new DALCRSelector
 
     val x = Variable("x")
     val y = Variable("y")
