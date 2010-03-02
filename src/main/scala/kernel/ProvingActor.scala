@@ -9,10 +9,10 @@ import domain.fol.ast.FOLClause
 import domain.fol.parsers.SPASSIntermediateFormatParser
 import helpers.Subject
 import java.io.File
-import core.ordering.{CustomSPASSModule1Precedence, ALCLPOComparator}
 import core.reduction._
 import core.resolution.{OrderedResolver}
 import core.rewriting.{Substitutor, VariableRewriter}
+import ordering.{CustomConferencePartitionedPrecedence, CustomSPASSModule1Precedence, ALCLPOComparator}
 import ProvingState._
 import ProvingResult._
 import core.selection.NegativeLiteralsSelection
@@ -26,54 +26,24 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException
  * Time: 17:11:44
  */
 
-trait ProvingActor extends Actor
+trait ProvingActor extends Actor {
 
-class OrderedResolutionProver1Actor(
-        val dispatcherActor: DispatchingActor) extends ProvingActor {
 
   // cofigure a native os thread based dispatcher for the proving actor
   val d = Dispatchers.newThreadBasedDispatcher(this)
 
-
   messageDispatcher = d
 
+  val dispatcherActor: DispatchingActor
 
-  val coreProverConfig = new Object() {
-    // empty initial clauses
-    lazy val initialClauses = CNFClauseStore()
+  val coreProverConfig : Object
 
-    lazy val tautologyDeleter = new TautologyDeleter()
-    lazy val variableRewriter = new VariableRewriter()
-    lazy val subsumptionDeleter = new SubsumptionDeleter(this)
-    lazy val standardizer = new Standardizer(this)
-    lazy val unificator = new Unificator(this)
-    lazy val substitutor = new Substitutor(this)
-    lazy val factorizer = new OrderedFactorizer(this)
-    lazy val resolver = new OrderedResolver(this)
-    lazy val subsumptionStrategy = new StillmannSubsumer(this)
+  val prover : FOLProving
 
-    // ordered resolution needs comparator and selection too
-    lazy val precedence = new CustomSPASSModule1Precedence
-    lazy val literalComparator = new ALCLPOComparator(this)
-    lazy val selector = new NegativeLiteralsSelection()
 
-    // settings
-    val recordProofSteps = true
-    val removeDuplicates = false
-    val useLightesClauseHeuristic = true
-    val usableBackSubsumption = false
-    val forwardSubsumption = true
-    val dropSeenClauses = false
-    val useIndexing = true
 
-    // set a time limit
-    val timeLimit: Long = (20 * 1000)  // 10 sec
-  }
 
-  val prover = new ResolutionProover1(coreProverConfig)
-  prover.addObserver(this)
 
-  log.info("Core prooving subsystem started up with kernel : %s", prover)
 
 
   // add this actor as observer for derived clauses
@@ -82,10 +52,10 @@ class OrderedResolutionProver1Actor(
 
 
 
-  private var state: ProvingState = STOPPED
+  var state: ProvingState = STOPPED
 
-  private var initialClauses: ClauseStorage = CNFClauseStore()
-  private var keptClauses: ClauseStorage = CNFClauseStore()
+  var initialClauses: ClauseStorage = CNFClauseStore()
+  var keptClauses: ClauseStorage = CNFClauseStore()
 
 
   private[this] def setState(newState: ProvingState, supervisor: Actor) {
@@ -168,7 +138,7 @@ class OrderedResolutionProver1Actor(
 
      case msg @ GetStatus(bla) => {
       log.debug("Recieved Status Request Message")
-      reply(Status("IDLE ! , Loaded Clauses Are : %s , workedoff CLauses are  : %s  " format (initialClauses,keptClauses))) 
+      reply(Status("IDLE ! , Loaded Clauses Are : %s , workedoff CLauses are  : %s  " format (initialClauses,keptClauses)))
 
 
     }
@@ -210,7 +180,7 @@ class OrderedResolutionProver1Actor(
             throw new IllegalStateException("Cannot load initial clauses while in state : %s" format (state))
         }
       }
-      
+
 
     }
 
@@ -222,6 +192,51 @@ class OrderedResolutionProver1Actor(
     log.info("Core prooving subsystem is shutting down...")
   }
 
+}
+
+class OrderedResolutionProver1Actor(
+        override val dispatcherActor: DispatchingActor) extends ProvingActor {
+
+  // set dispatcher actor
+
+
+  override val coreProverConfig = new Object() {
+    // empty initial clauses
+    lazy val initialClauses = CNFClauseStore()
+
+    lazy val tautologyDeleter = new TautologyDeleter()
+    lazy val variableRewriter = new VariableRewriter()
+    lazy val subsumptionDeleter = new SubsumptionDeleter(this)
+    lazy val standardizer = new Standardizer(this)
+    lazy val unificator = new Unificator(this)
+    lazy val substitutor = new Substitutor(this)
+    lazy val factorizer = new OrderedFactorizer(this)
+    lazy val resolver = new OrderedResolver(this)
+    lazy val subsumptionStrategy = new StillmannSubsumer(this)
+
+    // ordered resolution needs comparator and selection too
+    lazy val precedence = new CustomConferencePartitionedPrecedence
+    lazy val literalComparator = new ALCLPOComparator(this)
+    lazy val selector = new NegativeLiteralsSelection()
+
+    // settings
+    val recordProofSteps = true
+    val removeDuplicates = false
+    val useLightesClauseHeuristic = true
+    val usableBackSubsumption = false
+    val forwardSubsumption = true
+    val dropSeenClauses = false
+    val useIndexing = true
+
+    // set a time limit
+    val timeLimit: Long = (20 * 1000)  // 10 sec
+  }
+
+  override val prover = new ResolutionProover1(coreProverConfig)
+
+  prover.addObserver(this)
+
+  log.info("Core prooving subsystem started up with kernel : %s", prover)
 
 }
 
