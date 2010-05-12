@@ -8,7 +8,7 @@ package domain.fol.ast
 
 case class Constant(name: String) extends Term {
   val args = List(this)
-  val symbolicName = name
+  val top = name
 
   override def toString = "%s" format (name)
 
@@ -17,5 +17,6 @@ case class Constant(name: String) extends Term {
   override def map(f: (FOLNode => FOLNode)): FOLNode = {
     f(this)
   }
+
 
 }

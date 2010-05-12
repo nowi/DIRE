@@ -57,6 +57,15 @@ class ALCLPOComparator(env: {
   val precedence: Precedence}) extends LiteralComparison with Logging {
   val precedence = env.precedence
 
+
+
+  
+
+
+
+
+
+
   def compare(x: FOLNode, y: FOLNode) = {
 
     (x, y) match {
@@ -92,11 +101,10 @@ class ALCLPOComparator(env: {
       case (Nil, bfs :: bFuns) => Some(-1)
       case (afs :: aFuns, Nil) => Some(1)
       // 2.) Literals containing a function symbol are ordered according to the precedence of the function symbols.
-      case (afs :: aFuns, bfs :: bFuns) => {
-        // assert that there is only one function symbol per literal
-        // --> no nesting
-        assert(aFuns.size == 1 && bFuns.size == 1)
-        Some(comparePrecedence(afs, bfs))
+      case (afs :: Nil, bfs :: Nil) => {
+        // same functions as arguments in those predicates
+        // compare based on precedence of the wrapping predicate
+        Some(comparePrecedence(a, b))
       }
       // 3.) Literals not containing a function symbol are ordered according to the precedence of the predicate symbols.
       case (Nil, Nil) => {
@@ -108,16 +116,22 @@ class ALCLPOComparator(env: {
           case (Nil, bps :: bPreds) => Some(-1)
           case (aps :: aPreds, Nil) => Some(1)
           // 2.) Literals containing a predicate symbol are ordered according to the precedence of the predicate symbols.
-          case (aps :: aPreds, bps :: bPreds) => {
-            // assert that there is only one predicate symbol per literal
-            // --> no nesting
-            assert(aPreds.size == 1 && bPreds.size == 1)
-            Some(comparePrecedence(aps, bps))
-          }
 
           // 3.) Literals not containing a predaice must now be varisbles or constants , comparePrecedence
           case (Nil, Nil) => {
             Some(comparePrecedence(a, b))
+          }
+          case (aps :: aPreds, bps :: bPreds) => {
+            // assert that there is only one predicate symbol per literal
+            // --> no nesting
+            assert(aPreds.size < 2 && bPreds.size < 2)
+
+            Some(comparePrecedence(aps, bps))
+          }
+
+          case _ => {
+            error("Match error")
+
           }
 
         }
@@ -125,9 +139,10 @@ class ALCLPOComparator(env: {
       }
 
       case _ => {
-        log.error("Could not compare %s and %s , this seems not right")
-        None
+        error("Match error")
       }
+
+
     }
 
 
@@ -135,7 +150,7 @@ class ALCLPOComparator(env: {
 
 
   def comparePrecedence(a: FOLNode, b: FOLNode): Int = {
-    precedence.compare(a.symbolicName, b.symbolicName)
+    precedence.compare(a.top, b.top)
   }
 
 

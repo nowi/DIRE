@@ -1,85 +1,49 @@
 package core.resolution
 
 
-import containers.{MatchingClausesRetrieval, CNFClauseStore, ClauseStorage}
+import collection.immutable.EmptyMap
+import containers.{UnifiableClauseRetrieval, MatchingClausesRetrieval, CNFClauseStore, ClauseStorage}
 import domain.fol.ast._
+import domain.fol.functions.FOLAlgorithms
+import domain.fol.Substitution
 import helpers.Logging
 import ordering.{ALCLPOComparator, LiteralComparison}
-import reduction.Factoring
-import rewriting.Substitution
+import recording.ClauseRecording
 import selection.{DALCRSelector, LiteralSelection}
+import sun.reflect.generics.reflectiveObjects.NotImplementedException
 
-/**
- * User: nowi
- * Date: 01.03.2010
- * Time: 15:32:54
- */
+import FOLAlgorithms._
 
-class DALCResolver(env: {val useIndexing: Boolean; val recordProofSteps: Boolean; val unificator: Unify; val factorizer: Factoring; val standardizer: Standardizing; val substitutor: Substitution; val selector: LiteralSelection; val literalComparator: LiteralComparison}) extends Resolution with Logging {
-  val unificator = env.unificator
-  val factorizer = env.factorizer
+
+class DALCResolver(env: {val inferenceRecorder: ClauseRecording; val recordProofSteps: Boolean; val standardizer: Standardizing; val selector: LiteralSelection; val literalComparator: LiteralComparison; val uniqueLiteralResolver: UniqueLiteralResolution}) extends BinaryResolution with Logging {
   val standardizer = env.standardizer
-  val substitutor = env.substitutor
-  val selector = env.selector
-  val literalComparator = env.literalComparator
+  implicit val selector = env.selector
+  implicit val literalComparator = env.literalComparator
   val recordProofSteps = env.recordProofSteps
-  val useIndexing = env.useIndexing
-
+  val inferenceRecorder = env.inferenceRecorder
+  implicit val uniqueLiteralResolver = env.uniqueLiteralResolver.apply _
   // some invariants , dalc resolver needs compatible selection and comperator
 
   //require(literalComparator.isInstanceOf[ALCLPOComparator])
 
   //require(selector.isInstanceOf[ALCRSelector])
+  var iteration: Int = 1
+  var totalCandidates: Int = 0
 
-
-
-  override def resolve(a: FOLClause, b: ClauseStorage) = {
+  override def apply(a: FOLClause, b: ClauseStorage): Iterable[BinaryResolutionResult] = {
     b match {
-      case store: MatchingClausesRetrieval if (useIndexing) => resolveWithMatchingIndex(a, store)
-      case _ => resolveWithoutIndex(a, b)
-    }
-
-
-  }
-
-  private def resolveWithoutIndex(a: FOLClause, b: ClauseStorage) = {
-    log.trace("Resolving %s with %s", a, b)
-    // resolve
-    val resolvents = (for (clause2 <- b;
-                           if (a != clause2);
-                           resolvent = CNFClauseStore(resolve(a, clause2)))
-    yield resolvent)
-
-    resolvents match {
-      case x if (x.size == 0) => CNFClauseStore()
-      case x => x.reduceLeft(_ ::: _)
-
-    }
-
-
-  }
-
-  private def resolveWithMatchingIndex(a: FOLClause, b: MatchingClausesRetrieval): ClauseStorage = {
-    log.trace("Resolving with MatchingIndexSupport %s with %s", a, b)
-
-
-    // get the matching claueses , substruct the query clause a
-    val matchingClauses = a.literals.map({lit: FOLNode => b.getMatchingClauses(lit).getOrElse(Set()) ++ b.getMatchingClauses(Negation(lit)).getOrElse(Set())}).reduceLeft(_ ++ _) - a
-
-    matchingClauses match {
-      case clauses: Set[FOLClause] if (clauses.isEmpty) => CNFClauseStore()
-      case clauses: Set[FOLClause] => {
-        val resolvents = (for (clause2 <- clauses;
-                               if (a != clause2);
-                               resolvent = CNFClauseStore(resolve(a, clause2)))
-        yield resolvent)
-
-        resolvents match {
-          case x if (x.size == 0) => CNFClauseStore()
-          case x => x.reduceLeft(_ ::: _)
-
-        }
-
+      
+      case indexedClauseStorage: ClauseStorage with UnifiableClauseRetrieval => {
+        // we have a structure that supports unifiables clause retrieval
+        // get the unifiable clauses for each literal ( this is not a perfect filtering
+        // because we have no unique literal to resolve upon
+        // this changes in alcd where we can determine the unique resolvable literal
+        // prior to substitution !
+        // get the UNRL
+        applyWithIndexedStorage(a, indexedClauseStorage)
+      }
+      case _ => {
+        throw new NotImplementedException
       }
 
     }
@@ -87,157 +51,156 @@ class DALCResolver(env: {val useIndexing: Boolean; val recordProofSteps: Boolean
 
   }
 
-
-  override def resolve(a: ClauseStorage, b: ClauseStorage): ClauseStorage = {
-    log.trace("Resolving %s with %s", a, b)
-    // resolve
+  implicit def listFOLNode2ALCDClause(list: List[FOLNode]) = ALCDClause(list)
 
 
-    (for (clause1 <- a;
-          clause2 <- b;
-          if (clause1 != clause2);
-          resolvent = CNFClauseStore(resolve(clause1, clause2)))
-    yield resolvent).reduceLeft(_ ::: _)
-
-  }
+  private def applyWithIndexedStorage(a: FOLClause, clauses: ClauseStorage with UnifiableClauseRetrieval): Iterable[BinaryResolutionResult] = {
 
 
-  /**
-   * Binary Distribtued ALC Resolution method as described in Paper :
-   * SCHLICHT und Stuckenschmidt. Distributed resolution for ALC. Proceedings of the International … (2008)
-   *
-   *
-   */
-  override def resolve(a: FOLClause, b: FOLClause): Set[FOLClause] = {
+    val results: Iterable[BinaryResolutionResult] = a.uniqueResolvableLit match {
+      case (Some(aUrLit)) => {
 
-    // optimisation with regards to FOL resolution :
-    // Analysing all possible types of inferences among these clause will reveal that
-    // in all cases the resolvable literals can be determined prior to substitution.
+        
 
-    log.trace("Resolving the Clauses %s,%s", a, b)
-
-    // TODO CEHCK THIS
-    val (aStand, bStand, renamings) = standardizer.standardizeApart(a, b)
-
-    // filter out option clauses
-    val conclusions: Set[FOLClause] =
-    (doResolve(aStand, bStand) // resolve one way
-            ++ doResolve(bStand, aStand)) // resolve other way
-            .filter(_.isDefined) // filter out options
-            .map({_.get}) // convert Option[Map] --> Map
+        // resolve on unique literal
+        // check if clause a is main or sidepremise
+        aUrLit match {
+          case aPos if (aUrLit.positive) => {
+            // a is side premise - resolveable literal is positive // get negative candidate clauses
 
 
-    if (!conclusions.isEmpty)
-      log.debug("%s + %s --> %s" format (a, b, conclusions))
+            val mainPremises = clauses.retrieveUnifiablesFull(aPos.negate)
+            // resolve a with all candidates
+            for (mainPremise <- mainPremises) yield {
 
-    // check if there where renamings , if so reverse them
-    val renamedConclusions = if (renamings.isEmpty)
-      conclusions
-    else
-      conclusions.map(substitutor.substitute(Some(renamings), _))
+              val (b: FOLClause, bNeg: Negation) = mainPremise
 
-    // log clauses
-    if (recordProofSteps) {
-      renamedConclusions.foreach(addInferredClause(a, b, _))
-    }
+              // check if we can apply ordered resolution
+              if (ALCDOrderedResolution.isAppliable(a, aPos, b, bNeg)) {
 
-    renamedConclusions
+                // standardize apart
+                // TODO optimize this
+                // rename the variables in clause a such that there are no collisions
 
 
-  }
+                // standardize apart
+                // TODO optimize this
+                // rename the variables in clause a such that there are no collisions
+
+                val (aS, bS, aSubst: Substitution, bSubst: Substitution, renamings) = standardizer.standardizeApart(a, b)
+
+                val (aPosS: FOLNode, bNegS: Negation) = (aPos.rewrite(aSubst), bNeg.rewrite(bSubst))
+
+                // get the unifier
+                val mu = mgu(aPosS, bNegS.negate) match {
+                  case Some(m) => m
+                  case None => {
+                    // this should not happe
+                    error("Could not unfiy , but was retrieved as unifiable .. this cannot be")
+                  }
+                }
+
+                log.ifDebug("MGU for Literal : %s and Literal %s is %s", aPosS, bNegS, mu)
+                val S1: FOLClause = aS.rewrite(mu)
+                val aLitS: FOLNode = aPosS.rewrite(mu)
+                val S2: FOLClause = bS.rewrite(mu)
+                val bLitS: FOLNode = bNegS.rewrite(mu)
+                val resolved = ((S1 - aLitS) ++ (S2 - bLitS))
+                if (resolved.isEmpty) {
+                  log.ifInfo("Derived empty clause")
+                }
+
+                // reverse renamings
+                if (!renamings.isEmpty)
+                  SuccessfullResolution(ALCDClause(resolved).rewrite(renamings), ALCDClause(a).rewrite(renamings), ALCDClause(b).rewrite(renamings))
+                else
+                  SuccessfullResolution(resolved, a, b)
 
 
-  private def doResolve(a: FOLClause, b: FOLClause): Set[Option[FOLClause]] = {
-    // check the resolvability
+              } else {
+                FailedResolution(a, Some(b))
 
-    // first determine the resolvable literal
-
-    // get selected literals
-
-    val selectedLits = selector.selectedLiterals(a)
-    
-
-
-
-    log.debug("Clause %s ... Selected literals are : %s", a, selectedLits)
-
-    val uniqueResolvableLiteral: Option[FOLNode] = selectedLits match {
-      case selectedLit :: List() => { // only one selected
-        // resolve upon selectedLit
-        // a is main premise
-        Some(selectedLit)
-      }
-      case selectedLit :: moreSelectedLits => { // there are multiple selected lits
-        // should not happen
-        throw new IllegalStateException("Cannot have more than one selected literal")
-      }
-      case Nil => { // there is no selected lit
-        val compare = literalComparator.compare(_, _)
-        // is there is ONE strictly maximal literal A ?
-
-        val maxLits: List[FOLNode] = a.maxLits(literalComparator)
-
-       
-        log.debug("Clause %s ... Strictly maximal literals are : %s", a, maxLits)
-
-
-        maxLits match {
-          case Nil => {
-            // there are no maximal literals , should this happen ?
-            log.error("there are no maximal literals , should this happen ?")
-            None
-
-          }
-
-          case maxLit :: Nil => {
-            // resolve upon maxLit A
-            maxLit match {
-              case PositiveFOLLiteral(lit) => {
-                // clause a is side premise
-                Some(maxLit)
               }
-              case NegativeFOLLiteral(lit) => {
-                // clause a is main premise
-                Some(maxLit)
-              }
+
+
             }
 
           }
-          case maxLit :: maxLits => {
-            // a is main premise !
 
-            // all maximal lits are positive  ?
+          case bNeg: Negation => {
+            // a is main premise == hence a becomes b in this context
+            val b = a
+            val sidePremises = clauses.retrieveUnifiablesFull(bNeg.negate)
+            // resolve a with all candidates
+            for (sidePremise <- sidePremises) yield {
+              val (a, aPos) = sidePremise
+              // standardize apart
+              // TODO optimize this
+              // rename the variables in clause a such that there are no collisions
 
-            (maxLit :: maxLits).forall(_ match {
-              case PositiveFOLLiteral(literal) => true
-              case NegativeFOLLiteral(literal) => false
-            }) match {
-              case true => {
-                // clause a is no premise for resolution
-                None
+
+              // check if we can apply ordered resolution
+              if (ALCDOrderedResolution.isAppliable(a, aPos, b, bNeg)) {
+
+                val (aS, bS, aSubst: Substitution, bSubst: Substitution, renamings) = standardizer.standardizeApart(a, b)
+
+                val (aPosS: FOLNode, bNegS: Negation) = (aPos.rewrite(aSubst), bNeg.rewrite(bSubst))
+
+                // get thte unifier
+                // get the unifier
+                val mu = mgu(bNegS.negate, aPosS) match {
+                  case Some(m) => m
+                  case None => {
+                    // this should not happe
+                    error("Could not unfiy , but was retrieved as unifiable .. this cannot be")
+                  }
+                }
+
+
+
+
+                log.ifDebug("MGU for Literal : %s and Literal %s is %s", aPosS, bNegS, mu)
+                val S1: FOLClause = aS.rewrite(mu)
+                val aLitS: FOLNode = aPosS.rewrite(mu)
+                val S2: FOLClause = bS.rewrite(mu)
+                val bLitS: FOLNode = bNegS.rewrite(mu)
+                val resolved = ((S1 - aLitS) ++ (S2 - bLitS))
+                if (resolved.isEmpty) {
+                  log.info("Derived empty clause")
+                }
+
+                // reverse renamings
+                if (!renamings.isEmpty)
+                  SuccessfullResolution(ALCDClause(resolved).rewrite(renamings), ALCDClause(a).rewrite(renamings), ALCDClause(b).rewrite(renamings))
+                else
+                  SuccessfullResolution(resolved, a, b)
+
+
+              } else {
+                FailedResolution(a, Some(b))
+
               }
-              case false => {
-                // resolve upon a maximal negaive literal **
-                log.warning("resolve upon a maximal negaive literal **")
-                Some(maxLit)
-              }
+
             }
-
           }
         }
+      }
 
+      case None => {
+        log.debug("Given clause %s .... NO URLit", a)
+        // no unique resolvable Ltieral for clause a
+        // a is no premise for resolution
+        // only positive factorign might be possible
+        List(FailedResolution(a, None))
 
       }
     }
 
+    val successes = results.filter {_.isInstanceOf[SuccessfullResolution]}
 
-    // ouptut the uniqueResolvableLiteral
-
-    log.info("URLit for clause : %s == %s ", a, uniqueResolvableLiteral)
-
-
-    Set(None)
-
+    successes
   }
 
+
+  def apply(a: FOLClause, b: FOLClause) = throw new NotImplementedException
 }

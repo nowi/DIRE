@@ -3,6 +3,8 @@ build/*
 out/*
 lib/*
 target/*
+logs/*
+input/*
 DIRE.iws
 *.log
 

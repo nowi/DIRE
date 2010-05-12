@@ -1,7 +1,7 @@
 package domain.fol.ast
 
-
-
+import collection.mutable.Map
+import scala.collection.mutable.{Map => MMap}
 
 /**
  * User: nowi
@@ -10,8 +10,9 @@ package domain.fol.ast
  */
 
 case class Function(name: String, terms: List[FOLNode]) extends Term {
+
   override val args = terms
-  val symbolicName = name
+  override val top = name
 
   override def arity = terms.size
 
@@ -38,15 +39,51 @@ case class Function(name: String, terms: List[FOLNode]) extends Term {
 
   }
 
+
+
+
   override def toString = "%s%s" format (name, terms mkString ("(", ",", ")"))
+
+
+  override def logicalEquals(obj: Any) = {
+    obj match {
+      case fun: Function => {
+        assert(this match {
+          case NestedFunctionLiteral(x) => false
+          case _ => true
+        }, "Cannot be nested")
+
+        assert(obj match {
+          case NestedFunctionLiteral(x) => false
+          case _ => true
+        }, "Cannot be nested")
+        // only compare the non variable parts
+        args.filter({!_.isInstanceOf[Variable]}) == fun.args.filter({!_.isInstanceOf[Variable]})
+      }
+
+      case _ => false
+    }
+
+
+  }
 
 
 }
 
 
 object Function {
+  val cache = MMap[Function,Function]()
+  // override default apply method in order to implement caching
+
+  def shared(name: String, terms: List[FOLNode]): Function = {
+    val f = new Function(name,terms)
+    cache.getOrElseUpdate(f,f)
+  }
+
+
   def apply(name: String, params: FOLNode*): Function = {
-    Function(name, List(params: _*))
+//    Function.shared(name, List(params: _*))
+      Function(name, List(params: _*))
   }
 
 }

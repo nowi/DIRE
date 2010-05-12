@@ -7,13 +7,17 @@ package domain.fol.ast
  */
 
 case class Negation(x: Sentence) extends Sentence {
-  val symbolicName = "not"
+
+
+
 
   // simplyfiy double negation
   val filler = x match {
     case Negation(f) => f
     case _ => x
   }
+
+  val top = "-" + filler.top
 
   val args = List(filler)
 
@@ -29,4 +33,11 @@ case class Negation(x: Sentence) extends Sentence {
   }
 
   override def toString = "¬(%s)" format (filler)
+
+  override def logicalEquals(obj: Any) = {
+    obj match {
+      case Negation(otherFiller) => this.filler logicalEquals otherFiller
+      case _ => false
+    }
+  }
 }

@@ -6,7 +6,19 @@ package core.containers
  * Time: 19:29:15
  */
 
+import collection.mutable.ListBuffer
+import collection.mutable.{Map => MMap}
 import domain.fol.ast.{FOLNode, FOLClause, Sentence}
+
+trait NewClauseStorage {
+  val index : FOLTermIndex
+
+  val containsEmptyClause: Boolean
+
+  def signature: List[String]
+
+}
+
 
 /**
  * User: nowi
@@ -16,71 +28,36 @@ import domain.fol.ast.{FOLNode, FOLClause, Sentence}
  * A clause store is a multiset of clauses
  *
  */
-trait ClauseStorage extends Seq[FOLClause] {
-  def values: Set[FOLClause] = Set(elements.toList: _*)
-
-
-  val containsEmptyClause: Boolean
-
-  /**Returns this first element of the list.
-   *
-   * @return the first element of this list.
-   * @throws Predef.NoSuchElementException if the list is empty.
-   */
-  def head: FOLClause
-
-
-  /**Returns this first element of the list.
-   *
-   * @return the first element of this list.
-   * @throws Predef.NoSuchElementException if the list is empty.
-   */
-  def headOption: Option[FOLClause]
-
-  /**returns length - l, without calling length
-   */
-  override def lengthCompare(l: Int) = {
-    if (isEmpty) 0 - l
-    else if (l <= 0) 1
-    else tail.lengthCompare(l - 1)
+trait ClauseStorage {
+  def signature: Iterable[String] = {
+    toList.flatMap({_.literals}).map({literal: FOLNode => literal.top})
   }
 
-  /**Returns this list without its first element.
-   *
-   * @return this list without its first element.
-   * @throws Predef.NoSuchElementException if the list is empty.
-   */
-  def tail: ClauseStorage
+  def hasNext : Boolean = !isEmpty
+  
+  def isEmpty : Boolean
+
+  def size : Int
+
+  def toList : List[FOLClause]
+}
 
 
-  /**<p>
-   *    Add an element <code>x</code> at the beginning of this list.
-   *  </p>
-   *
-   * @param x the element to append.
-   * @return the list with <code>x</code> appended at the beginning.
-   * @ex <code>1 :: List(2, 3) = List(2, 3).::(1) = List(1, 2, 3)</code>
-   */
-  def ::(x: FOLClause): ClauseStorage
+trait MutableClauseStorage extends ClauseStorage {
+  def removeNext: FOLClause
+  def remove(a : FOLClause) : FOLClause
+  def add(a: FOLClause) : Unit
+  def addAll(i: Iterable[FOLClause]) : Unit
+  def addAll(seq: Seq[FOLClause]) : Unit
+  def removeAll(clauses : Iterable[FOLClause]) : Unit
 
-  /**<p>
-   *    Returns a list resulting from the concatenation of the given
-   *    list <code>prefix</code> and this list.
-   *  </p>
-   *
-   * @param prefix the list to concatenate at the beginning of this list.
-   * @return the concatenation of the two lists.
-   * @ex <code>List(1, 2) ::: List(3, 4) = List(3, 4).:::(List(1, 2)) = List(1, 2, 3, 4)</code>
-   */
-  def :::(prefix: ClauseStorage): ClauseStorage
+  protected val termToClause: scala.collection.mutable.MultiMap[FOLNode, FOLClause]
+}
 
+// implicit converstion form clause storage --> List[FOLClause]
 
-  def filterClauses(f: Function1[FOLClause, Boolean]): ClauseStorage
-
-
-  def signature: Set[String] = {
-    values.flatMap({_.literals}).map({literal: FOLNode => literal.symbolicName})
-  }
-
+object ClauseStorage {
+      implicit def listFOLClause2CNFClauseStorage(list : List[FOLClause]) : CNFClauseStore = CNFClauseStore(list)
+  implicit def CNFClauseStorage2listFOLClause2(clauseStore : CNFClauseStore) : List[FOLClause] = clauseStore.toList
 
 }

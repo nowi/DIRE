@@ -126,18 +126,13 @@ object SPASSIntermediateFormatParser extends StandardTokenParsers with Logging {
   }
 
 
-  def clauselist: Parser[ClauseStorage] = "listofclauses" ~ "(" ~ origintype ~ "," ~ clausetype ~ ")." ~ rep(clause) ~ "endoflist" ~ ". " ^^ {
-    case "listofclauses" ~ "(" ~ co ~ "," ~ ct ~ ")." ~ clauses ~ "endoflist" ~ ". " => CNFClauseStore(Set[FOLClause]() ++ clauses)
+  def clauselist: Parser[List[FOLClause]] = "listofclauses" ~ "(" ~ origintype ~ "," ~ clausetype ~ ")." ~ rep(clause) ~ "endoflist" ~ ". " ^^ {
+    case "listofclauses" ~ "(" ~ co ~ "," ~ ct ~ ")." ~ clauses ~ "endoflist" ~ ". " => clauses
   }
 
-  //  def clause : Parser[StandardClause]= "clause" ~ "(" ~ opt(cnfclause | dnfclause) ~ opt("," ~ label) ~ ")."  ^^ {
-  //    case "clause" ~ "(" ~ c ~ "," ~ l ~ ")." => StandardClause(c.args)
-  //    case "clause" ~ c  => StandardClause(c.args)
-  //    case "clause"   => StandardClause()
-  //  }
 
-  def clause: Parser[StandardClause] = "clause" ~ "(" ~ (cnfclause | dnfclause) ~ "," ~ label ~ ")." ^^ {
-    case "clause" ~ "(" ~ c ~ "," ~ l ~ ")." => StandardClause(c.args: _*)
+  def clause: Parser[ALCDClause] = "clause" ~ "(" ~ (cnfclause | dnfclause) ~ "," ~ label ~ ")." ^^ {
+    case "clause" ~ "(" ~ c ~ "," ~ l ~ ")." => ALCDClause(c.args: _*)
   }
 
   def clausetype = "cnf" | "dnf"
@@ -257,7 +252,7 @@ object SPASSIntermediateFormatParser extends StandardTokenParsers with Logging {
     }
 
 
-  def parseClauseStore(dsl: String): Option[ClauseStorage] =
+  def parseClauseStore(dsl: String): Option[List[FOLClause]] =
     {
       val tokens = new lexical.Scanner(convertInput(dsl))
       phrase(clauselist)(tokens) match {
@@ -275,15 +270,15 @@ object SPASSIntermediateFormatParser extends StandardTokenParsers with Logging {
     }
 
 
-  def parseFromFile(file: File): ClauseStorage = {
+  def parseFromFile(file: File): List[FOLClause] = {
     val lines = scala.io.Source.fromFile(file).mkString
     val text: String = lines // parse
     val clauses = SPASSIntermediateFormatParser.parseClauseStore(text)
 
     clauses match {
       case None => throw new IllegalStateException("Could not load clauses from file")
-      case Some(clauseStore) => {
-        clauseStore
+      case Some(clauses) => {
+        clauses
       }
     }
 

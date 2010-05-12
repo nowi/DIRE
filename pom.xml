@@ -51,16 +51,56 @@
 
 
     <dependencies>
+
         <dependency>
-            <artifactId>akka-core</artifactId>
-            <groupId>se.scalablesolutions.akka</groupId>
-            <version>0.6</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.7</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-tools.testing</groupId>
+            <artifactId>specs</artifactId>
+            <version>1.6.1</version>
+            <scope>test</scope>
+        </dependency>
+
+<dependency>
+    <groupId>com.google.collections</groupId>
+    <artifactId>google-collections</artifactId>
+    <version>1.0</version>
+</dependency>
+        
+
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-scala</artifactId>
+            <version>0.9.9-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <artifactId>akka-cluster-jgroups</artifactId>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-kernel</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-index</artifactId>
+            <version>1.0-b1</version>
+        </dependency>
+
+
+        <dependency>
+            <artifactId>akka-core_2.7.7</artifactId>
             <groupId>se.scalablesolutions.akka</groupId>
-            <version>0.6</version>
+            <version>0.7</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>akka-cluster-jgroups_2.7.7</artifactId>
+            <groupId>se.scalablesolutions.akka</groupId>
+            <version>0.7</version>
         </dependency>
 
 

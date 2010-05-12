@@ -8,4 +8,3 @@ package kernel;
 public enum ProvingState {
     STOPPED,LOADED,SATURATING,SATISFIABLE,UNSATISFIABLE;
 }
-

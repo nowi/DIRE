@@ -19,10 +19,10 @@ class DALCRSelector extends LiteralSelection {
     // select negative binary predicates only
     val selectedLits = clause.literals.toList.filter {
       x: FOLNode => x match {
-        case Negation(filler: Predicate) if (filler.arity > 1) => {
+        case Negation(filler: Predicate) if (filler.arity == 2 ) => {
           true
         }
-        case Negation(filler: Function) if (filler.arity > 1) => {
+        case Negation(filler: Function) if (filler.arity == 2) => {
           true
         }
         case _ => false

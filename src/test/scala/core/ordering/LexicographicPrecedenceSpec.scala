@@ -22,7 +22,7 @@ class LexiocgraphicPrecedenceSpec extends Spec with ShouldMatchers {
 
 
     // build the precedence
-    val precedence = new LexicographicPrecedence(Partition1OrderedTheoremProvingConfig)
+    lazy val precedence = LazyLexicographicPrecedence
 
     println("Precedence : " + precedence)
 

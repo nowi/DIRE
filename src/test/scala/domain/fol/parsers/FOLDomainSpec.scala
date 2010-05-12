@@ -137,7 +137,7 @@ class FOLDomainSpec extends Spec with ShouldMatchers with Logging {
       log.debug("Signature of Clause C2 %s is : %s", C2, signatureC2)
 
       // c2sig should be subset
-      signatureC2.subsetOf(signatureC1) should be(true)
+      signatureC1.contains(signatureC2) should be(true)
 
 
 
@@ -165,7 +165,7 @@ class FOLDomainSpec extends Spec with ShouldMatchers with Logging {
       // same length but difference in sig
 
       // c2sig should be subset
-      signatureC4.subsetOf(signatureC3) should be(false)
+      signatureC3.contains(signatureC4) should be(false)
 
 
     }

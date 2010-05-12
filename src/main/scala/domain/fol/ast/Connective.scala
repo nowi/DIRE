@@ -19,7 +19,7 @@ abstract class Connective extends Sentence {
 
 case class AndConnective(args: List[FOLNode]) extends Connective {
   //require (args.size > 1)
-  val symbolicName = "and"
+  val top = "and"
 
   def this(left: FOLNode, right: FOLNode) = this (List(left, right))
 
@@ -43,7 +43,7 @@ case class AndConnective(args: List[FOLNode]) extends Connective {
 case class OrConnective(args: List[FOLNode]) extends Connective {
   //require (args.size > 1)
 
-  val symbolicName = "or"
+  val top = "or"
 
   def this(left: FOLNode, right: FOLNode) = this (List(left, right))
 
@@ -78,7 +78,7 @@ object AndConnective {
 
 
 case class EqualityConnective(left: Sentence, right: Sentence) extends Connective {
-  val symbolicName = "="
+  val top = "="
   val args = List(left, right)
 
   override def map(f: (FOLNode => FOLNode)): FOLNode = {
@@ -92,7 +92,7 @@ case class EqualityConnective(left: Sentence, right: Sentence) extends Connectiv
 
 
 case class ImplicationConnective(left: Sentence, right: Sentence) extends Connective {
-  val symbolicName = "->"
+  val top = "->"
   val args = List(left, right)
 
   override def map(f: (FOLNode => FOLNode)): FOLNode = {

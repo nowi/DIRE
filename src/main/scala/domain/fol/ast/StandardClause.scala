@@ -1,71 +1,75 @@
 package domain.fol.ast
 
+import collection.mutable.ListBuffer
+import core.selection.LiteralSelection
+import parsers.SPASSIntermediateFormatParser._
 
 import core.ordering.LiteralComparison
+import core.resolution.UniqueLiteralResolution
 
 trait FOLClause {
-  // all folnodes have to be literals
-  val literals: Set[FOLNode]
+  val literals : List[FOLNode]
 
+  def uniqueResolvableLit(implicit resolver: (FOLClause => Option[FOLNode])): Option[FOLNode] = {
+    val urlit = resolver(this)
+    urlit
+  }
 
-  def ++(that: FOLClause): FOLClause
+  def selectedLits(implicit selector: LiteralSelection): List[FOLNode] = {
+    selector.selectedLiterals(this)
+  }
 
+  def maxLits(implicit comperator: LiteralComparison): List[FOLNode] = {
+    require(!isEmpty, "There cannot be a max Lit in Empty Clause")
 
-  def --(that: FOLClause): FOLClause
-
-
-  def -(that: FOLNode): FOLClause
-
-  def +(that: FOLNode): FOLClause
-
-  def absoluteClause: FOLClause
-
-  lazy val size: Int = literals.size
-
-  // maximal literal cache comperator --> maxLiterals
-  protected var maxLiterals: Map[LiteralComparison, List[FOLNode]] = Map[LiteralComparison, List[FOLNode]]()
-
-
-  def maxLits(comperator: LiteralComparison): List[FOLNode] = {
-    assert(!isEmpty, "There cannot be a max Lit in Empty Clause")
-    // do lookup
-    maxLiterals.get(comperator) match {
-      case Some(lit) => lit
-      case None => {
-        // we have no max for this comparator , determine the max and cache it
-        var maximumLiterals : List[FOLNode] = List(literals.toList.head)
-
-        val iter = literals.elements
-        while (iter.hasNext) {
-          val lit = iter.next
-          val max = maximumLiterals.head
-          if(lit != max) {
-            comperator.compare(lit, maximumLiterals.head) match {
-              case Some(1) => maximumLiterals = List(lit) // found a greater lit , this is new maxLit
-              case Some(0) => maximumLiterals = lit :: maximumLiterals// found same as current max , add to maxlits
-              case Some(-1) => None
-              case None => {
-                None
-              }
-            }
-
+    // we have no max for this comparator , determine the max and cache it
+    var maximumLiterals: List[FOLNode] = List(literals.head)
+    val iter = this.literals.elements
+    while (iter.hasNext) {
+      val lit = iter.next
+      val max = maximumLiterals.head
+      if (lit != max) {
+        comperator.compare(lit, maximumLiterals.head) match {
+          case Some(1) => maximumLiterals = List(lit) // found a greater lit , this is new maxLit
+          case Some(0) => maximumLiterals = lit :: maximumLiterals // found same as current max , add to maxlits
+          case Some(-1) => None
+          case None => {
+            None
           }
-
         }
 
-        // make maximum litera
-
-        // cache this this max lit
-        maxLiterals += (comperator -> maximumLiterals)
-        maximumLiterals
       }
 
     }
 
+    maximumLiterals
+
   }
 
+  lazy val isUnit = size == 1
 
-  lazy val absoluteLiterals: Set[FOLNode] = {
+  // A Horn clause is a disjunction of literals of which at most one is
+  // positive.
+  lazy val isHorn = !isEmpty && positiveLiterals.size <= 1
+
+  lazy val isDefinitive = !isEmpty && positiveLiterals.size == 1
+
+
+  lazy val isEmpty = literals.isEmpty
+
+  lazy val size = literals.size
+
+
+    
+
+
+
+
+
+//  // unique resolvable literal cache
+//  protected var uniqueLits: Map[UniqueLiteralResolution, Option[FOLNode]] = Map[UniqueLiteralResolution, Option[FOLNode]]()
+
+  lazy val absoluteLiterals: List[FOLNode] = {
     literals map (_ match {
       case Negation(filler) => filler
       case x: FOLNode => x
@@ -74,7 +78,7 @@ trait FOLClause {
 
   }
 
-  lazy val positiveLiterals: Set[FOLNode] = {
+  lazy val positiveLiterals: List[FOLNode] = {
     literals filter (_ match {
       case PositiveFOLLiteral(_) => true
       case _ => false
@@ -82,7 +86,7 @@ trait FOLClause {
     })
 
   }
-  lazy val negativeLiterals: Set[FOLNode] = {
+  lazy val negativeLiterals: List[FOLNode] = {
     (literals filter (_ match {
       case NegativeFOLLiteral(_) => true
       case _ => false
@@ -95,8 +99,8 @@ trait FOLClause {
   lazy val signature = {
     literals.map({
       x: FOLNode => x match {
-        case PositiveFOLLiteral(literal) => (literal.symbolicName, literal.arity)
-        case NegativeFOLLiteral(literal) => ("-" + literal.symbolicName, literal.arity)
+        case PositiveFOLLiteral(literal) => (literal.top, literal.arity)
+        case NegativeFOLLiteral(literal) => ("-" + literal.top, literal.arity)
       }
 
     })
@@ -108,29 +112,45 @@ trait FOLClause {
    * @param litSig the signature of the literal (symblicname,arity)
    * @return the literals
    */
-  def apply(litSig: (String, Int)): Set[FOLNode] = {
+  def apply(litSig: (String, Int)): List[FOLNode] = {
     literals.map({
       x: FOLNode => x match {
-        case PositiveFOLLiteral(literal) if (litSig == (literal.symbolicName, literal.arity)) => x
-        case NegativeFOLLiteral(literal) if (litSig == ("-" + literal.symbolicName, literal.arity)) => x
+        case PositiveFOLLiteral(literal) if (litSig == (literal.top, literal.arity)) => x
+        case NegativeFOLLiteral(literal) if (litSig == ("-" + literal.top, literal.arity)) => x
       }
 
     })
 
   }
 
+  def rewrite(s : Substitution) = {
+    literals.map(_.rewrite(s))
+  }
 
-  lazy val isEmpty = literals.isEmpty
 
-  lazy val isUnit = literals.size == 1
+  def absoluteClause: FOLClause
 
-  // A Horn clause is a disjunction of literals of which at most one is
-  // positive.
-  lazy val isHorn = !isEmpty && positiveLiterals.size <= 1
 
-  lazy val isDefinitive = !isEmpty && positiveLiterals.size == 1
 
 }
+
+object FOLClause {
+
+  implicit def folClause2ListFolNode(clause : FOLClause) : List[FOLNode] = clause.literals
+
+
+
+  
+
+  implicit def listFOLNodeToFOLALCDClause(list : List[FOLNode]) : ALCDClause = ALCDClause(list)
+
+  //
+
+//  implicit def listFOLNodeToStandardClause(list : List[FOLNode]) : StandardClause = StandardClause(list)
+
+
+}
+
 
 /**
  * User: nowi
@@ -139,32 +159,31 @@ trait FOLClause {
  *
  * A standard clause == disjunction of literals == Literal OR Literal ...
  */
-case class StandardClause(literals: Set[FOLNode]) extends FOLClause {
+case class StandardClause(override val literals : List[FOLNode]) extends FOLClause {
   // all folnodes have to be literals
-  assert(literals forall ((_ match {
-    case FOLLiteral(x) => true
-    case _ => false
-  })), "FOL nodes passed into a clause can only be Literals, but literals were : %s" format (literals))
+//  assert(literals forall ((_ match {
+//    case FOLLiteral(x) => true
+//    case _ => false
+//  })), "FOL nodes passed into a clause can only be Literals, but literals were : %s" format (literals))
+
+  // copy  constructor
+  def this(clause : FOLClause) = this(clause.literals)
 
 
-
-
-
-
-  override def ++(that: FOLClause): FOLClause =
-    StandardClause(literals ++ that.literals)
-
-
-  override def --(that: FOLClause): FOLClause =
-    StandardClause(literals -- that.literals)
-
-
-  override def -(that: FOLNode): FOLClause =
-    StandardClause(literals - that)
-
-
-  override def +(that: FOLNode): FOLClause =
-    StandardClause(literals + that)
+//  override def ++(that: FOLClause): FOLClause =
+//    StandardClause(literals ++ that.literals)
+//
+//
+//  override def --(that: FOLClause): FOLClause =
+//    StandardClause(literals -- that.literals)
+//
+//
+//  override def -(that: FOLNode): FOLClause =
+//    StandardClause(literals - that)
+//
+//
+//  override def +(that: FOLNode): FOLClause =
+//    StandardClause(literals + that)
 
 
   override def absoluteClause = StandardClause(absoluteLiterals)
@@ -173,18 +192,81 @@ case class StandardClause(literals: Set[FOLNode]) extends FOLClause {
   override def toString = {
     val litStrings = literals.map({
       _ match {
-        case x if (maxLiterals.values.contains(x)) => x.toString + "*"
+//        case x if (maxLits.values.contains(x)) => x.toString + "*"
         case x => x.toString
       }
     })
-    "%s" format (litStrings mkString ("[", "∨", "]"))
+    "%s" format (litStrings mkString ("[", "V", "]"))
   }
 
 
 }
 
+object StandardClause {
+  def apply(params: FOLNode*): StandardClause = {
+    StandardClause(List(params : _*))
+  }
+
+  def apply(clauseBuffer : ListBuffer[FOLNode]) = new StandardClause(clauseBuffer.toList)
+
+  implicit def FOLClauseToStandardClause(x: FOLClause): StandardClause = x.asInstanceOf[StandardClause]
+
+}
+
+
+
+case class ALCDClause(override val literals : List[FOLNode]) extends StandardClause(literals) {
+  // some more assertions
+// all folnodes have to be literals
+  val isNested = literals exists ((_ match {
+    case NestedFunctionLiteral(x)  => {
+      true
+    }
+    case NestedPredicateLiteral(x)  => {
+      true
+    }
+    case _ => false
+  }))
+
+  if(isNested) {
+    error("FOL function or predicate literals passed into a ACLDFOL cannot be nested, but literals were : %s" format literals)
+  }
+
+  if(literals.size > 4) {
+    log.debug("Clause getting quite long ...")
+  }
+
+
+  //require(literals.size > 0,"Literals cannot be empty , this would be the empty clause , use designated type")
+
+ // copy  constructor
+  def this(clause : FOLClause) = this(clause.literals)
+
+}
+
+object ALCDClause {
+  def apply(params: FOLNode*): ALCDClause = {
+    new ALCDClause(List(params: _*))
+  }
+
+  def apply(clause: FOLClause): ALCDClause = {
+    new ALCDClause(clause)
+  }
+
+
+  def apply(clauseBuffer : ListBuffer[FOLNode]) = new ALCDClause(clauseBuffer.toList)
+
+  // string based constructor using tha parser
+
+
+
+  //implicit def FOLClauseToStandardClause(x: FOLClause): StandardClause = x.asInstanceOf[StandardClause]
+
+}
+
+
 case class EmptyClause extends FOLClause {
-  override val literals = Set[FOLNode]()
+  override val literals : List[FOLNode] = Nil
 
   override def toString = "■"
 
@@ -193,22 +275,13 @@ case class EmptyClause extends FOLClause {
 
   override def absoluteClause = EmptyClause()
 
-  override def +(that: FOLNode) = EmptyClause()
-
-  override def -(that: FOLNode) = EmptyClause()
-
-  override def ++(that: FOLClause) = EmptyClause()
-
-  override def --(that: FOLClause) = EmptyClause()
-}
-
-object StandardClause {
-  def apply(params: FOLNode*): StandardClause = {
-    StandardClause(Set(params: _*))
-  }
-
-  implicit def FOLClauseToStandardClause(x: FOLClause): StandardClause = x.asInstanceOf[StandardClause]
-
+//  override def +(that: FOLNode) = EmptyClause()
+//
+//  override def -(that: FOLNode) = EmptyClause()
+//
+//  override def ++(that: FOLClause) = EmptyClause()
+//
+//  override def --(that: FOLClause) = EmptyClause()
 }
 
 

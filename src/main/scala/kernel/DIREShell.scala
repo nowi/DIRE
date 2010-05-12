@@ -1,8 +1,19 @@
-
-import allocation.NaiveOneToOneUnrestrictedLocalAllocator
-import partitioning.ManualClauseStoragePartitioner
+import allocation.{ClauseAllocation, NaiveOneToOneUnrestrictedLocalAllocator}
+import core.containers.heuristics.{ListBufferStorage, LightestClauseHeuristicStorage}
+import core.containers.{SForrestIndex, MutableClauseStore, CNFClauseStore}
+import core.ordering.{CustomConferencePartitionedPrecedence, ALCLPOComparator}
+import core.reduction.{ForwardSubsumer, BackwardSubsumer, StillmannSubsumer}
+import core.resolution.{DALCUniqueLiteralResolver, DALCResolver}
+import core.rewriting.VariableRewriter
+import core.selection.DALCRSelector
+import core.{Standardizer, RobinsonProver}
+import domain.fol.ast.FOLClause
 import kernel._
+import dispatching.{DALCDispatcherActor, ToVoidDispatchingActor}
+import partitioning.{ManualConfExampleMerger, ManualConfExamplePartitioner}
+import recording.NaiveClauseRecorder
 import se.scalablesolutions.akka.actor.{ActorRegistry, Actor}
+import sun.reflect.generics.reflectiveObjects.NotImplementedException
 
 //import se.scalablesolutions.akka.actor.Actor.Sender.Self
 
@@ -39,13 +50,45 @@ class DIREShell extends Actor with Logging {
   }
 
 
-  def startSaturate(reasoners : Actor*){
-    broadcast(StartSatisfy("start"),reasoners : _*)
+
+
+  //  def recievedCount(reasoner: Actor) {
+  //    reasoner ! GetRecievedClausesCount(System.currentTimeMillis.toString)
+  //  }
+
+  def recievedCount(reasoner: Actor): Int = {
+    val option = reasoner !! (GetRecievedClausesCount(System.currentTimeMillis.toString), 5000) // timeout 1000 ms
+    val recieved: RecievedClausesCount = option.getOrElse(throw new Exception("Couldn't get the count log"))
+    recieved.count
+
+  }
+
+  def dispatchedCount(reasoner: Actor): Int = {
+    val option = reasoner !! (GetDispatchedClausesCount(System.currentTimeMillis.toString), 5000) // timeout 1000 ms
+    val dispatchedClausesCount: DispatchedClausesCount = option.getOrElse(throw new Exception("Couldn't get the count log"))
+    dispatchedClausesCount.count
+
+  }
+
+  def keptClauses(reasoner: Actor): List[FOLClause] = {
+    val option = reasoner !! (GetKeptClauses(System.currentTimeMillis.toString), 5000) // timeout 1000 ms
+    val kept: KeptClauses = option.getOrElse(throw new Exception("Couldn't get the count log"))
+    kept.clauses.toList
   }
 
 
-  def keptClauses(reasoners: Actor*) {
-    for (reasoner <- reasoners) reasoner ! GetKeptClauses(System.currentTimeMillis.toString)
+  def statusOverride(reasoners: Actor*) {
+    for (reasoner <- reasoners) reasoner ! GetStatusOverride(System.currentTimeMillis.toString)
+  }
+
+
+  def incomingClausesLog(reasoners: Actor*) = {
+    for (reasoner <- reasoners) reasoner.!(GetIncomingClausesLog(System.currentTimeMillis.toString))
+  }
+
+
+  def startSaturate(reasoners: Actor*) {
+
   }
 
 
@@ -60,63 +103,69 @@ class DIREShell extends Actor with Logging {
 
   }
 
-  def createDefaultReasonerWithBroadCastDispatcher(): Actor = {
-    val config = new Object {
-      val dispatcherActor = new BroadCastDispatchingActor;
-      val provingActor = new OrderedResolutionProver1Actor(dispatcherActor)
-    }
-    new DistributedALCReasoner(config)
-
-  }
-
-  def createOrderedResolutionReasonerNoDispatching(): Actor = {
-    val config = new Object {
-      val dispatcherActor = new ToVoidDispatchingActor;
-      val provingActor = new OrderedResolutionProver1Actor(dispatcherActor)
-    }
-    new DistributedALCReasoner(config)
-
-  }
 
   def createDALCReasonerNoDispatching(): Actor = {
-    val config = new Object {
-      val dispatcherActor = new ToVoidDispatchingActor;
-      val provingActor = new DALCProverActor(dispatcherActor)
-    }
-    new DistributedALCReasoner(config)
+    new DALCReasonerNoDispatch
 
   }
 
+  def createDALCReasonerWithDALCDispatching(): Actor = {
+
+    new DALCReasoner
+
+  }
+
+  def createDALCReasonerWithBroadCastDispatching(): Actor = {
+    throw new NotImplementedException
+    //    new DALCReasonerBroadCastDispatch
+
+  }
+
+
   def loadOnotologiesAndAllocations(reasoners: List[Actor]) {
-    // load the main ontology
-    val filenames = List("input/conf/conf1.dire", "input/conf/conf2.dire", "input/conf/conf3.dire", "input/conf/conf4.dire")
-
     // partition the ontology
-    val partitioner = new ManualClauseStoragePartitioner(filenames)
-    val partitions = partitioner.partition(core.containers.CNFClauseStore())
-
+    val partitioner = new ManualConfExamplePartitioner
+    val partitions = partitioner.partition(CNFClauseStore()) // pass dummy empty store
     // create allocation of partitions the the reasoning nodes
     val allocator = new NaiveOneToOneUnrestrictedLocalAllocator
     val allocation = allocator.allocate(partitions, reasoners)
+    // create allocation table , this maps ontology signature --> kernel
+    //val allocationTable = (Map() /: allocation)({case (clauseStore, reasoner) => (Map() /: clauseStore.signature)({name : String => Map(name -> reasoner.uuid)})})
+    val allocationTable: ClauseAllocation = new ClauseAllocation(allocation.map({case (clauseStore, reasoner) => clauseStore.signature.map({name: String => Map(name -> reasoner.uuid)}).reduceLeft(_ ++ _)}).reduceLeft(_ ++ _))
+    // send the allocation table  to the reasoning nodes
+    for (reasoner <- reasoners) {
+      reasoner ! LoadAllocation(allocationTable)
+    }
 
+    // send the ontologies to the reasoning nodes and start
+    for ((clauseStore, reasoner) <- allocation) {
+      log.debug("Sending clauses %s to kernel %s", clauseStore, reasoner)
+      reasoner ! Saturate(clauseStore.toList)
+    }
+  }
+
+  def loadOnotologiesAndAllocationsMerged(reasoner: Actor) {
+    val reasoners = List(reasoner)
+
+    // partition the ontology
+    val partitioner = new ManualConfExampleMerger
+    val partitions = partitioner.partition(CNFClauseStore()) // pass dummy empty store
+    // create allocation of partitions the the reasoning nodes
+    val allocator = new NaiveOneToOneUnrestrictedLocalAllocator
+    val allocation = allocator.allocate(partitions, reasoners)
+    // create allocation table , this maps ontology signature --> kernel
+    //val allocationTable = (Map() /: allocation)({case (clauseStore, reasoner) => (Map() /: clauseStore.signature)({name : String => Map(name -> reasoner.uuid)})})
+    val allocationTable: ClauseAllocation = new ClauseAllocation(allocation.map({case (clauseStore, reasoner) => clauseStore.signature.map({name: String => Map(name -> reasoner.uuid)}).reduceLeft(_ ++ _)}).reduceLeft(_ ++ _))
+    // send the allocation table  to the reasoning nodes
+    for (reasoner <- reasoners) {
+      reasoner ! LoadAllocation(allocationTable)
+    }
 
     // send the ontologies to the reasoning nodes
     for ((clauseStore, reasoner) <- allocation) {
       log.debug("Sending clauses %s to kernel %s", clauseStore, reasoner)
-      reasoner ! LoadClauses(clauseStore)
+      reasoner ! Saturate(clauseStore.toList)
     }
-
-    // create allocation table , this maps ontology signature --> kernel
-
-    val allocationTable = allocation.map({case (clauseStore, reasoner) => Map(clauseStore.signature -> reasoner.uuid)}).reduceLeft(_ ++ _)
-
-    // send the allocation table  to the reasoning nodes
-    for (reasoner <- reasoners) {
-      log.debug("Sending allocattionTable %s to kernel %s", ((allocationTable map {case (sig, uuid) => ("Signature" + "-->" + "Reasoner :" + uuid)}) mkString ("AllocationTable : [\n", ",\n", "]")), reasoner)
-      reasoner ! LoadAllocation(allocationTable)
-    }
-
-
   }
 
 
@@ -130,26 +179,113 @@ class DIREShell extends Actor with Logging {
 
 }
 
+object DIREShellRunner extends Application{
+  override def main(a: Array[String]) = {
+    val shell = DIREShell
+    shell.createAndLoadManualPartionedScenario
+  }
+}
+
 object DIREShell {
   val shell = new DIREShell
   shell.start
 
+
+  def testSingleNodeReasoning {
+    val config = new Object {
+      //Configgy.configure("config/config.conf")
+
+
+
+      // the initial clause store
+
+      lazy val variableRewriter = new VariableRewriter
+      lazy val standardizer = new Standardizer(this)
+
+
+      // unique literal resolver
+      lazy val uniqueLiteralResolver = new DALCUniqueLiteralResolver(this)
+
+      // ordered resolution needs comparator and selection
+      lazy val precedence = new CustomConferencePartitionedPrecedence
+      lazy val literalComparator = new ALCLPOComparator(this)
+      lazy val selector = new DALCRSelector()
+
+      // forward subsumer WITH index support
+      lazy val forwardSubsumer = ForwardSubsumer
+
+      // the backwardsubsumer
+      lazy val backwardSubsumer = BackwardSubsumer
+
+
+      // positive factorer
+      lazy val positiveFactorer = new core.resolution.PositiveOrderedFactoring(this)
+
+      // ACL resolver
+      lazy val resolver = new DALCResolver(this)
+      lazy val subsumptionStrategy = StillmannSubsumer
+      lazy val inferenceRecorder = new NaiveClauseRecorder
+
+
+      // usable clause store with STI indexes
+      def usableClauseStore = new MutableClauseStore with LightestClauseHeuristicStorage with SForrestIndex
+
+      def workedOffClauseStore = new MutableClauseStore with ListBufferStorage with SForrestIndex
+
+      // switches
+      // TODO enable all reductions
+
+      val recordProofSteps = true
+
+      // hard time limit
+      val timeLimit: Long = 0;
+
+    }
+
+    val prover = new RobinsonProver(config)
+
+
+    val initialClauses = {
+      // the curiosity killed the cat domain
+      val partitioner = new ManualConfExampleMerger
+      partitioner.partition(Nil).head
+
+    }
+
+
+    prover.saturate(initialClauses)
+
+
+  }
+
+
   def createAndLoadManualPartionedScenario() = {
-    val rs = (for(x <- 0 until 5) yield createDefaultReasonerWithBroadCastDispatcher).toList
+    val rs = (for (x <- 0 until 5) yield createDALCReasonerWithDALCDispatching).toList
     rs.foreach(_ start)
     loadOnotologiesAndAllocations(rs)
     rs
   }
+
+  def createAndLoadAutoMergedScenario() = {
+    val rs = createDALCReasonerWithDALCDispatching
+    rs.start
+    loadOnotologiesAndAllocationsMerged(rs)
+    rs
+  }
+
 
   def createAndLoadManualPartitionedScenarioWithoutDispatching() = {
-    val rs = (for(x <- 0 until 5) yield createDALCReasonerNoDispatching).toList
+    val rs = (for (x <- 0 until 3) yield createDALCReasonerNoDispatching).toList
     rs.foreach(_ start)
     loadOnotologiesAndAllocations(rs)
     rs
   }
 
-  def createDefaultReasonerWithBroadCastDispatcher() = shell.createDefaultReasonerWithBroadCastDispatcher
+
   def createDALCReasonerNoDispatching() = shell.createDALCReasonerNoDispatching
+
+  def createDALCReasonerWithDALCDispatching = shell.createDALCReasonerWithDALCDispatching
+
 
   def help = shell.help
 
@@ -157,18 +293,33 @@ object DIREShell {
 
   def send(destination: Actor, message: Event) = shell.send(destination, message)
 
-  def status(reasoners: Seq[Actor]) = shell.status(reasoners : _*)
-  def status(reasoner: Actor) = shell.status(List(reasoner) : _*)
+  def status(reasoners: Seq[Actor]) = shell.status(reasoners: _*)
 
-  def keptClauses(reasoners: Seq[Actor]) = shell.keptClauses(reasoners: _*)
-  def keptClauses(reasoner: Actor) = shell.keptClauses(List(reasoner): _*)
+  def status(reasoner: Actor) = shell.status(List(reasoner): _*)
 
-  def startSaturate(reasoners : Seq[Actor]) = shell.startSaturate(reasoners :_*)
-  def startSaturate(reasoner : Actor) = shell.startSaturate(List(reasoner) :_*)
+  def dispatchedCount(reasoner: Actor) = shell.dispatchedCount(reasoner)
+
+  def recievedCount(reasoner: Actor) = shell.recievedCount(reasoner)
+
+  def statusOverride(reasoners: Seq[Actor]) = shell.statusOverride(reasoners: _*)
+
+  def statusOverride(reasoner: Actor) = shell.statusOverride(List(reasoner): _*)
+
+  def incomingClausesLog(reasoners: Seq[Actor]) = shell.incomingClausesLog(reasoners: _*)
+
+  def incomingClausesLog(reasoner: Actor) = shell.incomingClausesLog(List(reasoner): _*)
+
+  def keptClauses(reasoner: Actor) = shell.keptClauses(reasoner)
+
+  def startSaturate(reasoners: Seq[Actor]) = shell.startSaturate(reasoners: _*)
+
+  def startSaturate(reasoner: Actor) = shell.startSaturate(List(reasoner): _*)
 
 
-  def broadcast(message: Event, destinations: Seq[Actor]) = shell.broadcast(message,destinations : _*)
+  def broadcast(message: Event, destinations: Seq[Actor]) = shell.broadcast(message, destinations: _*)
 
   def loadOnotologiesAndAllocations(reasoners: List[Actor]) = shell.loadOnotologiesAndAllocations(reasoners)
+
+  def loadOnotologiesAndAllocationsMerged(reasoner: Actor) = shell.loadOnotologiesAndAllocationsMerged(reasoner)
 
 }

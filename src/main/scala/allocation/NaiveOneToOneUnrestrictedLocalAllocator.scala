@@ -15,7 +15,7 @@ class NaiveOneToOneUnrestrictedLocalAllocator extends Allocating with Logging {
   override def allocate(modules: List[ClauseStorage], reasoners: List[Actor]): Map[ClauseStorage, Actor] = {
     log.info("%s is allocating modules %s to reasoners %s", this, modules, reasoners)
     // size has to match
-    require(modules.size == reasoners.size)
+    //require(modules.size == reasoners.size)
     // create naive 1 to 1 mapping
     Map() ++ (modules zip reasoners)
   }

@@ -1,6 +1,7 @@
 package allocation
 
 
+import collection.MapProxy
 import core.containers.ClauseStorage
 import se.scalablesolutions.akka.actor.Actor
 
@@ -16,4 +17,9 @@ import se.scalablesolutions.akka.actor.Actor
 
 trait Allocating {
   def allocate(modules: List[ClauseStorage], reasoners: List[Actor]): Map[ClauseStorage, Actor]
+}
+
+// literal signature --> reasoner id
+class ClauseAllocation(override val self:Map[String, String]) extends MapProxy[String, String]{
+    //add other non-Map stuff here
 }

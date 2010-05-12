@@ -7,7 +7,7 @@ package domain.fol.ast
  */
 
 case class TermEquality(left: FOLNode, right: FOLNode) extends AtomicSentence {
-  val symbolicName = "="
+  val top = "="
   val args: List[FOLNode] = List(left, right)
 
   override def toString = "%s = %s" format (left, right)

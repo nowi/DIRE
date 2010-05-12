@@ -60,6 +60,9 @@ object WestDomain {
     Predicate("Enemy", nono, america)
     )
 
+
+  val initialClauses = List(C1, C2, C3, C4, C5, C6, C7, C8)
+
   val CriminalWestGoalClause = StandardClause(
     Negation(Predicate("Criminal", west))
     )
@@ -69,7 +72,7 @@ object WestDomain {
     )
 
   val AmericanWestGoalClause = StandardClause(
-    Negation(Predicate("American", west))
+      Predicate("American", west)
     )
 
 

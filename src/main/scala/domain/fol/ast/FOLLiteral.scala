@@ -33,3 +33,32 @@ object PositiveFOLLiteral {
     }
   }
 }
+
+
+object NestedFunctionLiteral {
+  def unapply(node: FOLNode): Option[FOLNode] = {
+    node.args.filter({_.isInstanceOf[Function]}) match {
+      case funcLit :: Nil => {
+        None
+      }
+      case funcLit :: funcLits => {
+        Some(funcLit)
+      }
+      case _ => None
+    }
+  }
+}
+
+object NestedPredicateLiteral {
+  def unapply(node: FOLNode): Option[FOLNode] = {
+    node.args.filter({_.isInstanceOf[Predicate]}) match {
+      case predLit :: Nil => {
+        None
+      }
+      case predLit :: predLits => {
+        Some(predLit)
+      }
+      case _ => None
+    }
+  }
+}

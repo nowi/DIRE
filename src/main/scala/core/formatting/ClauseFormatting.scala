@@ -3,7 +3,7 @@ package core.formatting
 
 import containers.ClauseStorage
 import domain.fol.ast.FOLClause
-import resolution.{InferenceStep, InferenceRecording}
+import recording.{ClauseRecording, InferenceStep, NaiveClauseRecorder}
 import core.containers.ClauseStorage
 
 /**
@@ -13,35 +13,45 @@ import core.containers.ClauseStorage
  */
 
 trait ClauseFormatting {
-  def formatClauses(clauses: ClauseStorage, inferenceRecorder: InferenceRecording,showParents : Boolean): String = {
+  def formatClauses(clauses: ClauseStorage, inferenceRecorder: ClauseRecording, showParents: Boolean): String = {
     val buffer = new StringBuffer()
-
-    showParents match {
-      case true => clauses.map({clause: FOLClause => printInferenceStep(inferenceRecorder.inferenceSteps(clause),inferenceRecorder)})
+    clauses.toList.map({clause: FOLClause => printInferenceStep(clause, inferenceRecorder)})
             .foreach {buffer.append(_)}
-      case false =>  clauses.map({clause: FOLClause => "[%s]\t%s\n" format (inferenceRecorder.indexOf(clause),clause) })
-            .foreach {buffer.append(_)}
-    }
-
     buffer.toString
 
   }
 
+//  private def printInferenceStep(clause: FOLClause, inferenceRecorder: InferenceRecording): String = {
+//    // ouput format like spass
+//    def index = (clause: FOLClause) => (inferenceRecorder.indexOf(clause))
+//    inferenceRecorder.getParentsOf(clause) match {
+//      case Some((parent1, parent2)) => {
+//        // derived clause
+//        "%s[Res:%s,%s]" format (index(clause), index(parent1), index(parent2))
+//      }
+//      case None => {
+//        // input clause or foreign
+//        "%s[Inp]" format (index(clause))
+//
+//      }
+//    }
+//
+//
+//  }
 
-  def printInferenceStep(is: InferenceStep[FOLClause],inferenceRecorder: InferenceRecording): String = {
-    is match {
-      case InferenceStep(value, Some(left), Some(right)) => {
-        val leftIndex = inferenceRecorder.indexOf(left.value)
-        val rightIndex = inferenceRecorder.indexOf(right.value)
-        val resolvedIndex = inferenceRecorder.indexOf(value)
-
-
-        "[%s]%s\n\t\t ==> [%s]%s\n[%s]%s\n" format (leftIndex,left.value,resolvedIndex, "\t" + value,rightIndex, right.value)
+  // TODO , hack until real clauses can be retrieved from infereence recorder
+  def printInferenceStep(clause: FOLClause, inferenceRecorder: ClauseRecording): String = {
+    // ouput format like spass
+    def index = (clause: FOLClause) => (inferenceRecorder.indexOf(clause))
+    inferenceRecorder.getParentsOf(clause) match {
+      case Some((parent1:String, parent2:String)) => {
+        // derived clause
+        "%s[Res:%s,%s]" format (index(clause), parent1, parent2)
       }
+      case None => {
+        // input clause or foreign
+        "%s[Inp]" format (index(clause))
 
-      case InferenceStep(value, None, None) => {
-        val resolvedIndex = inferenceRecorder.indexOf(value)
-        "[%s]%s" format (resolvedIndex,value)
       }
     }
 

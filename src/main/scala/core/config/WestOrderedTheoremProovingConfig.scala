@@ -2,34 +2,32 @@ package core.config
 
 
 import containers.{CNFClauseStore}
-import ordering.{LexicographicPrecedence, ALCLPOComparator}
+import ordering.{LazyLexicographicPrecedence, ALCLPOComparator}
+import recording.NaiveClauseRecorder
 import reduction._
-import resolution.{OrderedResolver}
-import rewriting.{Substitutor, VariableRewriter}
+import resolution.{DALCResolver, DALCUniqueLiteralResolver}
+import rewriting.{ VariableRewriter}
 import selection.{NegativeLiteralsSelection, DALCRSelector}
 object WestOrderedTheoremProovingConfig {
   // the initial clause store
   lazy val initialClauses = {
-    CNFClauseStore(
+    List(
       WestDomain.C1, WestDomain.C2, WestDomain.C3,
       WestDomain.C4, WestDomain.C5,
       WestDomain.C6, WestDomain.C7, WestDomain.C8)
   }
 
-  lazy val tautologyDeleter = new TautologyDeleter()
   lazy val variableRewriter = new VariableRewriter()
-  lazy val subsumptionDeleter = new SubsumptionDeleter(this)
   lazy val standardizer = new Standardizer(this)
-  lazy val unificator = new Unificator(this)
-  lazy val substitutor = new Substitutor(this)
-  lazy val factorizer = new OrderedFactorizer(this)
-  lazy val resolver = new OrderedResolver(this)
-  lazy val subsumptionStrategy = new StillmannSubsumer(this)
+  lazy val resolver = new DALCResolver(this)
+  lazy val subsumptionStrategy = StillmannSubsumer
+  lazy val inferenceRecorder = new NaiveClauseRecorder
 
   // ordered resolution needs comparator and selection too
-  lazy val precedence = new LexicographicPrecedence(this)
+  lazy val precedence = core.ordering.LazyLexicographicPrecedence
   lazy val literalComparator = new ALCLPOComparator(this)
   lazy val selector = new NegativeLiteralsSelection()
+  lazy val uniqueLiteralResolver = new DALCUniqueLiteralResolver(this)
 
   // settings
   val recordProofSteps = true
@@ -43,7 +41,7 @@ object WestOrderedTheoremProovingConfig {
   val timeLimit: Long = 0
 
 
-  override def toString = List(tautologyDeleter, variableRewriter, subsumptionDeleter, standardizer, unificator, substitutor, factorizer, resolver, subsumptionStrategy, literalComparator, selector, removeDuplicates, useLightesClauseHeuristic)
+  override def toString = List(variableRewriter, standardizer,  resolver, subsumptionStrategy, literalComparator, selector, removeDuplicates, useLightesClauseHeuristic)
           .map({_.toString})
           .reduceLeft(_ + ",\n" + _)
 }

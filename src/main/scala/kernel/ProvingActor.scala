@@ -1,21 +1,23 @@
 package kernel
 
 
+import collection.mutable.ArrayBuffer
 import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy
+import java.util.Date
 import se.scalablesolutions.akka.dispatch.Dispatchers
 import core._
-import containers.{NonEmptyClauseStore, ClauseStorage, CNFClauseStore}
+import containers.{ClauseStorage, CNFClauseStore}
 import domain.fol.ast.FOLClause
 import domain.fol.parsers.SPASSIntermediateFormatParser
 import helpers.Subject
 import java.io.File
 import core.reduction._
-import core.resolution.{OrderedResolver}
-import core.rewriting.{Substitutor, VariableRewriter}
+import core.rewriting.{VariableRewriter}
 import ordering.{CustomConferencePartitionedPrecedence, CustomSPASSModule1Precedence, ALCLPOComparator}
 import ProvingState._
 import ProvingResult._
 import core.selection.NegativeLiteralsSelection
+import resolution.{SuccessfullResolution}
 import se.scalablesolutions.akka.actor.Actor
 import se.scalablesolutions.akka.util.Logging
 import sun.reflect.generics.reflectiveObjects.NotImplementedException
@@ -26,43 +28,43 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException
  * Time: 17:11:44
  */
 
-trait ProvingActor extends Actor {
+abstract class ProvingActor extends Actor with ReasoningActorChild {
 
 
   // cofigure a native os thread based dispatcher for the proving actor
-  val d = Dispatchers.newThreadBasedDispatcher(this)
-
-  messageDispatcher = d
-
-  val dispatcherActor: DispatchingActor
-
-  val coreProverConfig : Object
-
-  val prover : FOLProving
-
-
+//    val d = Dispatchers.newThreadBasedDispatcher(this)
+//    val d = Dispatchers.globalReactorBasedSingleThreadEventDrivenDispatcher
+    val d = Dispatchers.newExecutorBasedEventDrivenDispatcher("name");
+  d.withNewThreadPoolWithLinkedBlockingQueueWithUnboundedCapacity
+    .setCorePoolSize(16)
+    .setMaxPoolSize(128)
+    .setKeepAliveTimeInMillis(60000)
+    .setRejectionPolicy(new CallerRunsPolicy)
+    .buildThreadPool;
 
 
 
 
 
-  // add this actor as observer for derived clauses
+    messageDispatcher = d
 
-
-
+  val prover: FOLProving
 
 
   var state: ProvingState = STOPPED
 
-  var initialClauses: ClauseStorage = CNFClauseStore()
-  var keptClauses: ClauseStorage = CNFClauseStore()
+  var initialClauses: Iterable[FOLClause] = Nil
+  var keptClauses: Iterable[FOLClause] = Nil
 
 
-  private[this] def setState(newState: ProvingState, supervisor: Actor) {
+  var recievedClausesCount: Int = 0
+
+
+  private[this] def setState(newState: ProvingState) {
     log.info("%s transitions from %s to %s state", this, state, newState)
     state = newState
-    // inform supervisor about state change
-    supervisor ! ProverStatus(state)
+    // inform supervisor rsabout state change
+    //    parent.get ! ProverStatus(state)
 
 
   }
@@ -72,120 +74,92 @@ trait ProvingActor extends Actor {
    * Callback from proving alogorithm
    *
    */
-  def receiveUpdate(subject: Any) {
+  def receiveUpdate(resolutionResult: Any) {
     //println("Recieved derived clauses , sending them to dispatcher actor")
     // send derived clauses to clause dispatcher
-    subject match {
-      case clauses: ClauseStorage => dispatcherActor ! (Entail(clauses), this)
-      case _ => throw new IllegalArgumentException("Callback can only process ClauseStores")
+    parent match {
+      case Some(parentActor) => {
+        resolutionResult match {
+          case derived: Derived => {
+            // pass the derived clauses to the parent actor
+            parentActor ! (derived, this)
+
+          }
+          case _ => throw new IllegalArgumentException("Callback can only process ClauseStores")
+        }
+      }
+
+      case None => throw new IllegalStateException("Proving Actor needs a parent actor")
     }
 
 
   }
 
-
-  def doSaturate(sender: Actor) {
-    keptClauses match {
-      case NonEmptyClauseStore(clauses) => log.info("ReStarting saturation ...")
-      case _ => log.info("Starting saturation ...")
-    }
-
-    setState(SATURATING, sender);
-    val result = prover.saturate(initialClauses, keptClauses)
-    // finished saturatign
-
-    result match {
-      case (COMPLETION, clauses: ClauseStorage) => {
-        // save the kept clauses
-        log.info("LOCALY SATISFIED ... ")
-        keptClauses = clauses
-        // clear the initial clauses
-        initialClauses = CNFClauseStore()
-        setState(SATISFIABLE, sender)
-      }
-      case (PROOF, clauses: ClauseStorage) => {
-        log.info("LOCALY UNSATISFIED ! ")
-        setState(UNSATISFIABLE, sender)
-      }
-
-      case (TIMEUP, clauses: ClauseStorage) => {
-        log.info("TIMELIMIT REACHED ! ")
-        keptClauses = clauses
-        setState(SATISFIABLE, sender)
-      }
-
-    }
-  }
 
   protected def receive = {
-    case (Entail(clauses), sender: Actor) => {
-      log.debug("Recieved Entail Message with clauses to entail  %s", clauses)
-      // first check the state
-      state match {
-        case SATISFIABLE => {
-          // the kb is satisfiable, we can resume prooving with the keptclauses , and add the recieved clause
-          initialClauses = clauses ::: initialClauses
-          doSaturate(sender)
-        }
-        case _ => {
-          // drop the recived clause
+    case msg @ Saturate(clauses) => {
 
+      // the kb is satisfiable, we can resume prooving with the keptclauses , and add the recieved clause
+      recievedClausesCount = recievedClausesCount + clauses.toList.size
+
+      setState(SATURATING);
+      val result = prover.saturate(clauses)
+      // finished saturatign
+
+      result match {
+        case (COMPLETION, clauses) => {
+          // save the kept clauses
+          log.info("LOCALY SATISFIED ... ")
+          // clear the initial clauses
+          setState(SATISFIABLE)
         }
+        case (PROOF, clauses) => {
+          log.info("LOCALY UNSATISFIED ! ")
+          setState(UNSATISFIABLE)
+        }
+
+        case (TIMEUP, clauses) => {
+          log.info("TIMELIMIT REACHED ! ")
+          setState(SATISFIABLE)
+        }
+
       }
+
+
 
     }
 
 
-     case msg @ GetStatus(bla) => {
+    case msg@GetStatus(bla) => {
       log.debug("Recieved Status Request Message")
-      reply(Status("IDLE ! , Loaded Clauses Are : %s , workedoff CLauses are  : %s  " format (initialClauses,keptClauses)))
+      reply(Status("Status : %s" format (state)))
 
 
     }
 
-    case (LoadClauses(clauses), sender: Actor) => {
-      log.trace("%s Recieved Load Message with clauses to load %s", this, clauses)
-      if (state == STOPPED) {
-        initialClauses = clauses;
-        setState(LOADED, sender)
-      } else {
-        throw new IllegalStateException("Cannot load initial clauses while in state : %s" format (state))
-      }
-
-    }
 
     case GetKeptClauses(bla) => {
       log.info("Recieved GetKeptClauses Request Message")
-      state match {
-        case SATISFIABLE => reply(KeptClauses(keptClauses))
-        case _ => {
-          log.warning("KeptCLauses have been requested but prover is not in state SATISFIABLE")
-          reply(KeptClauses(keptClauses))
-        }
-      }
+
+//      state match {
+//        case SATISFIABLE => reply(KeptClauses(keptClauses))
+//        case _ => {
+//          log.warning("KeptCLauses have been requested but prover is not in state SATISFIABLE")
+//          reply(KeptClauses(keptClauses))
+//        }
+//      }
 
     }
 
 
-    case (StartSatisfy(message), sender: Actor) => {
-      log.trace("%s Recieved StartSatisfy Message", this)
 
-      state match {
-        case LOADED | SATISFIABLE | UNSATISFIABLE => {
-           doSaturate(sender)
-        // reply the current status to the original sender of the message
-        reply(ProverStatus(state))
-        }
-        case _ => {
-            throw new IllegalStateException("Cannot load initial clauses while in state : %s" format (state))
-        }
-      }
-
-
+    case msg@GetRecievedClausesCount(status) => {
+      log.debug("%s Recieved RecievedClausesCount Message ", status)
+      log.info("This reasoner has RECIEVED clauses count: %s", recievedClausesCount)
+      reply(RecievedClausesCount(recievedClausesCount))
     }
 
-    case (StopSatisfy(message), sender: Actor) =>
-      log.trace("%s Recieved StopStatisfy Message", this)
+
   }
 
   override def shutdown = {
@@ -194,51 +168,6 @@ trait ProvingActor extends Actor {
 
 }
 
-class OrderedResolutionProver1Actor(
-        override val dispatcherActor: DispatchingActor) extends ProvingActor {
-
-  // set dispatcher actor
-
-
-  override val coreProverConfig = new Object() {
-    // empty initial clauses
-    lazy val initialClauses = CNFClauseStore()
-
-    lazy val tautologyDeleter = new TautologyDeleter()
-    lazy val variableRewriter = new VariableRewriter()
-    lazy val subsumptionDeleter = new SubsumptionDeleter(this)
-    lazy val standardizer = new Standardizer(this)
-    lazy val unificator = new Unificator(this)
-    lazy val substitutor = new Substitutor(this)
-    lazy val factorizer = new OrderedFactorizer(this)
-    lazy val resolver = new OrderedResolver(this)
-    lazy val subsumptionStrategy = new StillmannSubsumer(this)
-
-    // ordered resolution needs comparator and selection too
-    lazy val precedence = new CustomConferencePartitionedPrecedence
-    lazy val literalComparator = new ALCLPOComparator(this)
-    lazy val selector = new NegativeLiteralsSelection()
-
-    // settings
-    val recordProofSteps = true
-    val removeDuplicates = false
-    val useLightesClauseHeuristic = true
-    val usableBackSubsumption = false
-    val forwardSubsumption = true
-    val dropSeenClauses = false
-    val useIndexing = true
-
-    // set a time limit
-    val timeLimit: Long = (20 * 1000)  // 10 sec
-  }
-
-  override val prover = new ResolutionProover1(coreProverConfig)
-
-  prover.addObserver(this)
-
-  log.info("Core prooving subsystem started up with kernel : %s", prover)
-
-}
 
 
 

@@ -11,5 +11,7 @@ trait Subject {
 
   private var observers = List[Observer]()
   def addObserver(observer:Observer) = observers ::= observer
-  def notifyObservers(update : Any) = observers foreach (_.receiveUpdate(update))
+  def notifyObservers(update : Any)  {
+    observers foreach (_.receiveUpdate(update))
+  }
 }

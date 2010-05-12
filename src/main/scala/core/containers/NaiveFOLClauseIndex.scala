@@ -31,9 +31,9 @@ class NaiveFOLClauseIndex extends ImPerfectFilteringFOLClauseIndex {
     // but this does not work currently because of seome bug in the positive negatitbe literal
     // case class extractors.
     val key = node match {
-      case Negation(Negation(filler)) => (filler.symbolicName, filler.arity)
-      case Negation(filler) => ("-" + filler.symbolicName, filler.arity)
-      case filler: FOLNode => (filler.symbolicName, filler.arity)
+      case Negation(Negation(filler)) => (filler.top, filler.arity)
+      case Negation(filler) => ("-" + filler.top, filler.arity)
+      case filler: FOLNode => (filler.top, filler.arity)
     }
     key
 

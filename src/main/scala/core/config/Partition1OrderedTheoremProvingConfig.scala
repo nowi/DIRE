@@ -5,9 +5,10 @@ import containers.{CNFClauseStore}
 import domain.fol.parsers.SPASSIntermediateFormatParser
 import java.io.File
 import ordering.{CustomConferencePartitionedPrecedence, CustomSPASSModule1Precedence, ALCLPOComparator}
+import recording.NaiveClauseRecorder
 import reduction._
-import resolution.{OrderedResolver}
-import rewriting.{Substitutor, VariableRewriter}
+import resolution.{DALCResolver, DALCUniqueLiteralResolver}
+import rewriting.{ VariableRewriter}
 import selection.{NegativeLiteralsSelection}
 
 /**
@@ -36,20 +37,21 @@ object Partition1OrderedTheoremProvingConfig {
 
   }
 
-  lazy val tautologyDeleter = new TautologyDeleter()
   lazy val variableRewriter = new VariableRewriter()
-  lazy val subsumptionDeleter = new SubsumptionDeleter(this)
   lazy val standardizer = new Standardizer(this)
-  lazy val unificator = new Unificator(this)
-  lazy val substitutor = new Substitutor(this)
-  lazy val factorizer = new OrderedFactorizer(this)
-  lazy val resolver = new OrderedResolver(this)
-  lazy val subsumptionStrategy = new StillmannSubsumer(this)
+  lazy val resolver = new DALCResolver(this)
+  lazy val subsumptionStrategy = StillmannSubsumer
+  lazy val inferenceRecorder = new NaiveClauseRecorder
+    lazy val uniqueLiteralResolver = new DALCUniqueLiteralResolver(this)
 
   // ordered resolution needs comparator and selection too
   lazy val precedence = new CustomConferencePartitionedPrecedence
   lazy val literalComparator = new ALCLPOComparator(this)
   lazy val selector = new NegativeLiteralsSelection()
+
+
+
+
 
   // settings
   val recordProofSteps = true
@@ -62,7 +64,7 @@ object Partition1OrderedTheoremProvingConfig {
 
   val timeLimit : Long = 0;
 
-  override def toString = List(tautologyDeleter, variableRewriter, subsumptionDeleter, standardizer, unificator, substitutor, factorizer, resolver, subsumptionStrategy, literalComparator, selector, removeDuplicates, useLightesClauseHeuristic)
+  override def toString = List(variableRewriter, standardizer, resolver, subsumptionStrategy, literalComparator, selector, removeDuplicates, useLightesClauseHeuristic)
           .map({_.toString})
           .reduceLeft(_ + ",\n" + _) + ("Precendece : \n %s" format (precedence))
 }

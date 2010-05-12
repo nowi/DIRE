@@ -31,5 +31,9 @@ object CuriosityDomain {
   val D = StandardClause(kills(jack, tuna), kills(curiosity, tuna))
   val E = StandardClause(cat(tuna))
   val F = StandardClause(Negation(cat(x)), animal(x))
+
+  val initialClauses = List(A1,A2,B,C,D,E,F)
+
   val curiosityKilledTunaGoalClause = StandardClause(Negation(kills(curiosity, tuna)))
+  val curiosityNotKilledTunaGoalClause = StandardClause(kills(curiosity, tuna))
 }

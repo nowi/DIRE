@@ -8,7 +8,7 @@ package core
 
 import com.jteigen.scalatest.JUnit4Runner
 
-import config.WestDomain
+import config.{WestDomain}
 import containers.{CNFClauseStore}
 import org.junit.runner.RunWith
 import org.scalatest.matchers.ShouldMatchers
@@ -23,7 +23,7 @@ abstract class WestDomainProvingSpec extends Spec with ShouldMatchers {
   describe("WestDomainProving") {
     it("should entail that west is a criminal") {
       // entail that west is a criminal
-      resolutionProover.entail(WestDomain.CriminalWestGoalClause) match {
+      resolutionProover.saturate(WestDomain.initialClauses  ::: List(WestDomain.CriminalWestGoalClause)) match {
         case (PROOF,_) => assert(true)
         case _ => assert(false)
       }
@@ -31,7 +31,7 @@ abstract class WestDomainProvingSpec extends Spec with ShouldMatchers {
 
     it("should entail that west is an american") {
       // entail that west is an american
-      resolutionProover.entail(WestDomain.AmericanWestGoalClause) match {
+      resolutionProover.saturate(WestDomain.initialClauses  ::: List(WestDomain.AmericanWestGoalClause)) match {
         case (PROOF,_) => assert(true)
         case _ => assert(false)
       }
@@ -39,7 +39,7 @@ abstract class WestDomainProvingSpec extends Spec with ShouldMatchers {
 
 
     it("should not refute that west is not criminal") {
-      resolutionProover.entail(WestDomain.NotCriminalWestGoalClause)  match {
+      resolutionProover.saturate(WestDomain.initialClauses  ::: List(WestDomain.NotCriminalWestGoalClause))  match {
         case (PROOF,_) => assert(false)
         case _ => assert(true)
       }
