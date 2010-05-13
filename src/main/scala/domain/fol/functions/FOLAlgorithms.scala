@@ -67,7 +67,25 @@ object FOLAlgorithms extends helpers.Logging {
         t = t.rewrite(cT)
 
         (s, t) match {
-          case (Complex(sTop, sTerms), Complex(tTop, tTerms)) if (sTop == tTop) => {
+          
+
+
+          case (Predicate(sTop, sTerms), Predicate(tTop, tTerms)) if (sTop == tTop) => {
+            // push all terms onto the stack
+            for (i <- 0 until sTerms.size) {
+              stack.push(sTerms(i))
+              stack.push(tTerms(i))
+            }
+
+            s = sTerms.head
+            t = tTerms.head
+
+            // continue
+            dopop = false
+
+          }
+
+          case (Function(sTop, sTerms), Function(tTop, tTerms)) if (sTop == tTop) => {
             // push all terms onto the stack
             for (i <- 0 until sTerms.size) {
               stack.push(sTerms(i))
@@ -198,7 +216,23 @@ object FOLAlgorithms extends helpers.Logging {
           }
 
           (s, t) match {
-            case (Complex(sTop, sTerms), Complex(tTop, tTerms)) if (sTop == tTop) => {
+
+            case (Predicate(sTop, sTerms), Predicate(tTop, tTerms)) if (sTop == tTop) => {
+              // push all terms onto the stack
+              for (i <- 0 until sTerms.size) {
+                stack.push(sTerms(i))
+                stack.push(tTerms(i))
+              }
+
+              s = sTerms.head
+              t = tTerms.head
+
+              // continue
+              dopop = false
+
+            }
+
+            case (Function(sTop, sTerms), Function(tTop, tTerms)) if (sTop == tTop) => {
               // push all terms onto the stack
               for (i <- 0 until sTerms.size) {
                 stack.push(sTerms(i))
