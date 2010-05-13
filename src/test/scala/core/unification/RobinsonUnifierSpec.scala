@@ -24,7 +24,7 @@ class RobinsonUnifierSpec extends Spec with ShouldMatchers with Logging {
     val jane = Constant("Jane")
     val leonid = Constant("Leonid")
     val elizabeth = Constant("Elizabeth")
-    val a = Function("Knows", List(john, Variable("x")))
+    val a = Function("Knows", List(Constant("John"), Variable("x")))
     val b = Function("Knows", List(john, jane))
     val c = Function("Knows", List(Variable("y"), leonid))
     val d = Function("Knows", List(Variable("y"), Function("Mother", List(Variable("y")))))
@@ -52,7 +52,14 @@ class RobinsonUnifierSpec extends Spec with ShouldMatchers with Logging {
 
     it("should trivial unification") {
       // unificator.unify a and b
-      val theta = unificator(a, a)
+      val theta = unificator( Function("Knows", List(Constant("John"), Variable("x"))),  Function("Knows", List(Constant("John"), Variable("x"))))
+      println(theta)
+      theta should equal(Some(Map()))
+    }
+
+    it("should trivial unification -- shared term version") {
+      // unificator.unify a and b
+      val theta = unificator( Function("Knows", List(Constant("John"), Variable("x"))).shared,  Function("Knows", List(Constant("John"), Variable("x"))).shared)
       println(theta)
       theta should equal(Some(Map()))
     }
@@ -64,6 +71,13 @@ class RobinsonUnifierSpec extends Spec with ShouldMatchers with Logging {
       theta should equal(Some(Map(Variable("x") -> jane)))
     }
 
+    it("should unificator.unify(Knows(John,x), Knows( John, Jane)) - {x/Jane} -- shared terms version") {
+      // unificator.unify a and b
+      val theta = unificator(a.shared, b.shared)
+      println(theta)
+      theta should equal(Some(Map(Variable("x").shared -> jane.shared)))
+    }
+
     it("should NOT unify -P(y) with P(a)") {
       val y = Variable("y")
       val a = Constant("a")
@@ -71,6 +85,21 @@ class RobinsonUnifierSpec extends Spec with ShouldMatchers with Logging {
       val P1 = Negation(Predicate("P", y))
       // x gets rewritten to y  , we need logical equals methods
       val P2 = Predicate("P", a)
+
+      // unificator.unify a and b
+      val theta = unificator(P1, P2)
+      println(theta)
+      theta should be(None)
+
+    }
+
+    it("should NOT unify -P(y) with P(a) -- shared version") {
+      val y = Variable("y").shared
+      val a = Constant("a").shared
+
+      val P1 = Negation(Predicate("P", y)).shared
+      // x gets rewritten to y  , we need logical equals methods
+      val P2 = Predicate("P", a).shared
 
       // unificator.unify a and b
       val theta = unificator(P1, P2)
@@ -94,6 +123,24 @@ class RobinsonUnifierSpec extends Spec with ShouldMatchers with Logging {
       val theta2 = unificator(a, c)
       println(theta2)
       theta2 should equal(Some(Map(Variable("x") -> leonid, Variable("y") -> john)))
+
+    }
+
+    it("should unificator.unify(Knows(John, x), Knows(y, Leonid)) = {x/Leonid, ylJohn} -- shared version ") {
+      val john = Constant("John")
+      val jane = Constant("Jane")
+      val leonid = Constant("Leonid")
+      val elizabeth = Constant("Elizabeth")
+      val a = Function("Knows", List(john, Variable("x")))
+      val b = Function("Knows", List(john, jane))
+      val c = Function("Knows", List(Variable("y"), leonid))
+      val d = Function("Knows", List(Variable("y"), Function("Mother", List(Variable("y")))))
+      val e = Function("Knows", List(Variable("x"), elizabeth)) // standardise apart
+
+      // unificator.unify a and c
+      val theta2 = unificator(a.shared, c.shared)
+      println(theta2)
+      theta2 should equal(Some(Map(Variable("x").shared -> leonid.shared, Variable("y").shared -> john.shared)))
 
     }
 
@@ -140,8 +187,17 @@ class RobinsonUnifierSpec extends Spec with ShouldMatchers with Logging {
       unificator(Function("f",x,x),Function("f",Constant("a"),Constant("b"))) should equal (None)
     }
 
+    it("should fail unifiying non linear term -- shared versiono") {
+      unificator(Function("f",x,x).shared,Function("f",Constant("a"),Constant("b")).shared) should equal (None)
+    }
+
     it("should fail because of circular substitution , occurs check !") {
       unificator(Function("f",x,x),Function("f",Variable("y"),Function("g",Variable("y")))) should equal (None)
+    }
+
+
+    it("should fail because of circular substitution , occurs check ! - shared version") {
+      unificator(Function("f",x,x).shared,Function("f",Variable("y"),Function("g",Variable("y"))).shared) should equal (None)
     }
 
 

@@ -24,7 +24,7 @@ import org.junit.runner.RunWith
 
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
-import partitioning.{ManualConfExampleMerger, ManualConfExamplePartitioner}
+import partitioning.{ManualConfExampleMergerShared, ManualConfExampleMerger, ManualConfExamplePartitioner}
 import rewriting.{VariableRewriter}
 
 @RunWith(classOf[JUnit4Runner])
@@ -32,19 +32,14 @@ abstract class ConferenceMergedProvingSpec extends Spec with ShouldMatchers with
   def createProver: FOLProving
 
   describe("A FOLProver") {
-
-
     it("should locally saturate the merged of partitioned conf example") {
       val prover: FOLProving = createProver
-
       val initialClauses = {
         // the curiosity killed the cat domain
-        val partitioner = new ManualConfExampleMerger
+        val partitioner = new ManualConfExampleMergerShared
         partitioner.partition(Nil).head
 
       }
-
-
       prover.saturate(initialClauses)._1 should equal(ProvingResult.COMPLETION)
 
     }

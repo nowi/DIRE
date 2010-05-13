@@ -92,3 +92,21 @@ class ManualConfExampleMerger extends ClauseStoragePartitioning with Logging {
 
   }
 }
+
+class ManualConfExampleMergerShared extends ClauseStoragePartitioning with Logging {
+  // parser
+  // TODO externalize this
+  val parser = SPASSIntermediateFormatParser
+
+  override def partition(clauses: ClauseStorage) = {
+    // load the main ontology
+
+    val module0 = SPASSIntermediateFormatParser.parseSharedFromFile(new File("/workspace/DIRE/DIRE/input/conf/merged.dire")).removeDuplicates
+
+    // merge those modules into one
+
+    List(CNFClauseStore(module0))
+
+
+  }
+}

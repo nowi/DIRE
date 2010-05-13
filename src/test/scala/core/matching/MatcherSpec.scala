@@ -10,6 +10,7 @@ import com.jteigen.scalatest.JUnit4Runner
 
 import domain.fol.ast._
 import helpers.Logging
+import net.lag.configgy.Configgy
 import org.junit.runner.RunWith
 
 
@@ -48,11 +49,19 @@ class MatcherSpec extends Spec with ShouldMatchers with Logging {
 
 
     // create matcher
+    Configgy.configure("config/config.conf")
     val matcher  = new  Matcher
 
     it("should find trivial matcher") {
       // unificator.unify a and b
-      val m = matcher.matcher(a, a)
+      val m = matcher.matcher(Function("Knows", List(Constant("John"), Variable("x"))), Function("Knows", List(Constant("John"), Variable("x"))))
+      println(m)
+      m should equal(Some(Map()))
+    }
+
+    it("should find trivial matcher -- shared terms version") {
+      // unificator.unify a and b
+      val m = matcher.matcher(Function("Knows", List(Constant("John"), Variable("x"))).shared, Function("Knows", List(Constant("John"), Variable("x"))).shared)
       println(m)
       m should equal(Some(Map()))
     }
@@ -67,6 +76,15 @@ class MatcherSpec extends Spec with ShouldMatchers with Logging {
       m should equal(Some(Map(x -> jane)))
     }
 
+    it("should find easy matchers -- shared term version") {
+      val instance = b.shared
+      val generalization = a.shared
+
+      val m = matcher.matcher(generalization, instance)
+      println(m)
+      m should equal(Some(Map(x.shared -> jane.shared)))
+    }
+
     it("should find nested matches") {
       val instance = Function("Knows", List(john, a))
       val generalization = a
@@ -76,9 +94,28 @@ class MatcherSpec extends Spec with ShouldMatchers with Logging {
       m should equal(Some(Map(x -> a)))
     }
 
+    it("should find nested matches -- shared version") {
+      val instance = Function("Knows", List(john, a)).shared
+      val generalization = a.shared
+
+      val m = matcher.matcher(generalization, instance)
+      println(m)
+      m should equal(Some(Map(x -> a)))
+      m should equal(Some(Map(x.shared -> a.shared)))
+    }
+
     it("should not find matcher") {
       val instance = Function("f", Constant("a"),Constant("b"))
       val generalization = Function("f", IndicatorVariable(0),Function("g",Constant("b")))
+
+      val m = matcher.matcher(generalization, instance)
+      println(m)
+      m should equal(None)
+    }
+
+    it("should not find matcher -- shared version") {
+      val instance = Function("f", Constant("a"),Constant("b")).shared
+      val generalization = Function("f", IndicatorVariable(0),Function("g",Constant("b"))).shared
 
       val m = matcher.matcher(generalization, instance)
       println(m)

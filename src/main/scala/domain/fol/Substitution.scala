@@ -17,11 +17,11 @@ import FOLAlgorithms._
  */
 
 case class Substitution(override val self: Map[Variable, FOLNode]) extends MapProxy[Variable, FOLNode] {
-  def domain: List[Variable] = keys.toList
+  lazy val domain: List[Variable] = keys.toList
 
-  def codomain: List[FOLNode] = values.toList
+  lazy val codomain: List[FOLNode] = values.toList
 
-  def image: List[Variable] = {
+  lazy val image: List[Variable] = {
     codomain.map(_.flatArgs.filter({
       node: FOLNode => node match {
         case Variable(x) => true
@@ -46,7 +46,7 @@ case class Substitution(override val self: Map[Variable, FOLNode]) extends MapPr
   def binding(a: Variable) = super.apply(a)
 
 
-  def normalize: Substitution = {
+  lazy val normalize: Substitution = {
     // variables have lexicographic order based on variable name
     val lt = (v1: Variable, v2: Variable) => (v1.name < v2.name)
     // get the unique variables in the substitution and sort them
@@ -143,7 +143,7 @@ object NonTrivialSubstitution {
 
 
 object Substitution {
-  def apply(): Substitution = Substitution(Map())
+  def apply(): Substitution = Map()
 
   //  def apply(iter : Seq[Tuple2[Variable,FOLNode]]): Substitution = Substitution(Map[Variable,FOLNode](iter :_*))
 

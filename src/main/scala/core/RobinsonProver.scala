@@ -2,12 +2,12 @@ package core
 
 
 import collection.mutable.{ListBuffer}
+import domain.fol.ast._
 import helpers.{Subject, Logging}
 import kernel.Derived
 import ProvingResult._
 import collection.immutable.{TreeSet, SortedSet}
 import containers._
-import domain.fol.ast._
 import formatting.ClauseFormatting
 import heuristics.LightestClauseHeuristicStorage
 import net.lag.configgy.Configgy
@@ -199,7 +199,8 @@ class RobinsonProver(env: {
           //finall add the given clause to usable
 
           // integrate into shared structures
-          val keptClause = ALCDClause(given)
+//          val keptClause = ALCDClause(given)
+          val keptClause = SharedALCDClause(given)
 
           //                log.debug("Given clause : %s", givenClause)
           //                for (newClause <- keptClauses if (!newClause.isEmpty)) {
@@ -257,7 +258,8 @@ class RobinsonProver(env: {
         case None => {
           // interreduce
           if (!newClauses.isEmpty) {
-            interReduce(newClauses)
+            // convert new clauses into shared structure
+            interReduce(newClauses.map(SharedALCDClause(_)))
           }
 
         }

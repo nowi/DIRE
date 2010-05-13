@@ -5,7 +5,7 @@ import domain.fol.functions.FOLAlgorithms._
 
 import functions.FOLAlgorithms
 import sun.reflect.generics.reflectiveObjects.NotImplementedException
-
+        import scala.collection.mutable.{Map => MMap}
 /**
  * User: nowi
  * Date: 09.10.2009
@@ -17,20 +17,33 @@ trait FOLNode {
   // default no bindings
   //val bindings : Context = Context()
 
-  def depth: Int = throw new NotImplementedException
-
-  def isLinear: Boolean = throw new NotImplementedException
-
-  def isGround: Boolean = throw new NotImplementedException
-
   val top: String
 
-  
+  // subclasses should override this for corret sharing of arguments
+  def shared : FOLNode  = {
+    FOLNode.sharedNodes.getOrElseUpdate(this ,this)
+  }
 
   // arity defaults to 0
-  def arity = 0
+  lazy val arity : Int = 0
+
+  // TODO FIX THIS
+  val positive = {
+    this match {
+      case Negation(filler) => false
+      case _ => {
+        true
+        // should not be here
+      }
+    }
+  }
+
+  val negative = !this.positive
+
+
 
   // this should maybe be implemented in each subclass
+  // take care when mapping over shared terms , maping could return unshared structures
   def map(f: (FOLNode => FOLNode)): FOLNode
 
   // get flattened args , empty lists if no args
@@ -155,18 +168,7 @@ trait FOLNode {
     false
   }
 
-  // TODO FIX THIS
-  val positive = {
-    this match {
-      case Negation(filler) => false
-      case _ => {
-        true
-        // should not be here
-      }
-    }
-  }
 
-  val negative = !this.positive
 
 
   def negate() : FOLNode = {
@@ -196,6 +198,9 @@ trait FOLNode {
 }
 
 object FOLNode {
+
+  val sharedNodes : MMap[FOLNode,FOLNode]= MMap()
+
   implicit def termToFOLNode(x: Term): FOLNode = x.asInstanceOf[FOLNode]
 
   implicit def sentenceToFOLNode(x: Term): FOLNode = x.asInstanceOf[FOLNode]

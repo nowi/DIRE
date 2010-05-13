@@ -18,14 +18,134 @@ class FOLNodeSpec extends Spec with ShouldMatchers {
   val funY = Function("f", Variable("y"))
   describe("FOLNode") {
 
-    it("should be a value type") {
+    it("unshared types should be structural equal") {
       val f1 = Function("h", Constant("a"), Function("g", Constant("a")), Variable("x"))
       val f2 = Function("h", Constant("a"), Function("g", Constant("a")), Variable("x"))
 
-      println(f1)
-      println(f2)
-      // compare based on jvm reference identity
-      (f1 eq f2) should be(true)
+      // compare pointer
+      (f1 eq f2) should be(false)
+      // compare structural
+      (f1 == f2) should be(true)
+    }
+
+    it("shared nodes should be equal structurally and have same jvm object identity") {
+       val f1s = FunctionS("h", ConstantS("a"), FunctionS("g", ConstantS("a")), VariableS("x"))
+      val f2s = FunctionS("h", ConstantS("a"), FunctionS("g", ConstantS("a")), VariableS("x"))
+      // compare pointer
+      (f1s eq f2s) should be(true)
+      // compare structure
+      (f1s == f2s) should be(true)
+    }
+
+
+    it("shared function literals should correcly reference previous cached terms") {
+      // first assume we have some shared terms In this adress space
+      val a = ConstantS("a")
+      val x = VariableS("x")
+      val catS = FunctionS("cat",x,a)
+
+
+      // now assume we have generated a TEMP Function same STRUCTURE
+      val catT = Function("cat",Variable("x"),Constant("a"))
+
+      // of course shared root term catT should be same as catS after intergration into shared space
+      catT.shared eq catS should be (true)
+
+
+      // assume we crate a new TEMP function , that cotains already shared terms but is not itself shared
+      val catT2 = Function("cat2",Variable("x"),Constant("a"))
+
+      // after integation the literals of this function sould point to the already shared terms
+
+
+      // and the individual literals of the catT.shared should also be equal to the already existing
+      // terms a and x
+      catT2.args(0) == x should be (true)
+      catT2.args(1) == a should be (true)
+
+      catT2.args(0) eq x should be (false)
+      catT2.args(1) eq a should be (false)
+
+      catT2.shared.args(0) == x should be (true)
+      catT2.shared.args(1) == a should be (true)
+
+      catT2.shared.args(0) eq x should be (true)
+      catT2.shared.args(1) eq a should be (true)
+
+      
+    }
+
+
+    it("shared predicate literals should correcly reference previous cached terms") {
+      // first assume we have some shared terms In this adress space
+      val a = ConstantS("a")
+      val x = VariableS("x")
+      val catS = PredicateS("cat",x,a)
+
+
+      // now assume we have generated a TEMP Function same STRUCTURE
+      val catT = Predicate("cat",Variable("x"),Constant("a"))
+
+      // of course shared root term catT should be same as catS after intergration into shared space
+      catT.shared eq catS should be (true)
+
+
+      // assume we crate a new TEMP function , that cotains already shared terms but is not itself shared
+      val catT2 = Predicate("cat2",Variable("x"),Constant("a"))
+
+      // after integation the literals of this function sould point to the already shared terms
+
+
+      // and the individual literals of the catT.shared should also be equal to the already existing
+      // terms a and x
+      catT2.args(0) == x should be (true)
+      catT2.args(1) == a should be (true)
+
+      catT2.args(0) eq x should be (false)
+      catT2.args(1) eq a should be (false)
+
+      catT2.shared.args(0) == x should be (true)
+      catT2.shared.args(1) == a should be (true)
+
+      catT2.shared.args(0) eq x should be (true)
+      catT2.shared.args(1) eq a should be (true)
+
+
+    }
+
+    it("shared negation literals should correcly reference previous cached terms") {
+      // first assume we have some shared terms In this adress space
+      val a = ConstantS("a")
+      val x = VariableS("x")
+      val catS = PredicateS("cat",x,a)
+
+
+
+      val catT = Predicate("cat",Variable("x"),Constant("a"))
+
+      val nCatT = Negation(catT)
+
+      nCatT.shared.asInstanceOf[Negation].filler == catT should be(true)
+      nCatT.shared.asInstanceOf[Negation].filler == catS should be(true)
+      val filler = nCatT.shared.asInstanceOf[Negation].filler
+      filler eq catS should be(true)
+
+
+
+      // and the individual literals of the catT.shared should also be equal to the already existing
+      // terms a and x
+//      catT2.args(0) == x should be (true)
+//      catT2.args(1) == a should be (true)
+//
+//      catT2.args(0) eq x should be (false)
+//      catT2.args(1) eq a should be (false)
+//
+//      catT2.shared.args(0) == x should be (true)
+//      catT2.shared.args(1) == a should be (true)
+//
+//      catT2.shared.args(0) eq x should be (true)
+//      catT2.shared.args(1) eq a should be (true)
+
 
     }
 

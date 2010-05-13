@@ -218,23 +218,23 @@ object StandardClause {
 case class ALCDClause(override val literals : List[FOLNode]) extends StandardClause(literals) {
   // some more assertions
 // all folnodes have to be literals
-  val isNested = literals exists ((_ match {
-    case NestedFunctionLiteral(x)  => {
-      true
-    }
-    case NestedPredicateLiteral(x)  => {
-      true
-    }
-    case _ => false
-  }))
-
-  if(isNested) {
-    error("FOL function or predicate literals passed into a ACLDFOL cannot be nested, but literals were : %s" format literals)
-  }
-
-  if(literals.size > 4) {
-    log.debug("Clause getting quite long ...")
-  }
+//  val isNested = literals exists ((_ match {
+//    case NestedFunctionLiteral(x)  => {
+//      true
+//    }
+//    case NestedPredicateLiteral(x)  => {
+//      true
+//    }
+//    case _ => false
+//  }))
+//
+//  if(isNested) {
+//    error("FOL function or predicate literals passed into a ACLDFOL cannot be nested, but literals were : %s" format literals)
+//  }
+//
+//  if(literals.size > 4) {
+//    log.debug("Clause getting quite long ...")
+//  }
 
 
   //require(literals.size > 0,"Literals cannot be empty , this would be the empty clause , use designated type")
@@ -248,40 +248,33 @@ object ALCDClause {
   def apply(params: FOLNode*): ALCDClause = {
     new ALCDClause(List(params: _*))
   }
-
   def apply(clause: FOLClause): ALCDClause = {
     new ALCDClause(clause)
   }
-
-
   def apply(clauseBuffer : ListBuffer[FOLNode]) = new ALCDClause(clauseBuffer.toList)
+}
 
-  // string based constructor using tha parser
-
-
-
-  //implicit def FOLClauseToStandardClause(x: FOLClause): StandardClause = x.asInstanceOf[StandardClause]
-
+object SharedALCDClause {
+  def apply(params: FOLNode*): ALCDClause = {
+    new ALCDClause(List(params.map(_.shared) : _*))
+  }
+  def apply(clause: FOLClause): ALCDClause = {
+    new ALCDClause(clause.literals.map(_.shared))
+  }
+  def apply(clauseBuffer : ListBuffer[FOLNode]) = new ALCDClause(clauseBuffer.toList.map(_.shared))
 }
 
 
-case class EmptyClause extends FOLClause {
-  override val literals : List[FOLNode] = Nil
+object EmptyClause extends FOLClause {
+  override lazy val literals : List[FOLNode] = Nil
 
-  override def toString = "■"
+  override lazy val toString = "■"
 
   override lazy val isEmpty = true
 
 
-  override def absoluteClause = EmptyClause()
+  override def absoluteClause = EmptyClause
 
-//  override def +(that: FOLNode) = EmptyClause()
-//
-//  override def -(that: FOLNode) = EmptyClause()
-//
-//  override def ++(that: FOLClause) = EmptyClause()
-//
-//  override def --(that: FOLClause) = EmptyClause()
 }
 
 

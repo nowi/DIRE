@@ -19,4 +19,16 @@ case class Constant(name: String) extends Term {
   }
 
 
+
+
+}
+
+object ConstantS {
+  // override default apply method in order to implement caching
+  def apply(name: String) = {
+    // create temp object
+    val temp = new Constant(name)
+    // return shared representation
+    temp.shared
+  }
 }

@@ -10,11 +10,10 @@ import scala.collection.mutable.{Map => MMap}
  */
 
 case class Function(name: String, terms: List[FOLNode]) extends Term {
+  override lazy val args = terms
+  override lazy val top = name
 
-  override val args = terms
-  override val top = name
-
-  override def arity = terms.size
+  override lazy val arity = terms.size
 
 
   lazy val vars: List[Variable] =
@@ -22,6 +21,9 @@ case class Function(name: String, terms: List[FOLNode]) extends Term {
     case v: Variable => true
     case _ => false
   }).asInstanceOf[List[Variable]]
+
+
+
 
 
   def printVars {println(vars)}
@@ -40,51 +42,33 @@ case class Function(name: String, terms: List[FOLNode]) extends Term {
   }
 
 
-
+  override def shared = {
+    // get the shared represenatations of this
+    val sharedVer = this.map {_.shared}
+    FOLNode.sharedNodes.getOrElseUpdate(sharedVer,sharedVer)
+  }
 
   override def toString = "%s%s" format (name, terms mkString ("(", ",", ")"))
-
-
-  override def logicalEquals(obj: Any) = {
-    obj match {
-      case fun: Function => {
-        assert(this match {
-          case NestedFunctionLiteral(x) => false
-          case _ => true
-        }, "Cannot be nested")
-
-        assert(obj match {
-          case NestedFunctionLiteral(x) => false
-          case _ => true
-        }, "Cannot be nested")
-        // only compare the non variable parts
-        args.filter({!_.isInstanceOf[Variable]}) == fun.args.filter({!_.isInstanceOf[Variable]})
-      }
-
-      case _ => false
-    }
-
-
-  }
 
 
 }
 
 
 object Function {
-  val cache = MMap[Function,Function]()
   // override default apply method in order to implement caching
-
-  def shared(name: String, terms: List[FOLNode]): Function = {
-    val f = new Function(name,terms)
-    cache.getOrElseUpdate(f,f)
+  def apply(name: String, params: FOLNode*) = {
+    new Function(name, List(params: _*))
   }
-
-
-  def apply(name: String, params: FOLNode*): Function = {
-//    Function.shared(name, List(params: _*))
-      Function(name, List(params: _*))
-  }
-
 }
+
+object FunctionS {
+  // override default apply method in order to implement caching
+  def apply(name: String, params: FOLNode*) = {
+    // create temp function
+    val temp = new Function(name, List(params: _*))
+    // return shared representation
+    temp.shared
+  }
+}
+
 

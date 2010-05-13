@@ -7,11 +7,6 @@ package domain.fol.ast
  */
 
 case class Negation(x: Sentence) extends Sentence {
-
-
-
-
-  // simplyfiy double negation
   val filler = x match {
     case Negation(f) => f
     case _ => x
@@ -20,6 +15,13 @@ case class Negation(x: Sentence) extends Sentence {
   val top = "-" + filler.top
 
   val args = List(filler)
+
+
+  override def shared : FOLNode = {
+    // get the shared represenatations of this
+    val sharedVer  = Negation(filler.shared)
+    FOLNode.sharedNodes.getOrElseUpdate(sharedVer,sharedVer)
+  }
 
 
   override def flatArgs: List[FOLNode] = {
@@ -41,3 +43,16 @@ case class Negation(x: Sentence) extends Sentence {
     }
   }
 }
+
+object NegationS {
+  // override default apply method in order to implement caching
+  def apply(x : Sentence) = {
+    // create temp function
+    val temp = new Negation(x)
+    // return shared representation
+    temp.shared
+  }
+}
+
+
+

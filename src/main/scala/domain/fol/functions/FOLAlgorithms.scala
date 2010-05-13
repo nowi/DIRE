@@ -14,18 +14,20 @@ object FOLAlgorithms extends helpers.Logging {
   def mgu(term1: FOLNode, term2: FOLNode): Option[Substitution] = {
     // short circuit same term
     // first pointer compare , next equals
-    if ((term1 eq term2) || (term1 == term2)) {
-      // trivial
+    if (term1 eq term2) {
+      log.ifInfo("Trivial unification detected by jvm equality")
       Some(Substitution())
-
+    } else if (term1 == term2) {
+      log.ifInfo("Trivial unification detected by OBJECT equality")
+      Some(Substitution())
     } else {
       (term1, term2) match {
         case (NegativeFOLLiteral(x), PositiveFOLLiteral(y)) => {
-          log.debug("Searching for a unfier for terms of different polarity... was this intended ?")
+          log.ifDebug("Searching for a unfier for terms of different polarity... was this intended ?")
         }
 
         case (PositiveFOLLiteral(x), NegativeFOLLiteral(y)) => {
-          log.debug("Searching for a unfier for terms of different polarity... was this intended ?")
+          log.ifDebug("Searching for a unfier for terms of different polarity... was this intended ?")
         }
 
         case _ =>
@@ -164,15 +166,22 @@ object FOLAlgorithms extends helpers.Logging {
 
 
     // shourt cut the trivial matcher
-    if ((term1 eq term2) || (term1 == term2)) {
+    if (term1 eq term2) {
+      log.ifDebug("Matched terms %s and %s by jvm identity",term1,term2)
       Some(Map())
-    } else {
+    } else if (term1 == term2) {
+      log.ifDebug("Matched terms %s and %s by structural identity",term1,term2)
+      Some(Map())
+    }
+    else {
       // the order is important !
       var s = term1
       var t = term2
-      var context: Context = Context()
+
 
       var matches = true
+
+      var context: Context = null
 
       // initialize a mutable stack
       val stack = new Stack[FOLNode]()
@@ -211,6 +220,7 @@ object FOLAlgorithms extends helpers.Logging {
             }
 
             case (variable: Variable, _) => {
+             if(context==null)context = Context()
 
               context.binding(variable) match {
                 case None => {

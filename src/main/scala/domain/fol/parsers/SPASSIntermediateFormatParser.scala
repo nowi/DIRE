@@ -135,6 +135,16 @@ object SPASSIntermediateFormatParser extends StandardTokenParsers with Logging {
     case "clause" ~ "(" ~ c ~ "," ~ l ~ ")." => ALCDClause(c.args: _*)
   }
 
+
+  def sharedClauselist: Parser[List[FOLClause]] = "listofclauses" ~ "(" ~ origintype ~ "," ~ clausetype ~ ")." ~ rep(sharedClause) ~ "endoflist" ~ ". " ^^ {
+    case "listofclauses" ~ "(" ~ co ~ "," ~ ct ~ ")." ~ clauses ~ "endoflist" ~ ". " => clauses
+  }
+
+
+  def sharedClause: Parser[ALCDClause] = "clause" ~ "(" ~ (cnfclause | dnfclause) ~ "," ~ label ~ ")." ^^ {
+    case "clause" ~ "(" ~ c ~ "," ~ l ~ ")." => ALCDClause(c.args.map(_.shared) : _*)
+  }
+
   def clausetype = "cnf" | "dnf"
 
 
@@ -269,11 +279,42 @@ object SPASSIntermediateFormatParser extends StandardTokenParsers with Logging {
 
     }
 
+  def parseClauseStoreShared(dsl: String): Option[List[FOLClause]] =
+    {
+      val tokens = new lexical.Scanner(convertInput(dsl))
+      phrase(sharedClauselist)(tokens) match {
+        case Success(tree, _) => {
+          Some(tree)
+
+        }
+        case e: NoSuccess => {
+          Console.err.println(e)
+          None
+        }
+      }
+
+
+    }
+
 
   def parseFromFile(file: File): List[FOLClause] = {
     val lines = scala.io.Source.fromFile(file).mkString
     val text: String = lines // parse
     val clauses = SPASSIntermediateFormatParser.parseClauseStore(text)
+
+    clauses match {
+      case None => throw new IllegalStateException("Could not load clauses from file")
+      case Some(clauses) => {
+        clauses
+      }
+    }
+
+  }
+
+  def parseSharedFromFile(file: File): List[FOLClause] = {
+    val lines = scala.io.Source.fromFile(file).mkString
+    val text: String = lines // parse
+    val clauses = SPASSIntermediateFormatParser.parseClauseStoreShared(text)
 
     clauses match {
       case None => throw new IllegalStateException("Could not load clauses from file")

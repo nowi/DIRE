@@ -9,8 +9,8 @@ package domain.fol.ast
 case class Variable(name: String) extends Term {
 
   // is not complex, therefore no arguments
-  override val top = name
-  override val args = List(this)
+  override lazy val top = name
+  override lazy val args = List(this)
 
   override def toString = name
 
@@ -32,19 +32,24 @@ object Variable {
     defaultVariableCounter += 1
     Variable("x_" + defaultVariableCounter)
   }
-
-
-
-
-
-
 }
+
+object VariableS {
+  // override default apply method in order to implement caching
+  def apply(name: String) = {
+    // create temp object
+    val temp = new Variable(name)
+    // return shared representation
+    temp.shared
+  }
+}
+
 
 case class IndicatorVariable(override val name: String) extends Variable(name) {
   // make default constructor private
 
-  override val top = name
-  override val args = List(this)
+  override lazy val top = name
+  override lazy val args = List(this)
 
   override def toString = name
 
@@ -60,16 +65,19 @@ object IndicatorVariable {
   //val randomizer: Random = new Random(System.currentTimeMillis)
 
   // default factory method
-  def apply(index: Int): IndicatorVariable = {
-    IndicatorVariable("*_" + index)
+  def apply(index: Int) = {
+    // create temp object
+    val temp = new IndicatorVariable("*_" + index)
+    // return shared representation
+    temp.shared
   }
 
-  def rangeTo(ceiling: Int): List[IndicatorVariable] = {
+  def rangeTo(ceiling: Int) = {
     (for (index <- 0 until ceiling)
     yield IndicatorVariable(index)).toList
   }
 
-  def rangeFromTo(floor: Int,ceiling: Int): List[IndicatorVariable] = {
+  def rangeFromTo(floor: Int,ceiling: Int)  = {
     (for (index <- floor until ceiling)
     yield IndicatorVariable(index)).toList
   }
