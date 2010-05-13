@@ -13,7 +13,7 @@ import selection.{DALCRSelector, LiteralSelection}
 import sun.reflect.generics.reflectiveObjects.NotImplementedException
 
 import FOLAlgorithms._
-
+import scala.collection.mutable.{Map => MMap}
 
 class DALCResolver(env: {val inferenceRecorder: ClauseRecording; val recordProofSteps: Boolean; val standardizer: Standardizing; val selector: LiteralSelection; val literalComparator: LiteralComparison; val uniqueLiteralResolver: UniqueLiteralResolution}) extends BinaryResolution with Logging {
   val standardizer = env.standardizer
@@ -23,6 +23,14 @@ class DALCResolver(env: {val inferenceRecorder: ClauseRecording; val recordProof
   val inferenceRecorder = env.inferenceRecorder
   implicit val uniqueLiteralResolver = env.uniqueLiteralResolver.apply _
   // some invariants , dalc resolver needs compatible selection and comperator
+
+  // chache for maximal literalas
+  val maxLitCache : MMap[FOLClause,Option[FOLNode]] = MMap()
+  val uniqueRLitCache : MMap[FOLClause,Option[FOLNode]] = MMap()
+  val selectedLitCache : MMap[FOLClause,Option[FOLNode]] = MMap()
+
+
+
 
   //require(literalComparator.isInstanceOf[ALCLPOComparator])
 
@@ -57,7 +65,7 @@ class DALCResolver(env: {val inferenceRecorder: ClauseRecording; val recordProof
   private def applyWithIndexedStorage(a: FOLClause, clauses: ClauseStorage with UnifiableClauseRetrieval): Iterable[BinaryResolutionResult] = {
 
 
-    val results: Iterable[BinaryResolutionResult] = a.uniqueResolvableLit match {
+    val results: Iterable[BinaryResolutionResult] = uniqueRLitCache.getOrElseUpdate(a,a.uniqueResolvableLit) match {
       case (Some(aUrLit)) => {
 
         
