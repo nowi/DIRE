@@ -160,7 +160,7 @@ trait STIndex extends MutableClauseStorage
 
         // extract only leaf nodes
         val leafNodes = nodes.filter(_ match {
-          case LeafNode(_, _) => true
+          case LeafNode(_, _,_) => true
           case _ => false
         }).asInstanceOf[List[LeafNode]]
         // extract the stored terms
@@ -173,7 +173,7 @@ trait STIndex extends MutableClauseStorage
         val nodes = negTree.retrieveUnifiable(queryS)
         // extract only leaf nodes
         val leafNodes = nodes.filter(_ match {
-          case LeafNode(_, _) => true
+          case LeafNode(_, _,_) => true
           case _ => false
         }).asInstanceOf[List[LeafNode]]
         // extract the stored terms
@@ -195,7 +195,7 @@ trait STIndex extends MutableClauseStorage
         val nodes = posTree.retrieveUnifiable(queryS)
         // extract only leaf nodes
         val leafNodes = nodes.filter(_ match {
-          case LeafNode(_, _) => true
+          case LeafNode(_, _,_) => true
           case _ => false
         }).asInstanceOf[List[LeafNode]]
         // extract the stored terms
@@ -208,7 +208,7 @@ trait STIndex extends MutableClauseStorage
         val nodes = negTree.retrieveUnifiable(queryS)
         // extract only leaf nodes
         val leafNodes = nodes.filter(_ match {
-          case LeafNode(_, _) => true
+          case LeafNode(_, _,_) => true
           case _ => false
         }).asInstanceOf[List[LeafNode]]
         // extract the stored terms
@@ -323,7 +323,7 @@ trait STHeadIndex extends MutableClauseStore
 
     // extract only leaf nodes
     val leafNodes = nodes.filter(_ match {
-      case LeafNode(_, _) => true
+      case LeafNode(_, _,_) => true
       case _ => false
     }).asInstanceOf[List[LeafNode]]
 
@@ -538,7 +538,7 @@ trait SForrestIndex extends MutableClauseStorage
             val nodes = tree.retrieveUnifiable(queryS)
             // extract only leaf nodes
             val leafNodes = nodes.filter(_ match {
-              case LeafNode(_, _) => true
+              case LeafNode(_, _,_) => true
               case _ => false
             }).asInstanceOf[List[LeafNode]]
             // extract the stored terms
@@ -558,7 +558,7 @@ trait SForrestIndex extends MutableClauseStorage
             val nodes = tree.retrieveUnifiable(queryS)
             // extract only leaf nodes
             val leafNodes = nodes.filter(_ match {
-              case LeafNode(_, _) => true
+              case LeafNode(_, _,_) => true
               case _ => false
             }).asInstanceOf[List[LeafNode]]
             // extract the stored terms
@@ -590,7 +590,7 @@ trait SForrestIndex extends MutableClauseStorage
             val nodes = tree.retrieveInstances(queryS)
             // extract only leaf nodes
             val leafNodes = nodes.filter(_ match {
-              case LeafNode(_, _) => true
+              case LeafNode(_, _,_) => true
               case _ => false
             }).asInstanceOf[List[LeafNode]]
             // extract the stored terms
@@ -610,7 +610,7 @@ trait SForrestIndex extends MutableClauseStorage
             val nodes = tree.retrieveInstances(queryS)
             // extract only leaf nodes
             val leafNodes = nodes.filter(_ match {
-              case LeafNode(_, _) => true
+              case LeafNode(_, _,_) => true
               case _ => false
             }).asInstanceOf[List[LeafNode]]
             // extract the stored terms
@@ -636,7 +636,7 @@ trait SForrestIndex extends MutableClauseStorage
             val nodes = tree.retrieveGeneral(queryS)
             // extract only leaf nodes
             val leafNodes = nodes.filter(_ match {
-              case LeafNode(_, _) => true
+              case LeafNode(_, _,_) => true
               case _ => false
             }).asInstanceOf[List[LeafNode]]
             // extract the stored terms
@@ -656,7 +656,7 @@ trait SForrestIndex extends MutableClauseStorage
             val nodes = tree.retrieveGeneral(queryS)
             // extract only leaf nodes
             val leafNodes = nodes.filter(_ match {
-              case LeafNode(_, _) => true
+              case LeafNode(_, _,_) => true
               case _ => false
             }).asInstanceOf[List[LeafNode]]
             // extract the stored terms

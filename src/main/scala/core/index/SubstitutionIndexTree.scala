@@ -5,7 +5,6 @@ import domain.fol.ast._
 import domain.fol.functions.FOLAlgorithms._
 import domain.fol.Substitution._
 import domain.fol.{DU, Substitution, Singleton}
-import domain.fol.{Substitution}
 import helpers.HelperFunctions
 import scala.{Function => ScalaFun}
 import sun.reflect.generics.reflectiveObjects.NotImplementedException
