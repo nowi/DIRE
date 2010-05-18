@@ -1,6 +1,6 @@
 package domain.fol
 
-
+import scala.collection.mutable.{Map => MMap}
 import ast.{FOLNode, Variable}
 import collection.MapProxy
 
@@ -10,10 +10,10 @@ import collection.MapProxy
  * Time: 16:15:12
  */
 
-case class Context(override val self:Map[Variable,FOLNode]) extends MapProxy[Variable,FOLNode] {
+case class Context(override val self:MMap[Variable,FOLNode]) extends MapProxy[Variable,FOLNode] {
 
   def bind(variable : Variable,term : FOLNode)  = {
-    Context(self ++ Map(variable -> term))
+    self.put(variable,term)
   }
 
   def binding(variable : Variable) : Option[FOLNode]= {
@@ -31,5 +31,5 @@ case class Context(override val self:Map[Variable,FOLNode]) extends MapProxy[Var
 }
 
 object Context {
-  def apply() : Context = Context(Map())
+  def apply() : Context = Context(MMap())
 }

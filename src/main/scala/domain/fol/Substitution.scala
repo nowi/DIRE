@@ -16,7 +16,7 @@ import FOLAlgorithms._
  * Time: 13:24:29
  */
 
-case class Substitution(override val self: Map[Variable, FOLNode]) extends MapProxy[Variable, FOLNode] {
+case class Substitution(override val self: MMap[Variable, FOLNode]) extends MapProxy[Variable, FOLNode] {
   lazy val domain: List[Variable] = keys.toList
 
   lazy val codomain: List[FOLNode] = values.toList
@@ -34,7 +34,7 @@ case class Substitution(override val self: Map[Variable, FOLNode]) extends MapPr
   def restrict(u: List[Variable]): Substitution = {
     // restrict the substituion that agrees with u on the this substitution
     // filter out all mappings that are not part of u
-    this.filter({case (variable, term) => u.contains(variable)})
+    this.filter({case (variable, term) => u.contains(variable)}).asInstanceOf[Substitution]
 
   }
 
@@ -75,7 +75,7 @@ case class Substitution(override val self: Map[Variable, FOLNode]) extends MapPr
 
     // now each term in this substitution with the substituon build up in tempSub
     val transformed = this.map({case (variable, term) => (variable -> term.rewrite(tempSub))})
-    transformed
+    transformed.asInstanceOf[Substitution]
   }
 
   // add a new single mapping into substituion , must not have variable contained in domain(this)
@@ -98,7 +98,7 @@ case class Substitution(override val self: Map[Variable, FOLNode]) extends MapPr
     // first apply the substititons to the images
     val sMapd = (s map ({case (xi, si) => (xi -> si.rewrite(r))}))
     val rMapd = (r.filter({case (yi, ti) => (r.domain -- s.domain).contains(yi)}))
-    sMapd ++ rMapd
+    (sMapd ++ rMapd).asInstanceOf[Substitution]
   }
 
   // join
@@ -108,7 +108,7 @@ case class Substitution(override val self: Map[Variable, FOLNode]) extends MapPr
     // first apply the substititons to the images
     val sMapd = (s map ({case (xi, si) => (xi -> si.rewrite(r))}))
     val rMapd = (r.filter({case (yi, ti) => (r.domain -- s.image).contains(yi)}))
-    sMapd ++ rMapd
+    (sMapd ++ rMapd).asInstanceOf[Substitution]
 
   }
 }
@@ -145,7 +145,11 @@ object NonTrivialSubstitution {
 
 
 object Substitution {
-  def apply(): Substitution = Map()
+  def apply(): Substitution = MMap()
+
+  def apply(immutable : Map[Variable,FOLNode]) : Substitution = {
+    Substitution(MMap() ++ immutable)
+  }
 
   //  def apply(iter : Seq[Tuple2[Variable,FOLNode]]): Substitution = Substitution(Map[Variable,FOLNode](iter :_*))
 
@@ -288,21 +292,25 @@ object Substitution {
 
 
   implicit def iterableToSubs(iter: Iterable[Tuple2[Variable, FOLNode]]): Substitution = {
-    Substitution(Map(iter.toSeq: _*))
+    Substitution(MMap() ++ iter)
   }
 
   implicit def tupleToSubs(tuple: Tuple2[Variable, FOLNode]): Substitution = {
-    Substitution(Map(tuple))
+    Substitution(MMap(tuple))
 
   }
+
+
 
 
   implicit def subsToTuples(sub: Substitution): Iterable[Tuple2[Variable, FOLNode]] = {
     sub.toList
   }
 
-  implicit def tuplesToSubs[B <: FOLNode](tuples: List[Tuple2[Variable, B]]): Substitution = {
-    Substitution((Map[Variable, B]() /: tuples)(_ + _))
+  implicit def tuplesToSubs(tuples: List[Tuple2[Variable, FOLNode]]): Substitution = {
+
+//    Substitution((MMap[Variable, B]() /: tuples)(_ + _))
+    Substitution(MMap[Variable, FOLNode]() ++ tuples)
 
   }
 

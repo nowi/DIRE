@@ -3,7 +3,7 @@ package domain.fol.functions
 
 import ast._
 import collection.mutable.Stack
-
+import scala.collection.mutable.{Map => MMap}
 /**
  * User: nowi
  * Date: 01.04.2010
@@ -16,10 +16,10 @@ object FOLAlgorithms extends helpers.Logging {
     // first pointer compare , next equals
     if (term1 eq term2) {
       log.ifInfo("Trivial unification detected by jvm equality")
-      Some(Substitution())
+      Some(MMap.empty)
     } else if (term1 == term2) {
       log.ifInfo("Trivial unification detected by OBJECT equality")
-      Some(Substitution())
+      Some(MMap.empty)
     } else {
       (term1, term2) match {
         case (NegativeFOLLiteral(x), PositiveFOLLiteral(y)) => {
@@ -112,7 +112,7 @@ object FOLAlgorithms extends helpers.Logging {
               unifies = false
               stack.clear
             } else {
-              cT = cT.bind(variable, t)
+              cT.bind(variable, t)
               // loop
               dopop = true
             }
@@ -124,7 +124,7 @@ object FOLAlgorithms extends helpers.Logging {
               unifies = false
               stack.clear
             } else {
-              cS = cS.bind(variable, s)
+              cS.bind(variable, s)
               // loop
               dopop = true
             }
@@ -186,10 +186,10 @@ object FOLAlgorithms extends helpers.Logging {
     // shourt cut the trivial matcher
     if (term1 eq term2) {
       log.ifDebug("Matched terms %s and %s by jvm identity",term1,term2)
-      Some(Map())
+      Some(Substitution())
     } else if (term1 == term2) {
       log.ifDebug("Matched terms %s and %s by structural identity",term1,term2)
-      Some(Map())
+      Some(Substitution())
     }
     else {
       // the order is important !
@@ -258,7 +258,7 @@ object FOLAlgorithms extends helpers.Logging {
 
               context.binding(variable) match {
                 case None => {
-                  context = context.bind(variable, t)
+                  context.bind(variable, t)
                 }
 
                 case Some(binding) if (binding != t) => {
