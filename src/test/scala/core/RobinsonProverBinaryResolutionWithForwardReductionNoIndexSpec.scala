@@ -478,8 +478,8 @@ class RobinsonProverMergedALCDResolutionWithReductionFeatureVectorImperfectIndex
 
 
     // usable clause store with STI indexes
-    def usableClauseStore = new MutableClauseStore with LightestClauseHeuristicStorage with HashMapIndex
-    def workedOffClauseStore = new MutableClauseStore with ListBufferStorage with HashMapIndex
+    def usableClauseStore = new MutableClauseStore with LightestClauseHeuristicStorage with FeatureVectorImperfectIndex
+    def workedOffClauseStore = new MutableClauseStore with ListBufferStorage with FeatureVectorImperfectIndex
 
     // switches
     // TODO enable all reductions

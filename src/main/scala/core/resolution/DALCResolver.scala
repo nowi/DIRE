@@ -25,9 +25,9 @@ class DALCResolver(env: {val inferenceRecorder: ClauseRecording; val recordProof
   // some invariants , dalc resolver needs compatible selection and comperator
 
   // chache for maximal literalas
-  val maxLitCache : MMap[FOLClause,Option[FOLNode]] = MMap()
-  val uniqueRLitCache : MMap[FOLClause,Option[FOLNode]] = MMap()
-  val selectedLitCache : MMap[FOLClause,Option[FOLNode]] = MMap()
+  val maxLitCache: MMap[FOLClause, Option[FOLNode]] = MMap()
+  val uniqueRLitCache: MMap[FOLClause, Option[FOLNode]] = MMap()
+  val selectedLitCache: MMap[FOLClause, Option[FOLNode]] = MMap()
 
 
 
@@ -40,7 +40,7 @@ class DALCResolver(env: {val inferenceRecorder: ClauseRecording; val recordProof
 
   override def apply(a: FOLClause, b: ClauseStorage): Iterable[BinaryResolutionResult] = {
     b match {
-      
+
       case indexedClauseStorage: ClauseStorage with UnifiableClauseRetrieval => {
         // we have a structure that supports unifiables clause retrieval
         // get the unifiable clauses for each literal ( this is not a perfect filtering
@@ -65,10 +65,10 @@ class DALCResolver(env: {val inferenceRecorder: ClauseRecording; val recordProof
   private def applyWithIndexedStorage(a: FOLClause, clauses: ClauseStorage with UnifiableClauseRetrieval): Iterable[BinaryResolutionResult] = {
 
 
-    val results: Iterable[BinaryResolutionResult] = uniqueRLitCache.getOrElseUpdate(a,a.uniqueResolvableLit) match {
+    val results: Iterable[BinaryResolutionResult] = uniqueRLitCache.getOrElseUpdate(a, a.uniqueResolvableLit) match {
       case (Some(aUrLit)) => {
 
-        
+
 
         // resolve on unique literal
         // check if clause a is main or sidepremise
@@ -100,29 +100,32 @@ class DALCResolver(env: {val inferenceRecorder: ClauseRecording; val recordProof
                 val (aPosS: FOLNode, bNegS: Negation) = (aPos.rewrite(aSubst), bNeg.rewrite(bSubst))
 
                 // get the unifier
-                val mu = mgu(aPosS, bNegS.negate) match {
-                  case Some(m) => m
+                mgu(aPosS, bNegS.negate) match {
+                  case Some(mu) => {
+                    log.ifDebug("MGU for Literal : %s and Literal %s is %s", aPosS, bNegS, mu)
+                    val S1: FOLClause = aS.rewrite(mu)
+                    val aLitS: FOLNode = aPosS.rewrite(mu)
+                    val S2: FOLClause = bS.rewrite(mu)
+                    val bLitS: FOLNode = bNegS.rewrite(mu)
+                    val resolved = ((S1 - aLitS) ++ (S2 - bLitS))
+                    if (resolved.isEmpty) {
+                      log.ifInfo("Derived empty clause")
+                    }
+
+                    // reverse renamings
+                    if (!renamings.isEmpty)
+                      SuccessfullResolution(ALCDClause(resolved).rewrite(renamings), ALCDClause(a).rewrite(renamings), ALCDClause(b).rewrite(renamings))
+                    else
+                      SuccessfullResolution(resolved, a, b)
+
+
+                  }
                   case None => {
+                    FailedResolution(a, Some(b))
                     // this should not happe
-                    error("Could not unfiy , but was retrieved as unifiable .. this cannot be")
+                    //error("Could not unfiy , but was retrieved as unifiable .. this should not happen with perfect filtering")
                   }
                 }
-
-                log.ifDebug("MGU for Literal : %s and Literal %s is %s", aPosS, bNegS, mu)
-                val S1: FOLClause = aS.rewrite(mu)
-                val aLitS: FOLNode = aPosS.rewrite(mu)
-                val S2: FOLClause = bS.rewrite(mu)
-                val bLitS: FOLNode = bNegS.rewrite(mu)
-                val resolved = ((S1 - aLitS) ++ (S2 - bLitS))
-                if (resolved.isEmpty) {
-                  log.ifInfo("Derived empty clause")
-                }
-
-                // reverse renamings
-                if (!renamings.isEmpty)
-                  SuccessfullResolution(ALCDClause(resolved).rewrite(renamings), ALCDClause(a).rewrite(renamings), ALCDClause(b).rewrite(renamings))
-                else
-                  SuccessfullResolution(resolved, a, b)
 
 
               } else {
@@ -156,32 +159,32 @@ class DALCResolver(env: {val inferenceRecorder: ClauseRecording; val recordProof
 
                 // get thte unifier
                 // get the unifier
-                val mu = mgu(bNegS.negate, aPosS) match {
-                  case Some(m) => m
+                mgu(bNegS.negate, aPosS) match {
+                  case Some(mu) => {
+                    log.ifDebug("MGU for Literal : %s and Literal %s is %s", aPosS, bNegS, mu)
+                    val S1: FOLClause = aS.rewrite(mu)
+                    val aLitS: FOLNode = aPosS.rewrite(mu)
+                    val S2: FOLClause = bS.rewrite(mu)
+                    val bLitS: FOLNode = bNegS.rewrite(mu)
+                    val resolved = ((S1 - aLitS) ++ (S2 - bLitS))
+                    if (resolved.isEmpty) {
+                      log.info("Derived empty clause")
+                    }
+
+                    // reverse renamings
+                    if (!renamings.isEmpty)
+                      SuccessfullResolution(ALCDClause(resolved).rewrite(renamings), ALCDClause(a).rewrite(renamings), ALCDClause(b).rewrite(renamings))
+                    else
+                      SuccessfullResolution(resolved, a, b)
+
+
+                  }
                   case None => {
-                    // this should not happe
-                    error("Could not unfiy , but was retrieved as unifiable .. this cannot be")
+                    FailedResolution(a, Some(b))
+                    // this should not happen with perfect filtering
+                    //error("Could not unfiy , but was retrieved as unifiable .. this cannot be")
                   }
                 }
-
-
-
-
-                log.ifDebug("MGU for Literal : %s and Literal %s is %s", aPosS, bNegS, mu)
-                val S1: FOLClause = aS.rewrite(mu)
-                val aLitS: FOLNode = aPosS.rewrite(mu)
-                val S2: FOLClause = bS.rewrite(mu)
-                val bLitS: FOLNode = bNegS.rewrite(mu)
-                val resolved = ((S1 - aLitS) ++ (S2 - bLitS))
-                if (resolved.isEmpty) {
-                  log.info("Derived empty clause")
-                }
-
-                // reverse renamings
-                if (!renamings.isEmpty)
-                  SuccessfullResolution(ALCDClause(resolved).rewrite(renamings), ALCDClause(a).rewrite(renamings), ALCDClause(b).rewrite(renamings))
-                else
-                  SuccessfullResolution(resolved, a, b)
 
 
               } else {
