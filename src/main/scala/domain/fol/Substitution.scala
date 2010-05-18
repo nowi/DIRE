@@ -85,7 +85,9 @@ case class Substitution(override val self: Map[Variable, FOLNode]) extends MapPr
       this
     else {
       require(substitution.size == 1, "Cannot add Substitions that contain more then one element use ++")
-      require(!domain.contains(substitution.toList.head._1), "must not have variable contained in domain(this)")
+      if(domain.contains(substitution.toList.head._1)) {
+        require(!domain.contains(substitution.toList.head._1), "must not have variable contained in domain(this)")
+      }
       Substitution(self + substitution.toList.head.asInstanceOf[Tuple2[Variable, FOLNode]])
     }
   }

@@ -1,12 +1,15 @@
 package domain.fol.ast
 
+
+import helpers.Logging
+
 /**
  * User: nowi
  * Date: 25.09.2009
  * Time: 16:22:17
  */
 
-case class Variable(name: String) extends Term {
+case class Variable(name: String) extends Term with Logging{
 
   // is not complex, therefore no arguments
   override lazy val top = name
@@ -23,7 +26,7 @@ case class Variable(name: String) extends Term {
 
 }
 
-object Variable {
+object Variable extends Logging{
   //val randomizer: Random = new Random(System.currentTimeMillis)
   var defaultVariableCounter = 0
 
@@ -32,6 +35,17 @@ object Variable {
     defaultVariableCounter += 1
     Variable("x_" + defaultVariableCounter)
   }
+
+  def nextAuxiliary(variables : List[Variable]) = {
+
+    // TODO need a unique marker variable here
+    //val newPathUniqueHash = variables.removeDuplicates.s(_.hashCode).foldLeft(seed)(_ + _)
+    val newPathUniqueHash = variables.removeDuplicates.size + 1
+    Variable("x_" + newPathUniqueHash)
+
+  }
+
+
 }
 
 object VariableS {

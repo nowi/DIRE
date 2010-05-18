@@ -45,17 +45,21 @@ class FirstFitHeuristicSpec extends Spec with ShouldMatchers with Logging {
 
       val B = A.insert(f(y, g(b)))
       (B match {
-        case LeafNode(s,_) => {
+        case LeafNode(s,_,_) => {
           log.info("Substitution at B is %s", s)
           true
         }
-        case _ => false
+        case _ => {
+          log.info("B is %s", B)
+          false
+        }
+
       } ) should be(true)
 
 
       val C = B.insert(f(a, b))
       (C match {
-        case InnerNode(s,children)  => {
+        case InnerNode(s,children,_)  => {
           log.info("Substitution at C is %s", s)
           log.info("Children at C are %s", children)
           true
@@ -71,7 +75,7 @@ class FirstFitHeuristicSpec extends Spec with ShouldMatchers with Logging {
 
       val D = C.insert(f(c, g(d)))
       (D match {
-        case InnerNode(s,children)  => {
+        case InnerNode(s,children,_)  => {
           log.info("Substitution at D is %s", s)
           log.info("Children at D are %s", children)
           true

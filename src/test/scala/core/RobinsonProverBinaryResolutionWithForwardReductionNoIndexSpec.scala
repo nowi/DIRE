@@ -437,3 +437,59 @@ class RobinsonProverMergedALCDResolutionWithReductionSTIIndexSpec extends Confer
 
   override def createProver = new RobinsonProver(config)
 }
+
+
+@RunWith(classOf[JUnit4Runner])
+class RobinsonProverMergedALCDResolutionWithReductionFeatureVectorImperfectIndexSpec extends ConferenceMergedProvingSpec {
+  // create the configuration here
+  val config = new Object {
+    Configgy.configure("config/config.conf")
+
+
+
+    // the initial clause store
+
+    lazy val variableRewriter = new VariableRewriter
+    lazy val standardizer = new Standardizer(this)
+
+
+    // unique literal resolver
+    lazy val uniqueLiteralResolver = new DALCUniqueLiteralResolver(this)
+
+    // ordered resolution needs comparator and selection
+    lazy val precedence = new CustomConferencePartitionedPrecedence
+    lazy val literalComparator = new ALCLPOComparator(this)
+    lazy val selector = new DALCRSelector()
+
+    // forward subsumer WITH index support
+    lazy val forwardSubsumer = ForwardSubsumer
+
+    // the backwardsubsumer
+    lazy val backwardSubsumer = BackwardSubsumer
+
+
+    // positive factorer
+    lazy val positiveFactorer = new core.resolution.PositiveOrderedFactoring(this)
+
+    // ACL resolver
+    lazy val resolver = new DALCResolver(this)
+    lazy val subsumptionStrategy = StillmannSubsumer
+    lazy val inferenceRecorder = new NaiveClauseRecorder
+
+
+    // usable clause store with STI indexes
+    def usableClauseStore = new MutableClauseStore with LightestClauseHeuristicStorage with HashMapIndex
+    def workedOffClauseStore = new MutableClauseStore with ListBufferStorage with HashMapIndex
+
+    // switches
+    // TODO enable all reductions
+
+    val recordProofSteps = true
+
+    // hard time limit
+    val timeLimit: Long = 0;
+
+  }
+
+  override def createProver = new RobinsonProver(config)
+}

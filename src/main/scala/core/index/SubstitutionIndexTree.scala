@@ -5,6 +5,8 @@ import domain.fol.ast._
 import domain.fol.functions.FOLAlgorithms._
 import domain.fol.Substitution._
 import domain.fol.{DU, Substitution, Singleton}
+import domain.fol.{Substitution}
+import helpers.HelperFunctions
 import scala.{Function => ScalaFun}
 import sun.reflect.generics.reflectiveObjects.NotImplementedException
 
@@ -16,6 +18,9 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException
 
 
 object SubstitutionIndexTree {
+
+  val reservedQueryVar = Variable("queryV")
+
 
   /* standard retrieval
   The search in the index is started for a si ngle substitution which in this context
@@ -180,7 +185,7 @@ object SubstitutionIndexTree {
           val p = s2
 
           // take head of p , dont intrested in rest ... TODO check tthis
-          val l = LMSCG((r join childSub), p.toList.head)
+          val l = LMSCG((r join childSub), p.toList.head,Nil)
           l match {
             case Some((generalization, specialization1, specialization2)) if (!generalization.isEmpty) => {
               val t = (generalization, specialization1, specialization2)
@@ -259,11 +264,11 @@ object SubstitutionIndexTree {
         //println("RULE 6.14 FIRED")
         // rule 6.14 p173 Term Indexing - Peter Graf ( LNCS 1053 )
         // a new leaf node is created
-        LeafNode(p, List(term))
+        LeafNode(p, List(term),p.domain)
 
       }
 
-      case (LeafNode(r, terms), p) if (isVariantSubs(r, p)) => {
+      case (LeafNode(r,terms,bav), p) if (isVariantSubs(r, p)) => {
         //println("RULE 6.15 FIRED")
         // rule 6.15 -- An existing leaf node is returned if p corresponds to a variant
         // substitution which has already been inserted
@@ -271,7 +276,7 @@ object SubstitutionIndexTree {
       }
 
       // inner nodes :
-      case (InnerNode(r, children), p) if ((isVariantSubs(r, p) && (firstFitHeuristic(tree, p) match {
+      case (InnerNode(r, children,bav), p) if ((isVariantSubs(r, p) && (firstFitHeuristic(tree, p) match {
         case EmptyTree() => false
         case _ => true
       }))) => {
@@ -281,38 +286,41 @@ object SubstitutionIndexTree {
         val vs = variants(r, p).get
 
         // 6.16 -- If a variant node is found AND heuristic found a child node
-        InnerNode(r, List(insert(nextNode, p compose vs, term, r.image ++ (openVariables -- r.domain))) ::: otherChildren)
+        InnerNode(r, List(insert(nextNode, p compose vs, term, r.image ++ (openVariables -- r.domain))) ::: otherChildren,r.domain)
 
       }
 
-      case (InnerNode(r, children), p) if ((isVariantSubs(r, p) && (firstFitHeuristic(tree, p) match {
+      case (InnerNode(r, children,bav), p) if ((isVariantSubs(r, p) && (firstFitHeuristic(tree, p) match {
         case EmptyTree() => true
         case _ => false
       }))) => { // 6.17
         // Inner node , and the heuristic returned the empty tree --> a new leaf node is created
         val vs = variants(r, p).get
         val restr = r.image ++ (openVariables -- r.domain)
-        InnerNode(r, List(LeafNode((p compose vs).restrict(restr), List(term))) ::: children) // TODO RESTRICTION IS USED HERE !!!
+        val leafSub = (p compose vs).restrict(restr)
+        InnerNode(r, List(LeafNode(leafSub, List(term),bav ++ leafSub.domain)) ::: children,r.domain) // TODO RESTRICTION IS USED HERE !!!
       }
 
-      case (InnerNode(r, children), p) if (LMSCG(r, p).isDefined) => { // 6.18
+      case (InnerNode(r, children,bav), p) if (LMSCG(r, p,bav).isDefined) => { // 6.18
         // non variant node
         // create new innernode and a new leaf node
-        val (mu, s1, s2) = LMSCG(r, p).get
+        val (mu, s1, s2) = LMSCG(r, p,bav).get
 
         val restr = (openVariables -- r.domain)
-        InnerNode(mu, List(InnerNode(s1, children), LeafNode(s2 + p.restrict(restr), List(term)))) // p is restricted here
+        val rightChildSub = s2 + p.restrict(restr)
+        InnerNode(mu, List(InnerNode(s1, children,bav ++ mu.domain ++ s1.domain), LeafNode(rightChildSub, List(term),bav ++ mu.domain ++ rightChildSub.domain)),bav) // p is restricted here
 
       }
 
-      case (LeafNode(r, terms), p) if (LMSCG(r, p).isDefined) => { // 6.18
+      case (LeafNode(r, terms,bav), p) if (LMSCG(r, p,bav).isDefined) => { // 6.18
         // non variant node
         // create new innernode and a new leaf node
-        val (mu, s1, s2) = LMSCG(r, p).get
+        val (mu, s1, s2) = LMSCG(r, p,bav).get
 
         val restr = (openVariables -- r.domain)
         val prestr = p.restrict(restr)
-        InnerNode(mu, List(LeafNode(s1, terms), LeafNode(s2 + prestr, List(term)))) // p is restricted here
+        val rightChildSub = s2 + prestr
+        InnerNode(mu, List(LeafNode(s1, terms,bav ++ mu.domain ++ s1.domain), LeafNode(rightChildSub, List(term),bav ++ mu.domain ++ rightChildSub.domain)),bav) // p is restricted here
 
       }
 
@@ -350,13 +358,16 @@ sealed trait SubstitutionIndexTree {
   // substition saved in the current node
   val substitution: Option[Substitution]
 
+
+  val boundAuxiliaryVariables : List[Variable]
+
   val children: List[SubstitutionIndexTree]
 
   def substitutions: Set[Substitution] = {
     // substititutions savad in the substrees
     this match {
-      case LeafNode(s, _) => Set(s)
-      case InnerNode(s, subtrees) => {
+      case LeafNode(s, _,_) => Set(s)
+      case InnerNode(s, subtrees,_) => {
         subtrees.map(_.substitutions).foldLeft(Set(s))(_ ++ _)
       }
       case t: EmptyTree => {
@@ -417,12 +428,14 @@ sealed trait SubstitutionIndexTree {
 
 
 case class EmptyTree() extends SubstitutionIndexTree {
+  override val boundAuxiliaryVariables = Nil
   override val children = Nil
   override val substitution = None
 }
 
 // A leaf node.
-case class LeafNode(s: Substitution, val terms: List[FOLNode]) extends SubstitutionIndexTree {
+case class LeafNode(s: Substitution, val terms: List[FOLNode],override val boundAuxiliaryVariables : List[Variable]) extends SubstitutionIndexTree {
+  // add the variables of s domain to the already bound auxvariables
   override val substitution = Some(s)
   override val children = Nil
 
@@ -430,7 +443,7 @@ case class LeafNode(s: Substitution, val terms: List[FOLNode]) extends Substitut
 
 
 // A inner node.
-case class InnerNode(s: Substitution, override val children: List[SubstitutionIndexTree]) extends SubstitutionIndexTree {
+case class InnerNode(s: Substitution, override val children: List[SubstitutionIndexTree],override val boundAuxiliaryVariables : List[Variable]) extends SubstitutionIndexTree {
   override val substitution = Some(s)
 }
 
@@ -439,7 +452,7 @@ case class InnerNode(s: Substitution, override val children: List[SubstitutionIn
 object VariantNode {
   def unapply(tuple: Tuple2[SubstitutionIndexTree, Substitution]): Option[Tuple2[SubstitutionIndexTree, Substitution]] = {
     tuple match {
-      case (InnerNode(r, children), p) => {
+      case (InnerNode(r, children,_), p) => {
         // check if there is a variabliy substituion
         variants(r, p) match {
           case Some(variantMatcher) => Some((tuple._1, variantMatcher))
@@ -466,7 +479,7 @@ object VariantLeafNode {
       val p = prod.productElement(1).asInstanceOf[Substitution]
 
       (tree, p) match {
-        case (LeafNode(r, _), p) => {
+        case (LeafNode(r, _,_), p) => {
           //println("Unapplying VAriantLeafNode Extractor")
           // check if there is a variabliy substituion
           variants(r, p) match {
@@ -493,27 +506,27 @@ object VariantLeafNode {
 
 
 object ARG {
-  val arg = (X: List[FOLNode], Y: List[FOLNode], s1: Substitution, s2: Substitution, Z: List[FOLNode]) => {
-    (X, Y, s1, s2, Z) match {
-      case (tx :: xs, ty :: ys, s1, s2, Z) => {
-        val (tz, _s1, _s2) = LMSCG(tx, ty, s1, s2)
-        (xs, ys, _s1, _s2, Z ::: List(tz))
+  val arg = (X: List[FOLNode], Y: List[FOLNode], s1: Substitution, s2: Substitution, Z: List[FOLNode],bav : List[Variable]) => {
+    (X, Y, s1, s2, Z,bav) match {
+      case (tx :: xs, ty :: ys, s1, s2, Z,bav) => {
+        val (tz, _s1, _s2) = LMSCG(tx, ty, s1, s2,bav)
+        (xs, ys, _s1, _s2, Z ::: List(tz),bav)
       }
 
       case _ => {
         error("ARG transition function could not execute, arguments not in expected form") // TODO better error message
-        (X, Y, s1, s2, Z)
+        (X, Y, s1, s2, Z,bav)
       }
 
 
     }
   }
 
-  private def compatibleTransition(X: List[FOLNode], Y: List[FOLNode], s1: Substitution, s2: Substitution, Z: List[FOLNode]) = {
-    (X, Y, s1, s2, Z) match {
+  private def compatibleTransition(X: List[FOLNode], Y: List[FOLNode], s1: Substitution, s2: Substitution, Z: List[FOLNode],bav : List[Variable]) = {
+    (X, Y, s1, s2, Z,bav) match {
     // arg
-      case (tx :: xs, ty :: ys, s1, s2, Z) => {
-        val (tz, _s1, _s2) = LMSCG(tx, ty, s1, s2)
+      case (tx :: xs, ty :: ys, s1, s2, Z,bav) => {
+        val (tz, _s1, _s2) = LMSCG(tx, ty, s1, s2,bav)
         //println("FIRING RULE : ARG")
         Some(arg)
       }
@@ -528,17 +541,17 @@ object ARG {
   }
 
 
-  def apply(X: List[FOLNode], Y: List[FOLNode], s1: Substitution, s2: Substitution, Z: List[FOLNode]): Tuple5[List[FOLNode], List[FOLNode], Substitution, Substitution, List[FOLNode]] = {
+  def apply(X: List[FOLNode], Y: List[FOLNode], s1: Substitution, s2: Substitution, Z: List[FOLNode],bav : List[Variable]): Tuple6[List[FOLNode], List[FOLNode], Substitution, Substitution, List[FOLNode],List[Variable]] = {
     // as long as arg can be applied apply arg
     // FIXME 2.8 this can be simplified in scala 2.8
     // get the first MSSG transition function
-    var tuple = (X, Y, s1, s2, Z)
-    var nextTransition = ScalaFun.tupled(compatibleTransition _)(tuple)
+    var tuple = (X, Y, s1, s2, Z,bav)
+    var nextTransition = HelperFunctions.tupled(compatibleTransition _)(tuple)
     while (nextTransition.isDefined) { // while there is a transition function
       // apply the transition to the substitutions 5tuple
-      tuple = ScalaFun.tupled(nextTransition.get.apply _)(tuple)
+      tuple = HelperFunctions.tupled(nextTransition.get.apply _)(tuple)
       // get the mext MSSG transition function
-      nextTransition = ScalaFun.tupled(compatibleTransition _)(tuple)
+      nextTransition = HelperFunctions.tupled(compatibleTransition _)(tuple)
     }
 
     // return tuple after all ARG transitions have been applied
@@ -552,28 +565,28 @@ object ARG {
 
 
 object MSCG {
-  val bind = (r: Substitution, p: Substitution, mu: Substitution, s1: Substitution, s2: Substitution) => {
-    (r, p, mu, s1, s2) match {
+  val bind = (r: Substitution, p: Substitution, mu: Substitution, s1: Substitution, s2: Substitution,bav : List[Variable]) => {
+    (r, p, mu, s1, s2,bav) match {
     // BIND
-      case (Singleton(xi, t) DU r, p, mu, s1, s2) => {
-        (r, p, mu, s1 + (xi, t), s2)
+      case (Singleton(xi, t) DU r, p, mu, s1, s2,bav) => {
+        (r, p, mu, s1 + (xi, t), s2,bav)
       }
       case _ => {
         error("BIND transition function could not execute, arguments not in expected form")
-        (r, p, mu, s1, s2)
+        (r, p, mu, s1, s2,bav)
       }
     }
   }
 
-  val bindS = (r: Substitution, p: Substitution, mu: Substitution, s1: Substitution, s2: Substitution) => {
-    (r, p, mu, s1, s2) match {
+  val bindS = (r: Substitution, p: Substitution, mu: Substitution, s1: Substitution, s2: Substitution,bav : List[Variable]) => {
+    (r, p, mu, s1, s2,bav) match {
     // BIND
-      case (Singleton(xi, t) DU r, p, mu, s1, s2) => {
-        (r, p, mu, s1, s2 + (xi, t))
+      case (Singleton(xi, t) DU r, p, mu, s1, s2,bav) => {
+        (r, p, mu, s1, s2 + (xi, t),bav)
       }
       case _ => {
         error("BIND transition function could not execute, arguments not in expected form")
-        (r, p, mu, s1, s2)
+        (r, p, mu, s1, s2,bav)
       }
     }
   }
@@ -581,64 +594,64 @@ object MSCG {
 
 
 
-  val freeze = (r: Substitution, p: Substitution, mu: Substitution, s1: Substitution, s2: Substitution) => {
-    (r, p, mu, s1, s2) match {
+  val freeze = (r: Substitution, p: Substitution, mu: Substitution, s1: Substitution, s2: Substitution,bav : List[Variable]) => {
+    (r, p, mu, s1, s2,bav) match {
 
-      case (Singleton(xi, t) DU r, p, mu, s1, s2) if (p.binding(xi) == t) => {
-        (r, p, mu + (xi, t), s1, s2)
+      case (Singleton(xi, t) DU r, p, mu, s1, s2,bav) if (p.binding(xi) == t) => {
+        (r, p, mu + (xi, t), s1, s2,bav)
       }
 
       case _ => {
         error("FREEZE transition function could not execute, arguments not in expected form")
-        (r, p, mu, s1, s2)
+        (r, p, mu, s1, s2,bav)
       }
 
 
     }
   }
 
-  val divide = (r: Substitution, p: Substitution, mu: Substitution, s1: Substitution, s2: Substitution) => {
-    (r, p, mu, s1, s2) match {
-      case (Singleton(xi, t) DU r, p, mu, s1, s2) if (p.binding(xi).top != t.top) => {
-        (r, p, mu, s1 + (xi, t), s2 + (xi, p.binding(xi)))
+  val divide = (r: Substitution, p: Substitution, mu: Substitution, s1: Substitution, s2: Substitution,bav : List[Variable]) => {
+    (r, p, mu, s1, s2,bav) match {
+      case (Singleton(xi, t) DU r, p, mu, s1, s2,bav) if (p.binding(xi).top != t.top) => {
+        (r, p, mu, s1 + (xi, t), s2 + (xi, p.binding(xi)),bav)
       }
 
       case _ => {
         error("DIVIDE transition function could not execute, arguments not in expected form")
-        (r, p, mu, s1, s2)
+        (r, p, mu, s1, s2,bav)
       }
 
     }
   }
 
-  val mix = (r: Substitution, p: Substitution, mu: Substitution, s1: Substitution, s2: Substitution) => {
-    (r, p, mu, s1, s2) match {
-      case (Singleton(xi, Function(topF, argsF)) DU r, p, mu, s1, s2)
+  val mix = (r: Substitution, p: Substitution, mu: Substitution, s1: Substitution, s2: Substitution,bav : List[Variable]) => {
+    (r, p, mu, s1, s2,bav) match {
+      case (Singleton(xi, Function(topF, argsF)) DU r, p, mu, s1, s2,bav)
         if (p.binding(xi).top == topF &&
                 p.binding(xi).args != argsF &&
-                ARG(argsF, p.binding(xi).args, s1, s2, List())._1.isEmpty &&
-                ARG(argsF, p.binding(xi).args, s1, s2, List())._2.isEmpty) => { // OMG Complexity alarm !!
+                ARG(argsF, p.binding(xi).args, s1, s2, List(),bav)._1.isEmpty &&
+                ARG(argsF, p.binding(xi).args, s1, s2, List(),bav)._2.isEmpty) => { // OMG Complexity alarm !!
 
-        val (_, _, _s1, _s2, argsZ) = ARG(argsF, p.binding(xi).args, s1, s2, List())
+        val (_, _, _s1, _s2, argsZ,_) = ARG(argsF, p.binding(xi).args, s1, s2, List(),bav)
 
-        (r, p, mu + (xi, Function(topF, argsZ)), _s1, _s2)
+        (r, p, mu + (xi, Function(topF, argsZ)), _s1, _s2,bav)
 
       }
 
-      case (Singleton(xi, Predicate(topF, argsF)) DU r, p, mu, s1, s2)
+      case (Singleton(xi, Predicate(topF, argsF)) DU r, p, mu, s1, s2,bav)
         if (p.binding(xi).top == topF &&
                 p.binding(xi).args != argsF &&
-                ARG(argsF, p.binding(xi).args, s1, s2, List())._1.isEmpty &&
-                ARG(argsF, p.binding(xi).args, s1, s2, List())._2.isEmpty) => { // OMG Complexity alarm !!
+                ARG(argsF, p.binding(xi).args, s1, s2, List(),bav)._1.isEmpty &&
+                ARG(argsF, p.binding(xi).args, s1, s2, List(),bav)._2.isEmpty) => { // OMG Complexity alarm !!
 
-        val (_, _, _s1, _s2, argsZ) = ARG(argsF, p.binding(xi).args, s1, s2, List())
+        val (_, _, _s1, _s2, argsZ,_) = ARG(argsF, p.binding(xi).args, s1, s2, List(),bav)
 
-        (r, p, mu + (xi, Predicate(topF, argsZ)), _s1, _s2)
+        (r, p, mu + (xi, Predicate(topF, argsZ)), _s1, _s2,bav)
 
       }
       case _ => {
         error("MIX transition function could not execute, arguments not in expected form")
-        (r, p, mu, s1, s2)
+        (r, p, mu, s1, s2,bav)
       }
 
 
@@ -646,19 +659,19 @@ object MSCG {
   }
 
 
-  def apply(r: Substitution, p: Substitution, mu: Substitution, s1: Substitution, s2: Substitution) = {
+  def apply(r: Substitution, p: Substitution, mu: Substitution, s1: Substitution, s2: Substitution,bav : List[Variable]) = {
     require(!r.isEmpty)
 
-    var subsTuple = (r, p, Substitution(), Substitution(), Substitution())
+    var subsTuple = (r, p, Substitution(), Substitution(), Substitution(),bav)
     // FIXME 2.8 this can be simplified in scala 2.8
     // get the first MSSG transition function
-    var nextTransition = ScalaFun.tupled(compatibleTransition _)(subsTuple)
+    var nextTransition = HelperFunctions.tupled(compatibleTransition _)(subsTuple)
 
     while (nextTransition.isDefined) { // while there is a transition function
       // apply the transition to the substitutions 5tuple
-      subsTuple = ScalaFun.tupled(nextTransition.get.apply _)(subsTuple)
+      subsTuple = HelperFunctions.tupled(nextTransition.get.apply _)(subsTuple)
       // get the mext MSSG transition function
-      nextTransition = ScalaFun.tupled(compatibleTransition _)(subsTuple)
+      nextTransition = HelperFunctions.tupled(compatibleTransition _)(subsTuple)
     }
 
     // return the 5Tuple after all possbile transformations
@@ -668,12 +681,12 @@ object MSCG {
   }
 
 
-  private def compatibleTransition(r: Substitution, p: Substitution, mu: Substitution, s1: Substitution, s2: Substitution) = {
+  private def compatibleTransition(r: Substitution, p: Substitution, mu: Substitution, s1: Substitution, s2: Substitution,bav : List[Variable]) = {
     // check which tranistion function to return , or None if there is no compatible
-    (r, p, mu, s1, s2) match {
+    (r, p, mu, s1, s2,bav) match {
 
     // BIND
-      case (Singleton(xi, t) DU r, p, mu, s1, s2) if (!p.domain.contains(xi)) => {
+      case (Singleton(xi, t) DU r, p, mu, s1, s2,bav) if (!p.domain.contains(xi)) => {
         //println("FIRING RULE : BIND")
         Some(bind)
       }
@@ -682,34 +695,34 @@ object MSCG {
 
 
       // FREEZE
-      case (Singleton(xi, t) DU r, p, mu, s1, s2) if (p.binding(xi) == t) => {
+      case (Singleton(xi, t) DU r, p, mu, s1, s2,bav) if (p.binding(xi) == t) => {
         //println("FIRING RULE : FREEZE")
         val pxi = p.binding(xi)
         Some(freeze)
       }
 
       // DIVIDE
-      case (Singleton(xi, t) DU r, p, mu, s1, s2) if (p.binding(xi).top != t.top) => {
+      case (Singleton(xi, t) DU r, p, mu, s1, s2,bav) if (p.binding(xi).top != t.top) => {
         //println("FIRING RULE : DIVIDE")
         Some(divide)
       }
 
       // MIX Function
-      case (Singleton(xi, Function(topF, argsF)) DU r, p, mu, s1, s2)
+      case (Singleton(xi, Function(topF, argsF)) DU r, p, mu, s1, s2,bav)
         if (p.binding(xi).top == topF &&
                 p.binding(xi).args != argsF &&
-                ARG(argsF, p.binding(xi).args, s1, s2, List())._1.isEmpty &&
-                ARG(argsF, p.binding(xi).args, s1, s2, List())._2.isEmpty) => { // OMG !!
+                ARG(argsF, p.binding(xi).args, s1, s2, List(),bav)._1.isEmpty &&
+                ARG(argsF, p.binding(xi).args, s1, s2, List(),bav)._2.isEmpty) => { // OMG !!
         //println("FIRING RULE : MIX")
         Some(mix)
       }
 
       // MIX Predicate
-      case (Singleton(xi, Predicate(topF, argsF)) DU r, p, mu, s1, s2)
+      case (Singleton(xi, Predicate(topF, argsF)) DU r, p, mu, s1, s2,bav)
         if (p.binding(xi).top == topF &&
                 p.binding(xi).args != argsF &&
-                ARG(argsF, p.binding(xi).args, s1, s2, List())._1.isEmpty &&
-                ARG(argsF, p.binding(xi).args, s1, s2, List())._2.isEmpty) => { // OMG !!
+                ARG(argsF, p.binding(xi).args, s1, s2, List(),bav)._1.isEmpty &&
+                ARG(argsF, p.binding(xi).args, s1, s2, List(),bav)._2.isEmpty) => { // OMG !!
         //println("FIRING RULE : MIX")
         Some(mix)
       }
@@ -744,31 +757,31 @@ object MSCG {
 
 
 object LMSCG {
-  def apply(term1: FOLNode, term2: FOLNode, s1: Substitution, s2: Substitution): Tuple3[FOLNode, Substitution, Substitution] = {
-    (term1, term2, s1, s2) match {
-      case (term1, term2, s1, s2) if (term1 == term2) => {
+  def apply(term1: FOLNode, term2: FOLNode, s1: Substitution, s2: Substitution,bav : List[Variable]): Tuple3[FOLNode, Substitution, Substitution] = {
+    (term1, term2, s1, s2,bav) match {
+      case (term1, term2, s1, s2,bav) if (term1 == term2) => {
         //println("6.24 -- the mscg of two indetical terms is the term itself")
         // 6.24 -- the mscg of two indetical terms is the term itself
         (term1, s1, s2)
       }
 
-      case (NonIndicatorVariable(niv), term2, s1, s2) => {
-        // 6.25 -- In case the first argument is a non indicator variable, this variable can
-        // be used in the specialisation for term t
-        //println("6.25 -- In case the first argument is a non indicator variable")
-        (niv, s1, s2 + (niv -> term2))
-      }
+//      case (NonIndicatorVariable(niv), term2, s1, s2,bav) => {
+//        // 6.25 -- In case the first argument is a non indicator variable, this variable can
+//        // be used in the specialisation for term t
+//        //println("6.25 -- In case the first argument is a non indicator variable")
+//        (niv, s1, s2 + (niv -> term2))
+//      }
 
-      case (Function(nameX, argsX), Function(nameY, argsY), s1, s2) if (nameX == nameY &&
-              ARG(argsX, argsY, s1, s2, List())._1.isEmpty &&
-              ARG(argsX, argsY, s1, s2, List())._2.isEmpty) => {
+      case (Function(nameX, argsX), Function(nameY, argsY), s1, s2,bav) if (nameX == nameY &&
+              ARG(argsX, argsY, s1, s2, List(),bav)._1.isEmpty &&
+              ARG(argsX, argsY, s1, s2, List(),bav)._2.isEmpty) => {
         //println("6.26 -- the transition arg is used to process the arguments of identical top symbols")
         // 6.21 -- the transition arg is used to process the arguments of identical top symbols
         // by computing the normal form with respect to ARG. The reuse of assignments in the found
         // specializations is described in 6.22
-        val a = ARG(argsX, argsY, s1, s2, List())
+        val a = ARG(argsX, argsY, s1, s2, List(),bav)
         a match {
-          case (Nil, Nil, ss1, ss2, z) => {
+          case (Nil, Nil, ss1, ss2, z,bav) => {
             val zArgs = z
             (Function(nameX, zArgs), ss1, ss2)
 
@@ -782,16 +795,16 @@ object LMSCG {
 
       }
 
-      case (Predicate(nameX, argsX), Predicate(nameY, argsY), s1, s2) if (nameX == nameY &&
-              ARG(argsX, argsY, s1, s2, List())._1.isEmpty &&
-              ARG(argsX, argsY, s1, s2, List())._2.isEmpty) => {
+      case (Predicate(nameX, argsX), Predicate(nameY, argsY), s1, s2,bav) if (nameX == nameY &&
+              ARG(argsX, argsY, s1, s2, List(),bav)._1.isEmpty &&
+              ARG(argsX, argsY, s1, s2, List(),bav)._2.isEmpty) => {
         //println("6.26 -- the transition arg is used to process the arguments of identical top symbols")
         // 6.21 -- the transition arg is used to process the arguments of identical top symbols
         // by computing the normal form with respect to ARG. The reuse of assignments in the found
         // specializations is described in 6.22
-        val a = ARG(argsX, argsY, s1, s2, List())
+        val a = ARG(argsX, argsY, s1, s2, List(),bav)
         a match {
-          case (Nil, Nil, ss1, ss2, z) => {
+          case (Nil, Nil, ss1, ss2, z,bav) => {
             val zArgs = z
             (Predicate(nameX, zArgs), ss1, ss2)
 
@@ -809,7 +822,7 @@ object LMSCG {
       // ! rule 6.22 omitted ==> only linear generalizations will be produced
 
 
-      case _ => {
+      case (term1, term2, s1, s2,bav) => {
         // Finally new nonindicator variables are introduced in case none of the other rules are
         // could be applied
 
@@ -817,7 +830,16 @@ object LMSCG {
         // TODO refer to Peter Graf - Term Indexing p. 178 "Reusing non indicator variables"
 
         // introduce new non indicator variable
-        val xj = Variable()
+
+        // check which variables have been already bound
+
+
+        //log.info("Bounded auxiliary variables except query vars are : %s",bav)
+
+        val xj = Variable.nextAuxiliary(s1.domain ++ s2.domain ++ bav)
+        //val xj = Variable()
+        val ds1 = s1
+        val ds2 = s2
         (xj, s1 + (xj -> term1), s2 + (xj -> term2))
       }
 
@@ -827,12 +849,12 @@ object LMSCG {
   }
 
 
-  def apply(r: Substitution, p: Substitution): Option[Tuple3[Substitution, Substitution, Substitution]] = {
+  def apply(r: Substitution, p: Substitution,bav : List[Variable]): Option[Tuple3[Substitution, Substitution, Substitution]] = {
     // USE TRANSITION SYSMTE MSCG
     require(!r.isEmpty)
 
-    MSCG(r, p, Substitution(), Substitution(), Substitution()) match {
-      case (s, p, mu, s1, s2) if (s.isEmpty) => {
+    MSCG(r, p, Substitution(), Substitution(), Substitution(),bav) match {
+      case (s, p, mu, s1, s2,bav) if (s.isEmpty) => {
         Some(mu, s1, s2)
       }
 
@@ -843,6 +865,7 @@ object LMSCG {
 
 
   }
+
 }
 
 
