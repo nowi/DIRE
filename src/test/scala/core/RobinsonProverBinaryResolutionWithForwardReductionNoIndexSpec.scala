@@ -35,6 +35,8 @@ class RobinsonProverBinaryResolutionWithForwardReductionNoIndexSpec extends Prov
 
     // positive factorer
     lazy val positiveFactorer = PositiveFactorer
+     // negative factorer
+    lazy val negativeFactorer = NegativeFactorer
 
     // binary resolver
     lazy val resolver = new BinaryResolver(this)
@@ -81,7 +83,8 @@ class RobinsonProverBinaryResolutionWithOrderingWithForwardReductionNoIndexSpec 
 
     // positive factorer
     lazy val positiveFactorer = PositiveFactorer
-
+     // negative factorer
+    lazy val negativeFactorer = NegativeFactorer
 
     // selector
     lazy val selector = new NegativeLiteralsSelection
@@ -141,7 +144,8 @@ class RobinsonProverBinaryResolutionWithForwardReductionWithIndexSpec extends Pr
 
     // positive factorer
     lazy val positiveFactorer = PositiveFactorer
-
+    // negative factorer
+    lazy val negativeFactorer = NegativeFactorer
 
     // selector
     lazy val selector = new NegativeLiteralsSelection
@@ -202,7 +206,8 @@ class RobinsonProverBinaryResolutionWithOrderingWithForwardReductionWithSTIIndex
 
     // positive factorer
     lazy val positiveFactorer = PositiveFactorer
-
+    // negative factorer
+    lazy val negativeFactorer = NegativeFactorer
 
     // selector
     lazy val selector = new NegativeLiteralsSelection
@@ -260,6 +265,8 @@ class RobinsonProverBinaryResolutionNoReductionSTIIndexSpec extends ProvingSpec 
 
     // positive factorer
     lazy val positiveFactorer = PositiveFactorer
+     // negative factorer
+    lazy val negativeFactorer = NegativeFactorer
     // binary resolver
     lazy val resolver = new BinaryResolver(this)
 
@@ -307,6 +314,9 @@ class RobinsonProverBinaryResolutionWithReductionSTIIndexSpec extends ProvingSpe
 
     // positive factorer
     lazy val positiveFactorer = PositiveFactorer
+     // negative factorer
+    lazy val negativeFactorer = NegativeFactorer
+
     // binary resolver
     lazy val resolver = new BinaryResolver(this)
     lazy val subsumptionStrategy = StillmannSubsumer
@@ -357,8 +367,9 @@ class RobinsonProverALCDResolutionWithReductionSTIIndexSpec extends ConferencePa
     lazy val backwardSubsumer = BackwardSubsumer
 
     // positive factorer
-    lazy val positiveFactorer = new core.resolution.PositiveOrderedFactoring(this)
-
+    lazy val positiveFactorer = new ALCPositiveOrderedFactoring(this)
+     // negative factorer
+    lazy val negativeFactorer = new ALCNegativeOrderedFactoring(this)
     // ACL resolver
     lazy val resolver = new DALCResolver(this)
     lazy val subsumptionStrategy = StillmannSubsumer
@@ -413,8 +424,9 @@ class RobinsonProverMergedALCDResolutionWithReductionSTIIndexSpec extends Confer
 
 
     // positive factorer
-    lazy val positiveFactorer = new core.resolution.PositiveOrderedFactoring(this)
-
+    lazy val positiveFactorer = new ALCPositiveOrderedFactoring(this)
+    // negative factorer
+    lazy val negativeFactorer = new ALCNegativeOrderedFactoring(this)
     // ACL resolver
     lazy val resolver = new DALCResolver(this)
     lazy val subsumptionStrategy = StillmannSubsumer
@@ -469,7 +481,9 @@ class RobinsonProverMergedALCDResolutionWithReductionFeatureVectorImperfectIndex
 
 
     // positive factorer
-    lazy val positiveFactorer = new core.resolution.PositiveOrderedFactoring(this)
+    lazy val positiveFactorer = new ALCPositiveOrderedFactoring(this)
+    // negative factorer
+    lazy val negativeFactorer = new ALCNegativeOrderedFactoring(this)
 
     // ACL resolver
     lazy val resolver = new DALCResolver(this)

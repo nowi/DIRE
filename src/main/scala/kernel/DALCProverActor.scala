@@ -6,8 +6,8 @@ import recording.NaiveClauseRecorder
 import se.scalablesolutions.akka.dispatch.Dispatchers
 import core._
 import config.DALCConfig
+import containers._
 import containers.heuristics.{LightestClauseHeuristicStorage, ListBufferStorage}
-import containers.{MutableClauseStore, SForrestIndex, ClauseStorage, CNFClauseStore}
 import domain.fol.ast.FOLClause
 import domain.fol.parsers.SPASSIntermediateFormatParser
 import helpers.Subject
@@ -17,7 +17,7 @@ import core.rewriting.{VariableRewriter}
 import ordering.{CustomConferencePartitionedPrecedence, CustomSPASSModule1Precedence, ALCLPOComparator}
 import ProvingState._
 import ProvingResult._
-import resolution.{DALCUniqueLiteralResolver, DALCResolver}
+import resolution.{ALCNegativeOrderedFactoring, DALCUniqueLiteralResolver, DALCResolver}
 import se.scalablesolutions.akka.actor.Actor
 import se.scalablesolutions.akka.util.Logging
 import selection.{DALCRSelector, NegativeLiteralsSelection}
@@ -87,7 +87,9 @@ trait CoreResolutionProver1Factory {
     lazy val backwardSubsumer = BackwardSubsumer
 
     // positive factorer
-    lazy val positiveFactorer = new core.resolution.PositiveOrderedFactoring(this)
+    lazy val positiveFactorer = new core.resolution.ALCPositiveOrderedFactoring(this)
+    // negative factorer
+    lazy val negativeFactorer = new ALCNegativeOrderedFactoring(this)
 
     // ACL resolver
     lazy val resolver = new DALCResolver(this)
@@ -96,8 +98,8 @@ trait CoreResolutionProver1Factory {
 
 
     // usable clause store with STI indexes
-    def usableClauseStore = new MutableClauseStore with LightestClauseHeuristicStorage with SForrestIndex
-    def workedOffClauseStore = new MutableClauseStore with ListBufferStorage with SForrestIndex
+    def usableClauseStore = new MutableClauseStore with LightestClauseHeuristicStorage with FeatureVectorImperfectIndex
+    def workedOffClauseStore = new MutableClauseStore with ListBufferStorage with FeatureVectorImperfectIndex
 
     // switches
     // TODO enable all reductions
