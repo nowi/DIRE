@@ -1,15 +1,17 @@
 import allocation.{ClauseAllocation, NaiveOneToOneUnrestrictedLocalAllocator}
+import collection.mutable.{HashMap, Map => MMap}
 import core.containers.heuristics.{ListBufferStorage, LightestClauseHeuristicStorage}
 import core.containers.{SForrestIndex, MutableClauseStore, CNFClauseStore}
 import core.ordering.{CustomConferencePartitionedPrecedence, ALCLPOComparator}
 import core.reduction.{ForwardSubsumer, BackwardSubsumer, StillmannSubsumer}
-import core.resolution.{DALCUniqueLiteralResolver, DALCResolver}
+import core.resolution.{ALCPositiveOrderedFactoring, ALCNegativeOrderedFactoring, DALCUniqueLiteralResolver, DALCResolver}
 import core.rewriting.VariableRewriter
 import core.selection.DALCRSelector
 import core.{Standardizer, RobinsonProver}
 import domain.fol.ast.FOLClause
 import kernel._
 import dispatching.{DALCDispatcherActor, ToVoidDispatchingActor}
+import net.lag.configgy.Configgy
 import partitioning.{ManualConfExampleMerger, ManualConfExamplePartitioner}
 import recording.NaiveClauseRecorder
 import se.scalablesolutions.akka.actor.{ActorRegistry, Actor}
@@ -28,6 +30,12 @@ import se.scalablesolutions.akka.util.Logging
  */
 
 class DIREShell extends Actor with Logging {
+
+  Configgy.configure("config/config.conf")
+  
+  val keptClauses : MMap[Actor,Int] = new HashMap()
+
+
   start
   println("Welcome to DIRE shell , enter help for list of available commands")
   println("Enter help(command) for more specific help")
@@ -170,8 +178,12 @@ class DIREShell extends Actor with Logging {
 
 
   protected def receive = {
-    case x => {
-      log.info("Recieved Response %s \n\n\n ========================================================================", x)
+    case ProverStatus(state,workedOffCount,derivedCount) => {
+      keptClauses.put(sender.get,workedOffCount)
+      val totalClauses = keptClauses.values.reduceLeft(_ + _)
+      log.warning("[Total Kept clauses in nodes] : %s \n", totalClauses)
+
+
     }
 
   }
@@ -182,7 +194,16 @@ class DIREShell extends Actor with Logging {
 object DIREShellRunner extends Application{
   override def main(a: Array[String]) = {
     val shell = DIREShell
-    shell.createAndLoadManualPartionedScenario
+    shell.createAndLoadAutoMergedScenario
+//    val mergedKept = shell.keptClauses.values.toList.flatten(itr => itr)
+//    shell.keptClauses.clear
+//    shell.createAndLoadManualPartionedScenario
+//    val partitionKept = shell.keptClauses.values.toList.flatten(itr => itr)
+//
+//    val difference = mergedKept -- partitionKept
+//
+//    log.warning("[Difference ] : %s \n", difference)
+
   }
 }
 
@@ -190,18 +211,14 @@ object DIREShell {
   val shell = new DIREShell
   shell.start
 
+  val keptClauses = shell.keptClauses
 
   def testSingleNodeReasoning {
     val config = new Object {
       //Configgy.configure("config/config.conf")
-
-
-
       // the initial clause store
-
       lazy val variableRewriter = new VariableRewriter
       lazy val standardizer = new Standardizer(this)
-
 
       // unique literal resolver
       lazy val uniqueLiteralResolver = new DALCUniqueLiteralResolver(this)
@@ -219,7 +236,9 @@ object DIREShell {
 
 
       // positive factorer
-      lazy val positiveFactorer = new core.resolution.PositiveOrderedFactoring(this)
+      lazy val positiveFactorer = new ALCPositiveOrderedFactoring(this)
+      // negative factorer
+      lazy val negativeFactorer = new ALCNegativeOrderedFactoring(this)
 
       // ACL resolver
       lazy val resolver = new DALCResolver(this)

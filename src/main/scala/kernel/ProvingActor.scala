@@ -32,15 +32,15 @@ abstract class ProvingActor extends Actor with ReasoningActorChild {
 
 
   // cofigure a native os thread based dispatcher for the proving actor
-//    val d = Dispatchers.newThreadBasedDispatcher(this)
+    val d = Dispatchers.newThreadBasedDispatcher(this)
 //    val d = Dispatchers.globalReactorBasedSingleThreadEventDrivenDispatcher
-    val d = Dispatchers.newExecutorBasedEventDrivenDispatcher("name");
-  d.withNewThreadPoolWithLinkedBlockingQueueWithUnboundedCapacity
-    .setCorePoolSize(16)
-    .setMaxPoolSize(128)
-    .setKeepAliveTimeInMillis(60000)
-    .setRejectionPolicy(new CallerRunsPolicy)
-    .buildThreadPool;
+//    val d = Dispatchers.newExecutorBasedEventDrivenDispatcher("name");
+//  d.withNewThreadPoolWithLinkedBlockingQueueWithUnboundedCapacity
+//    .setCorePoolSize(16)
+//    .setMaxPoolSize(128)
+//    .setKeepAliveTimeInMillis(60000)
+//    .setRejectionPolicy(new CallerRunsPolicy)
+//    .buildThreadPool;
 
 
 
@@ -63,8 +63,8 @@ abstract class ProvingActor extends Actor with ReasoningActorChild {
   private[this] def setState(newState: ProvingState) {
     log.info("%s transitions from %s to %s state", this, state, newState)
     state = newState
-    // inform supervisor rsabout state change
-    //    parent.get ! ProverStatus(state)
+//     inform supervisor rsabout state change
+    parent.get ! ProverStatus(state,keptClauses.toList.size,0)
 
 
   }
@@ -109,6 +109,8 @@ abstract class ProvingActor extends Actor with ReasoningActorChild {
       result match {
         case (COMPLETION, clauses) => {
           // save the kept clauses
+          keptClauses = clauses
+
           log.info("LOCALY SATISFIED ... ")
           // clear the initial clauses
           setState(SATISFIABLE)

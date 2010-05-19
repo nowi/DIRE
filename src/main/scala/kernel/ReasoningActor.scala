@@ -26,7 +26,7 @@ abstract class ReasoningActor extends Actor {
   trapExit = List(classOf[Exception])
 
 
-
+  var manager : Option[Actor] = None
 
 
   // child prooving actor
@@ -95,6 +95,17 @@ abstract class ReasoningActor extends Actor {
 
     // INBOUND
     case msg @ Saturate(clauses) => {
+      
+      // the first time we recieve this message record the sender
+      // we will report back to this sender in the future
+      manager match {
+        case None => {
+          log.warning("%s recieved initial clauses from manager %s",this,sender.get)
+          manager = sender
+        }
+        case Some(_) => // we have a manager actor stored
+      }
+
       // forward to prover
       provingActor forward msg
     }
@@ -113,8 +124,18 @@ abstract class ReasoningActor extends Actor {
 
 
     // communiucation with prover kernel , prover kernel tells its status
-    case msg@ProverStatus(status) => {
-      log.debug("Recieved ProverStatus Update Message.. new status of proover %s is %s", provingActor, status)
+    case msg@ProverStatus(status,workedOffCount,derivedCount) => {
+      log.info("Recieved ProverStatus Update Message.. new status of proover %s is %s", provingActor, status)
+
+      // forward this to the manager actor
+
+      manager match {
+        case Some(manager) => manager ! msg
+        case None => // no manager , cannot notify about progress
+      }
+
+
+
     }
 
 

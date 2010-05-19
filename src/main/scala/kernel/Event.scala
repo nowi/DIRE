@@ -29,7 +29,7 @@ case class KeptClauses(clauses : Iterable[FOLClause]) extends Event
 
 // administrative messages
 case class LoadAllocation(allocation: ClauseAllocation) extends Event
-case class ProverStatus(status: ProvingState) extends Event
+case class ProverStatus(status: ProvingState,workedOffCount : Int,derivedCount : Int) extends Event
 case class Status(status: String) extends Event
 
 case class GetStatus(bla : String) extends Event
