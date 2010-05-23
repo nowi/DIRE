@@ -22,14 +22,14 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException
  */
 
 trait ClauseCondensation {
-  def apply(clauseBuffer: List[FOLNode])(subsumptionChecker: Subsumption): List[FOLNode]
+  def apply(clauseBuffer: Set[FOLNode])(subsumptionChecker: Subsumption): Set[FOLNode]
 }
 
 
 object ClauseCondenser extends ClauseCondensation with Logging {
   // TODO , need efficient means of clause functionalities but on sequences of terms .. see ClauseBuffer in vampire
 
-  override def apply(clauseBuffer: List[FOLNode])(subsumptionChecker: Subsumption): List[FOLNode] = {
+  override def apply(clauseBuffer: Set[FOLNode])(subsumptionChecker: Subsumption): Set[FOLNode] = {
 
     def getMatcher(a : FOLNode,b : FOLNode) = {
       // we can never match a positive with a negative literal
@@ -44,7 +44,7 @@ object ClauseCondenser extends ClauseCondensation with Logging {
     // collect the candiate instantiations
 
     val candidate = (for (e1 <- clauseBuffer; e2 <- clauseBuffer; if (e1 != e2)) yield (e2, getMatcher(e1, e2))).find( {
-      case (e2,Some(matcher)) => (subsumptionChecker((clauseBuffer.toList - e2),clauseBuffer))
+      case (e2,Some(matcher)) => (subsumptionChecker((clauseBuffer - e2),clauseBuffer))
       case (e2,None) => false
     })
 

@@ -21,12 +21,25 @@ trait Reducing {
 }
 
 trait Subsumption {
-  def apply(cLits: List[FOLNode], dLits: List[FOLNode]): Boolean
+  def apply(c: FOLClause, d: FOLClause): Boolean
+
+
 }
 
 object StillmannSubsumer extends Subsumption {
-  def apply(c: List[FOLNode], d: List[FOLNode]): Boolean = {
+  def apply(c: FOLClause, d: FOLClause) = apply(c.literals,d.literals)
+
+  def apply(a: Set[FOLNode], b: Set[FOLNode]): Boolean = {
     // intercept trivial sumption
+    val c = a.toList.sort(_.top < _.top)
+    val d = b.toList.sort(_.top < _.top)
+
+//    val c = a.toList
+//    val d = b.toList
+
+    // TODO remove this
+//    require(a.toList.sort(_.top < _.top) == c)
+//    require(b.toList.sort(_.top < _.top) == d)
 
 
     def st(i: Int, j: Int, theta: Substitution): Boolean = {
@@ -84,8 +97,11 @@ object StillmannSubsumer extends Subsumption {
     def subs(theta: Substitution, b: FOLNode): FOLNode = b.rewrite(theta)
 
     require(c.size > 0 && d.size > 0, "Argument clauses to Stillman algorithm cannot be empty")
+    //           [¬(O2Proceedings(U))V¬(O2Review(U))]
+    
 
-    if (c == d) {
+
+    if ((a eq b ) || (a == b)) {
       true
     } else {
       //    Let C = (L,, . . . , L,) and D = (Ki, . . . , Km).

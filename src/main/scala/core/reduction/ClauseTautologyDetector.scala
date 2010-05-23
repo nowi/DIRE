@@ -14,17 +14,15 @@ import domain.fol.ast.{FOLNode, NegativeFOLLiteral, PositiveFOLLiteral, FOLClaus
  */
 
 trait ClauseTautologyDetection {
-  def apply(clauseBuffer: List[FOLNode]): Boolean
+  def apply(clauseBuffer: Set[FOLNode]): Boolean
 }
 
-trait ClauseStoreTautologyDeletion {
-  def apply(clauseBuffer: List[FOLClause]): List[FOLClause]
-}
+
 
 
 object ClauseTautologyDetector extends ClauseTautologyDetection {
 
-  def apply(clauseBuffer: List[FOLNode]): Boolean = {
+  def apply(clauseBuffer: Set[FOLNode]): Boolean = {
 
     val positiveLits = new MHashSet[FOLNode]()
     val negativeLits = new MHashSet[FOLNode]()
@@ -49,8 +47,3 @@ object ClauseTautologyDetector extends ClauseTautologyDetection {
 
 }
 
-object ClauseStoreTautologyDeletor extends ClauseStoreTautologyDeletion {
-  def apply(clauseStore: List[FOLClause]): List[FOLClause] = {
-    clauseStore.filter(!ClauseTautologyDetector(_))
-  }
-}

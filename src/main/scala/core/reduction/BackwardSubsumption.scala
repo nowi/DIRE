@@ -18,21 +18,21 @@ import helpers.Logging
  */
 
 trait BackwardSubsumption {
-  def apply(clauseBuffer: List[FOLNode], clauseStorage: ClauseStorage)(implicit subsumptionCheck: Subsumption) : Iterable[FOLClause]
+  def apply(clauseBuffer: Set[FOLNode], clauseStorage: ClauseStorage)(implicit subsumptionCheck: Subsumption) : Iterable[FOLClause]
 }
 
 
 
 
 object BackwardSubsumer extends BackwardSubsumption with Logging {
-  implicit def listofFOLNode2FOLClause(literals: List[FOLNode]): FOLClause = ALCDClause(literals)
+  implicit def setFOLNode2ALCDClause(set: Set[FOLNode]) = ALCDClause(set)
 
-  private def subsumed(clause: FOLClause, allClauses: ClauseStorage)(implicit subsumptionCheck: Subsumption) = {
+  private def subsumed(clauseBuffer: Set[FOLNode], allClauses: ClauseStorage)(implicit subsumptionCheck: Subsumption) = {
     // get all clausees , check if we have a index
     // we need only to query on one literal from the clause because
     // a subsumer clause will need to be more general in all literals anyway so we cannot miss
     // this is a case of imperfect filtering
-    val queryLiteral = clause.literals.head
+    val queryLiteral = clauseBuffer.toList.head
 
     val candidateClauses = allClauses match {
     // retrieve based on the index type .. TODO make this check outside this tight loop
@@ -55,20 +55,20 @@ object BackwardSubsumer extends BackwardSubsumption with Logging {
     }
 
     // from those candidates try to find one canddate that subsumes the clause
-    candidateClauses.filter(subsumptionCheck(clause, _)) match {
+    candidateClauses.filter(subsumptionCheck(clauseBuffer, _)) match {
       case Nil => {
         // nothin backwardsubsumned
         Nil
       }
       case subsumedClauses => {
-        log.debug("%s detected that clause : %s backwardsubsumes clauses %s", this, clause, subsumedClauses)
+        log.info("%s detected that clause : %s backwardsubsumes clauses %s", this, clauseBuffer, subsumedClauses)
         subsumedClauses
       }
     }
   }
 
 
-  override def apply(clauseBuffer: List[FOLNode], clauseStore: ClauseStorage)(implicit subsumptionCheck: Subsumption) = {
+  override def apply(clauseBuffer: Set[FOLNode], clauseStore: ClauseStorage)(implicit subsumptionCheck: Subsumption) = {
     subsumed(clauseBuffer, clauseStore)
   }
 

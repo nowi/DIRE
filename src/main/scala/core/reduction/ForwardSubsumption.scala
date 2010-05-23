@@ -13,29 +13,33 @@ import helpers.Logging
  */
 
 trait ForwardSubsumption {
-  def apply(clauseBuffer: List[FOLNode], backgroundClauses: ClauseStorage)(implicit subsumptionCheck: Subsumption): Boolean
+  def apply(clauseBuffer: Set[FOLNode], backgroundClauses: ClauseStorage)(implicit subsumptionCheck: Subsumption): Boolean
 }
 
 
 
 
 object ForwardSubsumer extends ForwardSubsumption with Logging {
-  implicit def listofFOLNode2FOLClause(literals: List[FOLNode]): FOLClause = ALCDClause(literals)
+  implicit def listofFOLNode2FOLClause(literals: Set[FOLNode]): FOLClause = ALCDClause(literals)
 
   private def subsumes(clause: FOLClause, allClauses: ClauseStorage)(implicit subsumptionCheck: Subsumption) : Boolean = {
 
+//    if(clause.toString == "[¬(O1Author(U))V¬(O1Poster(skf135(U)))]") {
+//      log.warning("pay attention")
+//
+//    }
 
-    val candidateClauses = allClauses match {
+    val candidateClauses : List[FOLClause] = allClauses match {
     // retrieve based on the index type .. TODO make this check outside this tight loop
     // more in the configuratoin or initialization of the robinson proover !
       case indexedClauseStore: ForwardMatchingGeneralClauseRetrieval => {
         // query on all literals of the clause
-        clause.literals.flatMap(indexedClauseStore.retrieveForwardMatchingGeneralizations(_))
+        clause.literals.toList.flatMap(indexedClauseStore.retrieveForwardMatchingGeneralizations(_))
       }
 
       case indexedClauseStore: GeneralClauseRetrieval => {
         // next best index is a matching generalziation supporting index
-        clause.literals.flatMap(indexedClauseStore.retrieveGeneralizations(_))
+        clause.literals.toList.flatMap(indexedClauseStore.retrieveGeneralizations(_))
       }
 
       case _ => {
@@ -50,7 +54,7 @@ object ForwardSubsumer extends ForwardSubsumption with Logging {
     // from those candidates try to find one canddate that subsumes the clause
     candidateClauses.find(subsumptionCheck(_, clause)) match {
       case Some(subsumerClause) => {
-        log.ifDebug("%s detected that clause %s is subsumed by %s", this, clause,subsumerClause)
+        log.info("%s detected that clause %s is subsumed by %s", this, clause,subsumerClause)
         true
       }
 
@@ -61,7 +65,7 @@ object ForwardSubsumer extends ForwardSubsumption with Logging {
   }
 
 
-  override def apply(clauseBuffer: List[FOLNode], backgroundClauses: ClauseStorage)(implicit subsumptionCheck: Subsumption) = {
+  override def apply(clauseBuffer: Set[FOLNode], backgroundClauses: ClauseStorage)(implicit subsumptionCheck: Subsumption) = {
     subsumes(clauseBuffer,backgroundClauses)
   }
 
