@@ -1,10 +1,11 @@
-import allocation.{ClauseAllocation, NaiveOneToOneUnrestrictedLocalAllocator}
+import allocation.{ConferenceExample5NodeAllocator, NaiveOneToOneUnrestrictedLocalDistributor, ClauseAllocation}
 import collection.mutable.{HashMap, Map => MMap}
+import core.caches.{SelectedLitCache, URLitCache}
 import core.containers.heuristics.{ListBufferStorage, LightestClauseHeuristicStorage}
 import core.containers.{SForrestIndex, MutableClauseStore, CNFClauseStore}
 import core.ordering.{CustomConferencePartitionedPrecedence, ALCLPOComparator}
 import core.reduction.{ForwardSubsumer, BackwardSubsumer, StillmannSubsumer}
-import core.resolution.{ALCPositiveOrderedFactoring, ALCNegativeOrderedFactoring, DALCUniqueLiteralResolver, DALCResolver}
+import core.resolution._
 import core.rewriting.VariableRewriter
 import core.selection.DALCRSelector
 import core.{Standardizer, RobinsonProver}
@@ -30,10 +31,9 @@ import se.scalablesolutions.akka.util.Logging
  */
 
 class DIREShell extends Actor with Logging {
-
   Configgy.configure("config/config.conf")
-  
-  val keptClauses : MMap[Actor,Int] = new HashMap()
+
+  val keptClauses: MMap[Actor, Int] = new HashMap()
 
 
   start
@@ -112,15 +112,9 @@ class DIREShell extends Actor with Logging {
   }
 
 
-  def createDALCReasonerNoDispatching(): Actor = {
-    new DALCReasonerNoDispatch
-
-  }
 
   def createDALCReasonerWithDALCDispatching(): Actor = {
-
-    new DALCReasoner
-
+    new DefaultDALCReasoner
   }
 
   def createDALCReasonerWithBroadCastDispatching(): Actor = {
@@ -135,18 +129,24 @@ class DIREShell extends Actor with Logging {
     val partitioner = new ManualConfExamplePartitioner
     val partitions = partitioner.partition(CNFClauseStore()) // pass dummy empty store
     // create allocation of partitions the the reasoning nodes
-    val allocator = new NaiveOneToOneUnrestrictedLocalAllocator
-    val allocation = allocator.allocate(partitions, reasoners)
-    // create allocation table , this maps ontology signature --> kernel
-    //val allocationTable = (Map() /: allocation)({case (clauseStore, reasoner) => (Map() /: clauseStore.signature)({name : String => Map(name -> reasoner.uuid)})})
-    val allocationTable: ClauseAllocation = new ClauseAllocation(allocation.map({case (clauseStore, reasoner) => clauseStore.signature.map({name: String => Map(name -> reasoner.uuid)}).reduceLeft(_ ++ _)}).reduceLeft(_ ++ _))
-    // send the allocation table  to the reasoning nodes
-    for (reasoner <- reasoners) {
-      reasoner ! LoadAllocation(allocationTable)
-    }
+    // create distribution of partitions the the reasoning nodes
+    val distributor = new NaiveOneToOneUnrestrictedLocalDistributor
+    val distribution = distributor.distribute(partitions, reasoners)
 
-    // send the ontologies to the reasoning nodes and start
-    for ((clauseStore, reasoner) <- allocation) {
+    // TODO important we need to allocate correctly or else massive overhead
+
+
+    // create allocation table , this maps ontology signature --> kernel
+    val allocator = new ConferenceExample5NodeAllocator
+    val allocation = allocator.allocate(partitions,reasoners)
+
+    //val allocationTable = (Map() /: allocation)({case (clauseStore, reasoner) => (Map() /: clauseStore.signature)({name : String => Map(name -> reasoner.uuid)})})
+    // send the allocation table  to the reasoning nodes
+    for(reasoner <- reasoners)
+      reasoner ! LoadAllocation(allocation)
+
+    // send the ontologies to the reasoning nodes
+    for ((reasoner, clauseStore) <- distribution) {
       log.debug("Sending clauses %s to kernel %s", clauseStore, reasoner)
       reasoner ! Saturate(clauseStore.toList)
     }
@@ -158,19 +158,22 @@ class DIREShell extends Actor with Logging {
     // partition the ontology
     val partitioner = new ManualConfExampleMerger
     val partitions = partitioner.partition(CNFClauseStore()) // pass dummy empty store
-    // create allocation of partitions the the reasoning nodes
-    val allocator = new NaiveOneToOneUnrestrictedLocalAllocator
-    val allocation = allocator.allocate(partitions, reasoners)
+
+    // create distribution of partitions the the reasoning nodes
+    val distributor = new NaiveOneToOneUnrestrictedLocalDistributor
+    val distribution = distributor.distribute(partitions, reasoners)
+
     // create allocation table , this maps ontology signature --> kernel
+    val allocator = new ConferenceExample5NodeAllocator
+    val allocation = allocator.allocate(partitions,reasoners)
+
     //val allocationTable = (Map() /: allocation)({case (clauseStore, reasoner) => (Map() /: clauseStore.signature)({name : String => Map(name -> reasoner.uuid)})})
-    val allocationTable: ClauseAllocation = new ClauseAllocation(allocation.map({case (clauseStore, reasoner) => clauseStore.signature.map({name: String => Map(name -> reasoner.uuid)}).reduceLeft(_ ++ _)}).reduceLeft(_ ++ _))
     // send the allocation table  to the reasoning nodes
-    for (reasoner <- reasoners) {
-      reasoner ! LoadAllocation(allocationTable)
-    }
+    for(reasoner <- reasoners)
+      reasoner ! LoadAllocation(allocation)
 
     // send the ontologies to the reasoning nodes
-    for ((clauseStore, reasoner) <- allocation) {
+    for ((reasoner, clauseStore) <- distribution) {
       log.debug("Sending clauses %s to kernel %s", clauseStore, reasoner)
       reasoner ! Saturate(clauseStore.toList)
     }
@@ -178,10 +181,10 @@ class DIREShell extends Actor with Logging {
 
 
   protected def receive = {
-    case ProverStatus(state,workedOffCount,derivedCount) => {
-      keptClauses.put(sender.get,workedOffCount)
+    case ProverStatus(state, workedOffCount, derivedCount,_,_,_) => {
+      keptClauses.put(sender.get, workedOffCount)
       val totalClauses = keptClauses.values.reduceLeft(_ + _)
-      log.warning("[Total Kept clauses in nodes] : %s \n", totalClauses)
+      log.error("[Total Kept clauses in nodes] : %s \n", totalClauses)
 
 
     }
@@ -191,18 +194,18 @@ class DIREShell extends Actor with Logging {
 
 }
 
-object DIREShellRunner extends Application{
+object DIREShellRunner extends Application {
   override def main(a: Array[String]) = {
     val shell = DIREShell
-    shell.createAndLoadAutoMergedScenario
-//    val mergedKept = shell.keptClauses.values.toList.flatten(itr => itr)
-//    shell.keptClauses.clear
-//    shell.createAndLoadManualPartionedScenario
-//    val partitionKept = shell.keptClauses.values.toList.flatten(itr => itr)
-//
-//    val difference = mergedKept -- partitionKept
-//
-//    log.warning("[Difference ] : %s \n", difference)
+//    shell.createAndLoadAutoMergedScenario
+    //    val mergedKept = shell.keptClauses.values.toList.flatten(itr => itr)
+    //    shell.keptClauses.clear
+    shell.createAndLoadManualPartionedScenario
+    //    val partitionKept = shell.keptClauses.values.toList.flatten(itr => itr)
+    //
+    //    val difference = mergedKept -- partitionKept
+    //
+    //    log.warning("[Difference ] : %s \n", difference)
 
   }
 }
@@ -213,69 +216,12 @@ object DIREShell {
 
   val keptClauses = shell.keptClauses
 
-  def testSingleNodeReasoning {
-    val config = new Object {
-      //Configgy.configure("config/config.conf")
-      // the initial clause store
-      lazy val variableRewriter = new VariableRewriter
-      lazy val standardizer = new Standardizer(this)
-
-      // unique literal resolver
-      lazy val uniqueLiteralResolver = new DALCUniqueLiteralResolver(this)
-
-      // ordered resolution needs comparator and selection
-      lazy val precedence = new CustomConferencePartitionedPrecedence
-      lazy val literalComparator = new ALCLPOComparator(this)
-      lazy val selector = new DALCRSelector()
-
-      // forward subsumer WITH index support
-      lazy val forwardSubsumer = ForwardSubsumer
-
-      // the backwardsubsumer
-      lazy val backwardSubsumer = BackwardSubsumer
-
-
-      // positive factorer
-      lazy val positiveFactorer = new ALCPositiveOrderedFactoring(this)
-      // negative factorer
-      lazy val negativeFactorer = new ALCNegativeOrderedFactoring(this)
-
-      // ACL resolver
-      lazy val resolver = new DALCResolver(this)
-      lazy val subsumptionStrategy = StillmannSubsumer
-      lazy val inferenceRecorder = new NaiveClauseRecorder
-
-
-      // usable clause store with STI indexes
-      def usableClauseStore = new MutableClauseStore with LightestClauseHeuristicStorage with SForrestIndex
-
-      def workedOffClauseStore = new MutableClauseStore with ListBufferStorage with SForrestIndex
-
-      // switches
-      // TODO enable all reductions
-
-      val recordProofSteps = true
-
-      // hard time limit
-      val timeLimit: Long = 0;
-
-    }
-
-    val prover = new RobinsonProver(config)
-
-
-    val initialClauses = {
-      // the curiosity killed the cat domain
-      val partitioner = new ManualConfExampleMerger
-      partitioner.partition(Nil).head
-
-    }
-
-
-    prover.saturate(initialClauses)
-
-
-  }
+//  def testSingleNodeReasoning {
+//    val config = new Object {
+//      //Configgy.configure("config/config.conf")
+//      // the initial clause store
+//      lazy val variableRewriter = new VariableRewriter
+//      lazy val standardizer = new Standardizer(this)
 
 
   def createAndLoadManualPartionedScenario() = {
@@ -293,15 +239,7 @@ object DIREShell {
   }
 
 
-  def createAndLoadManualPartitionedScenarioWithoutDispatching() = {
-    val rs = (for (x <- 0 until 3) yield createDALCReasonerNoDispatching).toList
-    rs.foreach(_ start)
-    loadOnotologiesAndAllocations(rs)
-    rs
-  }
 
-
-  def createDALCReasonerNoDispatching() = shell.createDALCReasonerNoDispatching
 
   def createDALCReasonerWithDALCDispatching = shell.createDALCReasonerWithDALCDispatching
 
