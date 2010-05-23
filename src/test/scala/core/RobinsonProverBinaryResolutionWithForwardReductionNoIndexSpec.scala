@@ -1,11 +1,12 @@
 package core
 
 
+import caches.{SelectedLitCache, URLitCache, MaxLitCache}
 import com.jteigen.scalatest.JUnit4Runner
+import domain.fol.ast.{FOLNode, PositiveFOLLiteral}
 import net.lag.configgy.Configgy
 import org.junit.runner.RunWith
 import containers._
-import domain.fol.ast.PositiveFOLLiteral
 import heuristics.{LightestClauseHeuristicStorage, ListBufferStorage}
 import ordering.{CustomConferencePartitionedPrecedence, ALCLPOComparator}
 import recording.{Neo4JRecorder, NaiveClauseRecorder}
@@ -25,13 +26,17 @@ class RobinsonProverBinaryResolutionWithForwardReductionNoIndexSpec extends Prov
   val config = new Object {
     // the initial clause store
 
+    // THIS FLAG IS IMPORTANT
+    val isDistributed = false
+
     lazy val variableRewriter = new VariableRewriter
     lazy val standardizer = new Standardizer(this)
 
     val recordProofSteps = true
 
     lazy val neo4JGraphBasePath: String = "/workspace/DIRE/DIRE/logs/graph/clauses"
-    lazy val inferenceRecorder = new Neo4JRecorder(neo4JGraphBasePath + "/" + System.currentTimeMillis + "/" + this)
+    //lazy val inferenceRecorder = Some(new Neo4JRecorder(neo4JGraphBasePath + "/" + System.currentTimeMillis + "/" + this))
+    lazy val inferenceRecorder = Some(new NaiveClauseRecorder())
 
     // positive factorer
     lazy val positiveFactorer = PositiveFactorer
@@ -55,6 +60,12 @@ class RobinsonProverBinaryResolutionWithForwardReductionNoIndexSpec extends Prov
     def workedOffClauseStore = new MutableClauseStore() with ListBufferStorage
 
 
+    // the caches
+    // chache for maximal literalas
+    lazy val maxLitCache = new MaxLitCache()
+    lazy val uniqueRLitCache = new URLitCache()
+    lazy val selectedLitCache = new SelectedLitCache()
+
     // switches
     // TODO disable all reductions
 
@@ -73,13 +84,17 @@ class RobinsonProverBinaryResolutionWithOrderingWithForwardReductionNoIndexSpec 
   val config = new Object {
     // the initial clause store
 
+    // THIS FLAG IS IMPORTANT
+    val isDistributed = false
+
     lazy val variableRewriter = new VariableRewriter
     lazy val standardizer = new Standardizer(this)
 
     val recordProofSteps = true
 
     lazy val neo4JGraphBasePath: String = "/workspace/DIRE/DIRE/logs/graph/clauses"
-    lazy val inferenceRecorder = new Neo4JRecorder(neo4JGraphBasePath + "/" + System.currentTimeMillis + "/" + this)
+    //lazy val inferenceRecorder = new Neo4JRecorder(neo4JGraphBasePath + "/" + System.currentTimeMillis + "/" + this)
+    lazy val inferenceRecorder = Some(new NaiveClauseRecorder())
 
     // positive factorer
     lazy val positiveFactorer = PositiveFactorer
@@ -116,6 +131,11 @@ class RobinsonProverBinaryResolutionWithOrderingWithForwardReductionNoIndexSpec 
 
     def workedOffClauseStore = new MutableClauseStore() with ListBufferStorage
 
+// the caches
+    // chache for maximal literalas
+    lazy val maxLitCache = new MaxLitCache()
+    lazy val uniqueRLitCache = new URLitCache()
+    lazy val selectedLitCache = new SelectedLitCache()
 
     // switches
     // TODO disable all reductions
@@ -134,13 +154,18 @@ class RobinsonProverBinaryResolutionWithForwardReductionWithIndexSpec extends Pr
   val config = new Object {
     // the initial clause store
 
+    // THIS FLAG IS IMPORTANT
+    val isDistributed = false
+
+
     lazy val variableRewriter = new VariableRewriter
     lazy val standardizer = new Standardizer(this)
 
     val recordProofSteps = true
 
     lazy val neo4JGraphBasePath: String = "/workspace/DIRE/DIRE/logs/graph/clauses"
-    lazy val inferenceRecorder = new Neo4JRecorder(neo4JGraphBasePath + "/" + System.currentTimeMillis + "/" + this)
+    //lazy val inferenceRecorder = new Neo4JRecorder(neo4JGraphBasePath + "/" + System.currentTimeMillis + "/" + this)
+    lazy val inferenceRecorder = Some(new NaiveClauseRecorder())
 
     // positive factorer
     lazy val positiveFactorer = PositiveFactorer
@@ -178,6 +203,12 @@ class RobinsonProverBinaryResolutionWithForwardReductionWithIndexSpec extends Pr
     def workedOffClauseStore = new MutableClauseStore() with ListBufferStorage with STIndex with UnifiableClauseRetrieval
 
 
+    // the caches
+    // chache for maximal literalas
+    lazy val maxLitCache = new MaxLitCache()
+    lazy val uniqueRLitCache = new URLitCache()
+    lazy val selectedLitCache = new SelectedLitCache()
+
     // switches
     // TODO disable all reductions
 
@@ -196,13 +227,18 @@ class RobinsonProverBinaryResolutionWithOrderingWithForwardReductionWithSTIIndex
   val config = new Object {
     // the initial clause store
 
+    // THIS FLAG IS IMPORTANT
+    val isDistributed = false
+
+
     lazy val variableRewriter = new VariableRewriter
     lazy val standardizer = new Standardizer(this)
 
     val recordProofSteps = true
 
     lazy val neo4JGraphBasePath: String = "/workspace/DIRE/DIRE/logs/graph/clauses"
-    lazy val inferenceRecorder = new Neo4JRecorder(neo4JGraphBasePath + "/" + System.currentTimeMillis + "/" + this)
+//    lazy val inferenceRecorder = Some(new Neo4JRecorder(neo4JGraphBasePath + "/" + System.currentTimeMillis + "/" + this))
+    lazy val inferenceRecorder = Some(new NaiveClauseRecorder())
 
     // positive factorer
     lazy val positiveFactorer = PositiveFactorer
@@ -239,6 +275,11 @@ class RobinsonProverBinaryResolutionWithOrderingWithForwardReductionWithSTIIndex
 
     def workedOffClauseStore = new MutableClauseStore() with ListBufferStorage  with STIndex with UnifiableClauseRetrieval
 
+   // the caches
+    // chache for maximal literalas
+    lazy val maxLitCache = new MaxLitCache()
+    lazy val uniqueRLitCache = new URLitCache()
+    lazy val selectedLitCache = new SelectedLitCache()
 
     // switches
     // TODO disable all reductions
@@ -257,6 +298,10 @@ class RobinsonProverBinaryResolutionNoReductionSTIIndexSpec extends ProvingSpec 
   // create the configuration here
   val config = new Object {
     // the initial clause store
+
+    // THIS FLAG IS IMPORTANT
+    val isDistributed = false
+
 
     lazy val variableRewriter = new VariableRewriter
     lazy val standardizer = new Standardizer(this)
@@ -279,12 +324,18 @@ class RobinsonProverBinaryResolutionNoReductionSTIIndexSpec extends ProvingSpec 
 
 
     lazy val subsumptionStrategy = StillmannSubsumer
-    lazy val inferenceRecorder = new NaiveClauseRecorder
+    lazy val inferenceRecorder = Some(new NaiveClauseRecorder())
 
     // usable clause store with STI indexes
     lazy val usableClauseStore = new MutableClauseStore() with LightestClauseHeuristicStorage with STIndex
     lazy val workedOffClauseStore = new MutableClauseStore() with ListBufferStorage with STIndex
 
+
+   // the caches
+    // chache for maximal literalas
+    lazy val maxLitCache = new MaxLitCache()
+    lazy val uniqueRLitCache = new URLitCache()
+    lazy val selectedLitCache = new SelectedLitCache()
 
     // switches
     // TODO disable all reductions
@@ -303,6 +354,10 @@ class RobinsonProverBinaryResolutionWithReductionSTIIndexSpec extends ProvingSpe
   val config = new Object {
     // the initial clause store
 
+    // THIS FLAG IS IMPORTANT
+    val isDistributed = false
+
+
     lazy val variableRewriter = new VariableRewriter
     lazy val standardizer = new Standardizer(this)
 
@@ -320,11 +375,19 @@ class RobinsonProverBinaryResolutionWithReductionSTIIndexSpec extends ProvingSpe
     // binary resolver
     lazy val resolver = new BinaryResolver(this)
     lazy val subsumptionStrategy = StillmannSubsumer
-    lazy val inferenceRecorder = new NaiveClauseRecorder
+    lazy val inferenceRecorder = Some(new NaiveClauseRecorder())
 
     // usable clause store with default index and head index ( this is needed For forward matching in indexed forward subsumer
     lazy val usableClauseStore = new MutableClauseStore with LightestClauseHeuristicStorage with STIndex with STHeadIndex
     lazy val workedOffClauseStore = new MutableClauseStore with ListBufferStorage with STIndex with STHeadIndex
+
+
+    // the caches
+    // chache for maximal literalas
+    lazy val maxLitCache = new MaxLitCache()
+    lazy val uniqueRLitCache = new URLitCache()
+    lazy val selectedLitCache = new SelectedLitCache()
+
 
     // switches
     // TODO enable all reductions
@@ -348,6 +411,10 @@ class RobinsonProverALCDResolutionWithReductionSTIIndexSpec extends ConferencePa
     // the initial clause store
     Configgy.configure("config/config.conf")
 
+    // THIS FLAG IS IMPORTANT
+    val isDistributed = false
+
+
     lazy val variableRewriter = new VariableRewriter
     lazy val standardizer = new Standardizer(this)
 
@@ -373,13 +440,18 @@ class RobinsonProverALCDResolutionWithReductionSTIIndexSpec extends ConferencePa
     // ACL resolver
     lazy val resolver = new DALCResolver(this)
     lazy val subsumptionStrategy = StillmannSubsumer
-    lazy val inferenceRecorder = new NaiveClauseRecorder
+    lazy val inferenceRecorder = Some(new NaiveClauseRecorder())
 
 
     // usable clause store with STI indexes
     def usableClauseStore = new MutableClauseStore with LightestClauseHeuristicStorage with SForrestIndex
     def workedOffClauseStore = new MutableClauseStore with ListBufferStorage with SForrestIndex
 
+    // the caches
+    // chache for maximal literalas
+    lazy val maxLitCache = new MaxLitCache()
+    lazy val uniqueRLitCache = new URLitCache()
+    lazy val selectedLitCache = new SelectedLitCache()
     // switches
     // TODO enable all reductions
 
@@ -400,7 +472,8 @@ class RobinsonProverMergedALCDResolutionWithReductionSTIIndexSpec extends Confer
   val config = new Object {
     Configgy.configure("config/config.conf")
 
-
+    // THIS FLAG IS IMPORTANT
+    val isDistributed = false
 
     // the initial clause store
 
@@ -430,12 +503,21 @@ class RobinsonProverMergedALCDResolutionWithReductionSTIIndexSpec extends Confer
     // ACL resolver
     lazy val resolver = new DALCResolver(this)
     lazy val subsumptionStrategy = StillmannSubsumer
-    lazy val inferenceRecorder = new NaiveClauseRecorder
+
+    lazy val inferenceRecorder = Some(new NaiveClauseRecorder())
 
 
     // usable clause store with STI indexes
     def usableClauseStore = new MutableClauseStore with LightestClauseHeuristicStorage with SForrestIndex
     def workedOffClauseStore = new MutableClauseStore with ListBufferStorage with SForrestIndex
+
+    // the caches
+    // chache for maximal literalas
+    lazy val maxLitCache = new MaxLitCache()
+    lazy val uniqueRLitCache = new URLitCache()
+    lazy val selectedLitCache = new SelectedLitCache()
+
+
 
     // switches
     // TODO enable all reductions
@@ -457,7 +539,8 @@ class RobinsonProverMergedALCDResolutionWithReductionFeatureVectorImperfectIndex
   val config = new Object {
     Configgy.configure("config/config.conf")
 
-
+    // THIS FLAG IS IMPORTANT
+    val isDistributed = false
 
     // the initial clause store
 
@@ -488,12 +571,22 @@ class RobinsonProverMergedALCDResolutionWithReductionFeatureVectorImperfectIndex
     // ACL resolver
     lazy val resolver = new DALCResolver(this)
     lazy val subsumptionStrategy = StillmannSubsumer
-    lazy val inferenceRecorder = new NaiveClauseRecorder
+    lazy val inferenceRecorder = Some(new NaiveClauseRecorder)
 
 
     // usable clause store with STI indexes
     def usableClauseStore = new MutableClauseStore with LightestClauseHeuristicStorage with FeatureVectorImperfectIndex
     def workedOffClauseStore = new MutableClauseStore with ListBufferStorage with FeatureVectorImperfectIndex
+
+
+    // the caches
+    // chache for maximal literalas
+    lazy val maxLitCache = new MaxLitCache()
+    lazy val uniqueRLitCache = new URLitCache()
+    lazy val selectedLitCache = new SelectedLitCache()
+
+
+
 
     // switches
     // TODO enable all reductions

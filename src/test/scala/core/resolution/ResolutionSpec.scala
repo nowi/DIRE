@@ -18,7 +18,7 @@ import reduction.{DuplicateLiteralDeleter, ClauseCondenser}
 
 @RunWith(classOf[JUnit4Runner])
 abstract class ResolutionSpec extends Spec with ShouldMatchers with Logging {
-  implicit def listFolNode2StandardClause(list: List[FOLNode]): StandardClause = StandardClause(list)
+  implicit def setFolNode2StandardClause(set: Set[FOLNode]): StandardClause = StandardClause(set)
 
   val resolver: BinaryResolution
   val positiveFactorer: PositiveFactoring

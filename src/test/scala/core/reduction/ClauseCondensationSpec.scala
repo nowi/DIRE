@@ -37,10 +37,10 @@ abstract class ClauseCondensationSpec extends Spec with ShouldMatchers {
       val p1 = Predicate("Loves", Function("G", jack), jack)
       val p2 = Predicate("Loves", Function("G", x), x)
 
-      val clause = List(p1, p2)
+      val clause = Set[FOLNode](p1, p2)
       val y = Variable("y")
       // factorize
-      ClauseCondenser(clause)(subsumptionCheck) should equal(List(p1))
+      ClauseCondenser(clause)(subsumptionCheck) should equal(Set[FOLNode](p1))
 
 
     }
@@ -52,9 +52,9 @@ abstract class ClauseCondensationSpec extends Spec with ShouldMatchers {
       val y = Variable("x")
       val x = Variable("y")
 
-      val C = List(Predicate("man", x), Predicate("man", y), Negation(Predicate("in_love", x, y)))
+      val C = Set[FOLNode](Predicate("man", x), Predicate("man", y), Negation(Predicate("in_love", x, y)))
       // x gets rewritten to y  , we need logical equals methods
-      val C1 = List(Predicate("man", y), Negation(Predicate("in_love", y, y)))
+      val C1 = Set[FOLNode](Predicate("man", y), Negation(Predicate("in_love", y, y)))
 
 
       // factorize

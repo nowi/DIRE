@@ -1,6 +1,7 @@
 package core.resolution
 
 
+import caches.{MaxLitCache, SelectedLitCache}
 import collection.mutable.ListBuffer
 import domain.fol.ast._
 import domain.fol.functions.FOLAlgorithms._
@@ -30,17 +31,18 @@ trait FactoringResult extends InferenceResult
 
 
 trait PositiveFactoring {
-  def apply(clause: List[FOLNode]): List[FOLNode]
+  def apply(clause: Set[FOLNode]): Set[FOLNode]
 }
 
 trait NegativeFactoring {
-  def apply(clause: List[FOLNode]): List[FOLNode]
+  def apply(clause: Set[FOLNode]): Set[FOLNode]
 }
 
 object PositiveFactorer extends PositiveFactoring {
 
-  implicit def listFOLnode2StandardClause(list: List[FOLNode]): FOLClause = StandardClause(list)
-  override def apply(clause: List[FOLNode]): List[FOLNode] = {
+  implicit def listFOLnode2StandardClause(set: Set[FOLNode]): FOLClause = StandardClause(set)
+
+  override def apply(clause: Set[FOLNode]): Set[FOLNode] = {
 
     def getMGU(a: FOLNode, b: FOLNode) = {
       // we can never match a positive with a negative literal
@@ -56,7 +58,7 @@ object PositiveFactorer extends PositiveFactoring {
     } else {
 
       // first clear duplicate literals
-      val buffer = new ListBuffer[FOLNode]() ++ clause.removeDuplicates
+      val buffer = new ListBuffer[FOLNode]() ++ clause
 
       // collect the candiate instantiations
       val candidate = (for (e1 <- clause.positiveLiterals; e2 <- clause.positiveLiterals if (e1 != e2)) yield (e2, getMGU(e1, e2))).find({
@@ -74,7 +76,7 @@ object PositiveFactorer extends PositiveFactoring {
           } else {
             error("Should not factor to empty clause")
           }
-          factoredClause
+          Set() ++ factoredClause
 
         }
 
@@ -92,9 +94,9 @@ object PositiveFactorer extends PositiveFactoring {
 
 }
 object NegativeFactorer extends NegativeFactoring {
-  implicit def listFOLnode2StandardClause(list: List[FOLNode]): FOLClause = StandardClause(list)
+  implicit def setFOLnode2StandardClause(set: Set[FOLNode]): FOLClause = StandardClause(set)
 
-  override def apply(clause: List[FOLNode]): List[FOLNode] = {
+  override def apply(clause: Set[FOLNode]): Set[FOLNode] = {
 
     def getMGU(a: FOLNode, b: FOLNode) = {
       // we can never match a positive with a negative literal
@@ -110,7 +112,7 @@ object NegativeFactorer extends NegativeFactoring {
     } else {
 
       // first clear duplicate literals
-      val buffer = new ListBuffer[FOLNode]() ++ clause.removeDuplicates
+      val buffer = new ListBuffer[FOLNode]() ++ clause
 
       // collect the candiate instantiations
       val candidate = (for (e1 <- clause.negativeLiterals; e2 <- clause.negativeLiterals if (e1 != e2)) yield (e2, getMGU(e1, e2))).find({
@@ -128,7 +130,7 @@ object NegativeFactorer extends NegativeFactoring {
           } else {
             error("Should not factor to empty clause")
           }
-          factoredClause
+          Set() ++ factoredClause
 
         }
 
@@ -151,14 +153,14 @@ object NegativeFactorer extends NegativeFactoring {
 
 
 
-class PositiveOrderedFactoring(env: {val selector: LiteralSelection; val literalComparator: LiteralComparison}) extends PositiveFactoring with helpers.Logging {
-  implicit def listFOLnode2ALCDClause(list: List[FOLNode]): FOLClause = ALCDClause(list)
+class PositiveOrderedFactoring(env: {val selector: LiteralSelection; val literalComparator: LiteralComparison;val selectedLitCache : SelectedLitCache }) extends PositiveFactoring with helpers.Logging {
+  implicit def iterableFOLnode2ALCDClause(iterablelist: Set[FOLNode]): FOLClause = ALCDClause(iterablelist)
 
   implicit val literalSelector = env.selector
   implicit val literalComparator = env.literalComparator
-
-
-  override def apply(clause: List[FOLNode]): List[FOLNode] = {
+  implicit val selectedLitCache = env.selectedLitCache
+  
+  override def apply(clause: Set[FOLNode]): Set[FOLNode] = {
 
     // Aσ is maximal with respect to Cσ ∨ Bσ
     def condition2(b: FOLNode,matcher : Substitution) = {
@@ -184,7 +186,7 @@ class PositiveOrderedFactoring(env: {val selector: LiteralSelection; val literal
     } else {
 
       // first clear duplicate literals
-      val buffer = new ListBuffer[FOLNode]() ++ clause.removeDuplicates
+      val buffer = new ListBuffer[FOLNode]() ++ clause
 
       // collect the candiate instantiations
 
@@ -207,7 +209,7 @@ class PositiveOrderedFactoring(env: {val selector: LiteralSelection; val literal
           } else {
             error("Should not factor to empty clause")
           }
-          factoredClause
+          Set() ++ factoredClause
 
         }
 
@@ -223,14 +225,14 @@ class PositiveOrderedFactoring(env: {val selector: LiteralSelection; val literal
   }
 }
 
-class NegativeOrderedFactoring(env: {val selector: LiteralSelection; val literalComparator: LiteralComparison}) extends NegativeFactoring with helpers.Logging {
-  implicit def listFOLnode2ALCDClause(list: List[FOLNode]): FOLClause = ALCDClause(list)
+class NegativeOrderedFactoring(env: {val selector: LiteralSelection; val literalComparator: LiteralComparison;val selectedLitCache : SelectedLitCache}) extends NegativeFactoring with helpers.Logging {
+  implicit def iterableFOLnode2ALCDClause(iterable: Set[FOLNode]): FOLClause = ALCDClause(iterable)
 
   implicit val literalSelector = env.selector
   implicit val literalComparator = env.literalComparator
+  implicit val selectedLitCache = env.selectedLitCache
 
-
-  override def apply(clause: List[FOLNode]): List[FOLNode] = {
+  override def apply(clause: Set[FOLNode]): Set[FOLNode] = {
 
     // Aσ is maximal with respect to Cσ ∨ Bσ
     def condition2(b: FOLNode,matcher : Substitution) = {
@@ -256,7 +258,7 @@ class NegativeOrderedFactoring(env: {val selector: LiteralSelection; val literal
     } else {
 
       // first clear duplicate literals
-      val buffer = new ListBuffer[FOLNode]() ++ clause.removeDuplicates
+      val buffer = new ListBuffer[FOLNode]() ++ clause
 
       // collect the candiate instantiations
 
@@ -279,7 +281,7 @@ class NegativeOrderedFactoring(env: {val selector: LiteralSelection; val literal
           } else {
             error("Should not factor to empty clause")
           }
-          factoredClause
+          Set() ++ factoredClause
 
         }
 
@@ -297,31 +299,32 @@ class NegativeOrderedFactoring(env: {val selector: LiteralSelection; val literal
 
 object ALCPositiveOrderedFactoring {
     // A is maximal with respect to C ∨ B
-    def condition2(clause : FOLClause, a : FOLNode,b: FOLNode)(implicit literalComperator : LiteralComparison ) = {
+    def condition2(clause : FOLClause, a : FOLNode,b: FOLNode)(implicit literalComperator : LiteralComparison,maxLitCache : MaxLitCache,selectedLitCache : SelectedLitCache ) = {
       val result = clause.maxLits.contains(a)
       result
     }
 
     // 3. nothing is selected in C ∨ A ∨ B
-    def condition3(clause : FOLClause)(implicit literalSelector : LiteralSelection ) = {
+    def condition3(clause : FOLClause)(implicit literalSelector : LiteralSelection,selectedLitCache : SelectedLitCache ) = {
       val result = clause.selectedLits.isEmpty
       result
     }
 
 
-    def isAppliable(clause : FOLClause, a : FOLNode,b: FOLNode)(implicit literalComperator : LiteralComparison , literalSelector : LiteralSelection ) = condition2(clause,a,b) && condition3(clause)
+    def isAppliable(clause : FOLClause, a : FOLNode,b: FOLNode)(implicit literalComperator : LiteralComparison , literalSelector : LiteralSelection,maxLitCache : MaxLitCache,selectedLitCache : SelectedLitCache ) = condition2(clause,a,b) && condition3(clause)
 
 }
 
 
-class ALCPositiveOrderedFactoring(env: {val selector: LiteralSelection; val literalComparator: LiteralComparison}) extends PositiveFactoring with helpers.Logging {
-  implicit def listFOLnode2ALCDClause(list: List[FOLNode]): FOLClause = ALCDClause(list)
+class ALCPositiveOrderedFactoring(env: {val selector: LiteralSelection; val literalComparator: LiteralComparison;val maxLitCache : MaxLitCache;val selectedLitCache : SelectedLitCache}) extends PositiveFactoring with helpers.Logging {
+  implicit def setFOLnode2ALCDClause(set: Set[FOLNode]): FOLClause = ALCDClause(set)
 
   implicit val literalSelector = env.selector
   implicit val literalComparator = env.literalComparator
+  implicit val maxLitCache = env.maxLitCache
+  implicit val selectedLitCache  = env.selectedLitCache
 
-
-  override def apply(clause: List[FOLNode]): List[FOLNode] = {
+  override def apply(clause: Set[FOLNode]): Set[FOLNode] = {
 
     def getMGU(a: FOLNode, b: FOLNode) = {
       // we can never match a positive with a negative literal
@@ -337,7 +340,7 @@ class ALCPositiveOrderedFactoring(env: {val selector: LiteralSelection; val lite
     } else {
 
       // first clear duplicate literals
-      val buffer = new ListBuffer[FOLNode]() ++ clause.removeDuplicates
+      val buffer = new ListBuffer[FOLNode]() ++ clause
 
       // collect the candiate instantiations
 
@@ -360,7 +363,7 @@ class ALCPositiveOrderedFactoring(env: {val selector: LiteralSelection; val lite
           } else {
             error("Should not factor to empty clause")
           }
-          factoredClause
+          Set() ++ factoredClause
 
         }
 
@@ -376,14 +379,16 @@ class ALCPositiveOrderedFactoring(env: {val selector: LiteralSelection; val lite
   }
 }
 
-class ALCNegativeOrderedFactoring(env: {val selector: LiteralSelection; val literalComparator: LiteralComparison}) extends NegativeFactoring with helpers.Logging {
-  implicit def listFOLnode2ALCDClause(list: List[FOLNode]): FOLClause = ALCDClause(list)
+class ALCNegativeOrderedFactoring(env: {val selector: LiteralSelection; val literalComparator: LiteralComparison;val maxLitCache : MaxLitCache; val selectedLitCache : SelectedLitCache}) extends NegativeFactoring with helpers.Logging {
+  implicit def setFOLnode2ALCDClause(set: Set[FOLNode]): FOLClause = ALCDClause(set)
 
   implicit val literalSelector = env.selector
   implicit val literalComparator = env.literalComparator
+  implicit val maxLitCache = env.maxLitCache
+  implicit val selectedLitCache = env.selectedLitCache
 
 
-  override def apply(clause: List[FOLNode]): List[FOLNode] = {
+  override def apply(clause: Set[FOLNode]): Set[FOLNode] = {
 
     def getMGU(a: FOLNode, b: FOLNode) = {
       // we can never match a positive with a negative literal
@@ -399,7 +404,7 @@ class ALCNegativeOrderedFactoring(env: {val selector: LiteralSelection; val lite
     } else {
 
       // first clear duplicate literals
-      val buffer = new ListBuffer[FOLNode]() ++ clause.removeDuplicates
+      val buffer = new ListBuffer[FOLNode]() ++ clause
 
       // collect the candiate instantiations
 
@@ -422,7 +427,7 @@ class ALCNegativeOrderedFactoring(env: {val selector: LiteralSelection; val lite
           } else {
             error("Should not factor to empty clause")
           }
-          factoredClause
+          Set() ++ factoredClause
 
         }
 

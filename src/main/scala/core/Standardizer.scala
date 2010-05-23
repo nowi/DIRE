@@ -40,7 +40,7 @@ trait Standardizing {
    * @param c2 - clause
    * @returns rewritten clauses pair
    */
-  def standardizeApart(c1: FOLClause, c2: FOLClause): (FOLClause, FOLClause,Substitution,Substitution,Substitution)
+  def standardizeApart(c1: Set[FOLNode], c2: Set[FOLNode]): (Set[FOLNode], Set[FOLNode],Substitution,Substitution,Substitution)
 
   def needStandardizing(x: FOLNode, y: FOLNode): Boolean
 
@@ -90,7 +90,7 @@ class Standardizer(env: {val variableRewriter: VariableRewriting}) extends Stand
   }
 
 
-  override def standardizeApart(c1: FOLClause, c2: FOLClause) = {
+  override def standardizeApart(c1: Set[FOLNode], c2: Set[FOLNode]) = {
     // check terms need standardizing
     commonVars(c1, c2) match {
       case List() => { // empty list
@@ -141,15 +141,15 @@ class Standardizer(env: {val variableRewriter: VariableRewriting}) extends Stand
     (x.flatArgs.filter({_.isInstanceOf[Variable]}) intersect y.flatArgs.filter({_.isInstanceOf[Variable]})).asInstanceOf[List[Variable]]
   }
 
-  private def commonVars(nodes: List[FOLNode]): List[Variable] = {
+  private def commonVars(nodes: Set[FOLNode]): List[Variable] = {
     // get all variables that are in common for any pair of nodes in the input nodes
     // we can ignore tuples with identical elements and reverse order to
     val cv = for (n1 <- nodes; n2 <- nodes) yield {commonVars(n1, n2)}
-    cv.flatten
+    cv.toList.flatten
   }
 
-  private def commonVars(c1: FOLClause, c2: FOLClause): List[Variable] = {
-    val cv = (commonVars(c1.literals.toList) intersect commonVars(c2.literals.toList))
-    cv
+  private def commonVars(c1: Set[FOLNode], c2: Set[FOLNode]): List[Variable] = {
+    val cv = (commonVars(c1) intersect commonVars(c2))
+    cv.toList
   }
 }

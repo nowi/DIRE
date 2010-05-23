@@ -1,6 +1,7 @@
 package core.resolution
 
 
+import caches.MaxLitCache
 import domain.fol.ast.{PositiveFOLLiteral, NegativeFOLLiteral, FOLClause, FOLNode}
 import helpers.Logging
 import ordering.LiteralComparison
@@ -16,9 +17,10 @@ trait UniqueLiteralResolution {
   def apply(clause: FOLClause): Option[FOLNode]
 }
 
-class DALCUniqueLiteralResolver(env: {val selector: LiteralSelection;val literalComparator : LiteralComparison}) extends UniqueLiteralResolution with Logging{
+class DALCUniqueLiteralResolver(env: {val selector: LiteralSelection;val literalComparator : LiteralComparison;val maxLitCache : MaxLitCache}) extends UniqueLiteralResolution with Logging{
   val selector = env.selector
   val literalComparator = env.literalComparator
+  implicit val maxLitCache : MaxLitCache = env.maxLitCache
 
   override def apply(clause: FOLClause) : Option[FOLNode] = {
     // get selected literals
@@ -41,7 +43,7 @@ class DALCUniqueLiteralResolver(env: {val selector: LiteralSelection;val literal
         val compare = literalComparator.compare(_, _)
         // is there is ONE strictly maximal literal A ?
 
-        val maxLiterals: List[FOLNode] = clause.maxLits(literalComparator)
+        val maxLiterals: List[FOLNode] = clause.maxLits(literalComparator,maxLitCache)
 
 
         log.debug("Clause %s ... Strictly maximal literals are : %s", clause, maxLiterals)

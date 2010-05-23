@@ -1,6 +1,7 @@
 package core.resolution
 
 
+import caches.{URLitCache, MaxLitCache, SelectedLitCache}
 import containers.{UnifiableClauseRetrieval, MatchingClausesRetrieval, CNFClauseStore, ClauseStorage}
 import domain.fol.ast._
 import domain.fol.Substitution
@@ -35,9 +36,11 @@ trait OrderedResolution extends BinaryResolution {
 
 
 object ALCDOrderedResolution extends Logging {
- implicit def listFOLNode2ALCDClause(list: List[FOLNode]) = domain.fol.ast.ALCDClause(list)
+ implicit def listFOLNode2ALCDClause(list: Set[FOLNode]) = domain.fol.ast.ALCDClause(list)
 
-  def isAppliable(sidePremise: FOLClause,aPos: FOLNode,mainPremise : FOLClause,bNeg: Negation)(implicit selector: LiteralSelection,comperator: LiteralComparison) : Boolean = {
+  def isAppliable(sidePremise: FOLClause,aPos: FOLNode,mainPremise : FOLClause,bNeg: Negation)
+                 (implicit selector: LiteralSelection,comperator: LiteralComparison,
+                  uniqueRLitCache : URLitCache,maxLitCache : MaxLitCache,selectedLitCache : SelectedLitCache) : Boolean = {
     //B is selected in D ∨ ¬B ( main premise )
     def condition2a = {
       // TODO check the negative sign
@@ -96,9 +99,11 @@ object ALCDOrderedResolution extends Logging {
 }
 
 object OrderedResolution extends Logging {
- implicit def listFOLNode2ALCDClause(list: List[FOLNode]) = StandardClause(list)
+ implicit def iterableFOLNode2ALCDClause(iterable: Set[FOLNode]) = StandardClause(iterable)
 
-  def isAppliable(sidePremise: FOLClause,aPos: FOLNode,mainPremise : FOLClause,bNeg: Negation,mgu : Substitution)(implicit selector: LiteralSelection,comperator: LiteralComparison) : Boolean = {
+  def isAppliable(sidePremise: FOLClause,aPos: FOLNode,mainPremise : FOLClause,bNeg: Negation,mgu : Substitution)
+                 (implicit selector: LiteralSelection,comperator: LiteralComparison,
+                  uniqueRLitCache : URLitCache,maxLitCache : MaxLitCache,selectedLitCache : SelectedLitCache) : Boolean = {
 
     // Important :
     // Lemma 1 (Invariance of Maximality). If a set of ALC clauses is resolved applying RDL,

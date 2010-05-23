@@ -1,6 +1,7 @@
 package core.config
 
 
+import caches.{SelectedLitCache, URLitCache, MaxLitCache}
 import containers.{CNFClauseStore}
 import domain.fol.parsers.SPASSIntermediateFormatParser
 import java.io.File
@@ -41,7 +42,7 @@ object Partition1OrderedTheoremProvingConfig {
   lazy val standardizer = new Standardizer(this)
   lazy val resolver = new DALCResolver(this)
   lazy val subsumptionStrategy = StillmannSubsumer
-  lazy val inferenceRecorder = new NaiveClauseRecorder
+  lazy val inferenceRecorder = Some(new NaiveClauseRecorder)
     lazy val uniqueLiteralResolver = new DALCUniqueLiteralResolver(this)
 
   // ordered resolution needs comparator and selection too
@@ -49,6 +50,10 @@ object Partition1OrderedTheoremProvingConfig {
   lazy val literalComparator = new ALCLPOComparator(this)
   lazy val selector = new NegativeLiteralsSelection()
 
+   // chache for maximal literalas
+    lazy val maxLitCache = new MaxLitCache()
+    lazy val uniqueRLitCache = new URLitCache()
+    lazy val selectedLitCache = new SelectedLitCache()
 
 
 

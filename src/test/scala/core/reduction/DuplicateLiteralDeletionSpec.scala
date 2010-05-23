@@ -31,14 +31,14 @@ abstract class DuplicateLiteralDeletionSpec extends Spec with ShouldMatchers wit
 
 
     it("should delete duplicate ground literals. ") {
-      deleter(List(west,west,nono)) should equal (List(west,nono))
+      deleter(Set(west,west,nono)) should equal (Set(west,nono))
     }
 
 
     it("should delete duplicate non ground literals. ") {
-      deleter(List(g(x),g(x),nono)) should equal (List(g(x),nono))
-      deleter(List(g(x),g(y),nono)) should equal (List(g(x),g(y),nono))
-      deleter(List(g(nono),g(nono),nono)) should equal (List(g(nono),nono))
+      deleter(Set(g(x),g(x),nono)) should equal (Set(g(x),nono))
+      deleter(Set(g(x),g(y),nono)) should equal (Set(g(x),g(y),nono))
+      deleter(Set(g(nono),g(nono),nono)) should equal (Set(g(nono),nono))
     }
 
 

@@ -5,6 +5,7 @@ package core.config
  * Date: 11.03.2010
  * Time: 11:26:08
  */
+import caches.{SelectedLitCache, URLitCache, MaxLitCache}
 import containers.heuristics.{LightestClauseHeuristicStorage, ListBufferStorage}
 import resolution.{PositiveFactorer, DALCUniqueLiteralResolver, DALCResolver}
 import containers.{MutableClauseStore, STIndex, CNFClauseStore}
@@ -44,6 +45,16 @@ object DALCConfig {
   lazy val subsumptionStrategy = StillmannSubsumer
   lazy val inferenceRecorder = new NaiveClauseRecorder
 
+
+  // TODO here we shouldf descice if a global chache can be used or not
+
+
+
+  // the caches
+    // chache for maximal literalas
+    def maxLitCache = new MaxLitCache()
+    def uniqueRLitCache = new URLitCache()
+    def selectedLitCache = new SelectedLitCache()
 
   // usable clause store with STI indexes
   def usableClauseStore = new MutableClauseStore with LightestClauseHeuristicStorage with STIndex
