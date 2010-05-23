@@ -19,6 +19,7 @@ import domain.fol.ast.FOLClause
 sealed trait Event
 case class Saturate(clauses: Iterable[FOLClause]) extends Event
 case class Derived(derived : FOLClause,parent1:Option[FOLClause],parent2:Option[FOLClause]) extends Event
+case class DerivedBatch(derived : Iterable[FOLClause]) extends Event
 
 
 case class Result(result : ProvingResult) extends Event
@@ -28,9 +29,11 @@ case class KeptClauses(clauses : Iterable[FOLClause]) extends Event
 
 
 // administrative messages
-case class LoadAllocation(allocation: ClauseAllocation) extends Event
-case class ProverStatus(status: ProvingState,workedOffCount : Int,derivedCount : Int) extends Event
+case class LoadAllocation(allocation: Map[String,String]) extends Event
+case class LocalSymbols(localSymbols: List[String]) extends Event
+case class ProverStatus(status: ProvingState,workedOffCount : Int,derivedCount : Int,recievedKeptClauseCount : Int,recievedClauseCount : Int,dispatchedClauseCount : Int) extends Event
 case class Status(status: String) extends Event
+case class Heartbeat(status: String) extends Event
 
 case class GetStatus(bla : String) extends Event
 case class GetStatusOverride(bla : String) extends Event

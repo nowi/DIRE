@@ -5,6 +5,7 @@ import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy
 import recording.NaiveClauseRecorder
 import se.scalablesolutions.akka.dispatch.Dispatchers
 import core._
+import caches.{SelectedLitCache, URLitCache, MaxLitCache}
 import config.DALCConfig
 import containers._
 import containers.heuristics.{LightestClauseHeuristicStorage, ListBufferStorage}
@@ -29,45 +30,16 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException
  * Time: 12:34:38
  */
 
-trait Neo4JLoggingActorFactory {
-  this: ReasoningActor =>
-  // create the dispatcher actor
-  val derivationsLoggingActor = new Neo4JLoggingActor(DALCConfig)
 
-  val reductionsLoggingActor = new Neo4JLoggingActor(DALCConfig)
-
-}
-
-trait DALCDispatcherActorFactory {
-  this: ReasoningActor =>
-  // create the dispatcher actor
-  val dispatcherActor  = new DALCDispatcherActor(DALCConfig)
-}
-
-trait ToVoidDispatcherActorFactory {
-  this: ReasoningActor =>
-  // create the dispatcher actor
-  val dispatcherActor = new ToVoidDispatchingActor
-}
-
-
-trait DALCProverActorFactory {
-  this: ReasoningActor =>
-  // configure the core prover
-  val provingActor = new ProvingActor with CoreResolutionProver1Factory
-
-
-
-}
-
-
-
-trait CoreResolutionProver1Factory {
-  this: ProvingActor =>
-  // configure the core prover
-
+case class DefaultDALCReasoner extends ReasoningActor {
   val config = new Object {
     // the initial clause store
+
+
+    lazy val neo4JGraphBasePath: String = "/workspace/DIRE/DIRE/logs/graph/clauses"
+
+    
+    val isDistributed = true
 
     lazy val variableRewriter = new VariableRewriter
     lazy val standardizer = new Standardizer(this)
@@ -94,12 +66,19 @@ trait CoreResolutionProver1Factory {
     // ACL resolver
     lazy val resolver = new DALCResolver(this)
     lazy val subsumptionStrategy = StillmannSubsumer
-    lazy val inferenceRecorder = new NaiveClauseRecorder
+//    lazy val inferenceRecorder = Some(new NaiveClauseRecorder)
+    lazy val inferenceRecorder = None
 
+
+    // the caches
+    // chache for maximal literalas
+    lazy val maxLitCache = new MaxLitCache()
+    lazy val uniqueRLitCache = new URLitCache()
+    lazy val selectedLitCache = new SelectedLitCache()
 
     // usable clause store with STI indexes
-    def usableClauseStore = new MutableClauseStore with LightestClauseHeuristicStorage with FeatureVectorImperfectIndex
-    def workedOffClauseStore = new MutableClauseStore with ListBufferStorage with FeatureVectorImperfectIndex
+    lazy val usableClauseStore = new MutableClauseStore with LightestClauseHeuristicStorage with FeatureVectorImperfectIndex
+    lazy val workedOffClauseStore = new MutableClauseStore with ListBufferStorage with FeatureVectorImperfectIndex
 
     // switches
     // TODO enable all reductions
@@ -109,22 +88,27 @@ trait CoreResolutionProver1Factory {
     // hard time limit
     val timeLimit: Long = 0;
 
+
+    val prover = new RobinsonProver(this)
+
   }
 
-
-  val prover = new RobinsonProver(config)
   // setup this actor as a listener for resolution events
-  prover.addObserver(this)
+
+  // configure the core prover
+  val provingActor = new ProvingActor(config)
+  
+
+  val dispatcherActor  = new DALCDispatcherActor(config)
+
+
+  val derivationsLoggingActor = new Neo4JLoggingActor(config)
+
+  val reductionsLoggingActor = new Neo4JLoggingActor(config)
 
 
 }
 
-
-
-
-case class DALCReasoner extends ReasoningActor with DALCProverActorFactory with DALCDispatcherActorFactory with Neo4JLoggingActorFactory
-
-case class DALCReasonerNoDispatch extends ReasoningActor with DALCProverActorFactory with ToVoidDispatcherActorFactory with Neo4JLoggingActorFactory
 
 //case class DALCReasonerBroadCastDispatch extends ReasoningActor with DALCProverActorFactory with BroadCastDispatcherActorFactory
 

@@ -4,7 +4,7 @@ package core
 import collection.mutable.{ListBuffer}
 import domain.fol.ast._
 import helpers.{Subject, Logging}
-import kernel.Derived
+import kernel.{DerivedBatch, Derived}
 import ProvingResult._
 import collection.immutable.{TreeSet, SortedSet}
 import containers._
@@ -29,27 +29,36 @@ class RobinsonProver(env: {
   val usableClauseStore: MutableClauseStorage;
   val workedOffClauseStore: MutableClauseStorage;
   val recordProofSteps: Boolean;
-  val inferenceRecorder: ClauseRecording;
+  val inferenceRecorder: Option[ClauseRecording];
   val subsumptionStrategy: Subsumption;
   val forwardSubsumer: ForwardSubsumption;
   val backwardSubsumer: BackwardSubsumption;
   val resolver: Resolution;
   val positiveFactorer: PositiveFactoring;
-  val timeLimit: Long})
+  val negativeFactorer: NegativeFactoring;
+  val timeLimit: Long;
+  val isDistributed: Boolean})
         extends FOLProving
                 with Logging with ClauseFormatting {
-  implicit def listofFOLNode2FOLClause(literals: List[FOLNode]): FOLClause = ALCDClause(literals)
+  implicit def setofFOLNode2ALCDClause(literals: Set[FOLNode]): ALCDClause = ALCDClause(literals)
 
-  implicit def listofFOLClause2ListFOLNode(clause: FOLClause): List[FOLNode] = clause.literals
+  implicit def FOLClause2SetFOLNode(clause: FOLClause): Set[FOLNode] = clause.literals
   // reduction + subsumption functions
 
   //
+  val isDistributed = env.isDistributed
   val timeLimit = env.timeLimit
   val resolver = env.resolver
   val positveFactorer = env.positiveFactorer
+  val negativeFactorer = env.negativeFactorer
 
-
+  val factoringEnabled = true
+  val enableSharedClauses = false
   val seenClauses = new ListBuffer[FOLClause]()
+
+  val recordClauses = false
+  val backReductionOnRecievedClauses = true
+  val forwardReductionOnRecievedClauses = true
 
   //implicit val literalComperator = env.literalComparator
   implicit val subsumptionChecker = env.subsumptionStrategy
@@ -61,11 +70,12 @@ class RobinsonProver(env: {
   val tautologyDetection = ClauseTautologyDetector.apply _
   val condensation = ClauseCondenser.apply _
   val trivialLiteralDeletion = TrivialLiteralDeleter.apply _
-  val duplicateLiteralDeleter = DuplicateLiteralDeleter.apply _
+
+  //val duplicateLiteralDeleter = DuplicateLiteralDeleter.apply _
 
   val backwardSubsumer = env.backwardSubsumer
 
-  val inferenceRecorder = env.inferenceRecorder
+  implicit val inferenceRecorder = env.inferenceRecorder
 
   // TODO
   //val forwardRewriting = ForwardRewriter.apply _
@@ -84,25 +94,75 @@ class RobinsonProver(env: {
 
 
   // init the storeas
+  // take note this are MUTABLE structures that will be mutated by multiple methods in this class
   val usable: MutableClauseStorage = env.usableClauseStore
   val workedOff: MutableClauseStorage = env.workedOffClauseStore
 
   var derivedClausesCount: Int = 0
   var keptClausesCount: Int = 0
+  var recievedClauseCount: Int = 0
+  var recievedKeptClauseCount: Int = 0
+
+
+
+
   var iteration = 1;
   val startTime = System.currentTimeMillis
   var resolvedEmptyClause = false
 
+
+  // this can be called from upper system layer if they need to integrate a claus
+  // used only from the proving actor when a clause stays in this node in the distributed case
+  // TODO this is not very clean from a design perspective fix this in the future
+  override def addToUsable(clause: FOLClause) = {
+    usable.add(clause)
+  }
+
+
+  override def addAllToUsable(clauses: Iterable[FOLClause]) = {
+    usable.addAll(clauses)
+  }
+
+  override def addToWorkedOff(clause: FOLClause) = {
+    workedOff.add(clause)
+  }
+
+
+  override def addAllToWorkedOff(clauses: Iterable[FOLClause]) = {
+    workedOff.addAll(clauses)
+  }
+
   override def saturate(clauses: Iterable[FOLClause]) = {
     clauses match {
       case Nil => {
-        log.info("Cannot staurate empty clauses ... ignore")
-        (COMPLETION, workedOff.toList)
+        log.warning("Cannot staurate empty clauses ... ignore")
+        (COMPLETION, workedOff.toList.size, derivedClausesCount, recievedClauseCount, recievedKeptClauseCount)
       }
 
       case clauses if (workedOff.toList.isEmpty) => {
         // this is the first saturation , we have no background clauses
-        log.info("This is the first saturation , we have no background clauses")
+        log.warning("%s is starting first saturation , we have no background clauses", this)
+
+        // record those clauses
+
+        if (recordClauses) {
+          inferenceRecorder match {
+            case Some(ir) => {
+              for (clause <- clauses) {
+                ir.recordClause(clause, None, None)
+                //              log.warning("Input : %s", printInferenceStep(clause))
+              }
+            }
+
+            case None => // no inference recorder present
+          }
+        }
+
+
+        // print input clauses
+        //for(clause <- clauses)(log.warning("Input : %s",printInferenceStep(clause)))
+
+
         // first pass the clauses through the rewriting rules ( these are potentialy destructive )
         val rewritten = clauses.map(forwardLiteralDeletion(_))
 
@@ -115,118 +175,67 @@ class RobinsonProver(env: {
       }
 
       case clauses if (!workedOff.isEmpty) => {
-        log.info("Restarting saturation")
+        log.debug("%s is restarting saturation", this)
         // TODO interreducate with workedoff
-        // first pass the clauses through the rewriting rules ( these are potentialy destructive )
-        val rewritten = clauses.map(forwardLiteralDeletion(_))
 
-        // filter out tautologies each redundant clause
-        val interReduced = rewritten.filter(!forwardRedundancyCheck(_, workedOff)).map(ALCDClause(_))
+        // count recived
+
+        recievedClauseCount += clauses.toList.size
+
+        // record those clauses
+        if (recordClauses) {
+          inferenceRecorder match {
+            case Some(ir) => {
+              for (clause <- clauses) {
+                ir.recordRecievedClause(clause, None, None)
+                //              log.warning("Recieved Input : %s", printInferenceStep(clause))
+              }
+            }
+
+            case None => // no inference recorder present
+          }
+
+        }
+
+        // first check if we do forward reduce the recieved clauses
+        val interReduced = if (forwardReductionOnRecievedClauses) {
+          // first pass the clauses through the rewriting rules ( these are potentialy destructive )
+          val rewritten = clauses.map(forwardLiteralDeletion(_))
+          // filter out tautologies each redundant clause
+          rewritten.filter(!forwardRedundancyCheck(_, workedOff)).map(ALCDClause(_))
+        } else clauses
 
 
 
         if (interReduced.isEmpty) {
           log.info("Recived redundant clause .. exit")
-          (COMPLETION, workedOff.toList)
-        } else {
-
+          (COMPLETION, workedOff.toList.size, derivedClausesCount, recievedClauseCount, recievedKeptClauseCount)
+        } else if (backReductionOnRecievedClauses) {
           // remainig clauses are then used for backward reduction on usable and workedoff sets
           // backward subsumption on usable
           //val backwardSubsumed = interReduced.flatMap({clause => backwardSubsumer.apply(clause,usable)})
           workedOff.removeAll(interReduced.flatMap({clause => backwardSubsumer(clause, workedOff)}))
 
+          recievedKeptClauseCount += interReduced.toList.size
+
           doSaturate(interReduced)
+
+        } else {
+          recievedKeptClauseCount += interReduced.toList.size
+          doSaturate(clauses)
+
         }
 
 
       }
-    }
 
+    }
   }
 
   private def doSaturate(clauses: Iterable[FOLClause]) = {
     // submethods
 
-
-
-    def interReduce(clauses: Iterable[List[FOLNode]]) {
-      // create store for newClauses with lightest clause heurstic
-      val newClauses = new MutableClauseStore with LightestClauseHeuristicStorage
-
-      derivedClausesCount = derivedClausesCount + newClauses.size
-
-      newClauses.addAll(clauses.map(ALCDClause(_)))
-
-
-
-      def forwardReduction(clause: List[FOLNode]): List[FOLNode] = {
-        // first pass the clauses through the rewriting rules ( these are potentialy destructive )
-        val rewritten = forwardLiteralDeletion(clause)
-        // now check if redundant
-        if (forwardRedundancyCheck(rewritten, workedOff, usable)) {
-          Nil
-        } else {
-          rewritten
-        }
-      }
-
-
-      def bSub(clause: List[FOLNode]) = {
-        // reduce mutable stores new, workedoff and usable with clause
-        // reduced clauses are added into new store
-//        val newReduced = backwardSubsumer(clause, newClauses)
-//        newReduced
-
-        val workedOffReduced = backwardSubsumer(clause, workedOff)
-        workedOff.removeAll(workedOffReduced)
-
-        val usableReduced = backwardSubsumer(clause, usable)
-        usable.removeAll(usableReduced)
-
-        newClauses.addAll(workedOffReduced ++ usableReduced)
-      }
-
-
-
-      while (newClauses.hasNext) {
-        // forward reduction on given
-        val given = forwardReduction(newClauses.removeNext)
-        if (!given.isEmpty) {
-          // backward subsumption on new, usable , and workedoff
-          bSub(given)
-          // bmrr
-          // brew
-          //finall add the given clause to usable
-
-          // integrate into shared structures
-//          val keptClause = ALCDClause(given)
-          val keptClause = SharedALCDClause(given)
-
-          //                log.debug("Given clause : %s", givenClause)
-          //                for (newClause <- keptClauses if (!newClause.isEmpty)) {
-          //                  //                  log.info(printInferenceStep(newClause, inferenceRecorder))
-          //                  log.debug("Kept : %s", newClause)
-          //
-          //                }
-
-          keptClausesCount = keptClausesCount + 1
-
-          //notify listeners with kept clause
-          notifyObservers(Derived(keptClause, None, None))
-
-          usable.add(keptClause)
-        }
-      }
-
-    }
-
-
     usable.addAll(clauses)
-
-    // record all initiial clauess
-
-    //    for (clause <- usable)
-    //      inferenceRecorder.recordClause(clause, None, None)
 
     while (usable.hasNext && !resolvedEmptyClause && !isTimeUp(startTime)) {
       //record.info("Inner Loop")
@@ -246,27 +255,51 @@ class RobinsonProver(env: {
       // add given to workedoff
       workedOff.add(givenClause)
 
+      // dispatch given clause , maybe it does not belong to this partition
+      //notify listeners with kept clause
+
+
       // infere -- this should give us back clause buffers
-      val newClauses: Iterable[List[FOLNode]] = infere(givenClause, workedOff)
+      val successfullResolutions: Iterable[SuccessfullResolution] = infere(givenClause, workedOff)
 
-      // check if the clause is not the empty clause
-      newClauses.find(_.size == 0) match {
-        case Some(emptyClause) => {
-          log.warning("we have derived some empty clause , is this right ?")
-          resolvedEmptyClause = true
-        }
-        case None => {
-          // interreduce
-          if (!newClauses.isEmpty) {
-            // convert new clauses into shared structure
-            interReduce(newClauses.map(SharedALCDClause(_)))
+      successfullResolutions match {
+        case successfullResolutions if (!successfullResolutions.isEmpty) => {
+          successfullResolutions.exists(_.result.isEmpty) match {
+            case true => { // we have indeed derived the empty clause
+              log.warning("we have derived some empty clause , is this right ?")
+              resolvedEmptyClause = true
+              // TODO send empty clause to all reasoners
+
+            }
+            case false => { // we have derived clauses other than the empty clause
+              // log here total derived
+              if (recordClauses) {
+                inferenceRecorder match {
+                  case Some(inferenceRecorder) => {
+                    successfullResolutions.foreach({
+                      r: core.resolution.SuccessfullResolution =>
+                              inferenceRecorder.recordClause(SharedALCDClause(r.result), Some(SharedALCDClause(r.parent1)), Some(SharedALCDClause(r.parent2)))
+                    })
+                  }
+
+                  case None => // no inference recorder present
+                }
+              }
+              // interreduce
+              interReduce(successfullResolutions.map(_.result), usable, workedOff)
+
+
+            }
+
           }
-
         }
 
+        case _ => {
+          // there werent any successfull resolutions
+
+        }
       }
 
-      // convert to shared clause and integrate into usable clause store
 
       iteration += 1
 
@@ -281,122 +314,186 @@ class RobinsonProver(env: {
         log.info("Kept Clauses Per Second : %s  ", keptClausesCount / (runtime / 1000), keptClausesCount)
       }
 
-      if (iteration % 5000 == 0) {
-        //        log.info("Current Kept Clauses Are :  %s", workedOff.toList.map("%s \n" format _))
-      }
     }
 
 
     if (resolvedEmptyClause) {
-      log.info("Proof found")
-      log.info("WorkedOff size :  %s", workedOff.size)
+      log.error("%s Proof found", this)
+      log.info("WorkedOff size :  %s", workedOff.toList.size)
       log.info("Derived Clauses Count :  %s", derivedClausesCount)
       log.info("Kept Clauses Are :  %s", workedOff)
-      (PROOF, workedOff.toList)
+      (PROOF, workedOff.toList.size, derivedClausesCount, recievedClauseCount, recievedKeptClauseCount)
     } else if (!usable.hasNext) {
-      log.info("Completion found")
+      log.error("%s Completion found", this)
       log.info("WorkedOff size :  %s", workedOff.size)
-      log.info("Derived Clauses Count :  %s", derivedClausesCount)
-      log.info("Kept Clauses Are :  %s", workedOff)
-      (COMPLETION, workedOff.toList)
+      //log.warning("%s", formatClauses(workedOff))
+      //      log.warning("%s", workedOff.toList.map("%s\n" format _).sort(_ < _))
+      //      log.info("Kept Clauses Are :  %s", workedOff.toList.map("%s \n" format _))
+      (COMPLETION, workedOff.toList.size, derivedClausesCount, recievedClauseCount, recievedKeptClauseCount)
     } else {
-      error("Should not be here")
+      log.error("%s Error found", this)
+      (ERROR, workedOff.toList.size, derivedClausesCount, recievedClauseCount, recievedKeptClauseCount)
     }
 
 
   }
 
-  // TODO need clause buffer datastructure that should be used during forward reduction
-  // reduction procedure operating directly on clause buffers , SIDEEFFECTS !
-  //  def interReduce(newClauses: Iterable[List[FOLNode]], workedOff: MutableClauseStorage, usable: MutableClauseStorage): Iterable[List[FOLNode]] = {
-  //    // first pass the clauses through the rewriting rules ( these are potentialy destructive )
-  //    val rewritten = newClauses.map(forwardLiteralDeletion(_))
-  //
-  //    // now filter out all redundant clauses
-  //    val interReduced = rewritten.filter(!forwardRedundancyCheck(_, workedOff, usable))
-  //
-  //    // remainig clauses are then used for backward reduction on usable and workedoff sets
-  //    if (!interReduced.isEmpty) {
-  //      // backward subsumption on usable
-  //      //val backwardSubsumed = interReduced.flatMap({clause => backwardSubsumer.apply(clause,usable)})
-  //      usable.removeAll(interReduced.flatMap({clause => backwardSubsumer(clause, usable)}))
-  //
-  //      workedOff.removeAll(interReduced.flatMap({clause => backwardSubsumer(clause, workedOff)}))
-  //
-  //
-  //    }
-  //    interReduced
-  //    // TODO this needs to be removeed
-  //  }
 
-
-
-
-  //  def selfSubsume(clauses: Iterable[List[FOLNode]]): Iterable[List[FOLNode]] = {
-  //    // check which clause is not subsumed by another clause
-  //    val subsumed = for (subsumer <- clauses; subsumee <- clauses; if (subsumer != subsumee && subsumptionChecker(subsumer, subsumee))) yield subsumee
-  //    // remove all that have been subsumed
-  //    clauses -- subsumed
-  //
-  //  }
-
-
-  def infere(givenClause: FOLClause, workedOff: ClauseStorage): Iterable[List[FOLNode]] = {
+  def infere(givenClause: FOLClause, workedOff: ClauseStorage) = {
     // extract the information we get back from resolvers , take care about the logging dispatching
     // here or shortcircuit if logging disabled, check performance implications
 
     // check which type of resolver we are usign and extract the derived clauses acorrdingly
     // binary resolvers always reutrn single clauses
 
-    // TODO check this , maybe just swo
-    val successfullResolutions = resolver match {
+    val successfullResolutions: Iterable[SuccessfullResolution] = resolver match {
       case binaryResolver: BinaryResolution => {
-
-        val success = binaryResolver(givenClause, workedOff).filter(_.isInstanceOf[SuccessfullResolution]).asInstanceOf[Iterable[SuccessfullResolution]]
-        //success.foreach(log.info("%s",_))
-
-
-        // log the successfull resolutions
-        //        success.foreach({r: core.resolution.SuccessfullResolution => inferenceRecorder.recordClause(r.result, Some(r.parent1), Some(r.parent2))})
-        success.map(_.result.asInstanceOf[List[FOLNode]])
+        binaryResolver(givenClause, workedOff).filter(_.isInstanceOf[SuccessfullResolution]).asInstanceOf[Iterable[SuccessfullResolution]]
       }
 
       case defaultResolver: Resolution => {
-        defaultResolver(givenClause, workedOff).flatMap(_.result.asInstanceOf[List[List[FOLNode]]])
+        //        defaultResolver(givenClause, workedOff).flatMap(_.result.asInstanceOf[List[Set[FOLNode]]])
+        defaultResolver(givenClause, workedOff).filter(_.isInstanceOf[SuccessfullResolution]).asInstanceOf[Iterable[SuccessfullResolution]]
+      }
+    }
+
+    // return only the successfull resolutions
+    successfullResolutions
+
+    // TODO fix this to work with resolution result structures too indtead only with term lists
+    // perform positive factoring on resolved clauses
+
+    //    factoringEnabled match {
+    //      case true => {
+    //        val factoredResolutions = successfullResolutions.map(positveFactorer(_)).map(negativeFactorer(_))
+    //
+    //        val factoredGivenClause = positveFactorer(negativeFactorer(givenClause)) match {
+    //          case factored if (factored.toList.size < givenClause.size) => List(factored)
+    //          case _ => Nil
+    //        }
+    //
+    //        val factored = factoredResolutions ++ factoredGivenClause
+    //
+    //        factored
+    //      }
+    //
+    //      case false => {
+    //        successfullResolutions
+    //      }
+    //    }
+
+
+  }
+
+
+  def interReduce(clauses: Iterable[Set[FOLNode]], usable: MutableClauseStorage, workedOff: MutableClauseStorage) {
+    // create store for newClauses with lightest clause heurstic
+
+    val derivedClauseList = clauses.toList
+
+    derivedClausesCount = derivedClausesCount + derivedClauseList.size
+
+    val newClauses = new MutableClauseStore with LightestClauseHeuristicStorage
+    newClauses.addAll(Set() ++ derivedClauseList.map(ALCDClause(_)))
+
+
+
+
+
+    def forwardReduction(clause: Set[FOLNode]): Set[FOLNode] = {
+      // first pass the clauses through the rewriting rules ( these are potentialy destructive )
+      val rewritten = forwardLiteralDeletion(clause)
+      // now check if redundant
+      if (forwardRedundancyCheck(rewritten, workedOff, usable)) {
+        Set.empty[FOLNode]
+      } else {
+        rewritten
+      }
+    }
+
+
+    def bSub(clause: Set[FOLNode]) = {
+      // reduce mutable stores new, workedoff and usable with clause
+      // reduced clauses are added into new store
+      //        val newReduced = backwardSubsumer(clause, newClauses)
+      //        newReduced
+
+      val workedOffReduced = Set() ++ backwardSubsumer(clause, workedOff)
+      if (!workedOffReduced.isEmpty)
+        workedOff.removeAll(workedOffReduced)
+
+      val usableReduced = Set() ++ backwardSubsumer(clause, usable)
+      if (!usableReduced.isEmpty)
+        usable.removeAll(usableReduced)
+
+      if (!usableReduced.isEmpty || !workedOffReduced.isEmpty)
+        newClauses.addAll(Set() ++ workedOffReduced ++ usableReduced)
+    }
+
+
+    val keptClauses = new ListBuffer[FOLClause]()
+    while (newClauses.hasNext) {
+      // forward reduction on given
+
+      val nextClause = newClauses.removeNext
+
+      val given = forwardReduction(nextClause)
+      if (!given.isEmpty) {
+        // backward subsumption on new, usable , and workedoff
+
+
+        bSub(given)
+        val keptClause = if (enableSharedClauses) SharedALCDClause(given) else ALCDClause(given)
+
+        //log.warning("Kept : %s", printInferenceStep(keptClause))
+
+        keptClausesCount = keptClausesCount + 1
+
+
+        // buffer the kept clause
+        keptClauses.append(keptClause)
 
       }
     }
 
 
-    // perform positive factoring on resolved clauses
+    if (!keptClauses.isEmpty) {
+      if (isDistributed) {
+        //notify listeners with kept clause
+        // if this clause stays in this node then the dispatcher will
+        // add it into the usable set
+        notifyObservers(DerivedBatch(keptClauses))
+        //          usable.add(keptClause)
 
+      } else {
+        // we not working distributed , add directly into the usable set
+        usable.addAll(keptClauses)
+      }
 
-    val factoredResolutions = successfullResolutions.map(positveFactorer(_))
-
-    val factoredGivenClause = positveFactorer(givenClause) match {
-      case factored if (factored.size < givenClause.size) => List(factored)
-      case _ => Nil
     }
 
-    factoredResolutions ++ factoredGivenClause
-
 
   }
 
 
-  def forwardLiteralDeletion(clause: List[FOLNode]): List[FOLNode] = {
-    duplicateLiteralDeleter(clause)
+  def forwardLiteralDeletion(clause: Set[FOLNode]): Set[FOLNode] = {
+    //condensation(duplicateLiteralDeleter(clause))(subsumptionChecker)
+    //duplicateLiteralDeleter(clause)
+    clause
   }
 
 
-  def forwardRedundancyCheck(clause: List[FOLNode], backgroundClauses: ClauseStorage): Boolean = {
+  def forwardRedundancyCheck(clause: Set[FOLNode], backgroundClauses: ClauseStorage): Boolean = {
     tautologyDetection(clause) || forwardSubsumer(clause, backgroundClauses)
   }
 
   // rewritten in functional style
-  def forwardRedundancyCheck(clause: List[FOLNode], workedOff: ClauseStorage, usable: ClauseStorage): Boolean = {
+  def forwardRedundancyCheck(clause: Set[FOLNode], workedOff: ClauseStorage, usable: ClauseStorage): Boolean = {
     // filtering phase
     val isRedundand = tautologyDetection(clause) || forwardSubsumer(clause, usable) || forwardSubsumer(clause, workedOff)
+
+    val alcdclause: ALCDClause = clause
+
 
 
     isRedundand
@@ -494,5 +591,35 @@ class RobinsonProver(env: {
       (System.currentTimeMillis - startingTime) > timeLimit
     } else false
   }
+
+
+  private def recordClauses(clauses: Iterable[FOLClause]) {
+    //    record all initiial clauess
+    inferenceRecorder match {
+      case Some(inferenceRecorder) => {
+        for (clause <- clauses)
+          inferenceRecorder.recordClause(clause, None, None)
+      }
+
+      case None => // no inference recorder present
+    }
+
+
+  }
+
+  private def recordRecievedClauses(clauses: Iterable[FOLClause]) {
+    // record all initiial clauess
+    inferenceRecorder match {
+      case Some(inferenceRecorder) => {
+        for (clause <- clauses)
+          inferenceRecorder.recordRecievedClause(clause, None, None)
+      }
+
+      case None => // no inference recorder present
+    }
+
+
+  }
+
 
 }

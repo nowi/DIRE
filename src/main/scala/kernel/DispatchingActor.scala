@@ -20,7 +20,7 @@ trait ReasoningActorChild {
 
 
 trait DispatchingActor extends Actor with ReasoningActorChild  {
-  var allocationTable: ClauseAllocation = new ClauseAllocation(Map())
+  var allocationTable: Map[String,String] = Map()
 
   var dispatchedCount : Int = 0
 
@@ -32,8 +32,8 @@ trait DispatchingActor extends Actor with ReasoningActorChild  {
 
   protected def receive = {
     // handle incoming allocation table updates
-    case (LoadAllocation(allocation),forwarder : Actor) => {
-      log.trace("Reasoner: %s Recieved Load Allocation Message forwared from %s with payload %s", this,forwarder, ((allocation map {case (sig, uuid) => ("Signature" + sig + "-->" + "Reasoner :" + uuid)}) mkString ("AllocationTable : [\n", ",\n", "]")))
+    case LoadAllocation(allocation) => {
+//      log.trace("Reasoner: %s Recieved Load Allocation Message forwared from %s with payload %s", this,forwarder, ((allocation map {case (sig, uuid) => ("Signature" + sig + "-->" + "Reasoner :" + uuid)}) mkString ("AllocationTable : [\n", ",\n", "]")))
       // update the allocation map
       allocationTable = allocation
 
@@ -46,10 +46,33 @@ trait DispatchingActor extends Actor with ReasoningActorChild  {
     }
 
     // handle dispatching of derived clauses
-    case (Derived(resolvedClause,_,_),sender : Actor) => {
+    case Derived(resolvedClause,_,_) => {
+
       // pass clause to logging actor
       // analyze where this claues should be send
       for((destinationActor,clauses) <- determineDestination(List(resolvedClause),allocationTable) ){
+        // disptach
+        //println("%s is Dispatching CLauses : %s to destination kernel : %s",this,clauses,actor)
+        clauses match {
+          case cs if(!cs.isEmpty) => {
+            log.info("Dispatching clauses %s to reasoner %s", clauses,destinationActor)
+            dispatchedCount = dispatchedCount + clauses.toList.size
+            destinationActor ! Saturate(clauses)
+          }
+          case _ => // dont sent
+        }
+
+
+      }
+
+
+    }
+
+    case DerivedBatch(resolvedClauses) => {
+
+      // pass clause to logging actor
+      // analyze where this claues should be send
+      for((destinationActor,clauses) <- determineDestination(resolvedClauses,allocationTable) ){
         // disptach
         //println("%s is Dispatching CLauses : %s to destination kernel : %s",this,clauses,actor)
         clauses match {
@@ -75,7 +98,7 @@ trait DispatchingActor extends Actor with ReasoningActorChild  {
 
 
 
-  protected def determineDestination(clauses: Iterable[FOLClause], allocation: ClauseAllocation ) : MultiMap[Actor, FOLClause]
+  protected def determineDestination(clauses: Iterable[FOLClause], allocation: Map[String,String] ) : MultiMap[Actor, FOLClause]
 }
 
 /**

@@ -28,7 +28,13 @@ trait FOLProving extends Subject {
   /**
    * Saturation without background knowledge
    */
-  def saturate(clauses: Iterable[FOLClause]): (ProvingResult, Iterable[FOLClause])
+  def saturate(clauses: Iterable[FOLClause]): (ProvingResult, Int,Int,Int,Int)
+
+  def addToUsable(clause : FOLClause)
+  def addAllToUsable(clauses : Iterable[FOLClause])
+
+  def addToWorkedOff(clause : FOLClause)
+  def addAllToWorkedOff(clauses : Iterable[FOLClause])
 
 
 }

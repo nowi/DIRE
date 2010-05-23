@@ -7,5 +7,5 @@ package core;
  * Time: 17:35:00
  */
 public enum ProvingResult {
-    COMPLETION,PROOF,TIMEUP;
+    COMPLETION,PROOF,TIMEUP,ERROR;
 }
