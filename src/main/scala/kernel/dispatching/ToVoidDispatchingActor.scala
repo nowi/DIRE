@@ -18,7 +18,7 @@ import collection.mutable.{MultiMap, Set => MSet}
  */
 class ToVoidDispatchingActor extends DispatchingActor {
 
-  override def determineDestination(clauses: Iterable[FOLClause], allocation: ClauseAllocation) = {
+  override def determineDestination(clauses: Iterable[FOLClause], allocation: scala.collection.immutable.Map[String,String]) = {
     new HashMap[Actor, MSet[FOLClause]] with MultiMap[Actor, FOLClause]
 
   }
