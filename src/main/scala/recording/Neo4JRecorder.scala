@@ -73,7 +73,7 @@ class Neo4JRecorder(val path: String) extends ClauseRecording with Neo4jWrapper 
 
   // TODO remove overloading here
 
-  protected def record(clause: FOLClause, recieved: Boolean) {
+  override def record(clause: FOLClause, recieved: Boolean) {
     ifNotAlreadyInGraph(clause) {
       val node = neo.createNode
       val createdTime = System.currentTimeMillis
@@ -88,7 +88,7 @@ class Neo4JRecorder(val path: String) extends ClauseRecording with Neo4jWrapper 
 
   }
 
-  protected def record(clause: FOLClause, parent1: FOLClause, parent2: FOLClause, recieved: Boolean) {
+  override protected def record(clause: FOLClause, parent1: FOLClause, parent2: FOLClause, recieved: Boolean) {
     execInNeo4j {
       neo =>
               // retrieve the parent nodes

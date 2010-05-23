@@ -17,7 +17,6 @@ case class ClauseRecord(a:Option[FOLClause],b:Option[FOLClause],resolvent:FOLCla
 }
 
 class NaiveClauseRecorder extends ClauseRecording {
-  private var inferenceTrees: Map[FOLClause, InferenceStep[FOLClause]] = Map[FOLClause, InferenceStep[FOLClause]]()
 
 
   private var inferenceLog: Map[FOLClause, Tuple2[FOLClause, FOLClause]] = Map[FOLClause, Tuple2[FOLClause, FOLClause]]()
@@ -26,6 +25,7 @@ class NaiveClauseRecorder extends ClauseRecording {
 
 
   override protected def record(clause: FOLClause, parent1: FOLClause, parent2: FOLClause,recieved:Boolean) {
+    super.record(clause,recieved)
     // put into record
     inferenceLog += (clause -> (parent1, parent2))
 
@@ -39,55 +39,25 @@ class NaiveClauseRecorder extends ClauseRecording {
 
 
   override protected def record(clause: FOLClause,recieved:Boolean) {
+    super.record(clause,recieved)
     val record = ClauseRecord(None,None,clause,None)
     // index the record on the derived clause
     clauseIndex.put(clause,record)
   }
 
 
-  def getParentsOf(clause: FOLClause) = {
-    val parent1ClauseString: String = "?"
-    val parent2ClauseString: String = "?"
-    Some(Tuple2(parent1ClauseString, parent2ClauseString))
-  }
-
-  def inferenceSteps(c: FOLClause): InferenceStep[FOLClause] = {
-    // check if there is not already a tree saved for this clause
-    inferenceTrees.get(c) match {
-      case Some(tree) => tree
-      case None => {
-        // there is none , create from all inference steps
-        val tree = constructInferenceSteps(c)
-        // save the tree
-        inferenceTrees += (c -> tree)
-        tree
-      }
-    }
-
-  }
-
-
-  private def constructInferenceSteps(c: FOLClause): InferenceStep[FOLClause] = {
-    // first check if this clause has not already a tree constructed
-    inferenceTrees.get(c) match {
-      case Some(t) => t
-      case None => {
-        // create a Tree
-        // get the inference parents oft his clause if there are
-        inferenceLog.get(c) match {
-          case Some((a, b)) => {
-            // there are parents
-            InferenceStep[FOLClause](c, Some(constructInferenceSteps(a)), Some(constructInferenceSteps(b)))
-          }
-          case None => {
-            // this is clause has not been infered
-            InferenceStep[FOLClause](c, None, None)
-          }
-
-        }
-
+  override def getParentsOf(clause: FOLClause) = {
+    // get the clause record from index
+    clauseIndex.get(clause) match {
+      case Some(ClauseRecord(Some(parent1),Some(parent2),_,_)) => {
+        // has 2 parents
+        // index of this record
+        Some((indexOf(parent1).toString,indexOf(parent2).toString))
       }
 
+      case _ => {
+        None
+      }
     }
 
 

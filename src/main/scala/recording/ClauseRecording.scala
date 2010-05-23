@@ -46,7 +46,7 @@ trait ClauseRecording {
 
   }
 
-  def indexOf(clause : FOLClause) = {
+  def indexOf(clause : FOLClause) : Int = {
     if(clausesHistory.contains(clause))
       clausesHistory.indexOf(clause)
     else -1;
@@ -56,14 +56,19 @@ trait ClauseRecording {
   def getParentsOf(clause : FOLClause) : Option[Tuple2[String,String]] 
 
 
+
   protected def append(clause : FOLClause) {
       // put into quick buffer
       clausesHistory.append(clause)
   }
 
-  protected def record(clause : FOLClause,recieved : Boolean)
+  protected def record(clause : FOLClause,recieved : Boolean) {
+    append(clause)
+  }
 
-  protected def record(clause : FOLClause, parent1 : FOLClause,parent2 : FOLClause,recieved : Boolean)
+  protected def record(clause : FOLClause, parent1 : FOLClause,parent2 : FOLClause,recieved : Boolean){
+    append(clause)
+  }
 
 
 
