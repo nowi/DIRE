@@ -14,13 +14,11 @@ import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
 
 @RunWith(classOf[JUnit4Runner])
-class UsableClausesStoreSpec extends Spec with ShouldMatchers {
+abstract class UsableClausesStoreSpec extends org.scalatest.Spec with ShouldMatchers {
   // test clauses
-  describe("UsableClausesStore") {
+  def createStorage: LightestClauseHeuristicStorage
 
-    val storage: MutableClauseStore = new MutableClauseStore with LightestClauseHeuristicStorage
-
-
+  describe("A UsableClausesStore with LightestClauseHeuristic") {
     val x = Variable("x")
     val y = Variable("y")
     val z = Variable("z")
@@ -79,6 +77,8 @@ class UsableClausesStoreSpec extends Spec with ShouldMatchers {
       )
 
     it("should enque clauses , and maintian the order") {
+      val storage = createStorage
+
       storage.addAll(List(C1, C2, C3, C4, C5, C6, C7, C8, goalClause))
 
       // check if they are dequeen in the right order
@@ -100,8 +100,9 @@ class UsableClausesStoreSpec extends Spec with ShouldMatchers {
       storage.removeNext should equal(C1)
 
     }
-
+//
     it("should enque clauses , and be empty after dequeing") {
+      val storage = createStorage
       storage.addAll(List(C1, C2, C3, C4, C5, C6, C7, C8, goalClause))
 
       // check if they are dequeen in the right order
@@ -122,11 +123,12 @@ class UsableClausesStoreSpec extends Spec with ShouldMatchers {
       // size 4
       storage.removeNext should equal(C1)
 
-      storage.toList.isEmpty should be(true)
+      storage.isEmpty should be(true)
 
     }
-
+//
     it("should enque clauses , dequee , and enque interleaved claues correctyl") {
+      val storage = createStorage
       storage.addAll(List(C1, C2, C3, C4, C5, C6, C7, C8, goalClause))
 
       // check if they are dequeen in the right order
@@ -138,7 +140,7 @@ class UsableClausesStoreSpec extends Spec with ShouldMatchers {
       storage.removeNext should equal(C8)
 
       storage.add(C8)
-      storage.add(C3)
+//      storage.add(C3)
 
       storage.removeNext should equal(goalClause)
       storage.removeNext should equal(C8)
@@ -146,24 +148,61 @@ class UsableClausesStoreSpec extends Spec with ShouldMatchers {
       // size 2
       storage.removeNext should equal(C3)
       storage.removeNext should equal(C4)
-      storage.removeNext should equal(C3)
+//      storage.removeNext should equal(C3)
 
       // size 3
       storage.removeNext should equal(C2)
       // size 4
       storage.removeNext should equal(C1)
 
-      storage.toList.isEmpty should be(true)
+      storage.isEmpty should be(true)
 
     }
 
-
-    it("should index the classes correctly and support retrieval") {
+    it("should enque clauses , dequee , and enque interleaved claues correctyl, but fail on duplicate clause insertion") {
+      val storage = createStorage
       storage.addAll(List(C1, C2, C3, C4, C5, C6, C7, C8, goalClause))
-      // get clauses for key :
-      storage.toList.isEmpty should be(true)
+
+      // check if they are dequeen in the right order
+      // first all with size 1 in the order of insertion
+
+      storage.removeNext should equal(C5)
+      storage.removeNext should equal(C6)
+      storage.removeNext should equal(C7)
+      storage.removeNext should equal(C8)
+
+      storage.add(C8)
+
+
+      storage.add(C3)
+
+      
+
+      storage.removeNext should equal(goalClause)
+      storage.removeNext should equal(C8)
+
+      // size 2
+      storage.removeNext should equal(C3)
+      storage.removeNext should equal(C4)
+//      storage.removeNext should equal(C3)
+
+      // size 3
+      storage.removeNext should equal(C2)
+      // size 4
+      storage.removeNext should equal(C1)
+
+      storage.isEmpty should be(true)
 
     }
+//
+//
+//    it("should index the classes correctly and support retrieval") {
+//      val storage = createStorage
+//      storage.addAll(List(C1, C2, C3, C4, C5, C6, C7, C8, goalClause))
+//      // get clauses for key :
+//      storage.toList.isEmpty should be(true)
+//
+//    }
 
 
   }

@@ -6,6 +6,7 @@ package core.ordering
  * Time: 13:41:15
  */
 
+import caches.MaxLitCache
 import com.jteigen.scalatest.JUnit4Runner
 
 import containers.{CNFClauseStore}
@@ -131,6 +132,7 @@ class ALCLPOComparatorSpec extends Spec with ShouldMatchers with Logging {
       }
 
       implicit val comperator: ALCLPOComparator = new ALCLPOComparator(config)
+      implicit val maxLitCache: MaxLitCache = new MaxLitCache()
       val precedence = config.precedence
 
       val u = Variable("U")

@@ -15,10 +15,10 @@ import reduction.{Subsumption, ClauseCondenser, DuplicateLiteralDeleter}
  * Time: 17:08:18
  */
 
-class BinaryResolver(env: {val inferenceRecorder: ClauseRecording; val recordProofSteps: Boolean; val standardizer: Standardizing; val subsumptionStrategy: Subsumption}) extends BinaryResolution with Logging {
+class BinaryResolver(env: {val standardizer: Standardizing; val subsumptionStrategy: Subsumption}) extends BinaryResolution with Logging {
   val standardizer = env.standardizer
-  val recordProofSteps = env.recordProofSteps
-  val inferenceRecorder = env.inferenceRecorder
+
+  implicit def iterableFOLNode2StandardClause(iterable: Set[FOLNode]) = StandardClause(iterable)
 
   implicit val subsumptionChecker = env.subsumptionStrategy
 
@@ -39,7 +39,7 @@ class BinaryResolver(env: {val inferenceRecorder: ClauseRecording; val recordPro
         // because we have no unique literal to resolve upon
         // this changes in alcd where we can determine the unique resolvable literal
         // prior to substitution !
-        a.literals.flatMap({lit : FOLNode => indexedClauseStorage.retrieveUnifiables(lit) ++ indexedClauseStorage.retrieveUnifiables(lit.negate) -- List(a)}).removeDuplicates
+        a.literals.flatMap({lit : FOLNode => indexedClauseStorage.retrieveUnifiables(lit) ++ indexedClauseStorage.retrieveUnifiables(lit.negate) - a })
       }
 
       case _ => {

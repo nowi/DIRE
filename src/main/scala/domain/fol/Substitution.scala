@@ -34,7 +34,7 @@ case class Substitution(override val self: MMap[Variable, FOLNode]) extends MapP
   def restrict(u: List[Variable]): Substitution = {
     // restrict the substituion that agrees with u on the this substitution
     // filter out all mappings that are not part of u
-    this.filter({case (variable, term) => u.contains(variable)}).asInstanceOf[Substitution]
+    this.filter({case (variable, term) => u.contains(variable)})
 
   }
 
@@ -75,7 +75,7 @@ case class Substitution(override val self: MMap[Variable, FOLNode]) extends MapP
 
     // now each term in this substitution with the substituon build up in tempSub
     val transformed = this.map({case (variable, term) => (variable -> term.rewrite(tempSub))})
-    transformed.asInstanceOf[Substitution]
+    transformed
   }
 
   // add a new single mapping into substituion , must not have variable contained in domain(this)
@@ -98,7 +98,7 @@ case class Substitution(override val self: MMap[Variable, FOLNode]) extends MapP
     // first apply the substititons to the images
     val sMapd = (s map ({case (xi, si) => (xi -> si.rewrite(r))}))
     val rMapd = (r.filter({case (yi, ti) => (r.domain -- s.domain).contains(yi)}))
-    (sMapd ++ rMapd).asInstanceOf[Substitution]
+    (sMapd ++ rMapd)
   }
 
   // join
@@ -108,7 +108,7 @@ case class Substitution(override val self: MMap[Variable, FOLNode]) extends MapP
     // first apply the substititons to the images
     val sMapd = (s map ({case (xi, si) => (xi -> si.rewrite(r))}))
     val rMapd = (r.filter({case (yi, ti) => (r.domain -- s.image).contains(yi)}))
-    (sMapd ++ rMapd).asInstanceOf[Substitution]
+    (sMapd ++ rMapd)
 
   }
 }
@@ -292,7 +292,7 @@ object Substitution {
 
 
   implicit def iterableToSubs(iter: Iterable[Tuple2[Variable, FOLNode]]): Substitution = {
-    Substitution(MMap() ++ iter)
+    Substitution(MMap() ++ iter )
   }
 
   implicit def tupleToSubs(tuple: Tuple2[Variable, FOLNode]): Substitution = {

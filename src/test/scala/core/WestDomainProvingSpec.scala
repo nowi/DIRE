@@ -24,7 +24,7 @@ abstract class WestDomainProvingSpec extends Spec with ShouldMatchers {
     it("should entail that west is a criminal") {
       // entail that west is a criminal
       resolutionProover.saturate(WestDomain.initialClauses  ::: List(WestDomain.CriminalWestGoalClause)) match {
-        case (PROOF,_) => assert(true)
+        case (PROOF,_,_,_,_) => assert(true)
         case _ => assert(false)
       }
     }
@@ -32,7 +32,7 @@ abstract class WestDomainProvingSpec extends Spec with ShouldMatchers {
     it("should entail that west is an american") {
       // entail that west is an american
       resolutionProover.saturate(WestDomain.initialClauses  ::: List(WestDomain.AmericanWestGoalClause)) match {
-        case (PROOF,_) => assert(true)
+        case (PROOF,_,_,_,_) => assert(true)
         case _ => assert(false)
       }
     }
@@ -40,7 +40,7 @@ abstract class WestDomainProvingSpec extends Spec with ShouldMatchers {
 
     it("should not refute that west is not criminal") {
       resolutionProover.saturate(WestDomain.initialClauses  ::: List(WestDomain.NotCriminalWestGoalClause))  match {
-        case (PROOF,_) => assert(false)
+        case (PROOF,_,_,_,_) => assert(false)
         case _ => assert(true)
       }
 

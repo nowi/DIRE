@@ -25,7 +25,7 @@ abstract class CuriosityDomainProovingSpec extends Spec with ShouldMatchers {
       // create a proover
 
       resolutionProover.saturate(CuriosityDomain.initialClauses :::  List(CuriosityDomain.curiosityKilledTunaGoalClause)) match {
-        case (PROOF,_) => assert(true)
+        case (PROOF,_,_,_,_) => assert(true)
         case _ => assert(false)
       }
 

@@ -46,25 +46,7 @@ class StandardizerSpec extends Spec with ShouldMatchers with Logging{
 
     }
 
-    it("should unify Clause  A = {¬P (z , a), ¬P (z , x), ¬P (x, z )} union B = {P (z , f (z )), P (z , a)}.  ") {
-      val x = Variable("x")
-      val a = Variable("a")
-      val z = Variable("z")
-      // A = {¬P (z , a), ¬P (z , x), ¬P (x, z )}
-      val A = StandardClause(Negation(Predicate("P", z, a)), Negation(Predicate("P", z, x)), Negation(Predicate("P", x, z)))
-      val B = StandardClause(Predicate("P", z, Function("f", z)), Predicate("P", z, a))
-
-
-      val theta5 = standardizer.standardizeApart(A, B)
-
-      log.trace("Standardized Apart tuple of clause A and B : %s is %s", A, theta5)
-      theta5 should not equal ((A, B))
-
-      // and there should be no vars in common
-
-
-
-    }
+    
 
 
   }

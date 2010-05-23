@@ -143,6 +143,16 @@ abstract class SubsumptionSpec extends Spec with ShouldMatchers with Logging {
     }
 
 
+    it("should subsume a same clauses"){
+      val u = Variable("U")
+      val subsumer = domain.fol.ast.ALCDClause(Negation(Predicate("P3",u)),Predicate("P1",u),Negation(Predicate("P2",u)))
+      val subsumed = domain.fol.ast.ALCDClause(Negation(Predicate("P3",u)),Predicate("P1",u),Negation(Predicate("P2",u)))
+
+      subsumes(subsumer, subsumed) should be(true)
+//      subsumes(subsumed, subsumer) should be(true)
+    }
+
+
 
 
 

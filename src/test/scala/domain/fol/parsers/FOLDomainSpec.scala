@@ -103,72 +103,72 @@ class FOLDomainSpec extends Spec with ShouldMatchers with Logging {
     }
 
 
-    it("a clause should be able to return its signature ( name-arity pairs)") {
-      val x = Variable("x")
-      val y = Variable("y")
-      val z = Variable("z")
-      val west = Constant("West")
-      val nono = Constant("Nono")
-      val m1 = Constant("M1")
-      val america = Constant("America")
-      val sells = (x: FOLNode, y: FOLNode, z: FOLNode) => Predicate("Sells", x, y, z)
-      val weapon = (x: FOLNode) => Predicate("Weapon", x)
-      val american = (x: FOLNode) => Predicate("American", x)
-      val hostile = (x: FOLNode) => Predicate("Hostile", x)
-      val missile = (x: FOLNode) => Predicate("Missile", x)
-      val owns = (x: FOLNode, y: FOLNode) => Predicate("Owns", x, y)
-      val enemy = (x: FOLNode, y: FOLNode) => Predicate("Enemy", x, y)
-
-
-      val C1 = StandardClause(Negation(Predicate("American", x)), Negation(Predicate("Weapon", y)),
-        Negation(Predicate("Sells", x, y, z)), Negation(Predicate("Hostile", z)),
-        Predicate("Criminal", x))
-
-
-      val C2 = StandardClause(Negation(Predicate("American", x)), Negation(Predicate("Weapon", y)),
-        Negation(Predicate("Sells", x, y, z)),
-        Predicate("Criminal", x))
-
-
-      val signatureC1 = C1.signature
-      log.debug("Signature of Clause C1 %s is : %s", C1, signatureC1)
-
-      val signatureC2 = C2.signature
-      log.debug("Signature of Clause C2 %s is : %s", C2, signatureC2)
-
-      // c2sig should be subset
-      signatureC1.contains(signatureC2) should be(true)
-
-
-
-
-
-
-
-      val C3 = StandardClause(Negation(Predicate("American", x)), Negation(Predicate("Weapon", y)),
-        Predicate("Sells", x, y, z), Negation(Predicate("Hostile", z)),
-        Predicate("Criminal", x))
-
-
-      val C4 = StandardClause(Negation(Predicate("American", x)), Negation(Predicate("Weapon", y)),
-        Negation(Predicate("Sells", x, y, z)),
-        Predicate("Criminal", x))
-
-
-      val signatureC3 = C3.signature
-      log.debug("Signature of Clause C3 %s is : %s", C3, signatureC3)
-
-      val signatureC4 = C4.signature
-      log.debug("Signature of Clause C4 %s is : %s", C4, signatureC4)
-
-
-      // same length but difference in sig
-
-      // c2sig should be subset
-      signatureC3.contains(signatureC4) should be(false)
-
-
-    }
+//    it("a clause should be able to return its signature ( name-arity pairs)") {
+//      val x = Variable("x")
+//      val y = Variable("y")
+//      val z = Variable("z")
+//      val west = Constant("West")
+//      val nono = Constant("Nono")
+//      val m1 = Constant("M1")
+//      val america = Constant("America")
+//      val sells = (x: FOLNode, y: FOLNode, z: FOLNode) => Predicate("Sells", x, y, z)
+//      val weapon = (x: FOLNode) => Predicate("Weapon", x)
+//      val american = (x: FOLNode) => Predicate("American", x)
+//      val hostile = (x: FOLNode) => Predicate("Hostile", x)
+//      val missile = (x: FOLNode) => Predicate("Missile", x)
+//      val owns = (x: FOLNode, y: FOLNode) => Predicate("Owns", x, y)
+//      val enemy = (x: FOLNode, y: FOLNode) => Predicate("Enemy", x, y)
+//
+//
+//      val C1 = StandardClause(Negation(Predicate("American", x)), Negation(Predicate("Weapon", y)),
+//        Negation(Predicate("Sells", x, y, z)), Negation(Predicate("Hostile", z)),
+//        Predicate("Criminal", x))
+//
+//
+//      val C2 = StandardClause(Negation(Predicate("American", x)), Negation(Predicate("Weapon", y)),
+//        Negation(Predicate("Sells", x, y, z)),
+//        Predicate("Criminal", x))
+//
+//
+//      val signatureC1 = C1.signature
+//      log.debug("Signature of Clause C1 %s is : %s", C1, signatureC1)
+//
+//      val signatureC2 = C2.signature
+//      log.debug("Signature of Clause C2 %s is : %s", C2, signatureC2)
+//
+//      // c2sig should be subset
+//      signatureC1.contains(signatureC2) should be(true)
+//
+//
+//
+//
+//
+//
+//
+//      val C3 = StandardClause(Negation(Predicate("American", x)), Negation(Predicate("Weapon", y)),
+//        Predicate("Sells", x, y, z), Negation(Predicate("Hostile", z)),
+//        Predicate("Criminal", x))
+//
+//
+//      val C4 = StandardClause(Negation(Predicate("American", x)), Negation(Predicate("Weapon", y)),
+//        Negation(Predicate("Sells", x, y, z)),
+//        Predicate("Criminal", x))
+//
+//
+//      val signatureC3 = C3.signature
+//      log.debug("Signature of Clause C3 %s is : %s", C3, signatureC3)
+//
+//      val signatureC4 = C4.signature
+//      log.debug("Signature of Clause C4 %s is : %s", C4, signatureC4)
+//
+//
+//      // same length but difference in sig
+//
+//      // c2sig should be subset
+//      signatureC3.contains(signatureC4) should be(false)
+//
+//
+//    }
 
 
   }
