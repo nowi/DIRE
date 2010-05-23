@@ -25,10 +25,10 @@ trait FOLNode {
   }
 
   // arity defaults to 0
-  lazy val arity : Int = 0
+  val arity : Int = 0
 
   // TODO FIX THIS
-  val positive = {
+  lazy val positive = {
     this match {
       case Negation(filler) => false
       case _ => {
@@ -38,7 +38,7 @@ trait FOLNode {
     }
   }
 
-  val negative = !this.positive
+  lazy val negative = !this.positive
 
 
 

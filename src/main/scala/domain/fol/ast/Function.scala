@@ -13,7 +13,7 @@ case class Function(name: String, terms: List[FOLNode]) extends Term {
   override lazy val args = terms
   override lazy val top = name
 
-  override lazy val arity = terms.size
+  override val arity = terms.size
 
 
   lazy val vars: List[Variable] =

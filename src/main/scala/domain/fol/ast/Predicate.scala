@@ -11,7 +11,7 @@ case class Predicate(name: String, terms: List[FOLNode]) extends Term {
   override lazy val top = name
   override lazy val args = terms
 
-  override lazy val arity = terms.size
+  override val arity = terms.size
 
   override def map(f: (FOLNode => FOLNode)): FOLNode = {
     Predicate(name, args.map({_.map(f)}))
