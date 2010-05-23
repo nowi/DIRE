@@ -21,11 +21,11 @@ class ManualConfExamplePartitioner extends ClauseStoragePartitioning with Loggin
   override def partition(clauses: ClauseStorage) = {
     // load the main ontology
 
-    val module0 = SPASSIntermediateFormatParser.parseFromFile(new File("/workspace/DIRE/DIRE/input/conf/conf1.dire"))
-    val module1 = SPASSIntermediateFormatParser.parseFromFile(new File("/workspace/DIRE/DIRE/input/conf/conf2.dire"))
-    val module2 = SPASSIntermediateFormatParser.parseFromFile(new File("/workspace/DIRE/DIRE/input/conf/conf3.dire"))
-    val module3 = SPASSIntermediateFormatParser.parseFromFile(new File("/workspace/DIRE/DIRE/input/conf/conf4.dire"))
-    val module4 = SPASSIntermediateFormatParser.parseFromFile(new File("/workspace/DIRE/DIRE/input/conf/conf5.dire"))
+    val module0 = SPASSIntermediateFormatParser.parseFromFile(new File("/workspace/DIRE/DIRE/input/conf/conf0.dire"))
+    val module1 = SPASSIntermediateFormatParser.parseFromFile(new File("/workspace/DIRE/DIRE/input/conf/conf1.dire"))
+    val module2 = SPASSIntermediateFormatParser.parseFromFile(new File("/workspace/DIRE/DIRE/input/conf/conf2.dire"))
+    val module3 = SPASSIntermediateFormatParser.parseFromFile(new File("/workspace/DIRE/DIRE/input/conf/conf3.dire"))
+    val module4 = SPASSIntermediateFormatParser.parseFromFile(new File("/workspace/DIRE/DIRE/input/conf/conf4.dire"))
 
 
     // assert that each module is hosting correctly
