@@ -48,7 +48,7 @@ trait MutableClauseStorage extends ClauseStorage {
   def remove(a : FOLClause) : FOLClause
   def add(a: FOLClause) : Unit
   def addAll(i: Iterable[FOLClause]) : Unit
-  def addAll(seq: Seq[FOLClause]) : Unit
+//  def addAll(seq: Seq[FOLClause]) : Unit
   def removeAll(clauses : Iterable[FOLClause]) : Unit
 
   protected val termToClause: scala.collection.mutable.MultiMap[FOLNode, FOLClause]

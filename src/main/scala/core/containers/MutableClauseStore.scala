@@ -30,8 +30,4 @@ abstract class MutableClauseStore extends MutableClauseStorage {
       add(clause)
   }
 
-  override def addAll(seq: Seq[FOLClause]) : Unit = {
-    addAll(seq.toList)
-  }
-
 }
