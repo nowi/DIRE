@@ -21,15 +21,6 @@ import se.scalablesolutions.akka.dispatch.Dispatchers
 abstract class ReasoningActor extends Actor {
   // configuration of core reasoning components
 
-//  val d = Dispatchers.newExecutorBasedEventDrivenDispatcher("reasoning");
-//  d.withNewThreadPoolWithLinkedBlockingQueueWithUnboundedCapacity
-//          .setCorePoolSize(5)
-//          .setMaxPoolSize(128)
-//          .setKeepAliveTimeInMillis(10000)
-//          .setRejectionPolicy(new CallerRunsPolicy)
-//          .buildThreadPool;
-//
-//  messageDispatcher = d
 
   id = this.uuid
 
@@ -38,6 +29,8 @@ abstract class ReasoningActor extends Actor {
   //  trapExit = List(classOf[Exception])
   trapExit = Nil
 
+
+  
 
   var manager: Option[Actor] = None
 
@@ -63,14 +56,20 @@ abstract class ReasoningActor extends Actor {
   var dispatchedClauseCount: Int = 0
 
 
+
   //var proverStatus: ProvingState = STOPPED
 
 
   // abstract methods to be defined somewhere else
   protected def receive = {
 
+    case Shutdown(bla : String) => {
+      log.error("Recived shutdown message")
+      stop
+    }
 
-    case msg@LoadAllocation(allocation) => {
+
+    case msg@LoadAllocation(allocation, localAddress) => {
       recievedMessagesSinceLastHeartbeat = true
 
       // forward to dispatcher
@@ -85,14 +84,14 @@ abstract class ReasoningActor extends Actor {
       // filter out all symbols that have this reasoner as entry
       val localSymbols = new ListBuffer[String]()
       allocation.foreach {
-        case (symbol, uuid) => {
-          if (uuid.equals(this.uuid)) {
-            val thisiiud = this.uuid
-            val thatuuid = uuid
+        case (symbol, address) => {
+          if (address.equals(localAddress)) {
+
             localSymbols += symbol
           }
         }
       }
+
 
 
       provingActor ! LocalSymbols(localSymbols.toList)
@@ -100,13 +99,12 @@ abstract class ReasoningActor extends Actor {
 
     }
 
+    case msg @ GetEventLog(sessionToken) => {
+      provingActor forward msg
+    }
 
     case msg@GetStatus(bla) => {
-      log.info("Recieved Status Request Message ,ignoring for now")
-      //      proverStatus match {
-      //        case LOADED | SATISFIABLE | UNSATISFIABLE=> provingActor forward msg
-      //        case _ => reply(Status("WORKING ! , Core proving subsystem status = " + proverStatus))
-      //      }
+      reply(ProverStatus(proverStatus, workedOffCount, derivedCount, recievedKeptClauseCount, recievedClauseCount, dispatchedClauseCount))
 
 
     }
@@ -121,7 +119,6 @@ abstract class ReasoningActor extends Actor {
 
     case msg@GetKeptClauses(bla) => {
       log.trace("Recieved GetKeptClauses Request Message")
-      recievedMessagesSinceLastHeartbeat = true
       provingActor forward msg
 
     }
@@ -134,31 +131,33 @@ abstract class ReasoningActor extends Actor {
     }
 
 
-
     // INBOUND
     case msg@Saturate(clauses) => {
 
+      provingActor ! msg
 
+    }
 
-      recievedMessagesSinceLastHeartbeat = true
+    // INBOUND initial
+    case msg @ SaturateInitial(clauses) => {
       // the first time we recieve this message record the sender
       // we will report back to this sender in the future
       manager match {
         case None => {
-          log.warning("%s recieved initial clauses from manager %s", this, sender.get)
+          log.warning("%s recieved initial clauses from manager %s", this, sender.getOrElse("unknown"))
           manager = sender
         }
         case Some(_) => // we have a manager actor stored
       }
 
       // forward to prover
-      provingActor forward msg
+      provingActor ! msg
     }
 
     // OUTBOUND
     // handle dispatching of derived clauses
-    case msg @ Derived(_,_,_) => {
-//      log.trace("Recieved Derived Message with derived clauses %s..from sender : %s forwarding to %s ", derived, sender, dispatcherActor)
+    case msg@Derived(_, _, _) => {
+      //      log.trace("Recieved Derived Message with derived clauses %s..from sender : %s forwarding to %s ", derived, sender, dispatcherActor)
       // forward to logger
       //derivationsLoggingActor forward derived
       // forward to dispatcher
@@ -168,8 +167,9 @@ abstract class ReasoningActor extends Actor {
 
 
     // OUTBOUND
-    // handle dispatching of derived clauses
-    case msg @ DerivedBatch(_) => {
+    // handle dispatching of derived cla
+    // uses
+    case msg@DerivedBatch(_) => {
       // TODO atm derived batch does not carry the parent clause informationn
       // so keept his in mind when forwardnig to logging actors
       // forward to logger
@@ -183,7 +183,7 @@ abstract class ReasoningActor extends Actor {
 
     // communiucation with prover kernel , prover kernel tells its status
     case msg@ProverStatus(status, inWorkedOffCount, inDerivedCount, inRecievedKeptClauseCount, inRecievedClauseCount, inDispatchedClauseCount) => {
-      log.info("Recieved ProverStatus Update Message.. new status of proover %s is %s", provingActor, status)
+      log.debug("Recieved ProverStatus Update Message.. new status of proover %s is %s", provingActor, status)
       recievedMessagesSinceLastHeartbeat = false
 
       //proverStatus = status
@@ -213,19 +213,19 @@ abstract class ReasoningActor extends Actor {
     case msg@Heartbeat(string) => {
       log.trace("%s Recieved Heartbeat Message ", this)
       log.error("%s | Kept : %s | DerivedCount : %s | Rec : %s | RecKept : %s | Dspt : %s", this, workedOffCount, derivedCount, recievedClauseCount, recievedKeptClauseCount, dispatchedClauseCount)
-
-      // todo we need access to mailbox , patch akka core
-//      log.error("%s | MessageQueueSize : %s",_mailbox.size)
+      log.error("%s | Mailbox sizes \n", this)
+      log.error("%s | Prover : %s", this, provingActor.mailbox.size)
+      log.error("%s | Dispatcher : %s", this, dispatcherActor.mailbox.size)
 
 
       //log.error("%s Subsystems : prover is running %s | dispatcher is running: %s |", this, provingActor.isRunning, dispatcherActor.isRunning)
       // forward this to the manager actor
-            manager match {
-              case Some(manager) => {
-                manager ! ProverStatus(proverStatus,workedOffCount,derivedCount,recievedKeptClauseCount,recievedClauseCount,dispatchedClauseCount)
-              }
-              case None => // no manager , cannot notify about progress
-            }
+      //      manager match {
+      //        case Some(manager) => {
+      //          manager ! ProverStatus(proverStatus, workedOffCount, derivedCount, recievedKeptClauseCount, recievedClauseCount, dispatchedClauseCount)
+      //        }
+      //        case None => // no manager , cannot notify about progress
+      //      }
 
     }
 
@@ -238,7 +238,7 @@ abstract class ReasoningActor extends Actor {
 
 
   override def init = {
-    log.info("DALCReasoning actor is starting up and .. starting and linking %s and %s ", dispatcherActor, provingActor)
+    log.error("DALCReasoning actor is starting up and .. starting and linking %s and %s ", dispatcherActor, provingActor)
     dispatcherActor.start
     provingActor.start
     derivationsLoggingActor.start
@@ -253,19 +253,28 @@ abstract class ReasoningActor extends Actor {
 
 
 
-    log.info("Scheduling heartbeat")
-    // dispatch messegate to ourself with a fixed interval , upon recieving we will check the status of subsctors and
-    // take action if we are considered idle
-    Scheduler.schedule(this, Heartbeat("asjd"), 10, 5, TimeUnit.SECONDS)
+//    log.info("Scheduling heartbeat")
+//    // dispatch messegate to ourself with a fixed interval , upon recieving we will check the status of subsctors and
+//    // take action if we are considered idle
+//    Scheduler.schedule(this, Heartbeat("asjd"), 10, 5, TimeUnit.SECONDS)
 
 
   }
 
   override def shutdown = {
-    log.info("DALCReasoningNode server is shutting down...")
+    log.error("DALCReasoningNode server is shutting down...")
     unlink(derivationsLoggingActor)
     unlink(dispatcherActor)
     unlink(provingActor)
+    dispatcherActor.stop
+    provingActor.stop
+    derivationsLoggingActor.stop
+    reductionsLoggingActor.stop
+    Scheduler.shutdown
+
+
+
+
   }
   // outbox actor
 

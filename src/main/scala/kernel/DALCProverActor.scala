@@ -2,10 +2,10 @@ package kernel
 
 import dispatching.{ToVoidDispatchingActor, DALCDispatcherActor}
 import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy
-import recording.NaiveClauseRecorder
+import recording.{EventRecorder, NaiveClauseRecorder}
 import se.scalablesolutions.akka.dispatch.Dispatchers
 import core._
-import caches.{SelectedLitCache, URLitCache, MaxLitCache}
+import caches.{ActorCache, SelectedLitCache, URLitCache, MaxLitCache}
 import config.DALCConfig
 import containers._
 import containers.heuristics.{LightestClauseHeuristicStorage, ListBufferStorage}
@@ -31,16 +31,13 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException
  */
 
 
-case class DefaultDALCReasoner extends ReasoningActor {
+class DefaultDALCReasoner extends ReasoningActor {
+  println("%s is starting up.." format this)
+
   val config = new Object {
     // the initial clause store
-
-
     lazy val neo4JGraphBasePath: String = "/workspace/DIRE/DIRE/logs/graph/clauses"
-
-    
     val isDistributed = true
-
     lazy val variableRewriter = new VariableRewriter
     lazy val standardizer = new Standardizer(this)
 
@@ -54,9 +51,9 @@ case class DefaultDALCReasoner extends ReasoningActor {
     lazy val selector = new DALCRSelector()
 
     // forward subsumer WITH index support
-    lazy val forwardSubsumer = ForwardSubsumer
+    lazy val forwardSubsumer = new ForwardSubsumer(this)
 
-    lazy val backwardSubsumer = BackwardSubsumer
+    lazy val backwardSubsumer = new BackwardSubsumer(this)
 
     // positive factorer
     lazy val positiveFactorer = new core.resolution.ALCPositiveOrderedFactoring(this)
@@ -68,6 +65,8 @@ case class DefaultDALCReasoner extends ReasoningActor {
     lazy val subsumptionStrategy = StillmannSubsumer
 //    lazy val inferenceRecorder = Some(new NaiveClauseRecorder)
     lazy val inferenceRecorder = None
+    lazy val eventRecorder = Some(new EventRecorder)
+//    lazy val inferenceRecorder = None
 
 
     // the caches
@@ -75,6 +74,7 @@ case class DefaultDALCReasoner extends ReasoningActor {
     lazy val maxLitCache = new MaxLitCache()
     lazy val uniqueRLitCache = new URLitCache()
     lazy val selectedLitCache = new SelectedLitCache()
+    lazy val actorCache = Some(new ActorCache())
 
     // usable clause store with STI indexes
     lazy val usableClauseStore = new MutableClauseStore with LightestClauseHeuristicStorage with FeatureVectorImperfectIndex

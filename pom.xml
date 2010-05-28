@@ -53,6 +53,25 @@
     <dependencies>
 
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.6.0</version>
+        </dependency>
+
+        
+        <dependency>
+            <groupId>com.google.code.typica</groupId>
+            <artifactId>typica</artifactId>
+            <version>1.7</version>
+        </dependency>
+
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.7</version>
@@ -65,12 +84,12 @@
             <scope>test</scope>
         </dependency>
 
-<dependency>
-    <groupId>com.google.collections</groupId>
-    <artifactId>google-collections</artifactId>
-    <version>1.0</version>
-</dependency>
-        
+        <!--<dependency>-->
+        <!--<groupId>com.google.collections</groupId>-->
+        <!--<artifactId>google-collections</artifactId>-->
+        <!--<version>1.0</version>-->
+        <!--</dependency>-->
+
 
         <dependency>
             <groupId>org.neo4j</groupId>
@@ -88,17 +107,41 @@
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j-index</artifactId>
             <version>1.0-b1</version>
-        </dependency>
+        </dependency>                        
 
 
         <dependency>
             <artifactId>akka-core_2.7.7</artifactId>
             <groupId>se.scalablesolutions.akka</groupId>
-            <version>0.7</version>
+            <version>0.7-nowafork-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <artifactId>akka-cluster-jgroups_2.7.7</artifactId>
+            <groupId>se.scalablesolutions.akka</groupId>
+            <version>0.7</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>akka-util_2.7.7</artifactId>
+            <groupId>se.scalablesolutions.akka</groupId>
+            <version>0.7</version>
+        </dependency>
+
+        <dependency>    
+            <artifactId>akka-persistence-cassandra_2.7.7</artifactId>
+            <groupId>se.scalablesolutions.akka</groupId>
+            <version>0.7</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>akka-persistence-mongo_2.7.7</artifactId>
+            <groupId>se.scalablesolutions.akka</groupId>
+            <version>0.7-nowafork-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>akka-persistence-common_2.7.7</artifactId>
             <groupId>se.scalablesolutions.akka</groupId>
             <version>0.7</version>
         </dependency>
@@ -114,7 +157,7 @@
         <dependency>
             <groupId>org.scala-tools.testing</groupId>
             <artifactId>scalatest</artifactId>
-            <version>0.9.5</version>          
+            <version>0.9.5</version>
         </dependency>
 
 
