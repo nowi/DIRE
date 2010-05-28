@@ -9,7 +9,7 @@ import org.junit.runner.RunWith
 import containers._
 import heuristics.{LightestClauseHeuristicStorage, ListBufferStorage}
 import ordering.{CustomConferencePartitionedPrecedence, ALCLPOComparator}
-import recording.{Neo4JRecorder, NaiveClauseRecorder}
+import recording.{EventRecorder, Neo4JRecorder, NaiveClauseRecorder}
 import reduction.{BackwardSubsumer, ForwardSubsumer, StillmannSubsumer}
 import resolution._
 import rewriting.VariableRewriter
@@ -36,7 +36,8 @@ class RobinsonProverBinaryResolutionWithForwardReductionNoIndexSpec extends Prov
 
     lazy val neo4JGraphBasePath: String = "/workspace/DIRE/DIRE/logs/graph/clauses"
     //lazy val inferenceRecorder = Some(new Neo4JRecorder(neo4JGraphBasePath + "/" + System.currentTimeMillis + "/" + this))
-    lazy val inferenceRecorder = Some(new NaiveClauseRecorder())
+    lazy val inferenceRecorder = None
+    lazy val eventRecorder = Some(new EventRecorder)
 
     // positive factorer
     lazy val positiveFactorer = PositiveFactorer
@@ -47,10 +48,10 @@ class RobinsonProverBinaryResolutionWithForwardReductionNoIndexSpec extends Prov
     lazy val resolver = new BinaryResolver(this)
 
     // forward subsumer without index support
-    lazy val forwardSubsumer = ForwardSubsumer
+    lazy val forwardSubsumer = new ForwardSubsumer(this)
 
     // the backwardsubsumer
-    lazy val backwardSubsumer = BackwardSubsumer
+    lazy val backwardSubsumer = new BackwardSubsumer(this)
 
     lazy val subsumptionStrategy = StillmannSubsumer
 
@@ -115,14 +116,16 @@ class RobinsonProverBinaryResolutionWithOrderingWithForwardReductionNoIndexSpec 
     // literal ordering
 
 
+    lazy val eventRecorder = Some(new EventRecorder)
+
     // binary resolver
     lazy val resolver = new OrderedBinaryResolver(this)
 
     // forward subsumer without index support
-    lazy val forwardSubsumer = ForwardSubsumer
+    lazy val forwardSubsumer = new ForwardSubsumer(this)
 
     // the backwardsubsumer
-    lazy val backwardSubsumer = BackwardSubsumer
+    lazy val backwardSubsumer = new BackwardSubsumer(this)
 
     lazy val subsumptionStrategy = StillmannSubsumer
 
@@ -185,15 +188,16 @@ class RobinsonProverBinaryResolutionWithForwardReductionWithIndexSpec extends Pr
 
     // literal ordering
 
+    lazy val eventRecorder = Some(new EventRecorder)
 
     // binary resolver
     lazy val resolver = new BinaryResolver(this)
 
     // forward subsumer without index support
-    lazy val forwardSubsumer = ForwardSubsumer
+    lazy val forwardSubsumer = new ForwardSubsumer(this)
 
     // the backwardsubsumer
-    lazy val backwardSubsumer = BackwardSubsumer
+    lazy val backwardSubsumer = new BackwardSubsumer(this)
 
     lazy val subsumptionStrategy = StillmannSubsumer
 
@@ -259,14 +263,16 @@ class RobinsonProverBinaryResolutionWithOrderingWithForwardReductionWithSTIIndex
     // literal ordering
 
 
+    lazy val eventRecorder = Some(new EventRecorder)
+
     // binary resolver
     lazy val resolver = new OrderedBinaryResolver(this)
 
     // forward subsumer without index support
-    lazy val forwardSubsumer = ForwardSubsumer
+    lazy val forwardSubsumer = new ForwardSubsumer(this)
 
     // the backwardsubsumer
-    lazy val backwardSubsumer = BackwardSubsumer
+    lazy val backwardSubsumer = new BackwardSubsumer(this)
 
     lazy val subsumptionStrategy = StillmannSubsumer
 
@@ -307,6 +313,7 @@ class RobinsonProverBinaryResolutionNoReductionSTIIndexSpec extends ProvingSpec 
     lazy val standardizer = new Standardizer(this)
     val recordProofSteps = true
 
+    lazy val eventRecorder = Some(new EventRecorder)
 
     // positive factorer
     lazy val positiveFactorer = PositiveFactorer
@@ -317,10 +324,10 @@ class RobinsonProverBinaryResolutionNoReductionSTIIndexSpec extends ProvingSpec 
 
 
     // forward subsumer without index support
-    lazy val forwardSubsumer = ForwardSubsumer
+    lazy val forwardSubsumer = new ForwardSubsumer(this)
 
     // the backwardsubsumer
-    lazy val backwardSubsumer = BackwardSubsumer
+    lazy val backwardSubsumer = new BackwardSubsumer(this)
 
 
     lazy val subsumptionStrategy = StillmannSubsumer
@@ -362,10 +369,11 @@ class RobinsonProverBinaryResolutionWithReductionSTIIndexSpec extends ProvingSpe
     lazy val standardizer = new Standardizer(this)
 
     // forward subsumer WITH index support
-    lazy val forwardSubsumer = ForwardSubsumer
+    lazy val forwardSubsumer = new ForwardSubsumer(this)
 
+    lazy val eventRecorder = Some(new EventRecorder)
     // the backwardsubsumer
-    lazy val backwardSubsumer = BackwardSubsumer
+    lazy val backwardSubsumer = new BackwardSubsumer(this)
 
     // positive factorer
     lazy val positiveFactorer = PositiveFactorer
@@ -418,6 +426,7 @@ class RobinsonProverALCDResolutionWithReductionSTIIndexSpec extends ConferencePa
     lazy val variableRewriter = new VariableRewriter
     lazy val standardizer = new Standardizer(this)
 
+    lazy val eventRecorder = Some(new EventRecorder)
 
     // unique literal resolver
     lazy val uniqueLiteralResolver = new DALCUniqueLiteralResolver(this)
@@ -428,10 +437,10 @@ class RobinsonProverALCDResolutionWithReductionSTIIndexSpec extends ConferencePa
     lazy val selector = new DALCRSelector()
 
     // forward subsumer WITH index support
-    lazy val forwardSubsumer = ForwardSubsumer
+    lazy val forwardSubsumer = new ForwardSubsumer(this)
 
     // the backwardsubsumer
-    lazy val backwardSubsumer = BackwardSubsumer
+    lazy val backwardSubsumer = new BackwardSubsumer(this)
 
     // positive factorer
     lazy val positiveFactorer = new ALCPositiveOrderedFactoring(this)
@@ -440,7 +449,7 @@ class RobinsonProverALCDResolutionWithReductionSTIIndexSpec extends ConferencePa
     // ACL resolver
     lazy val resolver = new DALCResolver(this)
     lazy val subsumptionStrategy = StillmannSubsumer
-    lazy val inferenceRecorder = Some(new NaiveClauseRecorder())
+    lazy val inferenceRecorder = None
 
 
     // usable clause store with STI indexes
@@ -480,6 +489,7 @@ class RobinsonProverMergedALCDResolutionWithReductionSTIIndexSpec extends Confer
     lazy val variableRewriter = new VariableRewriter
     lazy val standardizer = new Standardizer(this)
 
+    lazy val eventRecorder = Some(new EventRecorder)
 
     // unique literal resolver
     lazy val uniqueLiteralResolver = new DALCUniqueLiteralResolver(this)
@@ -490,10 +500,10 @@ class RobinsonProverMergedALCDResolutionWithReductionSTIIndexSpec extends Confer
     lazy val selector = new DALCRSelector()
 
     // forward subsumer WITH index support
-    lazy val forwardSubsumer = ForwardSubsumer
+    lazy val forwardSubsumer = new ForwardSubsumer(this)
 
     // the backwardsubsumer
-    lazy val backwardSubsumer = BackwardSubsumer
+    lazy val backwardSubsumer = new BackwardSubsumer(this)
 
 
     // positive factorer
@@ -547,6 +557,7 @@ class RobinsonProverMergedALCDResolutionWithReductionFeatureVectorImperfectIndex
     lazy val variableRewriter = new VariableRewriter
     lazy val standardizer = new Standardizer(this)
 
+    lazy val eventRecorder = Some(new EventRecorder)
 
     // unique literal resolver
     lazy val uniqueLiteralResolver = new DALCUniqueLiteralResolver(this)
@@ -557,10 +568,10 @@ class RobinsonProverMergedALCDResolutionWithReductionFeatureVectorImperfectIndex
     lazy val selector = new DALCRSelector()
 
     // forward subsumer WITH index support
-    lazy val forwardSubsumer = ForwardSubsumer
+    lazy val forwardSubsumer = new ForwardSubsumer(this)
 
     // the backwardsubsumer
-    lazy val backwardSubsumer = BackwardSubsumer
+    lazy val backwardSubsumer = new BackwardSubsumer(this)
 
 
     // positive factorer

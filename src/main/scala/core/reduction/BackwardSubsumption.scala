@@ -24,8 +24,10 @@ trait BackwardSubsumption {
 
 
 
-object BackwardSubsumer extends BackwardSubsumption with Logging {
+class BackwardSubsumer(env:{val eventRecorder: Option[recording.EventRecorder]}) extends BackwardSubsumption with Logging {
   implicit def setFOLNode2ALCDClause(set: Set[FOLNode]) = ALCDClause(set)
+
+  val eventRecorder = env.eventRecorder
 
   private def subsumed(clauseBuffer: Set[FOLNode], allClauses: ClauseStorage)(implicit subsumptionCheck: Subsumption) = {
     // get all clausees , check if we have a index
@@ -61,7 +63,19 @@ object BackwardSubsumer extends BackwardSubsumption with Logging {
         Nil
       }
       case subsumedClauses => {
-        log.info("%s detected that clause : %s backwardsubsumes clauses %s", this, clauseBuffer, subsumedClauses)
+        // record this event if there is a recorder present in environment
+        eventRecorder match {
+          case Some(recorder) => {
+            for (subsumedClause <- subsumedClauses) {
+              recorder.recordReducedClause(subsumedClause,clauseBuffer,this.toString)
+            }
+          }
+          case None => // no inference recorder present
+        }
+
+
+
+        log.debug("%s detected that clause : %s backwardsubsumes clauses %s", this, clauseBuffer, subsumedClauses)
         subsumedClauses
       }
     }

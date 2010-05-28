@@ -27,6 +27,11 @@ class Neo4JRecorder(val path: String) extends ClauseRecording with Neo4jWrapper 
     }
   })
 
+
+
+
+  override def toList = Nil
+
   val index = new LuceneIndexService(neo);
 
 
