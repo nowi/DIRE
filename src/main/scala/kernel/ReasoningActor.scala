@@ -42,10 +42,10 @@ abstract class ReasoningActor extends Actor {
   val dispatcherActor: DispatchingActor
 
   // child derivations logging  actor
-  val derivationsLoggingActor: LoggingActor
+  //val derivationsLoggingActor: LoggingActor
 
   // child reductions logging  actor
-  val reductionsLoggingActor: LoggingActor
+  //val reductionsLoggingActor: LoggingActor
 
 
   var proverStatus: ProvingState = STOPPED
@@ -241,11 +241,11 @@ abstract class ReasoningActor extends Actor {
     log.error("DALCReasoning actor is starting up and .. starting and linking %s and %s ", dispatcherActor, provingActor)
     dispatcherActor.start
     provingActor.start
-    derivationsLoggingActor.start
-    reductionsLoggingActor.start
+    //derivationsLoggingActor.start
+    //reductionsLoggingActor.start
 
-    startLink(derivationsLoggingActor)
-    startLink(reductionsLoggingActor)
+    //startLink(derivationsLoggingActor)
+    //startLink(reductionsLoggingActor)
     startLink(dispatcherActor)
     dispatcherActor.link(Some(this))
     startLink(provingActor)
@@ -263,13 +263,13 @@ abstract class ReasoningActor extends Actor {
 
   override def shutdown = {
     log.error("DALCReasoningNode server is shutting down...")
-    unlink(derivationsLoggingActor)
+    //unlink(derivationsLoggingActor)
     unlink(dispatcherActor)
     unlink(provingActor)
     dispatcherActor.stop
     provingActor.stop
-    derivationsLoggingActor.stop
-    reductionsLoggingActor.stop
+    //derivationsLoggingActor.stop
+    //reductionsLoggingActor.stop
     Scheduler.shutdown
 
 
