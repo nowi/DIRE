@@ -256,7 +256,7 @@ trait STHeadIndex extends MutableClauseStore
   abstract override def removeNext: FOLClause = {
     // remove from headindex
     val clause = super.removeNext
-    remove(clause.literals.toList.first)
+    remove(clause.literals.toList.head)
     clause
   }
 
@@ -366,7 +366,7 @@ trait SForrestIndex extends MutableClauseStorage
   //  var posTree = tree
   //  var negTree = tree
 
-  private var forrest: Map[String, SubstitutionIndexTree] = Map[String, SubstitutionIndexTree]()
+  private var forrest: Map[Int, SubstitutionIndexTree] = Map[Int, SubstitutionIndexTree]()
 
 
   abstract override def removeNext: FOLClause = {
@@ -414,7 +414,7 @@ trait SForrestIndex extends MutableClauseStorage
 
     term match {
       case Negation(filler) => {
-        val key = "-" + filler.top
+        val key = -1*filler.top
         val tree = forrest.get(key) match {
           case Some(tree) => tree.insert(filler)
           case None => EmptyTree().insert(filler)
@@ -529,7 +529,7 @@ trait SForrestIndex extends MutableClauseStorage
     val terms = queryTerm match {
       case Negation(term) => {
         // check if we have a tree
-        val key = "-" + term.top
+        val key = -1 * term.top
         forrest.get(key) match {
           case Some(tree) => {
             // create the query substitution
@@ -581,7 +581,7 @@ trait SForrestIndex extends MutableClauseStorage
     val terms = queryTerm match {
       case Negation(term) => {
         // check if we have a tree
-        val key = "-" + term.top
+        val key = -1 *  term.top
         forrest.get(key) match {
           case Some(tree) => {
             // create the query substitution
@@ -627,7 +627,7 @@ trait SForrestIndex extends MutableClauseStorage
     val terms = queryTerm match {
       case Negation(term) => {
         // check if we have a tree
-        val key = "-" + term.top
+        val key = -1 * term.top
         forrest.get(key) match {
           case Some(tree) => {
             // create the query substitution

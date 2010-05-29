@@ -31,36 +31,36 @@ class ManualConfExamplePartitioner extends ClauseStoragePartitioning with Loggin
     // assert that each module is hosting correctly
 
     require(module0.forall({clause: FOLClause => clause.literals.exists(
-      {literal : FOLNode => (literal match {
+      {literal : FOLNode => FOLNode.decodeSymbol((literal match {
         case PositiveFOLLiteral(posL) => posL.top
         case NegativeFOLLiteral(negL) => negL.top
-      }).substring(0, 2) == "O0"})}))
+      })).substring(0, 2) == "O0"})}))
 
 
     require(module1.forall({clause: FOLClause => clause.literals.exists(
-      {literal : FOLNode => (literal match {
+      {literal : FOLNode => FOLNode.decodeSymbol((literal match {
         case PositiveFOLLiteral(posL) => posL.top
         case NegativeFOLLiteral(negL) => negL.top
-      }).substring(0, 2) == "O1"})}))
+      })).substring(0, 2) == "O1"})}))
 
     require(module2.forall({clause: FOLClause => clause.literals.exists(
-      {literal : FOLNode => (literal match {
+      {literal : FOLNode => FOLNode.decodeSymbol((literal match {
         case PositiveFOLLiteral(posL) => posL.top
         case NegativeFOLLiteral(negL) => negL.top
-      }).substring(0, 2) == "O2"})}))
+      })).substring(0, 2) == "O2"})}))
 
     require(module3.forall({clause: FOLClause => clause.literals.exists(
-      {literal : FOLNode => (literal match {
+      {literal : FOLNode => FOLNode.decodeSymbol((literal match {
         case PositiveFOLLiteral(posL) => posL.top
         case NegativeFOLLiteral(negL) => negL.top
-      }).substring(0, 2) == "O3"})}))
+      })).substring(0, 2) == "O3"})}))
 
 
     require(module4.forall({clause: FOLClause => clause.literals.exists(
-      {literal : FOLNode => (literal match {
+      {literal : FOLNode => FOLNode.decodeSymbol((literal match {
         case PositiveFOLLiteral(posL) => posL.top
         case NegativeFOLLiteral(negL) => negL.top
-      }).substring(0, 2) == "O4"})}))
+      })).substring(0, 2) == "O4"})}))
 
 
     List(

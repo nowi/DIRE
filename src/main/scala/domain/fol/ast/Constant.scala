@@ -8,7 +8,7 @@ package domain.fol.ast
 
 case class Constant(name: String) extends Term {
   val args = List(this)
-  val top = name
+  val top = FOLNode.encodeSymbol(name)
 
   override def toString = "%s" format (name)
 

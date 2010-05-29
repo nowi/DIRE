@@ -20,7 +20,7 @@ trait ReasoningActorChild {
 
 
 trait DispatchingActor extends Actor with ReasoningActorChild  {
-  var allocationTable: Map[String,Any] = Map()
+  var allocationTable: Map[Int,Any] = Map()
 
   var dispatchedCount : Int = 0
 
@@ -102,7 +102,7 @@ trait DispatchingActor extends Actor with ReasoningActorChild  {
 
 
 
-  protected def determineDestination(clauses: Iterable[FOLClause], allocation: Map[String, Any] ) : MultiMap[Actor, FOLClause]
+  protected def determineDestination(clauses: Iterable[FOLClause], allocation: Map[Int, Any] ) : MultiMap[Actor, FOLClause]
 }
 
 /**

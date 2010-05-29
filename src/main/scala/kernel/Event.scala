@@ -36,8 +36,8 @@ case class EventLog(eventLog : Iterable[ReasonerEvent]) extends Event
 
 
 // administrative messages
-case class LoadAllocation(allocation: Map[String,Any],localAddress : Any) extends Event
-case class LocalSymbols(localSymbols: List[String]) extends Event
+case class LoadAllocation(allocation: Map[Int,Any],localAddress : Any) extends Event
+case class LocalSymbols(localSymbols: List[Int]) extends Event
 case class ProverStatus(status: ProvingState,workedOffCount : Int,derivedCount : Int,recievedKeptClauseCount : Int,recievedClauseCount : Int,dispatchedClauseCount : Int) extends Event
 case class Status(status: String) extends Event
 case class Heartbeat(status: String) extends Event

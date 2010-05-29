@@ -40,15 +40,15 @@ class ProvingActor(env: {val prover: FOLProving; val eventRecorder: Option[Event
   // cofigure a native os thread based dispatcher for the proving actor
   //val d = Dispatchers.newThreadBasedDispatcher(this)
   //    val d = Dispatchers.globalReactorBasedSingleThreadEventDrivenDispatcher
-  val d = Dispatchers.newExecutorBasedEventDrivenDispatcher("prover");
-  d.withNewThreadPoolWithLinkedBlockingQueueWithUnboundedCapacity
-          .setCorePoolSize(5)
-          .setMaxPoolSize(128)
-          .setKeepAliveTimeInMillis(100)
-          .setRejectionPolicy(new CallerRunsPolicy)
-          .buildThreadPool;
-
-  messageDispatcher = d
+//  val d = Dispatchers.newExecutorBasedEventDrivenDispatcher("prover");
+//  d.withNewThreadPoolWithLinkedBlockingQueueWithUnboundedCapacity
+//          .setCorePoolSize(5)
+//          .setMaxPoolSize(128)
+//          .setKeepAliveTimeInMillis(100)
+//          .setRejectionPolicy(new CallerRunsPolicy)
+//          .buildThreadPool;
+//
+//  messageDispatcher = d
 
   val prover: FOLProving = env.prover
 
@@ -78,7 +78,7 @@ class ProvingActor(env: {val prover: FOLProving; val eventRecorder: Option[Event
   var dispatchedClauseCount: Int = 0
 
 
-  var localAllocation: List[String] = Nil
+  var localAllocation: List[Int] = Nil
 
   var recievedClausesCount: Int = 0
 

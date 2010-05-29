@@ -29,9 +29,6 @@ import se.scalablesolutions.akka.stm.NoTransactionInScopeException
 import se.scalablesolutions.akka.util.{Helpers, UUID, Logging}
 import sun.reflect.generics.reflectiveObjects.NotImplementedException
 import Helpers._
-import voldemort.client.{DefaultStoreClient, SocketStoreClientFactory, ClientConfig}
-import voldemort.server.{VoldemortServer, VoldemortConfig}
-import voldemort.versioning.{Versioned, ArbitraryInconsistencyResolver}
 //import se.scalablesolutions.akka.actor.Actor.Sender.Self
 import se.scalablesolutions.akka.stm.Transaction._
 
@@ -78,6 +75,27 @@ object DIREShell extends Application with Actor {
   val node2Reasoner: MMap[RemoteAddress, Actor] = new HashMap()
 
 
+  override def main(a: Array[String]) = {
+    a.toList match {
+      case selection :: Nil => {
+        selection.toInt match {
+          case 0 => {
+            println("Starting OntoFarm Merged Local")
+            runOntoFarmMergedLocal
+          }
+          case 1 => {
+            println("Starting OntoFarm Distributed Local")
+            runOntoFarmLocal
+          }
+
+          case 2 => {
+            println("Starting OntoFarm Distributed Cluster")
+            runOntoFarmCluster
+          }
+        }
+      }
+    }
+  }
 
   def saveLog(message: String) {
     val doc = new BasicDBObject
@@ -87,7 +105,7 @@ object DIREShell extends Application with Actor {
 
   def retrieveLogs = {
     val buffer = new ListBuffer[DBObject]()
-    val cur : DBCursor = clauseCollection.find()
+    val cur: DBCursor = clauseCollection.find()
     while (cur.hasNext()) {
       buffer.append(cur.next())
     }
@@ -115,8 +133,6 @@ object DIREShell extends Application with Actor {
   }
 
 
-
-
   def broadcast(message: Any) {
     println("Broadcasting %s to all reasonsers in cluster" format message)
     for (endpoint: RemoteAddress <- Cluster) {
@@ -136,8 +152,8 @@ object DIREShell extends Application with Actor {
 
 
   // get number of local reasoners
-  def localReasoners(count : Int) = {
-    for (i <- 0.until(count))yield new DefaultDALCReasoner
+  def localReasoners(count: Int) = {
+    for (i <- 0.until(count)) yield new DefaultDALCReasoner
   }
 
 
@@ -270,7 +286,7 @@ object DIREShell extends Application with Actor {
     recieved.eventLog
   }
 
-  def el(reasoners: Iterable[Actor]) : Iterable[ReasonerEvent] = {
+  def el(reasoners: Iterable[Actor]): Iterable[ReasonerEvent] = {
     reasoners.map(el(_)).reduceLeft(_ ++ _)
   }
 
@@ -362,7 +378,7 @@ object DIREShell extends Application with Actor {
   }
 
 
-  def runOntoFarmLocal : List[Actor] = {
+  def runOntoFarmLocal: List[Actor] = {
     // spawn remote reasoners
 
     // echeck if there are enought conpute nodes in the cluster
@@ -409,7 +425,7 @@ object DIREShell extends Application with Actor {
 
   }
 
-  def runOntoFarmMergedLocal : List[Actor] = {
+  def runOntoFarmMergedLocal: List[Actor] = {
     // spawn remote reasoners
 
     // echeck if there are enought conpute nodes in the cluster
@@ -421,8 +437,8 @@ object DIREShell extends Application with Actor {
     val reasoner2address: Map[Actor, String] = (rs zip rs.map(_.uuid)).foldLeft(Map[Actor, String]())(_ + _)
 
     // partition the ontology
-     val partitioner = new ManualConfExampleMerger
-      val partitions = partitioner.partition(CNFClauseStore()) // pass dummy empty store
+    val partitioner = new ManualConfExampleMerger
+    val partitions = partitioner.partition(CNFClauseStore()) // pass dummy empty store
     // create allocation of partitions the the reasoning nodes
     // create distribution of partitions the the reasoning nodes
     val distributor = new NaiveOneToOneUnrestrictedLocalDistributor

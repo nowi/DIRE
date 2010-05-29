@@ -82,7 +82,7 @@ abstract class ReasoningActor extends Actor {
       // for , clauses for which he has no entry he passes on to dispatcher
 
       // filter out all symbols that have this reasoner as entry
-      val localSymbols = new ListBuffer[String]()
+      val localSymbols = new ListBuffer[Int]()
       allocation.foreach {
         case (symbol, address) => {
           if (address.equals(localAddress)) {

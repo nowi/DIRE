@@ -10,6 +10,7 @@ package core.ordering
 import com.jteigen.scalatest.JUnit4Runner
 
 import containers.{CNFClauseStore}
+import domain.fol.ast.FOLNode
 import domain.fol.parsers.SPASSIntermediateFormatParser;
 import org.junit.runner.RunWith
 import org.scalatest.matchers.ShouldMatchers
@@ -32,25 +33,25 @@ class CustomSPASSModule1PrecedenceSpec extends Spec with ShouldMatchers {
     it("NEWATOMIC10 > hasHydrophobicity") {
       val x = "NEWATOMIC10"
       val y = "hasHydrophobicity"
-      precedence.compare(x, y) should equal(1)
+      precedence.compare(FOLNode.encodeSymbol(x), FOLNode.encodeSymbol(y)) should equal(1)
     }
 
     it("hasHydrophobicity == hasHydrophobicity") {
       val x = "hasHydrophobicity"
       val y = "hasHydrophobicity"
-      precedence.compare(x, y) should equal(0)
+      precedence.compare(FOLNode.encodeSymbol(x),FOLNode.encodeSymbol(y)) should equal(0)
     }
 
     it("NEWATOMIC25 > NEWATOMIC23p") {
       val x = "NEWATOMIC25"
       val y = "NEWATOMIC23p"
-      precedence.compare(x, y) should equal(1)
+      precedence.compare(FOLNode.encodeSymbol(x), FOLNode.encodeSymbol(y)) should equal(1)
     }
 
     it("NEWATOMIC5 > NEWATOMIC26") {
       val x = "NEWATOMIC5"
       val y = "NEWATOMIC26"
-      precedence.compare(x, y) should equal(1)
+      precedence.compare(FOLNode.encodeSymbol(x), FOLNode.encodeSymbol(y)) should equal(1)
     }
   }
 
