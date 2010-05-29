@@ -12,30 +12,30 @@
     <repositories>
         <repository>
             <id>central</id>
-            <url>http://192.168.2.111:8081/artifactory/repo</url>
+            <url>http://localhost:8081/artifactory/repo</url>
             <snapshots>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </snapshots>
         </repository>
         <repository>
             <id>snapshots</id>
-            <url>http://192.168.2.111:8081/artifactory/repo</url>
+            <url>http://localhost:8081/artifactory/repo</url>
             <releases>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </releases>
         </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
             <id>central</id>
-            <url>http://192.168.2.111:8081/artifactory/plugins-releases</url>
+            <url>http://localhost:8081/artifactory/plugins-releases</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
         </pluginRepository>
         <pluginRepository>
             <id>snapshots</id>
-            <url>http://192.168.2.111:8081/artifactory/plugins-snapshots</url>
+            <url>http://localhost:8081/artifactory/plugins-snapshots</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
@@ -65,11 +65,11 @@
             <scope>test</scope>
         </dependency>
 
-<!--<dependency>-->
-    <!--<groupId>com.google.collections</groupId>-->
-    <!--<artifactId>google-collections</artifactId>-->
-    <!--<version>1.0</version>-->
-<!--</dependency>-->
+<dependency>
+    <groupId>com.google.collections</groupId>
+    <artifactId>google-collections</artifactId>
+    <version>1.0</version>
+</dependency>
         
 
         <dependency>
