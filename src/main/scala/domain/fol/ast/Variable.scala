@@ -12,7 +12,7 @@ import helpers.Logging
 case class Variable(name: String) extends Term with Logging{
 
   // is not complex, therefore no arguments
-  override lazy val top = name
+  override lazy val top = FOLNode.encodeSymbol(name)
   override lazy val args = List(this)
 
   override def toString = name
@@ -62,7 +62,7 @@ object VariableS {
 case class IndicatorVariable(override val name: String) extends Variable(name) {
   // make default constructor private
 
-  override lazy val top = name
+  override lazy val top = FOLNode.encodeSymbol(name)
   override lazy val args = List(this)
 
   override def toString = name

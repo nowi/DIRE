@@ -50,7 +50,7 @@ import domain.fol.ast.FOLClause
 //}
 
 trait Precedence {
-  def compare(a: String, b: String) : Int
+  def compare(a: Int, b: Int) : Int
 
 //  override def toString = "%s" format (symbolicNames mkString ("(", ">", ")"))
 
@@ -58,9 +58,9 @@ trait Precedence {
 
 object LazyLexicographicPrecedence  extends Precedence {
   // build the precedence list from the linked initial  clausestore
-  val cache : MMap[(String,String),Int] = scala.collection.mutable.HashMap[(String,String),Int]()
+  val cache : MMap[(Int,Int),Int] = scala.collection.mutable.HashMap[(Int,Int),Int]()
   
-  private val comparator = (x: String, y: String) => (x compareToIgnoreCase y) match {
+  private val comparator = (x: Int, y: Int) => (x - y) match {
       case result: Int if (result < 0) => -1
       case result: Int if (result == 0) => 0
       case result: Int if (result > 0) => 1
@@ -68,7 +68,7 @@ object LazyLexicographicPrecedence  extends Precedence {
 
   
 
-  override def compare(a: String, b: String) = {
+  override def compare(a: Int, b: Int) = {
     // check if we already compared this, if not add to cache
     val compared = comparator(a,b)
     cache.getOrElseUpdate((a,b),comparator(a,b))

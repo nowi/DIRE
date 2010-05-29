@@ -11,7 +11,7 @@ import scala.collection.mutable.{Map => MMap}
 
 case class Function(name: String, terms: List[FOLNode]) extends Term {
   override lazy val args = terms
-  override lazy val top = name
+  override lazy val top = FOLNode.encodeSymbol(name)
 
   override val arity = terms.size
 

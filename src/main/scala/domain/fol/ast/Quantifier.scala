@@ -14,7 +14,7 @@ abstract class Quantifier extends Sentence {
 
 
 case class UniversalQuantifer(filler: Sentence, variables: List[Variable]) extends Quantifier {
-  val top = "forall"
+  val top = FOLNode.encodeSymbol("forall")
   val args = List(filler) ::: variables
 
   override def toString = "∀ %s : %s" format (variables mkString ("", ",", ""), filler)
@@ -26,7 +26,7 @@ case class UniversalQuantifer(filler: Sentence, variables: List[Variable]) exten
 
 }
 case class ExistentialQuantifer(filler: Sentence, variables: List[Variable]) extends Quantifier {
-  val top = "exists"
+  val top = FOLNode.encodeSymbol("exists")
   val args = List(filler) ::: variables
 
   override def map(f: (FOLNode => FOLNode)): FOLNode = {

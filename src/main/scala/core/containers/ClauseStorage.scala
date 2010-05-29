@@ -29,7 +29,7 @@ trait NewClauseStorage {
  *
  */
 trait ClauseStorage {
-  def signature: Iterable[String] = {
+  def signature: Iterable[Int] = {
     toList.flatMap({_.literals}).map({literal: FOLNode => literal.top})
   }
 

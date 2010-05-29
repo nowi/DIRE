@@ -17,7 +17,7 @@ trait FOLNode {
   // default no bindings
   //val bindings : Context = Context()
 
-  val top: String
+  val top: Int
 
   // subclasses should override this for corret sharing of arguments
   def shared : FOLNode  = {
@@ -169,8 +169,6 @@ trait FOLNode {
   }
 
 
-
-
   def negate() : FOLNode = {
     this match {
       case node if(positive) => Negation(node)
@@ -179,27 +177,35 @@ trait FOLNode {
   }
 
 
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   def logicalEquals(obj: Any) = equals(obj)
 }
 
+
+
 object FOLNode {
 
+  val symbolTable : MMap[Integer,String] = MMap()
+  var symbolCounter : Int = 0
+
+
   val sharedNodes : MMap[FOLNode,FOLNode]= MMap()
+
+
+  def encodeSymbol(symbol : String) : Int = {
+    if(!symbolTable.values.contains(symbol)) {
+      val code = symbol.hashCode
+      symbolTable.put(code,symbol)
+      code
+    } else {
+      symbol.hashCode
+    }
+
+  }
+
+  def decodeSymbol(encodedSymbol : Int) : String = {
+    symbolTable(encodedSymbol)
+  }
+
 
   implicit def termToFOLNode(x: Term): FOLNode = x.asInstanceOf[FOLNode]
 
@@ -208,14 +214,14 @@ object FOLNode {
 
 // extractor for complex fol terms
 object Complex {
-  def unapply(node: FOLNode): Option[(String, List[FOLNode])] = {
+  def unapply(node: FOLNode): Option[(Int, List[FOLNode])] = {
     if (node.arity > 0) Some((node.top, node.args))
     else None
   }
 }
 
 object Node {
-  def unapply(node: FOLNode): Option[(String, List[FOLNode])] = {
+  def unapply(node: FOLNode): Option[(Int, List[FOLNode])] = {
     Some((node.top, node.args))
   }
 }

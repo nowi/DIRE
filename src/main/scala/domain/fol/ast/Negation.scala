@@ -12,7 +12,7 @@ case class Negation(x: Sentence) extends Sentence {
     case _ => x
   }
 
-  val top = "-" + filler.top
+  val top = -1 * filler.top
 
   val args = List(filler)
 

@@ -36,7 +36,7 @@ class DefaultDALCReasoner extends ReasoningActor {
 
   val config = new Object {
     // the initial clause store
-    lazy val neo4JGraphBasePath: String = "/workspace/DIRE/DIRE/logs/graph/clauses"
+    lazy val neo4JGraphBasePath: String = "/Users/nowi/workspace/DIRE/DIRE/logs/graph/clauses"
     val isDistributed = true
     lazy val variableRewriter = new VariableRewriter
     lazy val standardizer = new Standardizer(this)
@@ -65,7 +65,8 @@ class DefaultDALCReasoner extends ReasoningActor {
     lazy val subsumptionStrategy = StillmannSubsumer
 //    lazy val inferenceRecorder = Some(new NaiveClauseRecorder)
     lazy val inferenceRecorder = None
-    lazy val eventRecorder = Some(new EventRecorder)
+//    lazy val eventRecorder = Some(new EventRecorder)
+    lazy val eventRecorder = None
 //    lazy val inferenceRecorder = None
 
 
@@ -102,9 +103,9 @@ class DefaultDALCReasoner extends ReasoningActor {
   val dispatcherActor  = new DALCDispatcherActor(config)
 
 
-  val derivationsLoggingActor = new Neo4JLoggingActor(config)
-
-  val reductionsLoggingActor = new Neo4JLoggingActor(config)
+//  val derivationsLoggingActor = new Neo4JLoggingActor(config)
+//
+//  val reductionsLoggingActor = new Neo4JLoggingActor(config)
 
 
 }

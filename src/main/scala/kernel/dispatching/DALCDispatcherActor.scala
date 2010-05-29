@@ -26,7 +26,7 @@ import se.scalablesolutions.akka.remote.Cluster
  */
 class DALCDispatcherActor(env: {val uniqueLiteralResolver: UniqueLiteralResolution; val uniqueRLitCache: URLitCache; val eventRecorder: Option[EventRecording]; val actorCache: Option[ActorCache]})
         extends DispatchingActor {
-  override def determineDestination(clauses: Iterable[FOLClause], allocation: scala.collection.immutable.Map[String, Any]) = {
+  override def determineDestination(clauses: Iterable[FOLClause], allocation: scala.collection.immutable.Map[Int, Any]) = {
     //record.trace("Reasoner: %s  clauses %s to reasoners : ", this, clauses,reasoners)
     // get the unique resolvable literal of this clause
 

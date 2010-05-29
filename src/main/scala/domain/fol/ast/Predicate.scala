@@ -8,7 +8,7 @@ package domain.fol.ast
  */
 
 case class Predicate(name: String, terms: List[FOLNode]) extends Term {
-  override lazy val top = name
+  override lazy val top = FOLNode.encodeSymbol(name)
   override lazy val args = terms
 
   override val arity = terms.size
