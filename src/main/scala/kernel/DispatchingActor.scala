@@ -71,6 +71,32 @@ trait DispatchingActor extends Actor with ReasoningActorChild  {
 
     }
 
+    // handle dispatching of given clause
+    case  msg @ GivenClause(givenClause) => {
+
+      // pass clause to logging actor
+      // analyze where this claues should be send
+      for((destinationActor,clauses) <- determineDestination(List(givenClause),allocationTable) ){
+        // disptach
+        //println("%s is Dispatching CLauses : %s to destination kernel : %s",this,clauses,actor)
+        clauses match {
+          case cs if(!cs.isEmpty) => {
+            log.debug("Dispatching given clauses %s to reasoner %s", clauses,destinationActor)
+            dispatchedCount = dispatchedCount + clauses.toList.size
+            val clausepacket = cs
+            val da = destinationActor
+            destinationActor.send(Saturate(clauses))
+
+          }
+          case _ => // dont sent
+        }
+
+
+      }
+
+
+    }
+
     case DerivedBatch(resolvedClauses) => {
 
       // pass clause to logging actor

@@ -4,7 +4,7 @@ package core
 import collection.mutable.{ListBuffer}
 import domain.fol.ast._
 import helpers.{Subject, Logging}
-import kernel.{DerivedBatch, Derived}
+import kernel.{GivenClause, DerivedBatch, Derived}
 import ProvingResult._
 import collection.immutable.{TreeSet, SortedSet}
 import containers._
@@ -278,7 +278,7 @@ class RobinsonProver(env: {
 
       // dispatch given clause , maybe it does not belong to this partition
       //notify listeners with kept clause
-
+      notifyObservers(GivenClause(givenClause))
 
       // infere -- this should give us back clause buffers
       val successfullResolutions: Iterable[SuccessfullResolution] = infere(givenClause, _workedOff)

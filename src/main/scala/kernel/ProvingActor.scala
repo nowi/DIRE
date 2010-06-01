@@ -115,6 +115,33 @@ class ProvingActor(env: {val prover: FOLProving; val eventRecorder: Option[Event
     parent match {
       case Some(parentActor) => {
         resolutionResult match {
+
+          case GivenClause(givenClause) => {
+            givenClause.uniqueResolvableLit match {
+              case Some(urlit) if (localAllocation.contains(urlit.top)) => {
+                // says here , ignore
+              }
+
+              case None => {
+                // no unique lit ignore
+              }
+
+              case Some(urlit) => {
+                // dispatch
+                // pass the derived clauses to the parent actor
+                log.warning("Given clause %s is not allocated to this reasoner, dispatch it",givenClause)
+                dispatchedClauseCount += 1
+                parentActor forward resolutionResult
+
+              }
+
+            }
+
+
+
+          }
+
+
           case derived: Derived => {
             val derivedClause = derived.derived
             val urlit = derivedClause.uniqueResolvableLit
