@@ -362,6 +362,55 @@ object DIREShell extends Application with Actor {
   }
 
 
+  def runOntoFarmMergedCluster: List[Actor] = {
+    // spawn remote reasoners
+
+    // echeck if there are enought conpute nodes in the cluster
+    require(nodes.size == 1, "We need at least 1 compute nodes in cluster for cluster merged ontofarm example")
+
+    val ns = List(nodes.head)
+    // spawn reasoners on those nodes
+    val rs = reasoners(ns)
+
+
+    val reasoner2address: Map[Actor, RemoteAddress] = (rs zip ns).foldLeft(Map[Actor, RemoteAddress]())(_ + _)
+
+    // partition the ontology
+    val partitioner = new ManualConfExampleMerger
+      val partitions = partitioner.partition(CNFClauseStore()) // pass dummy empty store
+    // create allocation of partitions the the reasoning nodes
+    // create distribution of partitions the the reasoning nodes
+    val distributor = new NaiveOneToOneUnrestrictedLocalDistributor
+    val distribution = distributor.distribute(partitions, rs)
+
+    // TODO important we need to allocate correctly or else massive overhead
+
+    val allocator = new ConferenceExample1NodeAllocator
+
+
+    // create allocation of partitions --> RemoteAdress
+
+
+    val allocation = allocator.allocate(partitions, ns)
+
+    //val allocationTable = (Map() /: allocation)({case (clauseStore, reasoner) => (Map() /: clauseStore.signature)({name : String => Map(name -> reasoner.uuid)})})
+    // send the allocation table  to the reasoning nodes
+    for (reasoner <- rs) {
+      // require(allocation.values.exists(_ == reasoner.uuid), "Missmatch between the uuid in the allocation and the destination actor")
+      reasoner ! LoadAllocation(allocation, reasoner2address(reasoner))
+    }
+
+    // send the ontologies to the reasoning nodes
+    for ((reasoner, clauseStore) <- distribution) {
+      log.debug("Sending initial clauses %s to kernel %s", clauseStore, reasoner)
+      reasoner ! SaturateInitial(clauseStore.toList)
+    }
+
+    rs
+
+  }
+
+
   def runOntoFarmLocal : List[Actor] = {
     // spawn remote reasoners
 
