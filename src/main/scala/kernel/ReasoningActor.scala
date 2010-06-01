@@ -167,6 +167,19 @@ abstract class ReasoningActor extends Actor {
 
 
     // OUTBOUND
+    // handle given clause that is allocated to another reasoner , this should ideally
+    // be done prior to starting stauration
+    case msg@GivenClause(_) => {
+      //      log.trace("Recieved Derived Message with derived clauses %s..from sender : %s forwarding to %s ", derived, sender, dispatcherActor)
+      // forward to logger
+      //derivationsLoggingActor forward derived
+      // forward to dispatcher
+      // replace sender
+      dispatcherActor ! msg
+    }
+
+
+    // OUTBOUND
     // handle dispatching of derived cla
     // uses
     case msg@DerivedBatch(_) => {

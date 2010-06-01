@@ -20,6 +20,7 @@ sealed trait Event
 case class Saturate(clauses: Iterable[FOLClause]) extends Event
 case class SaturateInitial(clauses: Iterable[FOLClause]) extends Event
 case class Derived(derived : FOLClause,parent1:Option[FOLClause],parent2:Option[FOLClause]) extends Event
+case class GivenClause(given : FOLClause) extends Event
 case class DerivedBatch(derived : Iterable[FOLClause]) extends Event
 
 
