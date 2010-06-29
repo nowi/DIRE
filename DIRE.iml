@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module relativePaths="true" MavenProjectsManager.isMavenModule="true" org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+<module MavenProjectsManager.isMavenModule="true" org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" relativePaths="true" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="Scala" name="Scala">
-      <configuration />
+      <configuration>
+        <option name="takeFromSettings" value="true" />
+        <option name="myScalaCompilerJarPaths">
+          <array>
+            <option value="$MODULE_DIR$/../../scala28/lib/scala-compiler.jar" />
+          </array>
+        </option>
+        <option name="myScalaSdkJarPaths">
+          <array>
+            <option value="$MODULE_DIR$/../../scala28/lib/scala-library.jar" />
+          </array>
+        </option>
+      </configuration>
     </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_5" inherit-compiler-output="false">
@@ -18,7 +30,7 @@
       <excludeFolder url="file://$MODULE_DIR$/out" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
-    <orderEntry type="library" name="Scala 2.7.7" level="application" />
+    <orderEntry type="library" name="Scala2.8RC5" level="application" />
     <orderEntry type="jdk" jdkName="1.6" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="Voldemort" level="project" />
@@ -33,7 +45,6 @@
     <orderEntry type="library" name="Maven: junit:junit:4.7" level="project" />
     <orderEntry type="library" name="Maven: org.scala-tools.testing:specs:1.6.1" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.neo4j:neo4j-scala:0.9.9-SNAPSHOT" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.scala-lang:scala-library:2.7.7" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.neo4j:neo4j-kernel:1.0" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.apache.geronimo.specs:geronimo-jta_1.1_spec:1.1.1" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.neo4j:neo4j-shell:1.0-rc" level="project" />
@@ -56,7 +67,6 @@
     <orderEntry type="library" exported="" name="Maven: se.scalablesolutions.akka:akka-util_2.7.7:0.7" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.codehaus.aspectwerkz:aspectwerkz-jdk5:2.1" level="project" />
     <orderEntry type="library" exported="" name="Maven: net.lag:configgy:1.4.7" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.scala-lang:scala-compiler:2.7.6" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.codehaus.aspectwerkz:aspectwerkz-nodeps-jdk5:2.1" level="project" />
     <orderEntry type="library" exported="" name="Maven: se.scalablesolutions.akka:akka-util-java_2.7.7:0.7-nowafork-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="Maven: com.google.protobuf:protobuf-java:2.2.0" level="project" />
