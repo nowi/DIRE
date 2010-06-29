@@ -24,7 +24,7 @@ import se.scalablesolutions.akka.remote.Cluster
 /**
  * Sends clauses accoring to Distributed Resolution Rules
  */
-class DALCDispatcherActor(env: {val uniqueLiteralResolver: UniqueLiteralResolution; val uniqueRLitCache: URLitCache; val eventRecorder: Option[EventRecording]; val actorCache: Option[ActorCache]})
+class DALCDispatcherActor(env: {val uniqueLiteralResolver: Option[UniqueLiteralResolution]; val uniqueRLitCache: URLitCache; val eventRecorder: Option[EventRecording]; val actorCache: Option[ActorCache]})
         extends DispatchingActor {
   override def determineDestination(clauses: Iterable[FOLClause], allocation: scala.collection.immutable.Map[String, Any]) = {
     //record.trace("Reasoner: %s  clauses %s to reasoners : ", this, clauses,reasoners)

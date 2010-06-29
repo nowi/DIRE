@@ -26,7 +26,7 @@ object DALCConfig {
   lazy val neo4JGraphBasePath: String = "/workspace/DIRE/DIRE/logs/graph/clauses"
 
   // unique literal resolver
-  lazy val uniqueLiteralResolver = new DALCUniqueLiteralResolver(this)
+  lazy val uniqueLiteralResolver = Some(new DALCUniqueLiteralResolver(this))
 
   // ordered resolution needs comparator and selection
   lazy val precedence = new CustomConferencePartitionedPrecedence
