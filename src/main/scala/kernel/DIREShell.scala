@@ -60,8 +60,8 @@ object DIREShell extends Application with Actor {
   //  val FRAME_LENGTH = voldeConfig.getInt("akka.remote.client.frame-length", 104857600)
 
 
-  println("Welcome to DIRE shell , enter help for list of available commands")
-  println("Enter help(command) for more specific help")
+//  println("Welcome to DIRE shell , enter help for list of available commands")
+//  println("Enter help(command) for more specific help")
   //val shell = new DIREShell
   println("Starting Jgroups clustering")
   se.scalablesolutions.akka.remote.Cluster.start
@@ -78,7 +78,6 @@ object DIREShell extends Application with Actor {
   val node2Reasoner: MMap[RemoteAddress, Actor] = new HashMap()
 
 
-
   def saveLog(message: String) {
     val doc = new BasicDBObject
     doc.put("message", message);
@@ -87,7 +86,7 @@ object DIREShell extends Application with Actor {
 
   def retrieveLogs = {
     val buffer = new ListBuffer[DBObject]()
-    val cur : DBCursor = clauseCollection.find()
+    val cur: DBCursor = clauseCollection.find()
     while (cur.hasNext()) {
       buffer.append(cur.next())
     }
@@ -115,8 +114,6 @@ object DIREShell extends Application with Actor {
   }
 
 
-
-
   def broadcast(message: Any) {
     println("Broadcasting %s to all reasonsers in cluster" format message)
     for (endpoint: RemoteAddress <- Cluster) {
@@ -136,8 +133,8 @@ object DIREShell extends Application with Actor {
 
 
   // get number of local reasoners
-  def localReasoners(count : Int) = {
-    for (i <- 0.until(count))yield new DefaultDALCReasoner
+  def localReasoners(count: Int) = {
+    for (i <- 0.until(count)) yield new DefaultDALCReasoner
   }
 
 
@@ -163,6 +160,19 @@ object DIREShell extends Application with Actor {
     for (endpoint: RemoteAddress <- nodes) {
       // check if we have a already established remote connection to a reasoner on this adress
       rs += node2Reasoner.getOrElseUpdate(endpoint, RemoteClient.actorFor("reasoner", endpoint.hostname, endpoint.port))
+    }
+    rs.toList
+  }
+
+
+  // get specified number reasoners
+  def folReasoners(count: Int): List[Actor] = {
+    println("Trying to find/spawn % available full fol reasoners in the cluster" format count)
+    require(count <= nodes.size, "We dont have enough computation nodes available in the cluster")
+    val rs = new ListBuffer[Actor]
+    for (endpoint: RemoteAddress <- nodes) {
+      // check if we have a already established remote connection to a reasoner on this adress
+      rs += node2Reasoner.getOrElseUpdate(endpoint, RemoteClient.actorFor("folReasoner", endpoint.hostname, endpoint.port))
     }
     rs.toList
   }
@@ -270,7 +280,7 @@ object DIREShell extends Application with Actor {
     recieved.eventLog
   }
 
-  def el(reasoners: Iterable[Actor]) : Iterable[ReasonerEvent] = {
+  def el(reasoners: Iterable[Actor]): Iterable[ReasonerEvent] = {
     reasoners.map(el(_)).reduceLeft(_ ++ _)
   }
 
@@ -312,6 +322,57 @@ object DIREShell extends Application with Actor {
     //    new DALCReasonerBroadCastDispatch
 
   }
+
+
+  def runCuriosityExampleCluster: List[Actor] = {
+    // spawn remote reasoners
+
+    // echeck if there are enought conpute nodes in the cluster
+    require(nodes.size == 1, "We need at least 1 compute nodes in cluster for cluster curiosity example")
+    // echeck if there are enought conpute nodes in the cluster
+
+    val ns = List(nodes.head)
+    // spawn reasoners on those nodes
+    val rs = reasoners(ns)
+
+
+    val reasoner2address: Map[Actor, RemoteAddress] = (rs zip ns).foldLeft(Map[Actor, RemoteAddress]())(_ + _)
+
+    // partition the ontology
+    val partitioner = new ManualConfExamplePartitioner
+    val partitions = partitioner.partition(CNFClauseStore()) // pass dummy empty store
+    // create allocation of partitions the the reasoning nodes
+    // create distribution of partitions the the reasoning nodes
+    val distributor = new NaiveOneToOneUnrestrictedLocalDistributor
+    val distribution = distributor.distribute(partitions, rs)
+
+    // TODO important we need to allocate correctly or else massive overhead
+
+    val allocator = new ConferenceExample5NodeAllocator
+
+
+    // create allocation of partitions --> RemoteAdress
+
+
+    val allocation = allocator.allocate(partitions, ns)
+
+    //val allocationTable = (Map() /: allocation)({case (clauseStore, reasoner) => (Map() /: clauseStore.signature)({name : String => Map(name -> reasoner.uuid)})})
+    // send the allocation table  to the reasoning nodes
+    for (reasoner <- rs) {
+      // require(allocation.values.exists(_ == reasoner.uuid), "Missmatch between the uuid in the allocation and the destination actor")
+      reasoner ! LoadAllocation(allocation, reasoner2address(reasoner))
+    }
+
+    // send the ontologies to the reasoning nodes
+    for ((reasoner, clauseStore) <- distribution) {
+      log.debug("Sending initial clauses %s to kernel %s", clauseStore, reasoner)
+      reasoner ! SaturateInitial(clauseStore.toList)
+    }
+
+    rs
+
+  }
+
 
   def runOntoFarmCluster: List[Actor] = {
     // spawn remote reasoners
@@ -377,7 +438,7 @@ object DIREShell extends Application with Actor {
 
     // partition the ontology
     val partitioner = new ManualConfExampleMerger
-      val partitions = partitioner.partition(CNFClauseStore()) // pass dummy empty store
+    val partitions = partitioner.partition(CNFClauseStore()) // pass dummy empty store
     // create allocation of partitions the the reasoning nodes
     // create distribution of partitions the the reasoning nodes
     val distributor = new NaiveOneToOneUnrestrictedLocalDistributor
@@ -411,7 +472,7 @@ object DIREShell extends Application with Actor {
   }
 
 
-  def runOntoFarmLocal : List[Actor] = {
+  def runOntoFarmLocal: List[Actor] = {
     // spawn remote reasoners
 
     // echeck if there are enought conpute nodes in the cluster
@@ -458,7 +519,7 @@ object DIREShell extends Application with Actor {
 
   }
 
-  def runOntoFarmMergedLocal : List[Actor] = {
+  def runOntoFarmMergedLocal: List[Actor] = {
     // spawn remote reasoners
 
     // echeck if there are enought conpute nodes in the cluster
@@ -470,8 +531,8 @@ object DIREShell extends Application with Actor {
     val reasoner2address: Map[Actor, String] = (rs zip rs.map(_.uuid)).foldLeft(Map[Actor, String]())(_ + _)
 
     // partition the ontology
-     val partitioner = new ManualConfExampleMerger
-      val partitions = partitioner.partition(CNFClauseStore()) // pass dummy empty store
+    val partitioner = new ManualConfExampleMerger
+    val partitions = partitioner.partition(CNFClauseStore()) // pass dummy empty store
     // create allocation of partitions the the reasoning nodes
     // create distribution of partitions the the reasoning nodes
     val distributor = new NaiveOneToOneUnrestrictedLocalDistributor
@@ -584,52 +645,34 @@ object DIREShell extends Application with Actor {
 
 
 
-  // CASSSANDRA SHIT
+}
 
 
+object DIRENewShell {
+  def main(args: Array[String]) {
+    //Let's assume all arguments are file locations for configuration
 
+    val interpreter = new InterpreterWrapper {
+      def prompt = "DIRE> "
 
-  //  println("Creating Cassandra session pool : %s %s %s" format (CASSANDRA_HOST,CASSANDRA_PORT,CASSANDRA_KEYSPACE))
-  //  // create the session pool
-  //  val sessions = new CassandraSessionPool(
-  //    CASSANDRA_KEYSPACE,
-  //    se.scalablesolutions.akka.persistence.common.StackPool(SocketProvider(CASSANDRA_HOST, CASSANDRA_PORT)),
-  //    JSON,
-  //    ConsistencyLevel.QUORUM)
-  //
-  //  // cassandra interations
-  //
-  //  val columnFamily = "Users"
-  //  // retrieve a column
-  //  val ENCODING = "UTF-8"
-  //  val columnName = "screen_name".getBytes(ENCODING)
-  //
-  //  def find(id: String) = {
-  //    val column: Option[ColumnOrSuperColumn] =
-  //    sessions.withSession {
-  //      session =>
-  //              session | (id, new ColumnPath(columnFamily, null, columnName))
-  //    }
-  //
-  //    if (column.isDefined) {
-  //      // Convert to ShoppingList
-  //      Some(Nil)
-  //    } else {
-  //      None
-  //    }
-  //  }
-  //
-  //  def store(uuid : String,payload : String) = {
-  //    // insert a column
-  //    val value = payload.getBytes(ENCODING)
-  //
-  //    sessions.withSession {
-  //      session =>
-  //        session ++| (uuid,
-  //          new ColumnPath(columnFamily, null, columnName),
-  //          value,
-  //          System.currentTimeMillis)
-  //    }
-  //  }
+      def welcomeMsg = "Welcome to the DIRE interactive mode"
 
+      def helpMsg = ":help will print this message, :quit will exit the DIRE shell"
+
+      autoImport("DIREShell._")
+      autoImport("core._")
+      autoImport("helpers._")
+      autoImport("kernel._")
+      autoImport("recording._")
+      autoImport("domain._")
+      
+      //bind("shell", new DIREShell())
+      //OR if I want to restrict access to an interface
+      //bindAs("processingBuilder2", classOf[ProcessingBuilder], new MyProcessingBuilderImplementationClass())
+      for (fileName <- args) {
+        addScriptFile(fileName)
+      }
+    }
+    interpreter.startInterpreting()
+  }
 }
