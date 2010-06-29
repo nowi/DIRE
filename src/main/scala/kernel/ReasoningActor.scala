@@ -6,6 +6,7 @@ import domain.fol.ast.FOLClause
 import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy
 import java.util.concurrent.TimeUnit
 import java.util.Date
+import java.util.logging.Logger
 import ProvingState._
 import se.scalablesolutions.akka.actor.{Scheduler, Actor}
 import se.scalablesolutions.akka.config.OneForOneStrategy
@@ -28,7 +29,6 @@ abstract class ReasoningActor extends Actor {
   faultHandler = None
   //  trapExit = List(classOf[Exception])
   trapExit = Nil
-
 
   
 
@@ -224,12 +224,19 @@ abstract class ReasoningActor extends Actor {
 
 
     case msg@Heartbeat(string) => {
-      log.trace("%s Recieved Heartbeat Message ", this)
-      log.error("%s | Kept : %s | DerivedCount : %s | Rec : %s | RecKept : %s | Dspt : %s", this, workedOffCount, derivedCount, recievedClauseCount, recievedKeptClauseCount, dispatchedClauseCount)
-      log.error("%s | Mailbox sizes \n", this)
-      log.error("%s | Prover : %s", this, provingActor.mailbox.size)
-      log.error("%s | Dispatcher : %s", this, dispatcherActor.mailbox.size)
+//      log.fatal("%s Recieved Heartbeat Message ", this)
+//      log.fatal("%s | Kept : %s | DerivedCount : %s | Rec : %s | RecKept : %s | Dspt : %s", this, workedOffCount, derivedCount, recievedClauseCount, recievedKeptClauseCount, dispatchedClauseCount)
+//      log.fatal("%s | Mailbox sizes \n", this)
+//      log.fatal("%s | Prover : %s", this, provingActor.mailbox.size)
+//      log.fatal("%s | Dispatcher : %s", this, dispatcherActor.mailbox.size)
 
+
+      log.fatal("%s%10d%10d%10d%10d%10d%10d%10d|", this, workedOffCount, derivedCount, recievedClauseCount, recievedKeptClauseCount, dispatchedClauseCount,provingActor.mailbox.size,dispatcherActor.mailbox.size)
+
+//      log.fatal("%s |Kept|Derived|Recieved|RecKept|Sent|Inbox|Outbox| %s  %s  s%  %s  %s  %s  %s", this, workedOffCount, derivedCount, recievedClauseCount, recievedKeptClauseCount, dispatchedClauseCount,provingActor.mailbox.size,dispatcherActor.mailbox.size)
+      //println("%s %s  %s  s%  %s  %s " format this, workedOffCount, derivedCount, recievedClauseCount, recievedKeptClauseCount, dispatchedClauseCount)
+
+      //log.fatal("%s | Dispatcher : %s", this, dispatcherActor.mailbox.size)
 
       //log.error("%s Subsystems : prover is running %s | dispatcher is running: %s |", this, provingActor.isRunning, dispatcherActor.isRunning)
       // forward this to the manager actor
@@ -266,10 +273,10 @@ abstract class ReasoningActor extends Actor {
 
 
 
-//    log.info("Scheduling heartbeat")
-//    // dispatch messegate to ourself with a fixed interval , upon recieving we will check the status of subsctors and
-//    // take action if we are considered idle
-//    Scheduler.schedule(this, Heartbeat("asjd"), 10, 5, TimeUnit.SECONDS)
+    log.info("Scheduling heartbeat")
+    // dispatch messegate to ourself with a fixed interval , upon recieving we will check the status of subsctors and
+    // take action if we are considered idle
+    Scheduler.schedule(this, Heartbeat("asjd"), 10, 5, TimeUnit.SECONDS)
 
 
   }
