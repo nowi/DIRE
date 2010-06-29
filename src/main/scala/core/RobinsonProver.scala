@@ -434,13 +434,18 @@ class RobinsonProver(env: {
 
 
     def forwardReduction(clause: Set[FOLNode]): Set[FOLNode] = {
-      // first pass the clauses through the rewriting rules ( these are potentialy destructive )
-      val rewritten = forwardLiteralDeletion(clause)
-      // now check if redundant
-      if (forwardRedundancyCheck(rewritten, workedOff, usable)) {
-        Set.empty[FOLNode]
-      } else {
-        rewritten
+      tautologyDetection(clause) match {
+        case true => Set.empty[FOLNode] // clause is taut
+        case false => {
+          // first pass the clauses through the rewriting rules ( these are potentialy destructive )
+          val rewritten = forwardLiteralDeletion(clause)
+          // now check if redundant
+          if (forwardRedundancyCheck(rewritten, workedOff, usable)) {
+            Set.empty[FOLNode]
+          } else {
+            rewritten
+          }
+        }
       }
     }
 
@@ -511,13 +516,12 @@ class RobinsonProver(env: {
 
   def forwardLiteralDeletion(clause: Set[FOLNode]): Set[FOLNode] = {
     //condensation(duplicateLiteralDeleter(clause))(subsumptionChecker)
-    //duplicateLiteralDeleter(clause)
     clause
   }
 
 
   def forwardRedundancyCheck(clause: Set[FOLNode], backgroundClauses: ClauseStorage): Boolean = {
-    tautologyDetection(clause) || forwardSubsumer(clause, backgroundClauses)
+     forwardSubsumer(clause, backgroundClauses)
   }
 
   // rewritten in functional style
