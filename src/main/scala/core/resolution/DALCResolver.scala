@@ -18,7 +18,7 @@ import scala.collection.mutable.{Map => MMap}
 
 class DALCResolver(env: { val standardizer: Standardizing;
   val selector: LiteralSelection; val literalComparator: LiteralComparison;
-  val uniqueLiteralResolver: UniqueLiteralResolution;
+  val uniqueLiteralResolver: Option[UniqueLiteralResolution];
   val uniqueRLitCache : URLitCache;
   val maxLitCache : MaxLitCache;val selectedLitCache : SelectedLitCache }) extends BinaryResolution with Logging {
 
