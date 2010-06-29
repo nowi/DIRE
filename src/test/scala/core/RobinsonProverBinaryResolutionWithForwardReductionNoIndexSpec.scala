@@ -202,9 +202,9 @@ class RobinsonProverBinaryResolutionWithForwardReductionWithIndexSpec extends Pr
     lazy val subsumptionStrategy = StillmannSubsumer
 
     // usable clause store with STI indexes and lightesclauseheuristic
-    def usableClauseStore = new MutableClauseStore() with LightestClauseHeuristicStorage with STIndex
+    def usableClauseStore = new MutableClauseStore() with LightestClauseHeuristicStorage with SForrestIndex
 
-    def workedOffClauseStore = new MutableClauseStore() with ListBufferStorage with STIndex with UnifiableClauseRetrieval
+    def workedOffClauseStore = new MutableClauseStore() with ListBufferStorage with SForrestIndex
 
 
     // the caches
@@ -277,9 +277,9 @@ class RobinsonProverBinaryResolutionWithOrderingWithForwardReductionWithSTIIndex
     lazy val subsumptionStrategy = StillmannSubsumer
 
     // usable clause store with STI indexes and lightesclauseheuristic
-    def usableClauseStore = new MutableClauseStore() with LightestClauseHeuristicStorage with STIndex
+    def usableClauseStore = new MutableClauseStore() with LightestClauseHeuristicStorage with SForrestIndex
 
-    def workedOffClauseStore = new MutableClauseStore() with ListBufferStorage  with STIndex with UnifiableClauseRetrieval
+    def workedOffClauseStore = new MutableClauseStore() with ListBufferStorage  with SForrestIndex
 
    // the caches
     // chache for maximal literalas
@@ -334,8 +334,8 @@ class RobinsonProverBinaryResolutionNoReductionSTIIndexSpec extends ProvingSpec 
     lazy val inferenceRecorder = Some(new NaiveClauseRecorder())
 
     // usable clause store with STI indexes
-    lazy val usableClauseStore = new MutableClauseStore() with LightestClauseHeuristicStorage with STIndex
-    lazy val workedOffClauseStore = new MutableClauseStore() with ListBufferStorage with STIndex
+    lazy val usableClauseStore = new MutableClauseStore() with LightestClauseHeuristicStorage with SForrestIndex
+    lazy val workedOffClauseStore = new MutableClauseStore() with ListBufferStorage with SForrestIndex
 
 
    // the caches
@@ -386,8 +386,8 @@ class RobinsonProverBinaryResolutionWithReductionSTIIndexSpec extends ProvingSpe
     lazy val inferenceRecorder = Some(new NaiveClauseRecorder())
 
     // usable clause store with default index and head index ( this is needed For forward matching in indexed forward subsumer
-    lazy val usableClauseStore = new MutableClauseStore with LightestClauseHeuristicStorage with STIndex with STHeadIndex
-    lazy val workedOffClauseStore = new MutableClauseStore with ListBufferStorage with STIndex with STHeadIndex
+    lazy val usableClauseStore = new MutableClauseStore with LightestClauseHeuristicStorage with SForrestIndex
+    lazy val workedOffClauseStore = new MutableClauseStore with ListBufferStorage with SForrestIndex
 
 
     // the caches
@@ -429,7 +429,7 @@ class RobinsonProverALCDResolutionWithReductionSTIIndexSpec extends ConferencePa
     lazy val eventRecorder = Some(new EventRecorder)
 
     // unique literal resolver
-    lazy val uniqueLiteralResolver = new DALCUniqueLiteralResolver(this)
+    lazy val uniqueLiteralResolver = Some(new DALCUniqueLiteralResolver(this))
 
     // ordered resolution needs comparator and selection
     lazy val precedence = new CustomConferencePartitionedPrecedence
@@ -492,7 +492,7 @@ class RobinsonProverMergedALCDResolutionWithReductionSTIIndexSpec extends Confer
     lazy val eventRecorder = Some(new EventRecorder)
 
     // unique literal resolver
-    lazy val uniqueLiteralResolver = new DALCUniqueLiteralResolver(this)
+    lazy val uniqueLiteralResolver = Some(new DALCUniqueLiteralResolver(this))
 
     // ordered resolution needs comparator and selection
     lazy val precedence = new CustomConferencePartitionedPrecedence
@@ -560,7 +560,7 @@ class RobinsonProverMergedALCDResolutionWithReductionFeatureVectorImperfectIndex
     lazy val eventRecorder = Some(new EventRecorder)
 
     // unique literal resolver
-    lazy val uniqueLiteralResolver = new DALCUniqueLiteralResolver(this)
+    lazy val uniqueLiteralResolver = Some(new DALCUniqueLiteralResolver(this))
 
     // ordered resolution needs comparator and selection
     lazy val precedence = new CustomConferencePartitionedPrecedence

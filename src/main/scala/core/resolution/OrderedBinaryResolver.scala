@@ -99,12 +99,12 @@ class OrderedBinaryResolver(env: {val standardizer: Standardizing;
 
     val conclusion = doResolve(aStand, bStand) match {
       case s: SuccessfullResolution => s
-//      case _ => {
-//        doResolve(bStand, aStand) match {
-//          case s: SuccessfullResolution => s
-//          //case failure => failure
-//        }
-//      }
+      case _ => {
+        doResolve(bStand, aStand) match {
+          case s: SuccessfullResolution => s
+          case failure => failure
+        }
+      }
     }
 
     conclusion match {
@@ -124,102 +124,102 @@ class OrderedBinaryResolver(env: {val standardizer: Standardizing;
 
 
 
-  private def doResolve(a: FOLClause, b: FOLClause) = {
+  private def doResolve(a: Set[FOLNode], b: Set[FOLNode]) = {
 
     //either B is selected in D ∨ ¬B
-//    def condition2a(bNeg: Negation): Boolean = {
-//      b.selectedLits.contains(bNeg)
-//    }
-//
-//    // nothing is selected in D ∨ ¬B and Bσ is maximal w.r.t. Dσ
-//    def condition2b(bNeg: Negation, mgu: Substitution): Boolean = {
-//      b.selectedLits.isEmpty && b.rewrite(mgu).maxLits.contains(bNeg.filler.rewrite(mgu))
-//    }
-//
-//    // Aσ is strictly maximal with respect to Cσ
-//    def condition3(aPos: FOLNode, mgu: Substitution): Boolean = {
-//      a.rewrite(mgu).maxLits.contains(aPos.rewrite(mgu))
-//    }
-//
-//    // nothing is selected in Cσ ∨ Aσ
-//    def condition4(aPos: FOLNode, mgu: Substitution): Boolean = {
-//      a.selectedLits.isEmpty
-//    }
-//
-//    // we need to find 2 literals of opposite polarity
-//    // find the candidates
-//
-//    val candidates = (for (aPos <- a.positiveLiterals;
-//                           bNeg <- b.negativeLiterals) yield (aPos, bNeg)).filter({case (t1, Negation(t2)) => t1.top == t2.top})
-//
-//    // find the first pair of literals that unifies
-//    // TODO we could optimize the amount of rewritings here
-//    // TODO check if empty substitution causes problems
-//    val result = candidates.find({case (aPos, bNeg: Negation) => mgu(aPos, bNeg.filler).isDefined}) match {
-//      case Some((aPos, bNeg: Negation)) => {
-//        mgu(aPos, bNeg.filler) match {
-//          case Some(mu) if (OrderedResolution.isAppliable(a,aPos,b,bNeg,mu)  ) => {
-//            // orderer resolution possible , all conditions are met !
-//            log.debug("MGU for Literal : %s and Literal %s is %s", aPos, bNeg, mu)
-//            val S1 : Set[FOLNode] = a.map(_.rewrite(mu))
-//            val aLitS = aPos.rewrite(mu)
-//            val S2 : Set[FOLNode] = b.map(_.rewrite(mu))
-//            val bLitS = bNeg.rewrite(mu)
-//            val resolved  = ((S1 - aLitS) ++ (S2 - bLitS))
-//            if (resolved.isEmpty) {
-//              log.info("Derived empty clause")
-//            }
-//            SuccessfullResolution(StandardClause(resolved), a, b)
-//
-//
-//          }
-//
-//          case Some(mu) => {
-//            // check which conditions failed
-//            val isMUEmpty = mu.isEmpty
-//            val passedC2 = (condition2a(bNeg) || condition2b(bNeg, mu))
-//            val passedC3 = condition3(aPos, mu)
-//            val passedC4 = condition4(aPos, mu)
-//
-//            FailedResolution(a, Some(b))
-//
-//
-//          }
-//
-//          case _ => {
-//            // no mgu , or not meeting ordering resolution restrictions
-//            FailedResolution(a, Some(b))
-//          }
-//
-//        //          case Some(mu) => {
-//        //            // empty mgu, merge no substitution needed
-//        ////            val unduped = duplicateLiteralDeletion.apply(((a - aPos) ++ (b - bNeg)))
-//        ////            val condensed = condensation.apply(unduped)(subsumptionChecker)
-//        ////            condensed
-//        //            val resolved = ((a - aPos) ++ (b - bNeg))
-//        //            if (resolved.isEmpty) {
-//        //              log.info("Derived empty clause")
-//        //            }
-//        //            SuccessfullResolution(resolved, a, b)
-//        //          }
-//
-//        }
-//
-//
-//      }
-//
-//      case None => {
-//        // no candidate pair found
-//        FailedResolution(a, Some(b))
-//
-//      }
-//
-//    }
-//    result
+    def condition2a(bNeg: Negation): Boolean = {
+      b.selectedLits.contains(bNeg)
+    }
+
+    // nothing is selected in D ∨ ¬B and Bσ is maximal w.r.t. Dσ
+    def condition2b(bNeg: Negation, mgu: Substitution): Boolean = {
+      b.selectedLits.isEmpty && b.rewrite(mgu).maxLits.contains(bNeg.filler.rewrite(mgu))
+    }
+
+    // Aσ is strictly maximal with respect to Cσ
+    def condition3(aPos: FOLNode, mgu: Substitution): Boolean = {
+      a.rewrite(mgu).maxLits.contains(aPos.rewrite(mgu))
+    }
+
+    // nothing is selected in Cσ ∨ Aσ
+    def condition4(aPos: FOLNode, mgu: Substitution): Boolean = {
+      a.selectedLits.isEmpty
+    }
+
+    // we need to find 2 literals of opposite polarity
+    // find the candidates
+
+    val candidates = (for (aPos <- a.positiveLiterals;
+                           bNeg <- b.negativeLiterals) yield (aPos, bNeg)).filter({case (t1, Negation(t2)) => t1.top == t2.top})
+
+    // find the first pair of literals that unifies
+    // TODO we could optimize the amount of rewritings here
+    // TODO check if empty substitution causes problems
+    val result = candidates.find({case (aPos, bNeg: Negation) => mgu(aPos, bNeg.filler).isDefined}) match {
+      case Some((aPos : FOLNode, bNeg: Negation)) => {
+        mgu(aPos, bNeg.filler) match {
+          case Some(mu) if (OrderedResolution.isAppliable(a,aPos,b,bNeg,mu)  ) => {
+            // orderer resolution possible , all conditions are met !
+            log.debug("MGU for Literal : %s and Literal %s is %s", aPos, bNeg, mu)
+            val S1  = a.map(_.rewrite(mu))
+            val aLitS = aPos.rewrite(mu)
+            val S2   = b.map(_.rewrite(mu))
+            val bLitS = bNeg.rewrite(mu)
+            val resolved  = ((S1 - aLitS) ++ (S2 - bLitS))
+            if (resolved.isEmpty) {
+              log.info("Derived empty clause")
+            }
+            SuccessfullResolution(StandardClause(resolved), a, b)
+
+
+          }
+
+          case Some(mu) => {
+            // check which conditions failed
+            val isMUEmpty = mu.isEmpty
+            val passedC2 = (condition2a(bNeg) || condition2b(bNeg, mu))
+            val passedC3 = condition3(aPos, mu)
+            val passedC4 = condition4(aPos, mu)
+
+            FailedResolution(a, Some(b))
+
+
+          }
+
+          case _ => {
+            // no mgu , or not meeting ordering resolution restrictions
+            FailedResolution(a, Some(b))
+          }
+
+        //          case Some(mu) => {
+        //            // empty mgu, merge no substitution needed
+        ////            val unduped = duplicateLiteralDeletion.apply(((a - aPos) ++ (b - bNeg)))
+        ////            val condensed = condensation.apply(unduped)(subsumptionChecker)
+        ////            condensed
+        //            val resolved = ((a - aPos) ++ (b - bNeg))
+        //            if (resolved.isEmpty) {
+        //              log.info("Derived empty clause")
+        //            }
+        //            SuccessfullResolution(resolved, a, b)
+        //          }
+
+        }
+
+
+      }
+
+      case None => {
+        // no candidate pair found
+        FailedResolution(a, Some(b))
+
+      }
+
+    }
+    result
 
     // TODO remove this !!!!!!!!!!!!!!
-    throw new NotImplementedException
-    SuccessfullResolution(Set(), a, b)
+//    throw new NotImplementedException
+//    SuccessfullResolution(Set(), a, b)
 
   }
 
