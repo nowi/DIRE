@@ -34,12 +34,12 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException
  */
 
 
-class ProvingActor(env: {val prover: FOLProving; val eventRecorder: Option[EventRecording]; val uniqueLiteralResolver: UniqueLiteralResolution; val uniqueRLitCache: URLitCache}) extends Actor with ReasoningActorChild {
+class ProvingActor(env: {val prover: FOLProving; val eventRecorder: Option[EventRecording]; val uniqueLiteralResolver: Option[UniqueLiteralResolution]; val uniqueRLitCache: URLitCache}) extends Actor with ReasoningActorChild {
 
 
   // cofigure a native os thread based dispatcher for the proving actor
-  //val d = Dispatchers.newThreadBasedDispatcher(this)
-  //    val d = Dispatchers.globalReactorBasedSingleThreadEventDrivenDispatcher
+//  val d = Dispatchers.newThreadBasedDispatcher(this)
+//      val d = Dispatchers.globalReactorBasedSingleThreadEventDrivenDispatcher
   val d = Dispatchers.newExecutorBasedEventDrivenDispatcher("prover");
   d.withNewThreadPoolWithLinkedBlockingQueueWithUnboundedCapacity
           .setCorePoolSize(5)
