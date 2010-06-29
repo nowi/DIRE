@@ -835,8 +835,8 @@ object LMSCG {
 
         //log.info("Bounded auxiliary variables except query vars are : %s",bav)
 
-        val xj = Variable.nextAuxiliary(s1.domain ++ s2.domain ++ bav)
-        //val xj = Variable()
+//        val xj = Variable.nextAuxiliary(s1.domain ++ s2.domain ++ bav)
+        val xj = Variable()
         val ds1 = s1
         val ds2 = s2
         (xj, s1 + (xj -> term1), s2 + (xj -> term2))
