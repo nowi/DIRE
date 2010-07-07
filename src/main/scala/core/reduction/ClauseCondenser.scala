@@ -1,12 +1,11 @@
-package core.reduction
+package de.unima.dire.core.reduction
 
 
+import de.unima.dire.domain.fol.functions.FOLAlgorithms._
 import collection.mutable.ListBuffer
-import domain.fol.ast._
-import domain.fol.functions.FOLAlgorithms
-import FOLAlgorithms._
-import helpers.HelperFunctions._
-import helpers.Logging
+import de.unima.dire.domain.fol.ast._
+import de.unima.dire.helpers.HelperFunctions._
+import de.unima.dire.helpers.Logging
 import sun.reflect.generics.reflectiveObjects.NotImplementedException
 
 /**
@@ -26,7 +25,7 @@ trait ClauseCondensation {
 }
 
 
-object ClauseCondenser extends ClauseCondensation with Logging {
+class ClauseCondenser extends ClauseCondensation with Logging {
   // TODO , need efficient means of clause functionalities but on sequences of terms .. see ClauseBuffer in vampire
 
   override def apply(clauseBuffer: Set[FOLNode])(subsumptionChecker: Subsumption): Set[FOLNode] = {

@@ -1,4 +1,4 @@
-package kernel
+package de.unima.dire.kernel
 
 /**
  * User: nowi

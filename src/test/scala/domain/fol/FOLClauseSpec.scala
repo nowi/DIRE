@@ -1,6 +1,4 @@
-package domain.fol
-
-;
+package de.unima.dire.domain.fol
 
 /**
  * User: nowi
@@ -8,14 +6,10 @@ package domain.fol
  * Time: 13:48:59
  */
 
-import ast._
-import collection.mutable.ListBuffer
-import com.jteigen.scalatest.JUnit4Runner
-import org.scalatest.matchers.ShouldMatchers
+import de.unima.dire.domain.fol.ast._
 import org.scalatest.Spec
-import org.junit.runner.RunWith
+import org.scalatest.matchers.ShouldMatchers
 
-@RunWith(classOf[JUnit4Runner])
 class FOLClauseSpec extends Spec with ShouldMatchers {
   describe("FOLClause") {
     it("should correctly implement the equality trait")

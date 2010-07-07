@@ -1,20 +1,14 @@
-package domain.fol.parsers
-
+package de.unima.dire.domain.fol.parsers
 /**
  * User: nowi
  * Date: 25.09.2009
  * Time: 17:56:34
  */
 
-import com.jteigen.scalatest.JUnit4Runner
 
-import org.junit.runner.RunWith
-
-
-import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
+import org.scalatest.matchers.ShouldMatchers
 
-@RunWith(classOf[JUnit4Runner])
 class FOLDslSpec extends Spec with ShouldMatchers {
   describe("A FOLParser") {
     it("should parse simple term equality") {

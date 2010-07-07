@@ -1,4 +1,4 @@
-package helpers
+package de.unima.dire.helpers
 
 /**
  * User: nowi

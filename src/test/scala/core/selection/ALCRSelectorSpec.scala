@@ -1,25 +1,16 @@
-package selection
+package de.unima.dire.core.selection
 
-/**
- * User: nowi
- * Date: 24.11.2009
- * Time: 17:52:44
- */
-import com.jteigen.scalatest.JUnit4Runner
-
-import core.selection.{NegativeLiteralsSelection, LiteralSelection}
-import domain.fol.ast._
-import org.junit.runner.RunWith
+import de.unima.dire.domain.fol.ast.{Variable,Constant,Function,Negation,Predicate,FOLNode}
+import de.unima.dire.core.containers._
+import de.unima.dire.helpers.Logging
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
-import helpers.Logging
 
 
-@RunWith(classOf[JUnit4Runner])
-class SelectionSpec extends Spec with ShouldMatchers with Logging{
+class ALCRSelectorSpec extends Spec with ShouldMatchers with Logging{
   describe("ALCRSelectorSpec") {
 
-    val selector: LiteralSelection = new NegativeLiteralsSelection
+    val selector: LiteralSelection = new DALCRSelector
 
     val x = Variable("x")
     val y = Variable("y")
@@ -28,7 +19,9 @@ class SelectionSpec extends Spec with ShouldMatchers with Logging{
     val nono = Constant("Nono")
     val m1 = Constant("M1")
     val america = Constant("America")
-    val sells = (x: FOLNode, y: FOLNode, z: FOLNode) => Predicate("Sells", x, y, z)
+    val sellsPred = Predicate("Sells", x, y, z)
+    val sellsFunc = Function("sells", x, y, z)
+
     val weapon = (x: FOLNode) => Predicate("Weapon", x)
     val american = (x: FOLNode) => Predicate("American", x)
     val hostile = (x: FOLNode) => Predicate("Hostile", x)
@@ -42,12 +35,13 @@ class SelectionSpec extends Spec with ShouldMatchers with Logging{
       Predicate("Criminal", x))
 
 
-
     it("Basic test") {
-
-      val selection = selector.selectedLiterals(C1)
-      log.debug("The selection for clause %s was %s", C1, selection)
-      assert(true)
+      val selection = selector.selectedLiterals(StandardClause(sellsPred, sellsFunc, Negation(sellsPred), Negation(sellsFunc)))
+      log.warning("The selection for clause %s was %s", C1, selection)
+      assert(selection.contains(Negation(sellsPred)))
+      assert(selection.contains(Negation(sellsFunc)))
+      assert(!selection.contains(sellsPred))
+      assert(!selection.contains(sellsFunc))
     }
   }
 }

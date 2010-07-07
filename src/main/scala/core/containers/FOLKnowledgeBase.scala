@@ -1,7 +1,7 @@
-package core.containers
+package de.unima.dire.core.containers
 
 
-import domain.fol.ast.Sentence
+import de.unima.dire.domain.fol.ast.Sentence
 
 /**
  * User: nowi

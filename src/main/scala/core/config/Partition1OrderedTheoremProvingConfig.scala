@@ -1,17 +1,18 @@
-package core.config
+package de.unima.dire.core.config
 
 
-import caches.{SelectedLitCache, URLitCache, MaxLitCache}
-import containers.{CNFClauseStore}
-import domain.fol.parsers.SPASSIntermediateFormatParser
+import de.unima.dire.core.caches.{SelectedLitCache, URLitCache, MaxLitCache}
+import de.unima.dire.core.containers.{CNFClauseStore}
+import de.unima.dire.domain.fol.parsers.SPASSIntermediateFormatParser
+import de.unima.dire.core.ordering.{CustomConferencePartitionedPrecedence, CustomSPASSModule1Precedence, ALCLPOComparator}
+import de.unima.dire.recording.NaiveClauseRecorder
+import de.unima.dire.core.reduction._
+import de.unima.dire.core.resolution.{DALCResolver, DALCUniqueLiteralResolver}
+import de.unima.dire.core.rewriting.{ VariableRewriter}
+import de.unima.dire.core.selection.{NegativeLiteralsSelection}
+import de.unima.dire.core.Standardizer
+
 import java.io.File
-import ordering.{CustomConferencePartitionedPrecedence, CustomSPASSModule1Precedence, ALCLPOComparator}
-import recording.NaiveClauseRecorder
-import reduction._
-import resolution.{DALCResolver, DALCUniqueLiteralResolver}
-import rewriting.{ VariableRewriter}
-import selection.{NegativeLiteralsSelection}
-
 /**
  * User: nowi
  * Date: 02.11.2009
@@ -21,12 +22,15 @@ import selection.{NegativeLiteralsSelection}
 
 object Partition1OrderedTheoremProvingConfig {
   // the initial clause store
+
+  val parser = new SPASSIntermediateFormatParser()
+
   lazy val initialClauses = {
     // the curiosity killed the cat domain
     val file = new File("input/partitioned1clauses.spass")
     val lines = scala.io.Source.fromFile(file).mkString
     val text: String = lines // parse
-    val clauses = SPASSIntermediateFormatParser.parseClauseStore(text)
+    val clauses = parser.parseClauseStore(text)
 
     clauses match {
       case None => throw new IllegalStateException("Could not load clauses from file")

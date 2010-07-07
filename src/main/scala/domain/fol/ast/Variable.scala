@@ -1,7 +1,7 @@
-package domain.fol.ast
+package de.unima.dire.domain.fol.ast
 
 
-import helpers.Logging
+import de.unima.dire.helpers.Logging
 
 /**
  * User: nowi
@@ -39,8 +39,8 @@ object Variable extends Logging{
   def nextAuxiliary(variables : List[Variable]) = {
 
     // TODO need a unique marker variable here
-    //val newPathUniqueHash = variables.removeDuplicates.s(_.hashCode).foldLeft(seed)(_ + _)
-    val newPathUniqueHash = variables.removeDuplicates.size + 1
+    //val newPathUniqueHash = variables.distinct.s(_.hashCode).foldLeft(seed)(_ + _)
+    val newPathUniqueHash = variables.distinct.size + 1
     Variable("x_" + newPathUniqueHash)
 
   }

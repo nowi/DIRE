@@ -1,4 +1,4 @@
-package core.unification
+package de.unima.dire.core.unification
 
 /**
  * User: nowi
@@ -6,18 +6,15 @@ package core.unification
  * Time: 17:56:34
  */
 
-import com.jteigen.scalatest.JUnit4Runner
 
-import domain.fol.ast._
-import helpers.Logging
-import org.junit.runner.RunWith
+import de.unima.dire.domain.fol.ast._
+import de.unima.dire.helpers.Logging
+import de.unima.dire.core.rewriting.{VariableRewriter}
 
 
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
-import rewriting.{VariableRewriter}
 
-@RunWith(classOf[JUnit4Runner])
 class RobinsonUnifierSpec extends Spec with ShouldMatchers with Logging {
   describe("The FOL Term Unifier ") {
     val john = Constant("John")

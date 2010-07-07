@@ -1,20 +1,17 @@
-package core.reduction
+package de.unima.dire.core.reduction
 
 /**
  * User: nowi
  * Date: 11.11.2009
  * Time: 15:06:28
  */
-import config.DALCConfig
-import containers.{CNFClauseStore}
-import domain.fol.ast._
-import helpers.Logging
-import org.junit.runner.RunWith
-import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.Spec
-import com.jteigen.scalatest.JUnit4Runner
 
-@RunWith(classOf[JUnit4Runner])
+import de.unima.dire.core.containers.StandardClause
+import de.unima.dire.domain.fol.ast.{Constant,Variable,Function,Negation,Predicate,FOLNode}
+import org.scalatest.Spec
+import org.scalatest.matchers.ShouldMatchers
+import de.unima.dire.helpers.Logging
+
 abstract class SubsumptionSpec extends Spec with ShouldMatchers with Logging {
 
   // override in specific tests
@@ -124,37 +121,33 @@ abstract class SubsumptionSpec extends Spec with ShouldMatchers with Logging {
       subsumes(StandardClause(P(a, x), P(y, b)), StandardClause(P(a, b))) should be(false)
     }
 
-    it("should subsume a case from conference set"){
+    it("should subsume a case from conference set") {
       val u = Variable("U")
-      val subsumer = domain.fol.ast.ALCDClause(Predicate("P1",u),Negation(Predicate("P2",u)))
-      val subsumed = domain.fol.ast.ALCDClause(Predicate("P1",u),Negation(Predicate("P2",u)),Negation(Predicate("P3",u)))
+      val subsumer = domain.fol.ast.ALCDClause(Predicate("P1", u), Negation(Predicate("P2", u)))
+      val subsumed = domain.fol.ast.ALCDClause(Predicate("P1", u), Negation(Predicate("P2", u)), Negation(Predicate("P3", u)))
 
       subsumes(subsumer, subsumed) should be(true)
-//      subsumes(subsumed, subsumer) should be(true)
+      //      subsumes(subsumed, subsumer) should be(true)
     }
 
-    it("should subsume a case from conference set -- different order of literals"){
+    it("should subsume a case from conference set -- different order of literals") {
       val u = Variable("U")
-      val subsumer = domain.fol.ast.ALCDClause(Predicate("P1",u),Negation(Predicate("P2",u)))
-      val subsumed = domain.fol.ast.ALCDClause(Negation(Predicate("P3",u)),Predicate("P1",u),Negation(Predicate("P2",u)))
+      val subsumer = domain.fol.ast.ALCDClause(Predicate("P1", u), Negation(Predicate("P2", u)))
+      val subsumed = domain.fol.ast.ALCDClause(Negation(Predicate("P3", u)), Predicate("P1", u), Negation(Predicate("P2", u)))
 
       subsumes(subsumer, subsumed) should be(true)
-//      subsumes(subsumed, subsumer) should be(true)
-    }
-
-
-    it("should subsume a same clauses"){
-      val u = Variable("U")
-      val subsumer = domain.fol.ast.ALCDClause(Negation(Predicate("P3",u)),Predicate("P1",u),Negation(Predicate("P2",u)))
-      val subsumed = domain.fol.ast.ALCDClause(Negation(Predicate("P3",u)),Predicate("P1",u),Negation(Predicate("P2",u)))
-
-      subsumes(subsumer, subsumed) should be(true)
-//      subsumes(subsumed, subsumer) should be(true)
+      //      subsumes(subsumed, subsumer) should be(true)
     }
 
 
+    it("should subsume a same clauses") {
+      val u = Variable("U")
+      val subsumer = domain.fol.ast.ALCDClause(Negation(Predicate("P3", u)), Predicate("P1", u), Negation(Predicate("P2", u)))
+      val subsumed = domain.fol.ast.ALCDClause(Negation(Predicate("P3", u)), Predicate("P1", u), Negation(Predicate("P2", u)))
 
-
+      subsumes(subsumer, subsumed) should be(true)
+      //      subsumes(subsumed, subsumer) should be(true)
+    }
 
 
   }

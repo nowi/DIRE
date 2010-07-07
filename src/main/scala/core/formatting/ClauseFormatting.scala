@@ -1,10 +1,9 @@
-package core.formatting
+package de.unima.dire.core.formatting
 
 
-import containers.ClauseStorage
-import domain.fol.ast.{FOLNode, FOLClause}
-import recording.{ClauseRecording, InferenceStep, NaiveClauseRecorder}
-import core.containers.ClauseStorage
+import de.unima.dire.domain.fol.ast.{FOLNode}
+import de.unima.dire.recording.{ClauseRecording, InferenceStep, NaiveClauseRecorder}
+import de.unima.dire.core.containers.{FOLClause,  ClauseStorage}
 
 /**
  * User: nowi

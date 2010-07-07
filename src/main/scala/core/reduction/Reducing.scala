@@ -1,15 +1,15 @@
-package core.reduction
+package de.unima.dire.core.reduction
+
+
+import de.unima.dire.domain.fol.ast._
+import de.unima.dire.domain.fol.functions.FOLAlgorithms
+import de.unima.dire.domain.fol.Substitution
+import de.unima.dire.helpers.Logging
+import de.unima.dire.domain.fol.functions.FOLAlgorithms._
+import de.unima.dire.core.containers.{FOLClause, CNFClauseStore, ClauseStorage}
 
 
 import collection.mutable.ListBuffer
-import containers.{CNFClauseStore, ClauseStorage}
-import domain.fol.ast._
-import domain.fol.functions.FOLAlgorithms
-import domain.fol.Substitution
-import helpers.Logging
-
-import FOLAlgorithms._
-
 /**
  * User: nowi
  * Date: 21.10.2009
@@ -31,8 +31,8 @@ object StillmannSubsumer extends Subsumption {
 
   def apply(a: Set[FOLNode], b: Set[FOLNode]): Boolean = {
     // intercept trivial sumption
-    val c = a.toList.sort(_.top < _.top)
-    val d = b.toList.sort(_.top < _.top)
+    val c = a.toList.sortWith(_.top < _.top)
+    val d = b.toList.sortWith(_.top < _.top)
 
 //    val c = a.toList
 //    val d = b.toList
@@ -106,7 +106,7 @@ object StillmannSubsumer extends Subsumption {
     } else {
       //    Let C = (L,, . . . , L,) and D = (Ki, . . . , Km).
       // init the map
-      val emptyTheta = domain.fol.Substitution()
+      val emptyTheta = Substitution()
       val result = st(0, 0, emptyTheta)
       result
     }

@@ -1,7 +1,7 @@
-package partitioning
+package de.unima.dire.partitioning
 
 
-import core.containers.ClauseStorage
+import de.unima.dire.core.containers.ClauseStorage
 
 /**
  * User: nowi

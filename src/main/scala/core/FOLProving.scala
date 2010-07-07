@@ -1,17 +1,10 @@
-package core
+package de.unima.dire.core
 
 
-import helpers.{Subject, Logging}
-import ProvingResult._
-import collection.immutable.{TreeSet, SortedSet}
-import collection.mutable.ListBuffer
-import containers._
-import domain.fol.ast._
-import formatting.ClauseFormatting
-import net.lag.configgy.Configgy
-import ordering.LiteralComparison
-import recording.ClauseRecording
-import resolution.{SuccessfullResolution, ResolutionResult, FailedResolution, Resolution}
+import de.unima.dire.helpers.Subject
+import de.unima.dire.core.containers._
+import de.unima.dire.core.formatting.ClauseFormatting
+import de.unima.dire.recording.ClauseRecording
 /**
  * User: nowi
  * Date: 21.10.2009
@@ -28,18 +21,20 @@ trait FOLProving extends Subject {
   /**
    * Saturation without background knowledge
    */
-  def saturate(clauses: Iterable[FOLClause]): (ProvingResult, Int,Int,Int,Int)
+  def saturate(clauses: Iterable[FOLClause]): (ProvingResult, Int, Int, Int, Int)
 
-  def addToUsable(clause : FOLClause)
-  def addAllToUsable(clauses : Iterable[FOLClause])
+  def addToUsable(clause: FOLClause)
 
-  def addToWorkedOff(clause : FOLClause)
-  def addAllToWorkedOff(clauses : Iterable[FOLClause])
+  def addAllToUsable(clauses: Iterable[FOLClause])
+
+  def addToWorkedOff(clause: FOLClause)
+
+  def addAllToWorkedOff(clauses: Iterable[FOLClause])
 
 
-  def workedOff : Iterable[FOLClause]
+  def workedOff: Iterable[FOLClause]
 
-  def inferenceLog : Option[ClauseRecording]
+  def inferenceLog: Option[ClauseRecording]
 
 
 }

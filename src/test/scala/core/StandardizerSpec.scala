@@ -1,4 +1,4 @@
-package core
+package de.unima.dire.core
 
 /**
  * User: nowi
@@ -6,19 +6,15 @@ package core
  * Time: 17:56:34
  */
 
-import com.jteigen.scalatest.JUnit4Runner
 
-import domain.fol.ast._
-import org.junit.runner.RunWith
+import _root_.de.unima.dire.domain.fol.ast.{Constant,Variable,Function,Negation,Predicate,FOLNode}
+import de.unima.dire.core.rewriting.VariableRewriter
+import de.unima.dire.helpers.Logging
 
 
-import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
+import org.scalatest.matchers.ShouldMatchers
 
-import rewriting.VariableRewriter
-import helpers.Logging
-
-@RunWith(classOf[JUnit4Runner])
 class StandardizerSpec extends Spec with ShouldMatchers with Logging{
   val config = new Object {
     val variableRewriter = new VariableRewriter()

@@ -1,15 +1,17 @@
-package core
+package de.unima.dire.core
 
 
-import collection.jcl.MutableIterator.Wrapper
+
+
+import de.unima.dire.core.containers.FOLClause
+import de.unima.dire.domain.fol.ast._
+import de.unima.dire.domain.fol.Substitution
+import de.unima.dire.helpers.Logging
+import de.unima.dire.core.rewriting.VariableRewriting
+
+import java.util.Random
 import collection.mutable.{Map => MMap}
 import com.google.common.collect.{Multisets, HashMultiset, Multiset}
-import domain.fol.ast._
-import domain.fol.Substitution
-import helpers.Logging
-import java.util.Random
-
-import rewriting.VariableRewriting
 
 /**
  * User: nowi
@@ -72,7 +74,7 @@ class Standardizer(env: {val variableRewriter: VariableRewriting}) extends Stand
       case cvs: List[Variable] => {
         // get the replacement map
         val renamed   = MMap[Variable,FOLNode]()
-        val variableBag: Multiset[String] = new HashMultiset[String]()
+        val variableBag: Multiset[String] = HashMultiset.create[String]()
         // create the substition transform
         val theta = cvs.map({old: Variable => (old -> renameVar(old,variableBag,renamed))}).foldLeft(Map[Variable, Variable]())(_ + _)
         // rewirte the smaller node , we default to x for now
@@ -98,7 +100,7 @@ class Standardizer(env: {val variableRewriter: VariableRewriting}) extends Stand
         (c1, c2,Map(),Map(),Map())
       }
       case cvs: List[Variable] => {
-         val variableBag: Multiset[String] = new HashMultiset[String]()
+         val variableBag: Multiset[String] = HashMultiset.create[String]()
         val renamed   = MMap[Variable,FOLNode]()
         // create the substition transform
         val theta1 = cvs.map({old: Variable => (old -> renameVar(old,variableBag,renamed))}).foldLeft(Map[Variable, Variable]())(_ + _)

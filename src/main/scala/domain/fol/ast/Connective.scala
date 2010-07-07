@@ -1,4 +1,5 @@
-package domain.fol.ast
+package de.unima.dire.domain.fol.ast
+
 
 
 /**
@@ -37,7 +38,7 @@ case class AndConnective(args: List[FOLNode]) extends Connective {
   }
 
   def --(connective: AndConnective): AndConnective = {
-    AndConnective(args -- connective.args)
+    AndConnective(args filterNot (connective.args contains) )
   }
 }
 case class OrConnective(args: List[FOLNode]) extends Connective {
@@ -60,7 +61,7 @@ case class OrConnective(args: List[FOLNode]) extends Connective {
   }
 
   def --(connective: OrConnective): OrConnective = {
-    OrConnective(args -- connective.args)
+    OrConnective(args filterNot (connective.args contains))
   }
 
 }

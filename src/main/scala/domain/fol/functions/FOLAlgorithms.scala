@@ -1,16 +1,20 @@
-package domain.fol.functions
+package de.unima.dire.domain.fol.functions
+
+import de.unima.dire.domain.fol.{Substitution, Context}
+import de.unima.dire.domain.fol.ast._
+import de.unima.dire.helpers.Logging
 
 
-import ast._
-import collection.mutable.Stack
 import scala.collection.mutable.{Map => MMap}
+import collection.mutable.Stack
+
 /**
  * User: nowi
  * Date: 01.04.2010
  * Time: 16:09:37
  */
 
-object FOLAlgorithms extends helpers.Logging {
+object FOLAlgorithms extends Logging {
   def mgu(term1: FOLNode, term2: FOLNode): Option[Substitution] = {
     // short circuit same term
     // first pointer compare , next equals
@@ -67,7 +71,6 @@ object FOLAlgorithms extends helpers.Logging {
         t = t.rewrite(cT)
 
         (s, t) match {
-          
 
 
           case (Predicate(sTop, sTerms), Predicate(tTop, tTerms)) if (sTop == tTop) => {
@@ -159,7 +162,7 @@ object FOLAlgorithms extends helpers.Logging {
   def occurCheck(v: Variable, t: FOLNode, cS: Context, cT: Context): Boolean = {
     t.flatArgs.contains(v) match {
       case true => {
-//        println("OCCURS CHECK FIRED !")
+        //        println("OCCURS CHECK FIRED !")
         true
       }
 
@@ -170,25 +173,25 @@ object FOLAlgorithms extends helpers.Logging {
 
 
   def matcher(term1: FOLNode, term2: FOLNode): Option[Substitution] = {
-//    (term1, term2) match {
-//      case (NegativeFOLLiteral(x), PositiveFOLLiteral(y)) => {
-//        log.debug("Searching for a matcher for terms of different polarity... was this intended ?")
-//      }
-//
-//      case (PositiveFOLLiteral(x), NegativeFOLLiteral(y)) => {
-//        log.debug("Searching for a matcher for terms of different polarity... was this intended ?")
-//      }
-//
-//      case _ =>
-//    }
+    //    (term1, term2) match {
+    //      case (NegativeFOLLiteral(x), PositiveFOLLiteral(y)) => {
+    //        log.debug("Searching for a matcher for terms of different polarity... was this intended ?")
+    //      }
+    //
+    //      case (PositiveFOLLiteral(x), NegativeFOLLiteral(y)) => {
+    //        log.debug("Searching for a matcher for terms of different polarity... was this intended ?")
+    //      }
+    //
+    //      case _ =>
+    //    }
 
 
     // shourt cut the trivial matcher
     if (term1 eq term2) {
-      log.ifDebug("Matched terms %s and %s by jvm identity",term1,term2)
+      log.ifDebug("Matched terms %s and %s by jvm identity", term1, term2)
       Some(Substitution())
     } else if (term1 == term2) {
-      log.ifDebug("Matched terms %s and %s by structural identity",term1,term2)
+      log.ifDebug("Matched terms %s and %s by structural identity", term1, term2)
       Some(Substitution())
     }
     else {
@@ -254,7 +257,7 @@ object FOLAlgorithms extends helpers.Logging {
             }
 
             case (variable: Variable, _) => {
-             if(context==null)context = Context()
+              if (context == null) context = Context()
 
               context.binding(variable) match {
                 case None => {

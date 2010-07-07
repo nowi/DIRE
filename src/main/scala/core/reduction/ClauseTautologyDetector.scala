@@ -1,10 +1,9 @@
-package core.reduction
+package de.unima.dire.core.reduction
 
 
-import collection.mutable.ListBuffer
+import de.unima.dire.domain.fol.ast.{FOLNode, NegativeFOLLiteral, PositiveFOLLiteral}
+
 import collection.mutable.{HashSet => MHashSet}
-import domain.fol.ast.{FOLNode, NegativeFOLLiteral, PositiveFOLLiteral, FOLClause}
-
 // import implicit converstion for FOLClausees
 
 /**
@@ -20,8 +19,7 @@ trait ClauseTautologyDetection {
 
 
 
-object ClauseTautologyDetector extends ClauseTautologyDetection {
-
+class ClauseTautologyDetector extends ClauseTautologyDetection {
   def apply(clauseBuffer: Set[FOLNode]): Boolean = {
 
     val positiveLits = new MHashSet[FOLNode]()

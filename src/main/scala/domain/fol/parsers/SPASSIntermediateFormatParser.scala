@@ -1,17 +1,17 @@
-package domain.fol.parsers
+package de.unima.dire.domain.fol.parsers
 
-import ast._
-import core.containers.{ClauseStorage, CNFClauseStore}
-import helpers.Logging
-import java.io.File
+import de.unima.dire.domain.fol.ast._
+import de.unima.dire.helpers.Logging
+import de.unima.dire.core.containers.{ALCDClause, FOLClause}
+
 import scala.util.parsing.combinator.syntactical._
-
+import java.io.File
 /**
  * User: nowi
  * Date: 27.11.2009
  * Time: 17:59:38
  */
-object SPASSIntermediateFormatParser extends StandardTokenParsers with Logging {
+class SPASSIntermediateFormatParser extends StandardTokenParsers with Logging {
   lexical.delimiters ++= List("(", ")", ").", "[", "]", ".", ". ", ",", ", ", ";", "{", "}", "->", "+")
   lexical.reserved += ("", "exists", "forall", "and", "or", "not", "implies", "implied", "equiv", "clause", "cnf",
           "dnf", "listofclauses", "true", "false", "axioms", "conjectures", "listofformulae",
@@ -82,10 +82,10 @@ object SPASSIntermediateFormatParser extends StandardTokenParsers with Logging {
   def term: Parser[Sentence] = quantTerm | negation | connective | orConnective | andConnective | predicate | variable
 
   def predicate: Parser[Term] = ident ~ "(" ~ repsep(term, ",") ~ ")" ~ opt("+") ^^ {
-    case ident ~ "(" ~ terms ~ ")" ~ None if (ident.toString.charAt(0).isLowerCase) => Function(ident.toString, terms)
-    case ident ~ "(" ~ terms ~ ")" ~ None if (ident.toString.charAt(0).isUpperCase) => Predicate(ident.toString, terms)
-    case ident ~ "(" ~ terms ~ ")" ~ Some(plus) if (ident.toString.charAt(0).isLowerCase) => Function(ident.toString, terms)
-    case ident ~ "(" ~ terms ~ ")" ~ Some(plus) if (ident.toString.charAt(0).isUpperCase) => Predicate(ident.toString, terms)
+    case ident ~ "(" ~ terms ~ ")" ~ None if (ident.toString.charAt(0).isLower) => Function(ident.toString, terms)
+    case ident ~ "(" ~ terms ~ ")" ~ None if (ident.toString.charAt(0).isUpper) => Predicate(ident.toString, terms)
+    case ident ~ "(" ~ terms ~ ")" ~ Some(plus) if (ident.toString.charAt(0).isLower) => Function(ident.toString, terms)
+    case ident ~ "(" ~ terms ~ ")" ~ Some(plus) if (ident.toString.charAt(0).isUpper) => Predicate(ident.toString, terms)
     case _ => error("Should not be here")
   }
 
@@ -142,7 +142,7 @@ object SPASSIntermediateFormatParser extends StandardTokenParsers with Logging {
 
 
   def sharedClause: Parser[ALCDClause] = "clause" ~ "(" ~ (cnfclause | dnfclause) ~ "," ~ label ~ ")." ^^ {
-    case "clause" ~ "(" ~ c ~ "," ~ l ~ ")." => ALCDClause(c.args.map(_.shared) : _*)
+    case "clause" ~ "(" ~ c ~ "," ~ l ~ ")." => ALCDClause(c.args.map(_.shared): _*)
   }
 
   def clausetype = "cnf" | "dnf"
@@ -300,7 +300,7 @@ object SPASSIntermediateFormatParser extends StandardTokenParsers with Logging {
   def parseFromFile(file: File): List[FOLClause] = {
     val lines = scala.io.Source.fromFile(file).mkString
     val text: String = lines // parse
-    val clauses = SPASSIntermediateFormatParser.parseClauseStore(text)
+    val clauses = parseClauseStore(text)
 
     clauses match {
       case None => throw new IllegalStateException("Could not load clauses from file")
@@ -314,7 +314,7 @@ object SPASSIntermediateFormatParser extends StandardTokenParsers with Logging {
   def parseSharedFromFile(file: File): List[FOLClause] = {
     val lines = scala.io.Source.fromFile(file).mkString
     val text: String = lines // parse
-    val clauses = SPASSIntermediateFormatParser.parseClauseStoreShared(text)
+    val clauses = parseClauseStoreShared(text)
 
     clauses match {
       case None => throw new IllegalStateException("Could not load clauses from file")

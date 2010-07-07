@@ -1,8 +1,10 @@
-package core.rewriting
+package de.unima.dire.core.rewriting
 
-import domain.fol.ast._
+import de.unima.dire.domain.fol.ast._
+import de.unima.dire.core.containers.{FOLClause, StandardClause}
 
-  import helpers.Logging
+import de.unima.dire.helpers.Logging
+
 
 /**
  * User: nowi

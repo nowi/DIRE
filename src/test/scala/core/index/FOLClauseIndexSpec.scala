@@ -1,4 +1,4 @@
-package core
+package de.unima.dire.core.index
 
 /**
  * User: nowi
@@ -6,17 +6,14 @@ package core
  * Time: 22:14:16
  */
 
-import com.jteigen.scalatest.JUnit4Runner
 
-import containers.{FOLClauseIndex, CNFClauseStore}
-import domain.fol.ast._
-import domain.fol.CriminalWestDomain
-import org.junit.runner.RunWith
-import org.scalatest.matchers.ShouldMatchers
+import _root_.de.unima.dire.domain.CriminalWestDomain
 import org.scalatest.Spec
+import org.scalatest.matchers.ShouldMatchers
+
+import _root_.de.unima.dire.domain.fol.ast._
 
 
-@RunWith(classOf[JUnit4Runner])
 abstract class FOLClauseIndexSpec extends Spec with ShouldMatchers {
   val index: FOLClauseIndex
   describe("A FOLClause Index") {

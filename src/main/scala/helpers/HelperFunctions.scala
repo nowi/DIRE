@@ -1,9 +1,9 @@
-package helpers
+package de.unima.dire.helpers
 
 
-import domain.fol.Substitution
-import java.io.{OutputStreamWriter, BufferedOutputStream, FileOutputStream}
-import runtime.RichString
+import de.unima.dire.domain.fol.Substitution
+import java.io.{OutputStreamWriter, FileOutputStream}
+
 /**
  * User: nowi
  * Date: 03.04.2010
@@ -20,7 +20,7 @@ object HelperFunctions {
 
   def permutations[T](list: List[T]): List[List[T]] = list match {
     case Nil => List(List())
-    case list => list flatMap ((elem: T) => permutations[T](list remove ((a: T) => a == elem)) map ((b: List[T]) => elem :: b))
+    case list => list flatMap ((elem: T) => permutations[T](list filterNot ((a: T) => a == elem)) map ((b: List[T]) => elem :: b))
   }
 
   // helper function tp zip together 3 lists ,see http://langref.org/scala/lists/manipulation/list-gather
@@ -37,7 +37,7 @@ object HelperFunctions {
 
 
   def tupled[a1, a2, a3, a4, a5, a6, b](f: (a1, a2, a3, a4, a5, a6) => b): Tuple6[a1, a2, a3, a4, a5, a6] => b = {
-  case Tuple6(x1, x2, x3, x4, x5, x6) => f(x1, x2, x3, x4, x5, x6)
+    case Tuple6(x1, x2, x3, x4, x5, x6) => f(x1, x2, x3, x4, x5, x6)
   }
 
 
@@ -57,13 +57,15 @@ object HelperFunctions {
 
 class DumpableString(val self: String) extends Proxy with RandomAccessSeq[Char] {
   override def apply(n: Int) = self charAt n
- 
+
   override def length = self.length
+
   override def toString = self
+
   override def mkString = self
-  
+
   def >>>(fileName: String) {
-    HelperFunctions.dumpToFile(self,fileName)
+    HelperFunctions.dumpToFile(self, fileName)
   }
 
 }

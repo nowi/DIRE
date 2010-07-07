@@ -1,15 +1,13 @@
-package core.resolution
+package de.unima.dire.core.resolution
 
 
-import caches.{URLitCache, MaxLitCache, SelectedLitCache}
-import containers.{UnifiableClauseRetrieval, MatchingClausesRetrieval, CNFClauseStore, ClauseStorage}
-import domain.fol.ast._
-import domain.fol.Substitution
-import helpers.Logging
-import ordering.LiteralComparison
-import recording.ClauseRecording
-import selection.LiteralSelection
-import sun.reflect.generics.reflectiveObjects.NotImplementedException
+import de.unima.dire.core.caches.{URLitCache, MaxLitCache, SelectedLitCache}
+import de.unima.dire.domain.fol.ast._
+import de.unima.dire.domain.fol.Substitution
+import de.unima.dire.helpers.Logging
+import de.unima.dire.core.ordering.LiteralComparison
+import de.unima.dire.core.selection.LiteralSelection
+import de.unima.dire.core.containers._
 
 
 /**
@@ -19,14 +17,16 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException
  */
 
 trait Resolution extends Inference {
-//  def resolve(a: ClauseStorage, b: ClauseStorage): ResolutionResult
+  //  def resolve(a: ClauseStorage, b: ClauseStorage): ResolutionResult
   def apply(a: FOLClause, b: FOLClause): ResolutionResult
+
   def apply(a: FOLClause, b: ClauseStorage): Iterable[ResolutionResult]
 }
 
 trait BinaryResolution extends Resolution {
-//  def resolve(a: ClauseStorage, b: ClauseStorage): ResolutionResult
+  //  def resolve(a: ClauseStorage, b: ClauseStorage): ResolutionResult
   def apply(a: FOLClause, b: FOLClause): BinaryResolutionResult
+
   def apply(a: FOLClause, b: ClauseStorage): Iterable[BinaryResolutionResult]
 }
 
@@ -36,17 +36,17 @@ trait OrderedResolution extends BinaryResolution {
 
 
 object ALCDOrderedResolution extends Logging {
- implicit def listFOLNode2ALCDClause(list: Set[FOLNode]) = domain.fol.ast.ALCDClause(list)
+  implicit def listFOLNode2ALCDClause(list: Set[FOLNode]) = ALCDClause(list)
 
-  def isAppliable(sidePremise: FOLClause,aPos: FOLNode,mainPremise : FOLClause,bNeg: Negation)
-                 (implicit selector: LiteralSelection,comperator: LiteralComparison,
-                  uniqueRLitCache : URLitCache,maxLitCache : MaxLitCache,selectedLitCache : SelectedLitCache) : Boolean = {
+  def isAppliable(sidePremise: FOLClause, aPos: FOLNode, mainPremise: FOLClause, bNeg: Negation)
+                 (implicit selector: LiteralSelection, comperator: LiteralComparison,
+                  uniqueRLitCache: URLitCache, maxLitCache: MaxLitCache, selectedLitCache: SelectedLitCache): Boolean = {
     //B is selected in D ∨ ¬B ( main premise )
     def condition2a = {
       // TODO check the negative sign
       val selectedLits = mainPremise.selectedLits
       val r = selectedLits.contains(bNeg)
-//      log.debug("either B is selected in D ∨ ¬B --> %s",r)
+      //      log.debug("either B is selected in D ∨ ¬B --> %s",r)
       r
     }
 
@@ -54,7 +54,7 @@ object ALCDOrderedResolution extends Logging {
     def condition2b = {
       val mainPremiseSelectedLits = mainPremise.selectedLits
       val r = mainPremiseSelectedLits.isEmpty && mainPremise.maxLits.contains(bNeg)
-//      log.debug("nothing is selected in D ∨ ¬B and Bσ is maximal w.r.t. Dσ --> %s",r)
+      //      log.debug("nothing is selected in D ∨ ¬B and Bσ is maximal w.r.t. Dσ --> %s",r)
       r
     }
 
@@ -62,15 +62,15 @@ object ALCDOrderedResolution extends Logging {
     def condition3 = {
       val sidePremiseMaxLits = sidePremise.maxLits
       val r = sidePremiseMaxLits.contains(aPos)
-//      log.debug("Aσ is strictly maximal with respect to Cσ --> %s",r)
+      //      log.debug("Aσ is strictly maximal with respect to Cσ --> %s",r)
       r
     }
 
     // nothing is selected in Cσ ∨ Aσ
-    def condition4  = {
+    def condition4 = {
       val sidePremiseSelectedLits = sidePremise.selectedLits
       val r = sidePremiseSelectedLits.isEmpty
-//      log.debug("nothing is selected in Cσ ∨ Aσ --> %s",r)
+      //      log.debug("nothing is selected in Cσ ∨ Aσ --> %s",r)
       r
     }
 
@@ -89,7 +89,7 @@ object ALCDOrderedResolution extends Logging {
     // nothing is selected in Cσ ∨ Aσ
     val c4 = condition4
 
-   
+
     (condition2a || condition2b) && condition3 && condition4
 
 
@@ -99,11 +99,11 @@ object ALCDOrderedResolution extends Logging {
 }
 
 object OrderedResolution extends Logging {
- implicit def iterableFOLNode2ALCDClause(iterable: Set[FOLNode]) = StandardClause(iterable)
+  implicit def iterableFOLNode2ALCDClause(iterable: Set[FOLNode]) = StandardClause(iterable)
 
-  def isAppliable(sidePremise: FOLClause,aPos: FOLNode,mainPremise : FOLClause,bNeg: Negation,mgu : Substitution)
-                 (implicit selector: LiteralSelection,comperator: LiteralComparison,
-                  uniqueRLitCache : URLitCache,maxLitCache : MaxLitCache,selectedLitCache : SelectedLitCache) : Boolean = {
+  def isAppliable(sidePremise: FOLClause, aPos: FOLNode, mainPremise: FOLClause, bNeg: Negation, mgu: Substitution)
+                 (implicit selector: LiteralSelection, comperator: LiteralComparison,
+                  uniqueRLitCache: URLitCache, maxLitCache: MaxLitCache, selectedLitCache: SelectedLitCache): Boolean = {
 
     // Important :
     // Lemma 1 (Invariance of Maximality). If a set of ALC clauses is resolved applying RDL,
@@ -116,7 +116,7 @@ object OrderedResolution extends Logging {
       // TODO check the negative sign
       val selectedLits = mainPremise.selectedLits
       val r = selectedLits.contains(bNeg)
-//      log.debug("either B is selected in D ∨ ¬B --> %s",r)
+      //      log.debug("either B is selected in D ∨ ¬B --> %s",r)
       r
     }
 
@@ -130,27 +130,27 @@ object OrderedResolution extends Logging {
       val BSigma = bNeg.rewrite(mgu)
 
       val r = mainPremiseSelectedLits.isEmpty && mainPremiseMaxLits.contains(BSigma)
-//      log.debug("nothing is selected in D ∨ ¬B and Bσ is maximal w.r.t. Dσ --> %s",r)
+      //      log.debug("nothing is selected in D ∨ ¬B and Bσ is maximal w.r.t. Dσ --> %s",r)
       r
     }
 
     // Aσ is strictly maximal with respect to Cσ
     def condition3 = {
-      val ASig =  aPos.rewrite(mgu)
+      val ASig = aPos.rewrite(mgu)
       val sidePremiseS = sidePremise.rewrite(mgu)
       val sidePremiseSmaxLits = sidePremiseS.maxLits
 
       val r = sidePremiseSmaxLits.contains(ASig)
-//      log.debug("Aσ is strictly maximal with respect to Cσ --> %s",r)
+      //      log.debug("Aσ is strictly maximal with respect to Cσ --> %s",r)
       r
     }
 
     // nothing is selected in Cσ ∨ Aσ
-    def condition4  = {
+    def condition4 = {
       val sidePremiseS = sidePremise.rewrite(mgu)
       val sidePremiseSselectedLits = sidePremiseS.selectedLits
       val r = sidePremiseSselectedLits.isEmpty
-//      log.debug("nothing is selected in Cσ ∨ Aσ --> %s",r)
+      //      log.debug("nothing is selected in Cσ ∨ Aσ --> %s",r)
       r
     }
 

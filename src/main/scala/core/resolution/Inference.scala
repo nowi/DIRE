@@ -1,7 +1,5 @@
-package core.resolution
+package de.unima.dire.core.resolution
 
-
-import domain.fol.ast.{FOLNode, FOLClause}
 
 /**
  * User: nowi
@@ -9,10 +7,7 @@ import domain.fol.ast.{FOLNode, FOLClause}
  * Time: 15:51:53
  */
 trait InferenceResult {
-  
-
 }
 
 trait Inference {
-
 }

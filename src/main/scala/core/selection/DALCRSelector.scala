@@ -1,7 +1,8 @@
-package core.selection
+package de.unima.dire.core.selection
 
 
-import domain.fol.ast._
+import de.unima.dire.domain.fol.ast._
+import de.unima.dire.core.containers.{StandardClause,FOLClause}
 
 
 /**

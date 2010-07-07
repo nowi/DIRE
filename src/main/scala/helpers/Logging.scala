@@ -1,4 +1,4 @@
-package helpers
+package de.unima.dire.helpers
 
 
 import se.scalablesolutions.akka.util.Logging

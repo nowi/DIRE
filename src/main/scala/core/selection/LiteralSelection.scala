@@ -1,7 +1,8 @@
-package core.selection
+package de.unima.dire.core.selection
 
 
-import domain.fol.ast.{StandardClause, FOLNode}
+import de.unima.dire.domain.fol.ast.{FOLNode}
+import de.unima.dire.core.containers.StandardClause
 
 /**
  * User: nowi
@@ -44,9 +45,9 @@ class NegativeLiteralsSelection extends LiteralSelection {
   //      case 0 => List(List())
   //      case _ => for (el <- l;
   //                     sl <- mycomb(n - 1, l dropWhile {_ != el}))
-  //      yield (el :: sl).removeDuplicates
+  //      yield (el :: sl).distinct
   //    }
   //
-  //  def comb[T](n: Int, l: List[T]): List[List[T]] = mycomb(n, l.removeDuplicates)
+  //  def comb[T](n: Int, l: List[T]): List[List[T]] = mycomb(n, l.distinct)
 
 }

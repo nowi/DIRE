@@ -1,9 +1,10 @@
-package core.reduction
+package de.unima.dire.core.reduction
 
 
 import collection.mutable.ListBuffer
-import domain.fol.ast.{FOLNode, ALCDClause, FOLClause}
-import helpers.Logging
+import de.unima.dire.domain.fol.ast.{FOLNode}
+import de.unima.dire.helpers.Logging
+import de.unima.dire.core.containers.{FOLClause,ALCDClause}
 
 /**
  * User: nowi
@@ -16,11 +17,11 @@ trait DuplicateLiteralDeletion {
 }
 
 
-object DuplicateLiteralDeleter extends DuplicateLiteralDeletion with Logging {
+class DuplicateLiteralDeleter extends DuplicateLiteralDeletion with Logging {
   override def apply(clauseBuffer: Set[FOLNode]): Set[FOLNode] = {
     log.warning("Duplicate literal deletion is redundant")
     // make literals unique
-//    val condensed = clauseBuffer.removeDuplicates
+//    val condensed = clauseBuffer.distinct
 //
 //    if (clauseBuffer.size - condensed.size > 0) {
 //      log.debug("%s condensed clause %s --> %s", this, clauseBuffer, condensed)

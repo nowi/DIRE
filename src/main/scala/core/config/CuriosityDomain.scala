@@ -1,6 +1,7 @@
-package core.config
+package de.unima.dire.core.config
 
-import domain.fol.ast._
+import de.unima.dire.domain.fol.ast._
+import de.unima.dire.core.containers.StandardClause
 
 /**
  * User: nowi

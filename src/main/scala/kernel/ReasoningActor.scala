@@ -1,16 +1,12 @@
-package kernel
+package de.unima.dire.kernel
 
-import collection.mutable.{ListBuffer, ArrayBuffer}
-import core.containers.{CNFClauseStore, ClauseStorage}
-import domain.fol.ast.FOLClause
-import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy
+import de.unima.dire.kernel.dispatching.DispatchingActor
+import de.unima.dire.kernel.ProvingState._
+
+
+import collection.mutable.ListBuffer
 import java.util.concurrent.TimeUnit
-import java.util.Date
-import java.util.logging.Logger
-import ProvingState._
-import se.scalablesolutions.akka.actor.{Scheduler, Actor}
-import se.scalablesolutions.akka.config.OneForOneStrategy
-import se.scalablesolutions.akka.dispatch.Dispatchers
+import se.scalablesolutions.akka.actor.{ActorRef, Scheduler, Actor}
 
 /**
  * The Main reasoning actor
@@ -23,29 +19,29 @@ abstract class ReasoningActor extends Actor {
   // configuration of core reasoning components
 
 
-  id = this.uuid
+  //id = this.uuid
 
   //  faultHandler = Some(OneForOneStrategy(5, 5000))
-  faultHandler = None
+  self.faultHandler = None
   //  trapExit = List(classOf[Exception])
-  trapExit = Nil
+  self.trapExit = Nil
 
-  
 
-  var manager: Option[Actor] = None
+
+  var manager: Option[ActorRef] = None
 
   var recievedMessagesSinceLastHeartbeat: Boolean = false
 
   // child prooving actor
-  val provingActor: ProvingActor
+  val provingActor: ActorRef
   // child dispatcher  actor
-  val dispatcherActor: DispatchingActor
+  val dispatcherActor: ActorRef
 
   // child derivations logging  actor
-  val derivationsLoggingActor: LoggingActor
+  val derivationsLoggingActor: ActorRef
 
   // child reductions logging  actor
-  val reductionsLoggingActor: LoggingActor
+  val reductionsLoggingActor: ActorRef
 
 
   var proverStatus: ProvingState = STOPPED
@@ -63,9 +59,9 @@ abstract class ReasoningActor extends Actor {
   // abstract methods to be defined somewhere else
   protected def receive = {
 
-    case Shutdown(bla : String) => {
+    case Shutdown(bla: String) => {
       log.error("Recived shutdown message")
-      stop
+      self.stop
     }
 
 
@@ -99,7 +95,7 @@ abstract class ReasoningActor extends Actor {
 
     }
 
-    case msg @ GetEventLog(sessionToken) => {
+    case msg@GetEventLog(sessionToken) => {
       provingActor forward msg
     }
 
@@ -144,8 +140,8 @@ abstract class ReasoningActor extends Actor {
       // we will report back to this sender in the future
       manager match {
         case None => {
-          log.warning("%s recieved initial clauses from manager %s", this, sender.getOrElse("unknown"))
-          manager = sender
+          log.warning("%s recieved initial clauses from manager %s", this, self.sender.getOrElse("unknown"))
+          manager = self.sender
         }
         case Some(_) => // we have a manager actor stored
       }
@@ -224,16 +220,17 @@ abstract class ReasoningActor extends Actor {
 
 
     case msg@Heartbeat(string) => {
-//      log.fatal("%s Recieved Heartbeat Message ", this)
-//      log.fatal("%s | Kept : %s | DerivedCount : %s | Rec : %s | RecKept : %s | Dspt : %s", this, workedOffCount, derivedCount, recievedClauseCount, recievedKeptClauseCount, dispatchedClauseCount)
-//      log.fatal("%s | Mailbox sizes \n", this)
-//      log.fatal("%s | Prover : %s", this, provingActor.mailbox.size)
-//      log.fatal("%s | Dispatcher : %s", this, dispatcherActor.mailbox.size)
+      //      log.fatal("%s Recieved Heartbeat Message ", this)
+      //      log.fatal("%s | Kept : %s | DerivedCount : %s | Rec : %s | RecKept : %s | Dspt : %s", this, workedOffCount, derivedCount, recievedClauseCount, recievedKeptClauseCount, dispatchedClauseCount)
+      //      log.fatal("%s | Mailbox sizes \n", this)
+      //      log.fatal("%s | Prover : %s", this, provingActor.mailbox.size)
+      //      log.fatal("%s | Dispatcher : %s", this, dispatcherActor.mailbox.size)
 
 
-      log.fatal("%s%10d%10d%10d%10d%10d%10d%10d|", this, workedOffCount, derivedCount, recievedClauseCount, recievedKeptClauseCount, dispatchedClauseCount,provingActor.mailbox.size,dispatcherActor.mailbox.size)
+      //log.fatal("%s%10d%10d%10d%10d%10d%10d%10d|", this, workedOffCount, derivedCount, recievedClauseCount, recievedKeptClauseCount, dispatchedClauseCount, provingActor.mailbox.size, dispatcherActor.mailbox.size)
+      log.fatal("%s%10d%10d%10d%10d%10d|", this, workedOffCount, derivedCount, recievedClauseCount, recievedKeptClauseCount, dispatchedClauseCount)
 
-//      log.fatal("%s |Kept|Derived|Recieved|RecKept|Sent|Inbox|Outbox| %s  %s  s%  %s  %s  %s  %s", this, workedOffCount, derivedCount, recievedClauseCount, recievedKeptClauseCount, dispatchedClauseCount,provingActor.mailbox.size,dispatcherActor.mailbox.size)
+      //      log.fatal("%s |Kept|Derived|Recieved|RecKept|Sent|Inbox|Outbox| %s  %s  s%  %s  %s  %s  %s", this, workedOffCount, derivedCount, recievedClauseCount, recievedKeptClauseCount, dispatchedClauseCount,provingActor.mailbox.size,dispatcherActor.mailbox.size)
       //println("%s %s  %s  s%  %s  %s " format this, workedOffCount, derivedCount, recievedClauseCount, recievedKeptClauseCount, dispatchedClauseCount)
 
       //log.fatal("%s | Dispatcher : %s", this, dispatcherActor.mailbox.size)
@@ -264,35 +261,36 @@ abstract class ReasoningActor extends Actor {
     derivationsLoggingActor.start
     reductionsLoggingActor.start
 
-    startLink(derivationsLoggingActor)
-    startLink(reductionsLoggingActor)
-    startLink(dispatcherActor)
-    dispatcherActor.link(Some(this))
-    startLink(provingActor)
-    provingActor.link(Some(this))
+    derivationsLoggingActor.link(self)
+    reductionsLoggingActor.link(self)
+    dispatcherActor.link(self)
+    provingActor.link(self)
+
+
+    // after linking senf the linked actors a reference to this parent actor
+    dispatcherActor ! RegisterParentActor(self)
+    provingActor ! RegisterParentActor(self)
 
 
 
     log.info("Scheduling heartbeat")
     // dispatch messegate to ourself with a fixed interval , upon recieving we will check the status of subsctors and
     // take action if we are considered idle
-    Scheduler.schedule(this, Heartbeat("asjd"), 10, 5, TimeUnit.SECONDS)
+    Scheduler.schedule(self, Heartbeat("asjd"), 10, 5, TimeUnit.SECONDS)
 
 
   }
 
   override def shutdown = {
     log.error("DALCReasoningNode server is shutting down...")
-    unlink(derivationsLoggingActor)
-    unlink(dispatcherActor)
-    unlink(provingActor)
+    self.unlink(derivationsLoggingActor)
+    self.unlink(dispatcherActor)
+    self.unlink(provingActor)
     dispatcherActor.stop
     provingActor.stop
     derivationsLoggingActor.stop
     reductionsLoggingActor.stop
     Scheduler.shutdown
-
-
 
 
   }

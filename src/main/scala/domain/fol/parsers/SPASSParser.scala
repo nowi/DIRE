@@ -1,10 +1,10 @@
-package domain.fol.parsers
+package de.unima.dire.domain.fol.parsers
 
-import ast._
-import core.containers.{ClauseStorage, CNFClauseStore}
-import helpers.Logging
+import de.unima.dire.domain.fol.ast._
+import de.unima.dire.helpers.Logging
+import de.unima.dire.core.containers.{FOLClause, StandardClause, ClauseStorage, CNFClauseStore}
+
 import scala.util.parsing.combinator.syntactical._
-
 /**
  * User: nowi
  * Date: 27.11.2009
@@ -81,8 +81,8 @@ object SPASSParser extends StandardTokenParsers with Logging {
   def term: Parser[Sentence] = quantTerm | negation | connective | orConnective | andConnective | predicate | variable
 
   def predicate: Parser[Term] = ident ~ "(" ~ repsep(term, ",") ~ ")" ^^ {
-    case ident ~ "(" ~ terms ~ ")" if (ident.toString.charAt(0).isLowerCase) => Function(ident.toString, terms)
-    case ident ~ "(" ~ terms ~ ")" if (ident.toString.charAt(0).isUpperCase) => Predicate(ident.toString, terms)
+    case ident ~ "(" ~ terms ~ ")" if (ident.toString.charAt(0).isLower) => Function(ident.toString, terms)
+    case ident ~ "(" ~ terms ~ ")" if (ident.toString.charAt(0).isUpper) => Predicate(ident.toString, terms)
     case _ => error("Should not be here")
   }
 

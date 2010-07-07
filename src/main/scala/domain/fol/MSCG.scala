@@ -1,4 +1,5 @@
-package domain.fol
+package de.unima.dire.domain.fol
+
 
 /**
  * User: nowi

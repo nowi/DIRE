@@ -1,14 +1,14 @@
-package core.containers
+package de.unima.dire.core.index
 
 
-import collection.mutable.{HashMap, MultiMap, Set => MSet}
-import domain.fol.ast.{Negation, Variable, FOLNode, FOLClause}
-import domain.fol.Substitution
-import helpers.{Logging, HelperFunctions}
-import index._
+import de.unima.dire.domain.fol.ast.{Negation, Variable, FOLNode}
+import de.unima.dire.domain.fol.Substitution
+import de.unima.dire.helpers.Logging
+import de.unima.dire.core.containers._
+
+
 import sun.reflect.generics.reflectiveObjects.NotImplementedException
-import HelperFunctions._
-
+import collection.mutable.{Set => MSet}
 /**
  * User: nowi
  * Date: 21.04.2010
@@ -105,7 +105,7 @@ trait STIndex extends MutableClauseStorage
     // first get the terms from sti index
     val terms = retrieveUnifiableTerms(queryTerm)
     // lookup the clauses for those terms
-    val clauses = terms.flatMap(termToClause(_)).removeDuplicates
+    val clauses = terms.flatMap(termToClause(_)).distinct
     clauses
   }
 
@@ -115,7 +115,7 @@ trait STIndex extends MutableClauseStorage
     // first get the terms from sti index
     val terms = retrieveUnifiableTerms(queryTerm)
     // lookup the clauses for those terms
-    val clauses = terms.flatMap(termToClause(_)).removeDuplicates
+    val clauses = terms.flatMap(termToClause(_)).distinct
     // get the subsititutions
     //val substitutions = retrieveUnifiableLeafNodes(queryTerm).map(_.substitution.get)
 
@@ -160,7 +160,7 @@ trait STIndex extends MutableClauseStorage
 
         // extract only leaf nodes
         val leafNodes = nodes.filter(_ match {
-          case LeafNode(_, _,_) => true
+          case LeafNode(_, _, _) => true
           case _ => false
         }).asInstanceOf[List[LeafNode]]
         // extract the stored terms
@@ -173,7 +173,7 @@ trait STIndex extends MutableClauseStorage
         val nodes = negTree.retrieveUnifiable(queryS)
         // extract only leaf nodes
         val leafNodes = nodes.filter(_ match {
-          case LeafNode(_, _,_) => true
+          case LeafNode(_, _, _) => true
           case _ => false
         }).asInstanceOf[List[LeafNode]]
         // extract the stored terms
@@ -195,7 +195,7 @@ trait STIndex extends MutableClauseStorage
         val nodes = posTree.retrieveUnifiable(queryS)
         // extract only leaf nodes
         val leafNodes = nodes.filter(_ match {
-          case LeafNode(_, _,_) => true
+          case LeafNode(_, _, _) => true
           case _ => false
         }).asInstanceOf[List[LeafNode]]
         // extract the stored terms
@@ -208,7 +208,7 @@ trait STIndex extends MutableClauseStorage
         val nodes = negTree.retrieveUnifiable(queryS)
         // extract only leaf nodes
         val leafNodes = nodes.filter(_ match {
-          case LeafNode(_, _,_) => true
+          case LeafNode(_, _, _) => true
           case _ => false
         }).asInstanceOf[List[LeafNode]]
         // extract the stored terms
@@ -239,7 +239,7 @@ trait STIndex extends MutableClauseStorage
 
 }
 
-trait STHeadIndex extends MutableClauseStore
+trait STHeadIndex extends MutableClauseStorage
         with ForwardMatchingGeneralClauseRetrieval {
 
   // this trait can only be mixed in into ClauseStorage base traits
@@ -256,7 +256,7 @@ trait STHeadIndex extends MutableClauseStore
   abstract override def removeNext: FOLClause = {
     // remove from headindex
     val clause = super.removeNext
-    remove(clause.literals.toList.first)
+    remove(clause.literals.toList.head)
     clause
   }
 
@@ -323,7 +323,7 @@ trait STHeadIndex extends MutableClauseStore
 
     // extract only leaf nodes
     val leafNodes = nodes.filter(_ match {
-      case LeafNode(_, _,_) => true
+      case LeafNode(_, _, _) => true
       case _ => false
     }).asInstanceOf[List[LeafNode]]
 
@@ -467,7 +467,7 @@ trait SForrestIndex extends MutableClauseStorage
     // first get the terms from sti index
     val terms = retrieveUnifiableTerms(queryTerm)
     // lookup the clauses for those terms
-    val clauses = terms.flatMap(termToClause(_)).removeDuplicates
+    val clauses = terms.flatMap(termToClause(_)).distinct
 
     // assert here that all retreived clauses do really exist in the core storeage buffer
     //    val containsAll = clauses.forall(this.toList.contains _ )
@@ -483,7 +483,7 @@ trait SForrestIndex extends MutableClauseStorage
     // first get the terms from sti index
     val terms = retrieveUnifiableTerms(queryTerm)
     // lookup the clauses for those terms
-    val clauses = terms.flatMap(termToClause(_)).removeDuplicates
+    val clauses = terms.flatMap(termToClause(_)).distinct
     // get the subsititutions
     //val substitutions = retrieveUnifiableLeafNodes(queryTerm).map(_.substitution.get)
 
@@ -538,7 +538,7 @@ trait SForrestIndex extends MutableClauseStorage
             val nodes = tree.retrieveUnifiable(queryS)
             // extract only leaf nodes
             val leafNodes = nodes.filter(_ match {
-              case LeafNode(_, _,_) => true
+              case LeafNode(_, _, _) => true
               case _ => false
             }).asInstanceOf[List[LeafNode]]
             // extract the stored terms
@@ -558,7 +558,7 @@ trait SForrestIndex extends MutableClauseStorage
             val nodes = tree.retrieveUnifiable(queryS)
             // extract only leaf nodes
             val leafNodes = nodes.filter(_ match {
-              case LeafNode(_, _,_) => true
+              case LeafNode(_, _, _) => true
               case _ => false
             }).asInstanceOf[List[LeafNode]]
             // extract the stored terms
@@ -590,7 +590,7 @@ trait SForrestIndex extends MutableClauseStorage
             val nodes = tree.retrieveInstances(queryS)
             // extract only leaf nodes
             val leafNodes = nodes.filter(_ match {
-              case LeafNode(_, _,_) => true
+              case LeafNode(_, _, _) => true
               case _ => false
             }).asInstanceOf[List[LeafNode]]
             // extract the stored terms
@@ -610,7 +610,7 @@ trait SForrestIndex extends MutableClauseStorage
             val nodes = tree.retrieveInstances(queryS)
             // extract only leaf nodes
             val leafNodes = nodes.filter(_ match {
-              case LeafNode(_, _,_) => true
+              case LeafNode(_, _, _) => true
               case _ => false
             }).asInstanceOf[List[LeafNode]]
             // extract the stored terms
@@ -636,7 +636,7 @@ trait SForrestIndex extends MutableClauseStorage
             val nodes = tree.retrieveGeneral(queryS)
             // extract only leaf nodes
             val leafNodes = nodes.filter(_ match {
-              case LeafNode(_, _,_) => true
+              case LeafNode(_, _, _) => true
               case _ => false
             }).asInstanceOf[List[LeafNode]]
             // extract the stored terms
@@ -656,7 +656,7 @@ trait SForrestIndex extends MutableClauseStorage
             val nodes = tree.retrieveGeneral(queryS)
             // extract only leaf nodes
             val leafNodes = nodes.filter(_ match {
-              case LeafNode(_, _,_) => true
+              case LeafNode(_, _, _) => true
               case _ => false
             }).asInstanceOf[List[LeafNode]]
             // extract the stored terms
@@ -760,7 +760,7 @@ trait SForrestIndex extends MutableClauseStorage
 //    // first get the terms from sti index
 //    val terms = retrieveUnifiableTerms(queryTerm)
 //    // lookup the clauses for those terms
-//    val clauses = terms.flatMap(termToClause(_)).removeDuplicates
+//    val clauses = terms.flatMap(termToClause(_)).distinct
 //    clauses
 //  }
 //
@@ -768,7 +768,7 @@ trait SForrestIndex extends MutableClauseStorage
 //    // first get the terms from sti index
 //    val terms = retrieveUnifiableTerms(queryTerm)
 //    // lookup the clauses for those terms
-//    val clauses = terms.flatMap(termToClause(_)).removeDuplicates
+//    val clauses = terms.flatMap(termToClause(_)).distinct
 //    // get the subsititutions
 //    //val substitutions = retrieveUnifiableLeafNodes(queryTerm).map(_.substitution.get)
 //

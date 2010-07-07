@@ -1,4 +1,5 @@
-package domain.fol.ast
+package de.unima.dire.domain.fol.ast
+
 
 import collection.mutable.Map
 import scala.collection.mutable.{Map => MMap}

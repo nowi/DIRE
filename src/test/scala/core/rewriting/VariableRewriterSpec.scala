@@ -1,4 +1,4 @@
-package core.rewriting
+package de.unima.dire.core.rewriting
 
 /**
  * User: nowi
@@ -6,15 +6,12 @@ package core.rewriting
  * Time: 15:44:57
  */
 
-import com.jteigen.scalatest.JUnit4Runner
 
-import containers.{CNFClauseStore}
-import domain.fol.ast._
-import org.junit.runner.RunWith
-import org.scalatest.matchers.ShouldMatchers
+
 import org.scalatest.Spec
+import org.scalatest.matchers.ShouldMatchers
+import de.unima.dire.domain.fol.ast._
 
-@RunWith(classOf[JUnit4Runner])
 class VariableRewriterSpec extends Spec with ShouldMatchers {
   describe("A VariableRewriter") {
     //    it("should rewriteClause VAriables nested in Prediacates") {

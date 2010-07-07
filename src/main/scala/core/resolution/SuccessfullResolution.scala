@@ -1,9 +1,10 @@
-package core.resolution
+package de.unima.dire.core.resolution
 
 
 import collection.immutable.Set
-import containers.ClauseStorage
-import domain.fol.ast.{FOLNode, FOLClause}
+import de.unima.dire.domain.fol.ast.{FOLNode}
+import de.unima.dire.core.containers.{FOLClause, ClauseStorage}
+
 /**
  * User: nowi
  * Date: 18.03.2010

@@ -1,17 +1,17 @@
-package core.resolution
+package de.unima.dire.core.resolution
 
-import caches.{MaxLitCache, SelectedLitCache, URLitCache}
-import containers.ClauseStorage
-import domain.fol.ast._
-import domain.fol.functions.FOLAlgorithms._
-import domain.fol.Substitution
-import helpers.Logging
-import ordering.LiteralComparison
-import selection.LiteralSelection
-import recording.ClauseRecording
-import reduction.{Subsumption, ClauseCondenser, DuplicateLiteralDeleter}
+import de.unima.dire.core.containers._
+import de.unima.dire.core.Standardizing
+import de.unima.dire.core.caches.{MaxLitCache, SelectedLitCache, URLitCache}
+import de.unima.dire.domain.fol.ast._
+import de.unima.dire.domain.fol.functions.FOLAlgorithms._
+import de.unima.dire.domain.fol.Substitution
+import de.unima.dire.helpers.Logging
+import de.unima.dire.core.ordering.LiteralComparison
+import de.unima.dire.core.selection.LiteralSelection
+import de.unima.dire.recording.ClauseRecording
+import de.unima.dire.core.reduction.{Subsumption, ClauseCondenser, DuplicateLiteralDeleter}
 import sun.reflect.generics.reflectiveObjects.NotImplementedException
-
 /**
  * User: nowi
  * Date: 01.05.2010
@@ -37,8 +37,8 @@ class OrderedBinaryResolver(env: {val standardizer: Standardizing;
   implicit val uniqueLitRCache : URLitCache  = env.uniqueRLitCache
 
 
-  val condensation = ClauseCondenser
-  val duplicateLiteralDeletion = DuplicateLiteralDeleter
+  val condensation = new ClauseCondenser
+  val duplicateLiteralDeletion = new DuplicateLiteralDeleter
 
   var iteration : Int = 1
   var totalCandidates : Int = 0
@@ -47,15 +47,15 @@ class OrderedBinaryResolver(env: {val standardizer: Standardizing;
 
     // check if we have index support
 
-    val candidates  = b match {
-      case indexedClauseStorage: core.containers.UnifiableClauseRetrieval => {
+    val candidates : Iterable[FOLClause] = b match {
+      case indexedClauseStorage: UnifiableClauseRetrieval => {
         // we have a structure that supports unifiables clause retrieval
         // get the unifiable clauses for each literal ( this is not a perfect filtering
         // because we have no unique literal to resolve upon
         // this changes in alcd where we can determine the unique resolvable literal
         // prior to substitution !
 
-        a.literals.flatMap({lit : FOLNode => indexedClauseStorage.retrieveUnifiables(lit) ++ indexedClauseStorage.retrieveUnifiables(lit.negate) -- List(a)})
+        a.literals.flatMap({lit : FOLNode => indexedClauseStorage.retrieveUnifiables(lit) ++ indexedClauseStorage.retrieveUnifiables(lit.negate) filterNot (_ == a)})
       }
 
       case _ => {

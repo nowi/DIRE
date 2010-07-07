@@ -1,14 +1,16 @@
-package core.config
+package de.unima.dire.core.config
 
 
-import caches.{MaxLitCache, URLitCache, SelectedLitCache}
-import containers.{CNFClauseStore}
-import ordering.{LazyLexicographicPrecedence, ALCLPOComparator}
-import recording.NaiveClauseRecorder
-import reduction._
-import resolution.{DALCResolver, DALCUniqueLiteralResolver}
-import rewriting.{ VariableRewriter}
-import selection.{NegativeLiteralsSelection, DALCRSelector}
+import de.unima.dire.core.Standardizer
+import de.unima.dire.core.caches.{MaxLitCache, URLitCache, SelectedLitCache}
+import de.unima.dire.core.containers.CNFClauseStore
+import de.unima.dire.core.ordering.{LazyLexicographicPrecedence, ALCLPOComparator}
+import de.unima.dire.recording.NaiveClauseRecorder
+import de.unima.dire.core.reduction._
+import de.unima.dire.core.resolution.{DALCResolver, DALCUniqueLiteralResolver}
+import de.unima.dire.core.rewriting.VariableRewriter
+import de.unima.dire.core.selection.{NegativeLiteralsSelection, DALCRSelector}
+
 object WestOrderedTheoremProovingConfig {
   // the initial clause store
   lazy val initialClauses = {
@@ -25,16 +27,16 @@ object WestOrderedTheoremProovingConfig {
   lazy val inferenceRecorder = Some(new NaiveClauseRecorder)
 
   // ordered resolution needs comparator and selection too
-  lazy val precedence = core.ordering.LazyLexicographicPrecedence
+  lazy val precedence = LazyLexicographicPrecedence
   lazy val literalComparator = new ALCLPOComparator(this)
   lazy val selector = new NegativeLiteralsSelection()
   lazy val uniqueLiteralResolver = Some(new DALCUniqueLiteralResolver(this))
 
-  
-   // chache for maximal literalas
-    lazy val maxLitCache = new MaxLitCache()
-    lazy val uniqueRLitCache = new URLitCache()
-    lazy val selectedLitCache = new SelectedLitCache()
+
+  // chache for maximal literalas
+  lazy val maxLitCache = new MaxLitCache()
+  lazy val uniqueRLitCache = new URLitCache()
+  lazy val selectedLitCache = new SelectedLitCache()
 
   // settings
   val recordProofSteps = true
@@ -48,7 +50,7 @@ object WestOrderedTheoremProovingConfig {
   val timeLimit: Long = 0
 
 
-  override def toString = List(variableRewriter, standardizer,  resolver, subsumptionStrategy, literalComparator, selector, removeDuplicates, useLightesClauseHeuristic)
+  override def toString = List(variableRewriter, standardizer, resolver, subsumptionStrategy, literalComparator, selector, removeDuplicates, useLightesClauseHeuristic)
           .map({_.toString})
           .reduceLeft(_ + ",\n" + _)
 }

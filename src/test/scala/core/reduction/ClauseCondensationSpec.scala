@@ -1,4 +1,4 @@
-package core.reduction
+package de.unima.dire.core.reduction
 
 /**
  * User: nowi
@@ -6,16 +6,14 @@ package core.reduction
  * Time: 14:31:26
  */
 
-import com.jteigen.scalatest.JUnit4Runner
 
-import containers.{CNFClauseStore}
-import domain.fol.ast._
-import org.junit.runner.RunWith
-import org.scalatest.matchers.ShouldMatchers
+import de.unima.dire.core.rewriting.{VariableRewriter}
+import de.unima.dire.domain.fol.ast._
+
 import org.scalatest.Spec
-import rewriting.{VariableRewriter}
+import org.scalatest.matchers.ShouldMatchers
 
-@RunWith(classOf[JUnit4Runner])
+
 abstract class ClauseCondensationSpec extends Spec with ShouldMatchers {
 
 

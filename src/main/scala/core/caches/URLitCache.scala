@@ -1,4 +1,4 @@
-package core.caches
+package de.unima.dire.core.caches
 
 /**
  * User: nowi
@@ -6,10 +6,15 @@ package core.caches
  * Time: 21:38:30
  */
 
+import de.unima.dire.helpers.Logging
+import de.unima.dire.domain.fol.ast.FOLNode
+import de.unima.dire.core.containers.FOLClause
+
+
 import collection.mutable.{MapProxy, Map => MMap}
-import domain.fol.ast.{FOLNode, FOLClause}
-import helpers.Logging
-import se.scalablesolutions.akka.actor.Actor
+import se.scalablesolutions.akka.actor.{ActorRef, Actor}
+
+
 trait FOLCache
 
 class MaxLitCache extends MapProxy[FOLClause,List[FOLNode]] with Logging{
@@ -68,8 +73,8 @@ class SelectedLitCache extends MapProxy[FOLClause,List[FOLNode]]  with Logging{
 
 }
 
-class ActorCache extends MapProxy[String,Option[Actor]] with Logging{
-  override val self = MMap[String,Option[Actor]]()
+class ActorCache extends MapProxy[String,Option[ActorRef]] with Logging{
+  override val self = MMap[String,Option[ActorRef]]()
 
   override def apply(a: String) = self.getOrElse(a,None)
 
@@ -77,7 +82,7 @@ class ActorCache extends MapProxy[String,Option[Actor]] with Logging{
     * Return that value if it exists, otherwise put <code>default</code>
     * as that key's value and return it.
     */
-  override def getOrElseUpdate(key: String, default: => Option[Actor]): Option[Actor] =
+  override def getOrElseUpdate(key: String, default: => Option[ActorRef]): Option[ActorRef] =
     get(key) match {
       case Some(v) => {
         v

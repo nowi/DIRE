@@ -1,4 +1,4 @@
-package core
+package de.unima.dire.core
 
 /**
  * User: nowi
@@ -12,22 +12,19 @@ package core
  * Date: 29.04.2010
  * Time: 21:42:23
  */
-import com.jteigen.scalatest.JUnit4Runner
 
-import config.{CuriosityDomain, WestDomain}
-import domain.fol.ast._
-import domain.fol.parsers.SPASSIntermediateFormatParser
+import de.unima.dire.core.config.{CuriosityDomain, WestDomain}
+import de.unima.dire.domain.fol.ast._
+import de.unima.dire.domain.fol.parsers.SPASSIntermediateFormatParser
+import de.unima.dire.helpers.Logging
+import de.unima.dire.partitioning.{ManualConfExampleMergerShared, ManualConfExampleMerger, ManualConfExamplePartitioner}
+import de.unima.dire.core.rewriting.{VariableRewriter}
+
+
 import java.io.File
-import helpers.Logging
-import org.junit.runner.RunWith
-
-
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
-import partitioning.{ManualConfExampleMergerShared, ManualConfExampleMerger, ManualConfExamplePartitioner}
-import rewriting.{VariableRewriter}
 
-@RunWith(classOf[JUnit4Runner])
 abstract class ConferenceMergedProvingSpec extends Spec with ShouldMatchers with Logging {
   def createProver: FOLProving
 

@@ -1,4 +1,4 @@
-package core.containers
+package de.unima.dire.core.containers
 
 /**
  * User: nowi

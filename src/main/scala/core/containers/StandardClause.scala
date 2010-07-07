@@ -1,13 +1,14 @@
-package domain.fol.ast
+package de.unima.dire.core.containers
 
-import collection.immutable.{TreeSet, SortedSet}
+
+import de.unima.dire.core.caches.{MaxLitCache, SelectedLitCache, URLitCache}
+import de.unima.dire.core.selection.LiteralSelection
+import de.unima.dire.core.ordering.LiteralComparison
+import de.unima.dire.core.resolution.UniqueLiteralResolution
+import de.unima.dire.domain.fol.Substitution
+import de.unima.dire.domain.fol.ast._
+
 import collection.mutable.ListBuffer
-import core.caches.{MaxLitCache, SelectedLitCache, URLitCache}
-import core.selection.LiteralSelection
-import parsers.SPASSIntermediateFormatParser._
-
-import core.ordering.LiteralComparison
-import core.resolution.UniqueLiteralResolution
 
 trait FOLClause {
 
@@ -26,11 +27,11 @@ trait FOLClause {
     }
   }
 
-//  // version without caching
-//  def uniqueResolvableLit(implicit resolver: (FOLClause => Option[FOLNode])): Option[FOLNode] = {
-//    val urlit = resolver(this)
-//    urlit
-//  }
+  //  // version without caching
+  //  def uniqueResolvableLit(implicit resolver: (FOLClause => Option[FOLNode])): Option[FOLNode] = {
+  //    val urlit = resolver(this)
+  //    urlit
+  //  }
 
 
   def selectedLits(implicit selector: LiteralSelection, cache: SelectedLitCache) = {
@@ -39,15 +40,15 @@ trait FOLClause {
   }
 
   // verison without caching
-//  def selectedLits(implicit selector: LiteralSelection) = {
-//    selector.selectedLiterals(this)
-//  }
+  //  def selectedLits(implicit selector: LiteralSelection) = {
+  //    selector.selectedLiterals(this)
+  //  }
 
-  def maxLits(implicit comperator: LiteralComparison,cache : MaxLitCache) = {
+  def maxLits(implicit comperator: LiteralComparison, cache: MaxLitCache) = {
     def determineMaxLits = {
       // we have no max for this comparator , determine the max and cache it
       var maximumLiterals = List(literals.toList.head)
-      val iter = this.literals.elements
+      val iter = this.literals.iterator
       while (iter.hasNext) {
         val lit = iter.next
         val max = maximumLiterals.head
@@ -75,36 +76,36 @@ trait FOLClause {
   }
 
   // version witout cache
-//  def maxLits(implicit comperator: LiteralComparison) = {
-//    def determineMaxLits = {
-//      // we have no max for this comparator , determine the max and cache it
-//      var maximumLiterals = List(literals.toList.head)
-//      val iter = this.literals.elements
-//      while (iter.hasNext) {
-//        val lit = iter.next
-//        val max = maximumLiterals.head
-//        if (lit != max) {
-//          comperator.compare(lit, maximumLiterals.head) match {
-//            case Some(1) => maximumLiterals = List(lit) // found a greater lit , this is new maxLit
-//            case Some(0) => maximumLiterals = lit :: maximumLiterals // found same as current max , add to maxlits
-//            case Some(-1) => None
-//            case None => {
-//              None
-//            }
-//          }
-//
-//        }
-//
-//      }
-//
-//      maximumLiterals
-//    }
-//
-//    require(!isEmpty, "There cannot be a max Lit in Empty Clause")
-//
-//    val maximumLits = determineMaxLits
-//    maximumLits
-//  }
+  //  def maxLits(implicit comperator: LiteralComparison) = {
+  //    def determineMaxLits = {
+  //      // we have no max for this comparator , determine the max and cache it
+  //      var maximumLiterals = List(literals.toList.head)
+  //      val iter = this.literals.elements
+  //      while (iter.hasNext) {
+  //        val lit = iter.next
+  //        val max = maximumLiterals.head
+  //        if (lit != max) {
+  //          comperator.compare(lit, maximumLiterals.head) match {
+  //            case Some(1) => maximumLiterals = List(lit) // found a greater lit , this is new maxLit
+  //            case Some(0) => maximumLiterals = lit :: maximumLiterals // found same as current max , add to maxlits
+  //            case Some(-1) => None
+  //            case None => {
+  //              None
+  //            }
+  //          }
+  //
+  //        }
+  //
+  //      }
+  //
+  //      maximumLiterals
+  //    }
+  //
+  //    require(!isEmpty, "There cannot be a max Lit in Empty Clause")
+  //
+  //    val maximumLits = determineMaxLits
+  //    maximumLits
+  //  }
 
 
   lazy val isUnit = size == 1

@@ -1,4 +1,4 @@
-package domain.fol.parsers
+package de.unima.dire.domain.fol.parsers
 
 /**
  * User: nowi
@@ -6,15 +6,12 @@ package domain.fol.parsers
  * Time: 12:08:56
  */
 
-import com.jteigen.scalatest.JUnit4Runner
 
-import org.junit.runner.RunWith
 
 
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
 
-@RunWith(classOf[JUnit4Runner])
 class SPASSParserSpec extends Spec with ShouldMatchers {
   describe("A SPASSParser") {
     //    it("should parse example problem pelletier57 from spass spec 1.5") {

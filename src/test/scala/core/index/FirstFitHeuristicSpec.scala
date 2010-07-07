@@ -1,4 +1,4 @@
-package core.index
+package de.unima.dire.core.index
 
 /**
  * User: nowi
@@ -6,14 +6,11 @@ package core.index
  * Time: 12:17:58
  */
 
-import com.jteigen.scalatest.JUnit4Runner
-import helpers.Logging
+import de.unima.dire.helpers.Logging
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
-import org.junit.runner.RunWith
-import domain.fol.ast._
+import de.unima.dire.domain.fol.ast.{Constant,Variable,Function,Negation,Predicate,FOLNode}
 
-@RunWith(classOf[JUnit4Runner])
 class FirstFitHeuristicSpec extends Spec with ShouldMatchers with Logging {
   describe("The heuristic uesed for SubstututionTreeIndex insertion") {
      val a = Constant("a")

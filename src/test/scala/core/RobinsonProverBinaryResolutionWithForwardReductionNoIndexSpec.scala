@@ -1,20 +1,17 @@
-package core
+package de.unima.dire.core
 
+import de.unima.dire.core.ordering.{LazyLexicographicPrecedence, CustomConferencePartitionedPrecedence, ALCLPOComparator}
+import de.unima.dire.core.caches.{MaxLitCache,URLitCache,SelectedLitCache}
+import de.unima.dire.core.index.{FeatureVectorImperfectIndex, SForrestIndex}
+import de.unima.dire.core.containers._
+import de.unima.dire.core.reduction.{BackwardSubsumer, ForwardSubsumer, StillmannSubsumer}
+import de.unima.dire.core.resolution._
+import de.unima.dire.core.rewriting.VariableRewriter
+import de.unima.dire.core.selection.{DALCRSelector, NegativeLiteralsSelection}
 
-import caches.{SelectedLitCache, URLitCache, MaxLitCache}
-import com.jteigen.scalatest.JUnit4Runner
-import domain.fol.ast.{FOLNode, PositiveFOLLiteral}
+import de.unima.dire.recording.{EventRecorder, NaiveClauseRecorder}
+
 import net.lag.configgy.Configgy
-import org.junit.runner.RunWith
-import containers._
-import heuristics.{LightestClauseHeuristicStorage, ListBufferStorage}
-import ordering.{CustomConferencePartitionedPrecedence, ALCLPOComparator}
-import recording.{EventRecorder, Neo4JRecorder, NaiveClauseRecorder}
-import reduction.{BackwardSubsumer, ForwardSubsumer, StillmannSubsumer}
-import resolution._
-import rewriting.VariableRewriter
-import selection.{DALCRSelector, NegativeLiteralsSelection}
-
 /**
  * User: nowi
  * Date: 29.04.2010
@@ -41,7 +38,7 @@ class RobinsonProverBinaryResolutionWithForwardReductionNoIndexSpec extends Prov
 
     // positive factorer
     lazy val positiveFactorer = PositiveFactorer
-     // negative factorer
+    // negative factorer
     lazy val negativeFactorer = NegativeFactorer
 
     // binary resolver
@@ -99,7 +96,7 @@ class RobinsonProverBinaryResolutionWithOrderingWithForwardReductionNoIndexSpec 
 
     // positive factorer
     lazy val positiveFactorer = PositiveFactorer
-     // negative factorer
+    // negative factorer
     lazy val negativeFactorer = NegativeFactorer
 
     // selector
@@ -108,7 +105,7 @@ class RobinsonProverBinaryResolutionWithOrderingWithForwardReductionNoIndexSpec 
 
     // TODO refactor this
     // precedence precomputes the order , needs the initial clauses
-    lazy val precedence = core.ordering.LazyLexicographicPrecedence
+    lazy val precedence = LazyLexicographicPrecedence
 
     // ordered resolution needs comparator and selection too
     lazy val literalComparator = new ALCLPOComparator(this)
@@ -134,7 +131,7 @@ class RobinsonProverBinaryResolutionWithOrderingWithForwardReductionNoIndexSpec 
 
     def workedOffClauseStore = new MutableClauseStore() with ListBufferStorage
 
-// the caches
+    // the caches
     // chache for maximal literalas
     lazy val maxLitCache = new MaxLitCache()
     lazy val uniqueRLitCache = new URLitCache()
@@ -181,7 +178,7 @@ class RobinsonProverBinaryResolutionWithForwardReductionWithIndexSpec extends Pr
 
     // TODO refactor this
     // precedence precomputes the order , needs the initial clauses
-    lazy val precedence = core.ordering.LazyLexicographicPrecedence
+    lazy val precedence = LazyLexicographicPrecedence
 
     // ordered resolution needs comparator and selection too
     lazy val literalComparator = new ALCLPOComparator(this)
@@ -218,7 +215,8 @@ class RobinsonProverBinaryResolutionWithForwardReductionWithIndexSpec extends Pr
 
 
     // hard time limit
-    val timeLimit: Long = 10000;;
+    val timeLimit: Long = 10000;
+    ;
 
   }
 
@@ -241,7 +239,7 @@ class RobinsonProverBinaryResolutionWithOrderingWithForwardReductionWithSTIIndex
     val recordProofSteps = true
 
     lazy val neo4JGraphBasePath: String = "/workspace/DIRE/DIRE/logs/graph/clauses"
-//    lazy val inferenceRecorder = Some(new Neo4JRecorder(neo4JGraphBasePath + "/" + System.currentTimeMillis + "/" + this))
+    //    lazy val inferenceRecorder = Some(new Neo4JRecorder(neo4JGraphBasePath + "/" + System.currentTimeMillis + "/" + this))
     lazy val inferenceRecorder = Some(new NaiveClauseRecorder())
 
     // positive factorer
@@ -255,7 +253,7 @@ class RobinsonProverBinaryResolutionWithOrderingWithForwardReductionWithSTIIndex
 
     // TODO refactor this
     // precedence precomputes the order , needs the initial clauses
-    lazy val precedence = core.ordering.LazyLexicographicPrecedence
+    lazy val precedence = LazyLexicographicPrecedence
 
     // ordered resolution needs comparator and selection too
     lazy val literalComparator = new ALCLPOComparator(this)
@@ -279,9 +277,9 @@ class RobinsonProverBinaryResolutionWithOrderingWithForwardReductionWithSTIIndex
     // usable clause store with STI indexes and lightesclauseheuristic
     def usableClauseStore = new MutableClauseStore() with LightestClauseHeuristicStorage with SForrestIndex
 
-    def workedOffClauseStore = new MutableClauseStore() with ListBufferStorage  with SForrestIndex
+    def workedOffClauseStore = new MutableClauseStore() with ListBufferStorage with SForrestIndex
 
-   // the caches
+    // the caches
     // chache for maximal literalas
     lazy val maxLitCache = new MaxLitCache()
     lazy val uniqueRLitCache = new URLitCache()
@@ -317,7 +315,7 @@ class RobinsonProverBinaryResolutionNoReductionSTIIndexSpec extends ProvingSpec 
 
     // positive factorer
     lazy val positiveFactorer = PositiveFactorer
-     // negative factorer
+    // negative factorer
     lazy val negativeFactorer = NegativeFactorer
     // binary resolver
     lazy val resolver = new BinaryResolver(this)
@@ -338,7 +336,7 @@ class RobinsonProverBinaryResolutionNoReductionSTIIndexSpec extends ProvingSpec 
     lazy val workedOffClauseStore = new MutableClauseStore() with ListBufferStorage with SForrestIndex
 
 
-   // the caches
+    // the caches
     // chache for maximal literalas
     lazy val maxLitCache = new MaxLitCache()
     lazy val uniqueRLitCache = new URLitCache()
@@ -377,7 +375,7 @@ class RobinsonProverBinaryResolutionWithReductionSTIIndexSpec extends ProvingSpe
 
     // positive factorer
     lazy val positiveFactorer = PositiveFactorer
-     // negative factorer
+    // negative factorer
     lazy val negativeFactorer = NegativeFactorer
 
     // binary resolver
@@ -412,7 +410,6 @@ class RobinsonProverBinaryResolutionWithReductionSTIIndexSpec extends ProvingSpe
 }
 
 
-@RunWith(classOf[JUnit4Runner])
 class RobinsonProverALCDResolutionWithReductionSTIIndexSpec extends ConferencePartitionedProvingSpec {
   // create the configuration here
   val config = new Object {
@@ -444,7 +441,7 @@ class RobinsonProverALCDResolutionWithReductionSTIIndexSpec extends ConferencePa
 
     // positive factorer
     lazy val positiveFactorer = new ALCPositiveOrderedFactoring(this)
-     // negative factorer
+    // negative factorer
     lazy val negativeFactorer = new ALCNegativeOrderedFactoring(this)
     // ACL resolver
     lazy val resolver = new DALCResolver(this)
@@ -454,6 +451,7 @@ class RobinsonProverALCDResolutionWithReductionSTIIndexSpec extends ConferencePa
 
     // usable clause store with STI indexes
     def usableClauseStore = new MutableClauseStore with LightestClauseHeuristicStorage with SForrestIndex
+
     def workedOffClauseStore = new MutableClauseStore with ListBufferStorage with SForrestIndex
 
     // the caches
@@ -475,7 +473,6 @@ class RobinsonProverALCDResolutionWithReductionSTIIndexSpec extends ConferencePa
 }
 
 
-@RunWith(classOf[JUnit4Runner])
 class RobinsonProverMergedALCDResolutionWithReductionSTIIndexSpec extends ConferenceMergedProvingSpec {
   // create the configuration here
   val config = new Object {
@@ -519,6 +516,7 @@ class RobinsonProverMergedALCDResolutionWithReductionSTIIndexSpec extends Confer
 
     // usable clause store with STI indexes
     def usableClauseStore = new MutableClauseStore with LightestClauseHeuristicStorage with SForrestIndex
+
     def workedOffClauseStore = new MutableClauseStore with ListBufferStorage with SForrestIndex
 
     // the caches
@@ -543,7 +541,6 @@ class RobinsonProverMergedALCDResolutionWithReductionSTIIndexSpec extends Confer
 }
 
 
-@RunWith(classOf[JUnit4Runner])
 class RobinsonProverMergedALCDResolutionWithReductionFeatureVectorImperfectIndexSpec extends ConferenceMergedProvingSpec {
   // create the configuration here
   val config = new Object {
@@ -587,6 +584,7 @@ class RobinsonProverMergedALCDResolutionWithReductionFeatureVectorImperfectIndex
 
     // usable clause store with STI indexes
     def usableClauseStore = new MutableClauseStore with LightestClauseHeuristicStorage with FeatureVectorImperfectIndex
+
     def workedOffClauseStore = new MutableClauseStore with ListBufferStorage with FeatureVectorImperfectIndex
 
 

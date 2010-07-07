@@ -1,22 +1,21 @@
-package domain.fol
+package de.unima.dire.domain.fol
 
-import scala.collection.mutable.{Map => MMap}
-import ast.{FOLNode, Variable}
+import de.unima.dire.domain.fol.ast._
+
 import collection.MapProxy
-
+import scala.collection.mutable.{Map => MMap}
 /**
  * User: nowi
  * Date: 01.04.2010
  * Time: 16:15:12
  */
 
-case class Context(override val self:MMap[Variable,FOLNode]) extends MapProxy[Variable,FOLNode] {
-
-  def bind(variable : Variable,term : FOLNode)  = {
-    self.put(variable,term)
+case class Context(override val self: MMap[Variable, FOLNode]) extends MapProxy[Variable, FOLNode] {
+  def bind(variable: Variable, term: FOLNode) = {
+    self.put(variable, term)
   }
 
-  def binding(variable : Variable) : Option[FOLNode]= {
+  def binding(variable: Variable): Option[FOLNode] = {
     get(variable)
   }
 
@@ -26,10 +25,10 @@ case class Context(override val self:MMap[Variable,FOLNode]) extends MapProxy[Va
   }
 
   def +(i: Tuple2[Variable, FOLNode]) = {
-    bind(i._1,i._2)
+    bind(i._1, i._2)
   }
 }
 
 object Context {
-  def apply() : Context = Context(MMap())
+  def apply(): Context = Context(MMap())
 }

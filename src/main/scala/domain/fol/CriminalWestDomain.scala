@@ -1,13 +1,7 @@
-package domain.fol
+package de.unima.dire.domain
 
-
-import ast._
-
-/**
- * User: nowi
- * Date: 20.12.2009
- * Time: 12:18:19
- */
+import de.unima.dire.domain.fol.ast._
+import de.unima.dire.core.containers.StandardClause
 
 object CriminalWestDomain {
   val x = Variable("x")
@@ -67,3 +61,4 @@ object CriminalWestDomain {
     Negation(Predicate("Criminal", west))
     )
 }
+

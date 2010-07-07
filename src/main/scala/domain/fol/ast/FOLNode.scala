@@ -1,11 +1,8 @@
-package domain.fol.ast
+package de.unima.dire.domain.fol.ast
 
-import core.ordering.LiteralComparison
-import domain.fol.functions.FOLAlgorithms._
+import scala.collection.mutable.{Map => MMap}
+import de.unima.dire.domain.fol.Substitution
 
-import functions.FOLAlgorithms
-import sun.reflect.generics.reflectiveObjects.NotImplementedException
-        import scala.collection.mutable.{Map => MMap}
 /**
  * User: nowi
  * Date: 09.10.2009
@@ -20,12 +17,12 @@ trait FOLNode {
   val top: String
 
   // subclasses should override this for corret sharing of arguments
-  def shared : FOLNode  = {
-    FOLNode.sharedNodes.getOrElseUpdate(this ,this)
+  def shared: FOLNode = {
+    FOLNode.sharedNodes.getOrElseUpdate(this, this)
   }
 
   // arity defaults to 0
-  val arity : Int = 0
+  val arity: Int = 0
 
   // TODO FIX THIS
   lazy val positive = {
@@ -49,45 +46,45 @@ trait FOLNode {
   // get flattened args , empty lists if no args
   def flatArgs: List[FOLNode]
 
-//  val positions: List[List[Any]] = {
-//    this match {
-//      case Complex(name, args) => {
-//        val is = for (index <- 0 until args.size)
-//        yield (args(index).positions match {
-//            case List(List(0)) => {
-//              // single element sub positions
-//              // extract the single element and concat
-//              val i: List[Int] = List(index + 1)
-//              i
-//
-//            }
-//            case indexes: List[List[Int]] => {
-//              // multiple sub index paths
-//              // extract them all , concat each one with the current index path
-//              //val i : List[Int] = indexes.map({indexPath: List[Int] => List(index+1) ::: indexPath}).toList.flatten
-//              val i: List[List[Int]] = indexes.map({
-//                indexPath: List[Int] => indexPath match {
-//                  case List(0) => List(index + 1)
-//                  case _ => List(index + 1) ::: indexPath
-//                }
-//              })
-//              i
-//            }
-//
-//          })
-//
-//
-//        (List(List(0)) ::: is.toList)
-//      }
-//
-//      case _ => {
-//        List(List(0))
-//      }
-//
-//    }
-//
-//
-//  }
+  //  val positions: List[List[Any]] = {
+  //    this match {
+  //      case Complex(name, args) => {
+  //        val is = for (index <- 0 until args.size)
+  //        yield (args(index).positions match {
+  //            case List(List(0)) => {
+  //              // single element sub positions
+  //              // extract the single element and concat
+  //              val i: List[Int] = List(index + 1)
+  //              i
+  //
+  //            }
+  //            case indexes: List[List[Int]] => {
+  //              // multiple sub index paths
+  //              // extract them all , concat each one with the current index path
+  //              //val i : List[Int] = indexes.map({indexPath: List[Int] => List(index+1) ::: indexPath}).toList.flatten
+  //              val i: List[List[Int]] = indexes.map({
+  //                indexPath: List[Int] => indexPath match {
+  //                  case List(0) => List(index + 1)
+  //                  case _ => List(index + 1) ::: indexPath
+  //                }
+  //              })
+  //              i
+  //            }
+  //
+  //          })
+  //
+  //
+  //        (List(List(0)) ::: is.toList)
+  //      }
+  //
+  //      case _ => {
+  //        List(List(0))
+  //      }
+  //
+  //    }
+  //
+  //
+  //  }
 
   //positions access
   def apply(indexPath: List[Any]): FOLNode = {
@@ -99,14 +96,14 @@ trait FOLNode {
     indexPath match {
       case List(0) => this
       case List(List(index)) => this(List(index))
-      case List(indexes : List[Any]) => this(indexes)
+      case List(indexes: List[Any]) => this(indexes)
       case List(index) :: List(indexes) => {
         args(index.asInstanceOf[Int] - 1).apply(List(indexes))
       }
-      case (index:Int) :: List(indexes) => {
+      case (index: Int) :: List(indexes) => {
         args(index.asInstanceOf[Int] - 1).apply(List(indexes))
       }
-      case (index:Int) :: Nil => {
+      case (index: Int) :: Nil => {
         args(index.asInstanceOf[Int] - 1)
       }
     }
@@ -123,7 +120,7 @@ trait FOLNode {
    * @returns rewritten folnode
    */
   def rewrite(s: Substitution): FOLNode = {
-    if(s.isEmpty) {
+    if (s.isEmpty) {
       this
     } else {
       // check all possible fol types
@@ -145,22 +142,17 @@ trait FOLNode {
   }
 
 
-
-
   def normalize = {
     // crate the first occurrence map
-    val uniqueVars  = ( Set[Variable]() /: flatArgs.filter(_ match {
+    val uniqueVars = (Set[Variable]() /: flatArgs.filter(_ match {
       case Variable(name) => true
       case _ => false
-    }).asInstanceOf[List[Variable]] )(_ + _)
+    }).asInstanceOf[List[Variable]])(_ + _)
     // map each unique variable to a indicator variable --> substitution
-    val sub  = uniqueVars.toList zip IndicatorVariable.rangeTo(uniqueVars.size)
+    val sub = uniqueVars.toList zip IndicatorVariable.rangeTo(uniqueVars.size)
     // apply this substitution to this term
     this.rewrite(sub)
   }
-
-
-
 
 
   def containsSubterm(subTerm: FOLNode): Boolean = {
@@ -169,37 +161,19 @@ trait FOLNode {
   }
 
 
-
-
-  def negate() : FOLNode = {
+  def negate(): FOLNode = {
     this match {
-      case node if(positive) => Negation(node)
+      case node if (positive) => Negation(node)
       case Negation(filler) => filler
     }
   }
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   def logicalEquals(obj: Any) = equals(obj)
 }
 
 object FOLNode {
-
-  val sharedNodes : MMap[FOLNode,FOLNode]= MMap()
+  val sharedNodes: MMap[FOLNode, FOLNode] = MMap()
 
   implicit def termToFOLNode(x: Term): FOLNode = x.asInstanceOf[FOLNode]
 

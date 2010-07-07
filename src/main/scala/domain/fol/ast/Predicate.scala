@@ -1,4 +1,5 @@
-package domain.fol.ast
+package de.unima.dire.domain.fol.ast
+
 
 
 /**

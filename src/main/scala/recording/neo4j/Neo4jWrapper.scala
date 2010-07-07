@@ -1,4 +1,4 @@
-package recording.neo4j
+package de.unima.dire.recording.neo4j
 
 import org.neo4j.graphdb._
 

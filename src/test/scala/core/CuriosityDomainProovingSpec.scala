@@ -1,4 +1,4 @@
-package core
+package de.unima.dire.core
 
 /**
  * User: nowi
@@ -6,17 +6,15 @@ package core
  * Time: 12:26:36
  */
 
-import com.jteigen.scalatest.JUnit4Runner
 
-import config.CuriosityDomain
-import containers.{CNFClauseStore}
-import org.junit.runner.RunWith
+import de.unima.dire.core.config.CuriosityDomain
+import de.unima.dire.core.containers.{CNFClauseStore}
+import de.unima.dire.core.ProvingResult._
+
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
-import ProvingResult._
 
                               
-@RunWith(classOf[JUnit4Runner])
 abstract class CuriosityDomainProovingSpec extends Spec with ShouldMatchers {
   // create a proover
   val resolutionProover: FOLProving

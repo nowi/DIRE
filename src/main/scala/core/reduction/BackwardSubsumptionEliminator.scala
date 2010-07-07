@@ -1,9 +1,8 @@
-package core.reduction
+package de.unima.dire.core.reduction
 
 
-import containers.ClauseStorage
-import domain.fol.ast.FOLClause
 import sun.reflect.generics.reflectiveObjects.NotImplementedException
+import de.unima.dire.core.containers.{FOLClause, ClauseStorage}
 
 /**
  * User: nowi

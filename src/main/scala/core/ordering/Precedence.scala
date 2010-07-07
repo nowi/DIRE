@@ -1,10 +1,7 @@
-package core.ordering
+package de.unima.dire.core.ordering
 
 
 import scala.collection.mutable.{Map => MMap}
-import containers.ClauseStorage._
-import domain.fol.ast.FOLClause
-
 /**
  * User: nowi
  * Date: 19.01.2010
@@ -50,28 +47,27 @@ import domain.fol.ast.FOLClause
 //}
 
 trait Precedence {
-  def compare(a: String, b: String) : Int
+  def compare(a: String, b: String): Int
 
-//  override def toString = "%s" format (symbolicNames mkString ("(", ">", ")"))
+  //  override def toString = "%s" format (symbolicNames mkString ("(", ">", ")"))
 
 }
 
-object LazyLexicographicPrecedence  extends Precedence {
+object LazyLexicographicPrecedence extends Precedence {
   // build the precedence list from the linked initial  clausestore
-  val cache : MMap[(String,String),Int] = scala.collection.mutable.HashMap[(String,String),Int]()
-  
-  private val comparator = (x: String, y: String) => (x compareToIgnoreCase y) match {
-      case result: Int if (result < 0) => -1
-      case result: Int if (result == 0) => 0
-      case result: Int if (result > 0) => 1
-    }
+  val cache: MMap[(String, String), Int] = scala.collection.mutable.HashMap[(String, String), Int]()
 
-  
+  private val comparator = (x: String, y: String) => (x compareToIgnoreCase y) match {
+    case result: Int if (result < 0) => -1
+    case result: Int if (result == 0) => 0
+    case result: Int if (result > 0) => 1
+  }
+
 
   override def compare(a: String, b: String) = {
     // check if we already compared this, if not add to cache
-    val compared = comparator(a,b)
-    cache.getOrElseUpdate((a,b),comparator(a,b))
+    val compared = comparator(a, b)
+    cache.getOrElseUpdate((a, b), comparator(a, b))
 
   }
 }

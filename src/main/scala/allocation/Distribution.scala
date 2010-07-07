@@ -1,11 +1,11 @@
-package allocation
+package de.unima.dire.allocation
 
 
+import de.unima.dire.core.containers.ClauseStorage
+import de.unima.dire.helpers.Logging
+
+import se.scalablesolutions.akka.actor.ActorRef
 import collection.MapProxy
-import core.containers.ClauseStorage
-import helpers.Logging
-import se.scalablesolutions.akka.actor.Actor
-
 /**
  * Allocation takes care of mapping Sets of Clauses ( our KBs ) to distinct Reasoner nodes
  * Specific strategies can be applied taking into account parameters of the modulu and the
@@ -17,13 +17,13 @@ import se.scalablesolutions.akka.actor.Actor
  */
 trait Distribution {
 
-  def distribute(modules: List[ClauseStorage], reasoners: List[Actor]) : Map[Actor, ClauseStorage]
+  def distribute(modules: List[ClauseStorage], reasoners: List[ActorRef]) : Map[ActorRef, ClauseStorage]
 
 }
 
 
 class NaiveOneToOneUnrestrictedLocalDistributor extends Distribution with Logging{
-  override def distribute(modules: List[ClauseStorage], reasoners: List[Actor]): Map[Actor, ClauseStorage] = {
+  override def distribute(modules: List[ClauseStorage], reasoners: List[ActorRef]): Map[ActorRef, ClauseStorage] = {
     log.info("%s is distributing modules %s to reasoners %s", this, modules, reasoners)
     // size has to match
     //require(modules.size == reasoners.size)

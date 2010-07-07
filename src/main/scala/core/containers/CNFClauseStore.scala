@@ -1,9 +1,11 @@
-package core.containers
+package de.unima.dire.core.containers
 
 
+import de.unima.dire.domain.fol.ast.{FOLNode,Sentence}
+import de.unima.dire.core.rewriting.CNFRewriting
+
+import collection.IterableProxy
 import collection.mutable.ListBuffer
-import domain.fol.ast.{FOLNode, FOLClause, EmptyClause, Sentence}
-import rewriting.CNFRewriting
 
 
 /**
@@ -21,9 +23,7 @@ case class CNFClauseStore(override val self: List[FOLClause]) extends IterablePr
     self.isEmpty
   }
 
-
-
-  def size = self.size
+  override def size = self.size
 
   override def toString = "ClauseStore : %s" format (this mkString ("(", "\n", ")"))
 

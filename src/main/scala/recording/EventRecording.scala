@@ -1,7 +1,7 @@
-package recording
+package de.unima.dire.recording
 
+import de.unima.dire.core.containers.FOLClause
 
-import domain.fol.ast.FOLClause
 
 /**
  * User: nowi

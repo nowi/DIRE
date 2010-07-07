@@ -1,17 +1,14 @@
-package domain.fol
+package de.unima.dire.domain.fol
 
 /**
  * User: nowi
  * Date: 11.04.2010
  * Time: 14:14:21
  */
-import ast._
-import com.jteigen.scalatest.JUnit4Runner
+import de.unima.dire.domain.fol.ast._
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
-import org.junit.runner.RunWith
 
-@RunWith(classOf[JUnit4Runner])
 class FOLNodeSpec extends Spec with ShouldMatchers {
   val funH = Function("h", Constant("a"), Function("g", Constant("a")), Variable("x"))
   val funX = Function("f", Variable("x"))
@@ -29,7 +26,7 @@ class FOLNodeSpec extends Spec with ShouldMatchers {
     }
 
     it("shared nodes should be equal structurally and have same jvm object identity") {
-       val f1s = FunctionS("h", ConstantS("a"), FunctionS("g", ConstantS("a")), VariableS("x"))
+      val f1s = FunctionS("h", ConstantS("a"), FunctionS("g", ConstantS("a")), VariableS("x"))
       val f2s = FunctionS("h", ConstantS("a"), FunctionS("g", ConstantS("a")), VariableS("x"))
       // compare pointer
       (f1s eq f2s) should be(true)
@@ -42,37 +39,37 @@ class FOLNodeSpec extends Spec with ShouldMatchers {
       // first assume we have some shared terms In this adress space
       val a = ConstantS("a")
       val x = VariableS("x")
-      val catS = FunctionS("cat",x,a)
+      val catS = FunctionS("cat", x, a)
 
 
       // now assume we have generated a TEMP Function same STRUCTURE
-      val catT = Function("cat",Variable("x"),Constant("a"))
+      val catT = Function("cat", Variable("x"), Constant("a"))
 
       // of course shared root term catT should be same as catS after intergration into shared space
-      catT.shared eq catS should be (true)
+      catT.shared eq catS should be(true)
 
 
       // assume we crate a new TEMP function , that cotains already shared terms but is not itself shared
-      val catT2 = Function("cat2",Variable("x"),Constant("a"))
+      val catT2 = Function("cat2", Variable("x"), Constant("a"))
 
       // after integation the literals of this function sould point to the already shared terms
 
 
       // and the individual literals of the catT.shared should also be equal to the already existing
       // terms a and x
-      catT2.args(0) == x should be (true)
-      catT2.args(1) == a should be (true)
+      catT2.args(0) == x should be(true)
+      catT2.args(1) == a should be(true)
 
-      catT2.args(0) eq x should be (false)
-      catT2.args(1) eq a should be (false)
+      catT2.args(0) eq x should be(false)
+      catT2.args(1) eq a should be(false)
 
-      catT2.shared.args(0) == x should be (true)
-      catT2.shared.args(1) == a should be (true)
+      catT2.shared.args(0) == x should be(true)
+      catT2.shared.args(1) == a should be(true)
 
-      catT2.shared.args(0) eq x should be (true)
-      catT2.shared.args(1) eq a should be (true)
+      catT2.shared.args(0) eq x should be(true)
+      catT2.shared.args(1) eq a should be(true)
 
-      
+
     }
 
 
@@ -80,35 +77,35 @@ class FOLNodeSpec extends Spec with ShouldMatchers {
       // first assume we have some shared terms In this adress space
       val a = ConstantS("a")
       val x = VariableS("x")
-      val catS = PredicateS("cat",x,a)
+      val catS = PredicateS("cat", x, a)
 
 
       // now assume we have generated a TEMP Function same STRUCTURE
-      val catT = Predicate("cat",Variable("x"),Constant("a"))
+      val catT = Predicate("cat", Variable("x"), Constant("a"))
 
       // of course shared root term catT should be same as catS after intergration into shared space
-      catT.shared eq catS should be (true)
+      catT.shared eq catS should be(true)
 
 
       // assume we crate a new TEMP function , that cotains already shared terms but is not itself shared
-      val catT2 = Predicate("cat2",Variable("x"),Constant("a"))
+      val catT2 = Predicate("cat2", Variable("x"), Constant("a"))
 
       // after integation the literals of this function sould point to the already shared terms
 
 
       // and the individual literals of the catT.shared should also be equal to the already existing
       // terms a and x
-      catT2.args(0) == x should be (true)
-      catT2.args(1) == a should be (true)
+      catT2.args(0) == x should be(true)
+      catT2.args(1) == a should be(true)
 
-      catT2.args(0) eq x should be (false)
-      catT2.args(1) eq a should be (false)
+      catT2.args(0) eq x should be(false)
+      catT2.args(1) eq a should be(false)
 
-      catT2.shared.args(0) == x should be (true)
-      catT2.shared.args(1) == a should be (true)
+      catT2.shared.args(0) == x should be(true)
+      catT2.shared.args(1) == a should be(true)
 
-      catT2.shared.args(0) eq x should be (true)
-      catT2.shared.args(1) eq a should be (true)
+      catT2.shared.args(0) eq x should be(true)
+      catT2.shared.args(1) eq a should be(true)
 
 
     }
@@ -117,11 +114,11 @@ class FOLNodeSpec extends Spec with ShouldMatchers {
       // first assume we have some shared terms In this adress space
       val a = ConstantS("a")
       val x = VariableS("x")
-      val catS = PredicateS("cat",x,a)
+      val catS = PredicateS("cat", x, a)
 
 
 
-      val catT = Predicate("cat",Variable("x"),Constant("a"))
+      val catT = Predicate("cat", Variable("x"), Constant("a"))
 
       val nCatT = Negation(catT)
 
@@ -134,25 +131,25 @@ class FOLNodeSpec extends Spec with ShouldMatchers {
 
       // and the individual literals of the catT.shared should also be equal to the already existing
       // terms a and x
-//      catT2.args(0) == x should be (true)
-//      catT2.args(1) == a should be (true)
-//
-//      catT2.args(0) eq x should be (false)
-//      catT2.args(1) eq a should be (false)
-//
-//      catT2.shared.args(0) == x should be (true)
-//      catT2.shared.args(1) == a should be (true)
-//
-//      catT2.shared.args(0) eq x should be (true)
-//      catT2.shared.args(1) eq a should be (true)
+      //      catT2.args(0) == x should be (true)
+      //      catT2.args(1) == a should be (true)
+      //
+      //      catT2.args(0) eq x should be (false)
+      //      catT2.args(1) eq a should be (false)
+      //
+      //      catT2.shared.args(0) == x should be (true)
+      //      catT2.shared.args(1) == a should be (true)
+      //
+      //      catT2.shared.args(0) eq x should be (true)
+      //      catT2.shared.args(1) eq a should be (true)
 
 
     }
 
-//    it("should return all avaialiabe positions in the terms") {
-//      funH.positions.flatten(itr => itr) should equal(List(0, 1, List(2), List(2, 1), 3))
-//
-//    }
+    //    it("should return all avaialiabe positions in the terms") {
+    //      funH.positions.flatten(itr => itr) should equal(List(0, 1, List(2), List(2, 1), 3))
+    //
+    //    }
 
     it("should give access to subterms by indexpath") {
       funH(List(0)) should equal(funH)
@@ -162,10 +159,10 @@ class FOLNodeSpec extends Spec with ShouldMatchers {
 
     }
 
-//    it("should give access to subterms by indexpath to all indexpaths returned by positions") {
-//      funH.positions.flatten(itr => itr).foreach({pos: Any => funH(List(pos))})
-//      true
-//    }
+    //    it("should give access to subterms by indexpath to all indexpaths returned by positions") {
+    //      funH.positions.flatten(itr => itr).foreach({pos: Any => funH(List(pos))})
+    //      true
+    //    }
 
 
     it("should normalize itself") {
@@ -176,7 +173,7 @@ class FOLNodeSpec extends Spec with ShouldMatchers {
 
     it("negation should normalize itself") {
       Negation(funX).normalize.asInstanceOf[Negation].filler should equal(funY.normalize)
-    } 
+    }
 
 
 

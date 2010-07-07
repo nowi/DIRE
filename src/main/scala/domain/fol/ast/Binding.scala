@@ -1,4 +1,5 @@
-package domain.fol.ast
+package de.unima.dire.domain.fol.ast
+
 
 /**
  * User: nowi
@@ -6,6 +7,4 @@ package domain.fol.ast
  * Time: 15:50:15
  */
 
-case class Binding(v : Variable,t : FOLNode) extends Tuple2[Variable,FOLNode](v,t) {
-
-}
+class Binding(v : Variable,t : FOLNode) extends Tuple2[Variable,FOLNode](v,t) 

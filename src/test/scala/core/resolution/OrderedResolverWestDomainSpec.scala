@@ -1,4 +1,5 @@
-//package core.resolution
+//package core
+package resolution
 //
 ///**
 // * User: nowi

@@ -1,11 +1,12 @@
-package kernel
+package de.unima.dire.kernel
 
 
-import core.resolution.SuccessfullResolution
-import domain.fol.ast.FOLClause
-import recording.Neo4JRecorder
+import de.unima.dire.kernel.dispatching.ReasoningActorChild
+import de.unima.dire.core.resolution.SuccessfullResolution
+import de.unima.dire.recording.Neo4JRecorder
+import de.unima.dire.core.containers.FOLClause
+
 import se.scalablesolutions.akka.actor.Actor
-
 /**
  * User: nowi
  * Date: 25.03.2010
@@ -13,7 +14,7 @@ import se.scalablesolutions.akka.actor.Actor
  */
 
 trait LoggingActor extends Actor with ReasoningActorChild {
-  override protected def init = {
+  override def init = {
     log.debug("%s initialized", this)
   }
 

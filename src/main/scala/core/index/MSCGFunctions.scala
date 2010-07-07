@@ -1,4 +1,4 @@
-package core.index
+package de.unima.dire.core.index
 
 /**
  * User: nowi
@@ -7,5 +7,4 @@ package core.index
  */
 
 object MSCGFunctions {
-
 }

@@ -1,9 +1,10 @@
-package kernel
+package de.unima.dire.kernel
 
 
-import helpers.Logging
+import de.unima.dire.helpers.Logging
 import se.scalablesolutions.akka.actor.ActorRegistry
 import se.scalablesolutions.akka.remote.RemoteNode
+import se.scalablesolutions.akka.actor.Actor._
 
 /**
  * User: nowi
@@ -24,7 +25,7 @@ object DIREServer extends Application with se.scalablesolutions.akka.actor.Actor
         reasonerType match {
           case "FOL" => {
             println("Staring a Full FOL reasoning node")
-            val reasoner = new DefaultFOLReasoner
+            val reasoner = actorOf(new DefaultFOLReasoner)
             log.error("%s my Configuration  is : %s", this, reasoner.toString)
 
             log.error("%s my ActorRegistry  is : \n", this)
@@ -34,7 +35,7 @@ object DIREServer extends Application with se.scalablesolutions.akka.actor.Actor
           }
           case _ => {
             println("Staring a RDL reasoning node")
-            val reasoner = new DefaultDALCReasoner
+            val reasoner = actorOf(new DefaultDALCReasoner)
             log.error("%s my Configuration  is : %s", this, reasoner.toString)
 
             log.error("%s my ActorRegistry  is : \n", this)
@@ -52,7 +53,7 @@ object DIREServer extends Application with se.scalablesolutions.akka.actor.Actor
       case port :: _ => {
         se.scalablesolutions.akka.remote.Cluster.start
         RemoteNode.start("localhost", port.toInt)
-        val reasoner = new DefaultDALCReasoner
+        val reasoner = actorOf(new DefaultDALCReasoner)
         log.error("%s my Class  is : %s", this, classOf[DefaultDALCReasoner])
         log.error("%s my Configuration  is : %s", this, reasoner.toString)
 

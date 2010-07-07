@@ -1,14 +1,13 @@
-package core.resolution
+package de.unima.dire.core.resolution
 
 
-import containers.ClauseStorage
-import domain.fol.ast._
-import domain.fol.functions.FOLAlgorithms._
-import domain.fol.Substitution
-import helpers.Logging
-import recording.ClauseRecording
-import reduction.{Subsumption, ClauseCondenser, DuplicateLiteralDeleter}
-
+import de.unima.dire.core.Standardizing
+import de.unima.dire.core.containers._
+import de.unima.dire.domain.fol.ast._
+import de.unima.dire.domain.fol.functions.FOLAlgorithms._
+import de.unima.dire.domain.fol.Substitution
+import de.unima.dire.helpers.Logging
+import de.unima.dire.core.reduction.{Subsumption, ClauseCondenser, DuplicateLiteralDeleter}
 /**
  * User: nowi
  * Date: 29.04.2010
@@ -22,24 +21,24 @@ class BinaryResolver(env: {val standardizer: Standardizing; val subsumptionStrat
 
   implicit val subsumptionChecker = env.subsumptionStrategy
 
-  val condensation = ClauseCondenser
-  val duplicateLiteralDeletion = DuplicateLiteralDeleter
+  val condensation = new ClauseCondenser
+  val duplicateLiteralDeletion = new DuplicateLiteralDeleter
 
-  var iteration : Int = 1
-  var totalCandidates : Int = 0
+  var iteration: Int = 1
+  var totalCandidates: Int = 0
 
-  override def apply(a: FOLClause, b: ClauseStorage) : Iterable[BinaryResolutionResult] = {
+  override def apply(a: FOLClause, b: ClauseStorage): Iterable[BinaryResolutionResult] = {
 
     // check if we have index support
 
-    val candidates = b match {
-      case indexedClauseStorage: core.containers.UnifiableClauseRetrieval => {
+    val candidates : Iterable[FOLClause] = b match {
+      case indexedClauseStorage: UnifiableClauseRetrieval => {
         // we have a structure that supports unifiables clause retrieval
         // get the unifiable clauses for each literal ( this is not a perfect filtering
         // because we have no unique literal to resolve upon
         // this changes in alcd where we can determine the unique resolvable literal
         // prior to substitution !
-        a.literals.flatMap({lit : FOLNode => indexedClauseStorage.retrieveUnifiables(lit) ++ indexedClauseStorage.retrieveUnifiables(lit.negate) - a })
+        a.literals.flatMap({lit: FOLNode => indexedClauseStorage.retrieveUnifiables(lit) ++ indexedClauseStorage.retrieveUnifiables(lit.negate) filterNot (_ == a)})
       }
 
       case _ => {
@@ -51,9 +50,9 @@ class BinaryResolver(env: {val standardizer: Standardizing; val subsumptionStrat
 
     }
 
-     if(iteration % 50 == 0) {
+    if (iteration % 50 == 0) {
       val avgCandidateSize = totalCandidates / iteration
-      log.info("AVG candidate size : %s",avgCandidateSize )
+      log.info("AVG candidate size : %s", avgCandidateSize)
 
     }
     iteration += 1
@@ -62,11 +61,7 @@ class BinaryResolver(env: {val standardizer: Standardizing; val subsumptionStrat
     candidates.map(apply(a, _))
 
 
-
   }
-
-
-
 
 
   /**
@@ -78,7 +73,7 @@ class BinaryResolver(env: {val standardizer: Standardizing; val subsumptionStrat
    */
   def apply(a: FOLClause, b: FOLClause): BinaryResolutionResult = {
     // TODO CEHCK THIS
-    val (aStand, bStand,aSubst : Substitution,bSubst : Substitution,renamings) = standardizer.standardizeApart(a, b)
+    val (aStand, bStand, aSubst: Substitution, bSubst: Substitution, renamings) = standardizer.standardizeApart(a, b)
 
     log.debug("Resolving A : %s with B : %s", a, b)
 
@@ -134,9 +129,9 @@ class BinaryResolver(env: {val standardizer: Standardizing; val subsumptionStrat
             val S2 = b.map(_.rewrite(mu))
             val bLitS = bNeg.rewrite(mu)
 
-//            val unduped = duplicateLiteralDeletion.apply(((S1 - aLitS) ++ (S2 - bLitS)))
-//            val condensed = condensation.apply(unduped)(subsumptionChecker)
-//            condensed
+            //            val unduped = duplicateLiteralDeletion.apply(((S1 - aLitS) ++ (S2 - bLitS)))
+            //            val condensed = condensation.apply(unduped)(subsumptionChecker)
+            //            condensed
 
             val resolved = ((S1 - aLitS) ++ (S2 - bLitS))
 
@@ -150,9 +145,9 @@ class BinaryResolver(env: {val standardizer: Standardizing; val subsumptionStrat
 
           case Some(mu) => {
             // empty mgu, merge no substitution needed
-//            val unduped = duplicateLiteralDeletion.apply(((a - aPos) ++ (b - bNeg)))
-//            val condensed = condensation.apply(unduped)(subsumptionChecker)
-//            condensed
+            //            val unduped = duplicateLiteralDeletion.apply(((a - aPos) ++ (b - bNeg)))
+            //            val condensed = condensation.apply(unduped)(subsumptionChecker)
+            //            condensed
             val resolved = ((a - aPos) ++ (b - bNeg))
             if (resolved.isEmpty) {
               log.info("Derived empty clause")

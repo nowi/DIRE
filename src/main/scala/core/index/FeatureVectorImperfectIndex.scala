@@ -1,13 +1,10 @@
-package core.containers
+package de.unima.dire.core.index
 
+import de.unima.dire.core.containers._
 import collection.mutable.{HashMap, MultiMap, Set => MSet}
-import domain.fol.ast.{Negation, Variable, FOLNode, FOLClause}
-import domain.fol.Substitution
-import helpers.{Logging, HelperFunctions}
-import index._
+import de.unima.dire.domain.fol.ast.{FOLNode}
+import de.unima.dire.helpers.Logging
 import sun.reflect.generics.reflectiveObjects.NotImplementedException
-import HelperFunctions._
-
 /**
  * User: nowi
  * Date: 18.05.2010
@@ -35,11 +32,11 @@ trait FeatureVectorImperfectIndex extends MutableClauseStorage
   //  var posTree = tree
   //  var negTree = tree
 
-  val positiveLiterals: scala.collection.mutable.MultiMap[Integer, FOLNode] =
-  new HashMap[Integer, MSet[FOLNode]] with MultiMap[Integer, FOLNode]
+  val positiveLiterals: scala.collection.mutable.MultiMap[Int, FOLNode] =
+  new HashMap[Int, MSet[FOLNode]] with MultiMap[Int, FOLNode]
 
-  val negativeLiterals: scala.collection.mutable.MultiMap[Integer, FOLNode] =
-  new HashMap[Integer, MSet[FOLNode]] with MultiMap[Integer, FOLNode]
+  val negativeLiterals: scala.collection.mutable.MultiMap[Int, FOLNode] =
+  new HashMap[Int, MSet[FOLNode]] with MultiMap[Int, FOLNode]
 
 
   val topSymbolIndex: scala.collection.mutable.MultiMap[String, FOLNode] =
@@ -49,7 +46,7 @@ trait FeatureVectorImperfectIndex extends MutableClauseStorage
   val hashSeed: Int = 17
   val hashMultiplier: Int = 59
 
-  abstract override def removeNext: FOLClause = synchronized {
+  abstract override def removeNext: FOLClause = {
     val clause = super.removeNext
 
 
@@ -63,7 +60,7 @@ trait FeatureVectorImperfectIndex extends MutableClauseStorage
   }
 
 
-  abstract override def remove(clause: FOLClause): FOLClause = synchronized  {
+  abstract override def remove(clause: FOLClause): FOLClause = {
     val removedClause: FOLClause = super.remove(clause)
     // remove from index ...
     for (term <- removedClause.literals) {
@@ -73,7 +70,7 @@ trait FeatureVectorImperfectIndex extends MutableClauseStorage
   }
 
 
-  abstract override def add(a: FOLClause): Unit = synchronized {
+  abstract override def add(a: FOLClause): Unit = {
     require(!a.isEmpty)
     // index on all literals of the clause
     for (literal <- a.literals) {
@@ -86,14 +83,14 @@ trait FeatureVectorImperfectIndex extends MutableClauseStorage
 
 
   // compute hash based on arity , topsymbol and polarity
-  private def computeHashKey(literal: FOLNode): Int = synchronized {
+  private def computeHashKey(literal: FOLNode): Int = {
     var hc: Int = hashSeed
     hc = hc * hashMultiplier + literal.top.hashCode
     hc = hc * hashMultiplier + literal.arity.hashCode
     hc
   }
 
-  private def add(term: FOLNode) = synchronized  {
+  private def add(term: FOLNode) = {
     // TODO , maybe save old copies for undo redo functionality
 
     topSymbolIndex.add(term.top, term)
@@ -119,30 +116,30 @@ trait FeatureVectorImperfectIndex extends MutableClauseStorage
   // TODO !!!!!!!!!!!!! IMPLEMENT REMOVAL HERE !!!!!!!!!!!!
 
 
-  private def remove(term: FOLNode) = synchronized {
-//    val bucketsizeBefore = topSymbolIndex.get(term.top).get.size
-//
-//    topSymbolIndex.get(term.top) match {
-//      case Some(bucket) =>
-//        if (!bucket.contains(term)) {
-//          val b = bucket
-//          error("Deleting a term , but the term is not indexed in ites bucket")
-//
-//        }
-//    }
+  private def remove(term: FOLNode) = {
+    //    val bucketsizeBefore = topSymbolIndex.get(term.top).get.size
+    //
+    //    topSymbolIndex.get(term.top) match {
+    //      case Some(bucket) =>
+    //        if (!bucket.contains(term)) {
+    //          val b = bucket
+    //          error("Deleting a term , but the term is not indexed in ites bucket")
+    //
+    //        }
+    //    }
 
     // TODO check this , do not remove because this is a multi
     //topSymbolIndex.remove(term.top, term)
 
 
-//    val bucketsizeAfter = topSymbolIndex.get(term.top) match {
-//      case Some(bucket) => bucket.size
-//      case None => 0
-//    }
+    //    val bucketsizeAfter = topSymbolIndex.get(term.top) match {
+    //      case Some(bucket) => bucket.size
+    //      case None => 0
+    //    }
 
-//    if (bucketsizeAfter > bucketsizeBefore) {
-//      require(bucketsizeAfter == bucketsizeBefore - 1)
-//    }
+    //    if (bucketsizeAfter > bucketsizeBefore) {
+    //      require(bucketsizeAfter == bucketsizeBefore - 1)
+    //    }
 
     //    term match {
     //      case Negation(filler) => {
@@ -160,31 +157,31 @@ trait FeatureVectorImperfectIndex extends MutableClauseStorage
   }
 
 
-  override def retrieveGeneralizations(queryTerm: FOLNode) = synchronized {
+  override def retrieveGeneralizations(queryTerm: FOLNode) = {
     // first get the terms from sti index
     val terms = retrieveGeneralTerms(queryTerm)
     // lookup the clauses for those terms using the term2clause lookup map in the
-    val clauses = terms.flatMap(termToClause.getOrElse(_,Nil))
+    val clauses = terms.flatMap(termToClause.getOrElse(_, MSet[FOLClause]()))
 
     clauses
 
   }
 
 
-  override def retrieveUnifiables(queryTerm: FOLNode) = synchronized {
+  override def retrieveUnifiables(queryTerm: FOLNode) = {
     // first get the terms from sti index
     val terms = retrieveUnifiableTerms(queryTerm)
     // lookup the clauses for those terms
-    val clauses = terms.flatMap(termToClause.getOrElse(_,Nil))
+    val clauses = terms.flatMap(termToClause.getOrElse(_, MSet[FOLClause]()))
 
     clauses
   }
 
-  override def retrieveUnifiablesFull(queryTerm: FOLNode) = synchronized {
+  override def retrieveUnifiablesFull(queryTerm: FOLNode) = {
     // first get the terms from sti index
     val terms = retrieveUnifiableTerms(queryTerm)
     // lookup the clauses for those terms
-    val clauses = terms.flatMap(termToClause.getOrElse(_,Nil))
+    val clauses = terms.flatMap(termToClause.getOrElse(_, MSet[FOLClause]()))
 
     // get the subsititutions
     //val substitutions = retrieveUnifiableLeafNodes(queryTerm).map(_.substitution.get)
@@ -204,19 +201,19 @@ trait FeatureVectorImperfectIndex extends MutableClauseStorage
 
   }
 
-  override def retrieveInstances(queryTerm: FOLNode) = synchronized {
+  override def retrieveInstances(queryTerm: FOLNode) = {
     // first get the terms from sti index
     val terms = retrieveInstanceTerms(queryTerm)
     // lookup the clauses for those terms
-    val clauses = terms.flatMap(termToClause.getOrElse(_,Nil))
+    val clauses = terms.flatMap(termToClause.getOrElse(_, MSet[FOLClause]()))
     clauses
   }
 
-  override def retrieveVariants(queryTerm: FOLNode) = synchronized {
+  override def retrieveVariants(queryTerm: FOLNode) = {
     // first get the terms from sti index
     val terms = retrieveVariantTerms(queryTerm)
     // lookup the clauses for those terms
-    val clauses = terms.flatMap(termToClause.getOrElse(_,Nil))
+    val clauses = terms.flatMap(termToClause.getOrElse(_, MSet[FOLClause]()))
     clauses
   }
 
@@ -227,7 +224,7 @@ trait FeatureVectorImperfectIndex extends MutableClauseStorage
 
 
   // imperfect retrieval
-  private def retrieveUnifiableTerms(queryTerm: FOLNode): List[FOLNode] = synchronized {
+  private def retrieveUnifiableTerms(queryTerm: FOLNode): List[FOLNode] = {
 
 
     val results = topSymbolIndex.get(queryTerm.top)
@@ -254,12 +251,12 @@ trait FeatureVectorImperfectIndex extends MutableClauseStorage
   }
 
 
-  private def retrieveVariantTerms(queryTerm: FOLNode): List[FOLNode] = synchronized {
+  private def retrieveVariantTerms(queryTerm: FOLNode): List[FOLNode] = {
     throw new NotImplementedException
 
   }
 
-  private def retrieveInstanceTerms(queryTerm: FOLNode): List[FOLNode] = synchronized {
+  private def retrieveInstanceTerms(queryTerm: FOLNode): List[FOLNode] = {
     val terms = topSymbolIndex.get(queryTerm.top)
 
     //    val terms = queryTerm match {
@@ -282,7 +279,7 @@ trait FeatureVectorImperfectIndex extends MutableClauseStorage
     }
   }
 
-  private def retrieveGeneralTerms(queryTerm: FOLNode): List[FOLNode] = synchronized {
+  private def retrieveGeneralTerms(queryTerm: FOLNode): List[FOLNode] = {
     val terms = topSymbolIndex.get(queryTerm.top)
 
     //    val terms = queryTerm match {

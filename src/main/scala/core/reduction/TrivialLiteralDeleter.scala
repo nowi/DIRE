@@ -1,18 +1,18 @@
-package core.reduction
+package de.unima.dire.core.reduction
 
+
+import de.unima.dire.domain.fol.ast._
+import de.unima.dire.domain.fol.functions.FOLAlgorithms._
+import de.unima.dire.helpers.Logging
 
 import collection.mutable.ListBuffer
-import domain.fol.ast._
-import domain.fol.functions.FOLAlgorithms._
-import helpers.Logging
-
 /**
  * User: nowi
  * Date: 25.04.2010
  * Time: 11:33:07
  */
 
-object TrivialLiteralDeleter extends Logging {
+class TrivialLiteralDeleter extends Logging {
   def apply(clauseBuffer: List[FOLNode]): List[FOLNode] = {
 
     def getMGU(a : FOLNode,b : FOLNode) = {
@@ -38,7 +38,7 @@ object TrivialLiteralDeleter extends Logging {
 
 
     // remove all literals that where more general from the original buffer
-    val condensed = (clauseBuffer -- generalizations.toList)
+    val condensed = (clauseBuffer filterNot (generalizations.toList contains) )
     if (clauseBuffer.size - condensed.size > 0) {
       log.info("%s condensed clause %s --> %s", this, clauseBuffer, condensed)
     }

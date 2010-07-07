@@ -1,27 +1,27 @@
-package core.resolution
+package de.unima.dire.core.resolution
 
+import de.unima.dire.core.Standardizing
+import de.unima.dire.core.caches.{SelectedLitCache, MaxLitCache, URLitCache}
+import de.unima.dire.domain.fol.ast._
+import de.unima.dire.domain.fol.Substitution
+import de.unima.dire.helpers.Logging
+import de.unima.dire.core.ordering.LiteralComparison
+import de.unima.dire.core.selection.LiteralSelection
+import de.unima.dire.domain.fol.functions.FOLAlgorithms._
+import de.unima.dire.core.containers._
 
-import caches.{SelectedLitCache, MaxLitCache, URLitCache}
-import collection.immutable.EmptyMap
-import containers.{UnifiableClauseRetrieval, MatchingClausesRetrieval, CNFClauseStore, ClauseStorage}
-import domain.fol.ast._
-import domain.fol.functions.FOLAlgorithms
-import domain.fol.Substitution
-import helpers.Logging
-import ordering.{ALCLPOComparator, LiteralComparison}
-import recording.ClauseRecording
-import selection.{DALCRSelector, LiteralSelection}
-import sun.reflect.generics.reflectiveObjects.NotImplementedException
-
-import FOLAlgorithms._
 import scala.collection.mutable.{Map => MMap}
 
-class DALCResolver(env: { val standardizer: Standardizing;
-  val selector: LiteralSelection; val literalComparator: LiteralComparison;
-  val uniqueLiteralResolver: Option[UniqueLiteralResolution];
-  val uniqueRLitCache : URLitCache;
-  val maxLitCache : MaxLitCache;val selectedLitCache : SelectedLitCache }) extends BinaryResolution with Logging {
+import sun.reflect.generics.reflectiveObjects.NotImplementedException
 
+
+class DALCResolver(env: {val standardizer: Standardizing;
+  val selector: LiteralSelection;
+  val literalComparator: LiteralComparison;
+  val uniqueLiteralResolver: Option[UniqueLiteralResolution];
+  val uniqueRLitCache: URLitCache;
+  val maxLitCache: MaxLitCache;
+  val selectedLitCache: SelectedLitCache}) extends BinaryResolution with Logging {
   val standardizer = env.standardizer
   implicit val selector = env.selector
   implicit val literalComparator = env.literalComparator
@@ -31,9 +31,9 @@ class DALCResolver(env: { val standardizer: Standardizing;
 
 
   // get from global context and declare as implcit in this context
-  implicit val maxLitCache : MaxLitCache = env.maxLitCache
-  implicit val selectedLitCache : SelectedLitCache = env.selectedLitCache
-  implicit val uniqueLitRCache : URLitCache  = env.uniqueRLitCache
+  implicit val maxLitCache: MaxLitCache = env.maxLitCache
+  implicit val selectedLitCache: SelectedLitCache = env.selectedLitCache
+  implicit val uniqueLitRCache: URLitCache = env.uniqueRLitCache
 
 
 
@@ -71,7 +71,7 @@ class DALCResolver(env: { val standardizer: Standardizing;
   private def applyWithIndexedStorage(a: FOLClause, clauses: ClauseStorage with UnifiableClauseRetrieval): Iterable[BinaryResolutionResult] = {
 
 
-    val results: Iterable[BinaryResolutionResult] = a.uniqueResolvableLit(uniqueLiteralResolver,uniqueLitRCache) match {
+    val results: Iterable[BinaryResolutionResult] = a.uniqueResolvableLit(uniqueLiteralResolver, uniqueLitRCache) match {
       case (Some(aUrLit)) => {
 
 
@@ -170,11 +170,11 @@ class DALCResolver(env: { val standardizer: Standardizing;
                 mgu(bNegS.negate, aPosS) match {
                   case Some(mu) => {
                     log.ifDebug("MGU for Literal : %s and Literal %s is %s", aPosS, bNegS, mu)
-                    val S1  = aS.rewrite(mu)
-                    val aLitS  = aPosS.rewrite(mu)
-                    val S2  = bS.rewrite(mu)
-                    val bLitS  = bNegS.rewrite(mu)
-                    val resolved  = ((S1 - aLitS) ++ (S2 - bLitS))
+                    val S1 = aS.rewrite(mu)
+                    val aLitS = aPosS.rewrite(mu)
+                    val S2 = bS.rewrite(mu)
+                    val bLitS = bNegS.rewrite(mu)
+                    val resolved = ((S1 - aLitS) ++ (S2 - bLitS))
                     if (resolved.isEmpty) {
                       log.info("Derived empty clause")
                     }

@@ -1,4 +1,4 @@
-package core.ordering
+package de.unima.dire.core.ordering
 
 ;
 
@@ -7,16 +7,11 @@ package core.ordering
  * Date: 19.01.2010
  * Time: 19:04:06
  */
-import com.jteigen.scalatest.JUnit4Runner
 
-import config.Partition1OrderedTheoremProvingConfig
-import containers.{CNFClauseStore}
 
-import org.junit.runner.RunWith
-import org.scalatest.matchers.ShouldMatchers
+
 import org.scalatest.Spec
-
-@RunWith(classOf[JUnit4Runner])
+import org.scalatest.matchers.ShouldMatchers
 class LexiocgraphicPrecedenceSpec extends Spec with ShouldMatchers {
   describe("LexiocgraphicPrecedenceSpec") {
 

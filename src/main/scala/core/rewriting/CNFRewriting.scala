@@ -1,7 +1,7 @@
-package core.rewriting
+package de.unima.dire.core.rewriting
 
 
-import domain.fol.ast._
+import de.unima.dire.domain.fol.ast._
 
 /**
  * User: nowi

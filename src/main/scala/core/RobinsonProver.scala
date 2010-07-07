@@ -1,23 +1,18 @@
-package core
+package de.unima.dire.core
 
 
-import collection.mutable.{ListBuffer}
-import domain.fol.ast._
-import helpers.{Subject, Logging}
-import kernel.{GivenClause, DerivedBatch, Derived}
-import ProvingResult._
-import collection.immutable.{TreeSet, SortedSet}
-import containers._
-import formatting.ClauseFormatting
-import heuristics.LightestClauseHeuristicStorage
-import net.lag.configgy.Configgy
-import ordering.LiteralComparison
-import recording.{EventRecorder, ClauseRecording}
-import reduction._
-import resolution._
+import de.unima.dire.core.reduction._
+import de.unima.dire.core.containers._
+import de.unima.dire.core.resolution._
+import de.unima.dire.domain.fol.ast._
+import de.unima.dire.helpers.Logging
+import de.unima.dire.kernel.{GivenClause, DerivedBatch}
+import de.unima.dire.core.ProvingResult._
+import de.unima.dire.core.formatting.ClauseFormatting
+import de.unima.dire.recording.{EventRecorder, ClauseRecording}
+
 import scala.{Function => ScalaFun}
-
-import ClauseStorage._
+import collection.mutable.ListBuffer
 
 /**
  * User: nowi
@@ -68,9 +63,9 @@ class RobinsonProver(env: {
 
   // done
   val forwardSubsumer = env.forwardSubsumer
-  val tautologyDetection = ClauseTautologyDetector.apply _
-  val condensation = ClauseCondenser.apply _
-  val trivialLiteralDeletion = TrivialLiteralDeleter.apply _
+  val tautologyDetection = new ClauseTautologyDetector().apply _
+  val condensation = new ClauseCondenser().apply _
+  val trivialLiteralDeletion = new TrivialLiteralDeleter().apply _
 
   //val duplicateLiteralDeleter = DuplicateLiteralDeleter.apply _
 
@@ -298,8 +293,8 @@ class RobinsonProver(env: {
                 _inferenceRecorder match {
                   case Some(inferenceRecorder) => {
                     successfullResolutions.foreach({
-                      r: core.resolution.SuccessfullResolution =>
-                              inferenceRecorder.recordClause(SharedALCDClause(r.result), Some(SharedALCDClause(r.parent1)), Some(SharedALCDClause(r.parent2)))
+                      r: SuccessfullResolution =>
+                        inferenceRecorder.recordClause(SharedALCDClause(r.result), Some(SharedALCDClause(r.parent1)), Some(SharedALCDClause(r.parent2)))
                     })
                   }
 
@@ -308,8 +303,8 @@ class RobinsonProver(env: {
                 eventRecorder match {
                   case Some(recorder) => {
                     successfullResolutions.foreach({
-                      r: core.resolution.SuccessfullResolution =>
-                              recorder.recordDerivedClause(SharedALCDClause(r.result), SharedALCDClause(r.parent1),SharedALCDClause(r.parent2))
+                      r: SuccessfullResolution =>
+                        recorder.recordDerivedClause(SharedALCDClause(r.result), SharedALCDClause(r.parent1), SharedALCDClause(r.parent2))
                     })
                   }
 
@@ -521,7 +516,7 @@ class RobinsonProver(env: {
 
 
   def forwardRedundancyCheck(clause: Set[FOLNode], backgroundClauses: ClauseStorage): Boolean = {
-     forwardSubsumer(clause, backgroundClauses)
+    forwardSubsumer(clause, backgroundClauses)
   }
 
   // rewritten in functional style

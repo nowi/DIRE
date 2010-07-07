@@ -1,4 +1,4 @@
-package core.reduction
+package de.unima.dire.core.reduction
 
 /**
  * User: nowi
@@ -6,10 +6,10 @@ package core.reduction
  * Time: 21:45:48
  */
 
-import containers._
-import domain.fol.ast.{ALCDClause, FOLNode, FOLClause}
-import domain.fol.Substitution
-import helpers.Logging
+import de.unima.dire.recording.EventRecorder
+import de.unima.dire.core.containers._
+import de.unima.dire.domain.fol.ast.FOLNode
+import de.unima.dire.helpers.Logging
 
 /**
  * User: nowi
@@ -18,13 +18,13 @@ import helpers.Logging
  */
 
 trait BackwardSubsumption {
-  def apply(clauseBuffer: Set[FOLNode], clauseStorage: ClauseStorage)(implicit subsumptionCheck: Subsumption) : Iterable[FOLClause]
+  def apply(clauseBuffer: Set[FOLNode], clauseStorage: ClauseStorage)(implicit subsumptionCheck: Subsumption): Iterable[FOLClause]
 }
 
 
 
 
-class BackwardSubsumer(env:{val eventRecorder: Option[recording.EventRecorder]}) extends BackwardSubsumption with Logging {
+class BackwardSubsumer(env: {val eventRecorder: Option[EventRecorder]}) extends BackwardSubsumption with Logging {
   implicit def setFOLNode2ALCDClause(set: Set[FOLNode]) = ALCDClause(set)
 
   val eventRecorder = env.eventRecorder
@@ -67,7 +67,7 @@ class BackwardSubsumer(env:{val eventRecorder: Option[recording.EventRecorder]})
         eventRecorder match {
           case Some(recorder) => {
             for (subsumedClause <- subsumedClauses) {
-              recorder.recordReducedClause(subsumedClause,clauseBuffer,this.toString)
+              recorder.recordReducedClause(subsumedClause, clauseBuffer, this.toString)
             }
           }
           case None => // no inference recorder present

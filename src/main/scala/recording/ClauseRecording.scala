@@ -1,9 +1,10 @@
-package recording
+package de.unima.dire.recording
+
+import de.unima.dire.domain.fol.ast._
+import de.unima.dire.core.containers.FOLClause
 
 import collection.mutable.ListBuffer
 import collection.mutable.{Map => MMap}
-import domain.fol.ast._
-
 /**
  * User: nowi
  * Date: 17.03.2010
@@ -28,6 +29,10 @@ trait ClauseRecording {
         record(clause,true)
       }
 
+      case _ => {
+        throw new IllegalArgumentException("Illegal combination of paraters to clause recorder")
+      }
+
     }
   }
 
@@ -43,6 +48,11 @@ trait ClauseRecording {
       case (clause, None, None) => {
         record(clause,false)
       }
+
+      case _ => {
+        throw new IllegalArgumentException("Illegal combination of paraters to clause recorder")
+      }
+      
 
     }
 

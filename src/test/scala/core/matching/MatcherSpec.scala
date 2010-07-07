@@ -1,4 +1,4 @@
-package core.matching
+package de.unima.dire.core.matching
 
 /**
  * User: nowi
@@ -6,19 +6,17 @@ package core.matching
  * Time: 10:59:26
  */
 
-import com.jteigen.scalatest.JUnit4Runner
 
-import domain.fol.ast._
-import helpers.Logging
-import net.lag.configgy.Configgy
-import org.junit.runner.RunWith
+import _root_.de.unima.dire.domain.fol.ast._
+import de.unima.dire.helpers.Logging
+import de.unima.dire.core.matching.Matcher
+import de.unima.dire.core.rewriting.{VariableRewriter}
 
 
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
-import rewriting.{VariableRewriter}
+import net.lag.configgy.Configgy
 
-@RunWith(classOf[JUnit4Runner])
 class MatcherSpec extends Spec with ShouldMatchers with Logging {
   describe("The FOL Term Matcher ") {
     val john = Constant("John")
@@ -50,7 +48,7 @@ class MatcherSpec extends Spec with ShouldMatchers with Logging {
 
     // create matcher
     Configgy.configure("config/config.conf")
-    val matcher  = new  Matcher
+    val matcher  = new  core.matching.Matcher
 
     it("should find trivial matcher") {
       // unificator.unify a and b

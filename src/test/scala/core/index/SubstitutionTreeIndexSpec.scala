@@ -1,4 +1,4 @@
-package core.index
+package de.unima.dire.core.index
 
 /**
  * User: nowi
@@ -6,16 +6,15 @@ package core.index
  * Time: 10:11:57
  */
 
-import com.jteigen.scalatest.JUnit4Runner
 
-import domain.fol.ast._
-import domain.fol.Substitution
-import helpers.Logging
-import org.junit.runner.RunWith
+import de.unima.dire.domain.fol.ast._
+import de.unima.dire.domain.fol.Substitution
+import de.unima.dire.helpers.Logging
+
+
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
 
-@RunWith(classOf[JUnit4Runner])
 class SubstitutionTreeIndexSpec extends Spec with ShouldMatchers with Logging {
   describe("A Index") {
     val a = Constant("a")

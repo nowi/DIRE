@@ -1,8 +1,9 @@
+package de.unima.dire
 package recording
 
 
 import collection.mutable.{ListBuffer}
-import domain.fol.ast.FOLClause
+import core.containers.FOLClause
 
 /**
  * User: nowi

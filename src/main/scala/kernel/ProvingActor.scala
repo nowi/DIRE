@@ -1,31 +1,20 @@
-package kernel
+package de.unima.dire.kernel
 
 
-import actors.{Scheduler, LinkedQueue}
-import collection.mutable.{ListBuffer, Queue, ArrayBuffer}
-import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy
-import java.util.concurrent.TimeUnit
-import java.util.Date
-import jsr166x.{Deque, ConcurrentLinkedDeque}
-import recording.{EventRecording, ClauseRecording}
-import se.scalablesolutions.akka.actor.{Scheduler, Actor}
+import de.unima.dire.kernel.dispatching.ReasoningActorChild
+import de.unima.dire.recording.EventRecording
+import de.unima.dire.core._
+import de.unima.dire.core.caches.URLitCache
+import de.unima.dire.core.containers.FOLClause
+import de.unima.dire.kernel.ProvingState._
+import de.unima.dire.core.ProvingResult._
+import de.unima.dire.core.resolution.UniqueLiteralResolution
+
+
 import se.scalablesolutions.akka.dispatch.Dispatchers
-import core._
-import caches.URLitCache
-import containers.{ClauseStorage, CNFClauseStore}
-import domain.fol.ast.FOLClause
-import domain.fol.parsers.SPASSIntermediateFormatParser
-import helpers.Subject
-import java.io.File
-import core.reduction._
-import core.rewriting.{VariableRewriter}
-import ordering.{CustomConferencePartitionedPrecedence, CustomSPASSModule1Precedence, ALCLPOComparator}
-import ProvingState._
-import ProvingResult._
-import core.selection.NegativeLiteralsSelection
-import resolution.{UniqueLiteralResolution, SuccessfullResolution}
-import se.scalablesolutions.akka.util.Logging
-import sun.reflect.generics.reflectiveObjects.NotImplementedException
+import collection.mutable.Queue
+import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy
+import se.scalablesolutions.akka.actor.{ActorRef, Actor}
 
 /**
  * User: nowi
@@ -36,10 +25,6 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException
 
 class ProvingActor(env: {val prover: FOLProving; val eventRecorder: Option[EventRecording]; val uniqueLiteralResolver: Option[UniqueLiteralResolution]; val uniqueRLitCache: URLitCache}) extends Actor with ReasoningActorChild {
 
-
-  // cofigure a native os thread based dispatcher for the proving actor
-//  val d = Dispatchers.newThreadBasedDispatcher(this)
-//      val d = Dispatchers.globalReactorBasedSingleThreadEventDrivenDispatcher
   val d = Dispatchers.newExecutorBasedEventDrivenDispatcher("prover");
   d.withNewThreadPoolWithLinkedBlockingQueueWithUnboundedCapacity
           .setCorePoolSize(5)
@@ -48,8 +33,9 @@ class ProvingActor(env: {val prover: FOLProving; val eventRecorder: Option[Event
           .setRejectionPolicy(new CallerRunsPolicy)
           .buildThreadPool;
 
-  messageDispatcher = d
+  self.dispatcher = d
 
+  
   val prover: FOLProving = env.prover
 
   val eventRecorder = env.eventRecorder
@@ -59,7 +45,7 @@ class ProvingActor(env: {val prover: FOLProving; val eventRecorder: Option[Event
 
   val incomingClausesBuffer = new scala.collection.mutable.ListBuffer[Iterable[FOLClause]]()
 
-  val MAILBOXBUFFERINGTHRESHOLD : Int = 10
+  val MAILBOXBUFFERINGTHRESHOLD: Int = 10
 
 
 
@@ -112,118 +98,111 @@ class ProvingActor(env: {val prover: FOLProving; val eventRecorder: Option[Event
   def receiveUpdate(resolutionResult: Any) {
     //println("Recieved derived clauses , sending them to dispatcher actor")
     // send derived clauses to clause dispatcher
-    parent match {
-      case Some(parentActor) => {
-        resolutionResult match {
 
-          case GivenClause(givenClause) => {
-            givenClause.uniqueResolvableLit match {
-              case Some(urlit) if (localAllocation.contains(urlit.top)) => {
-                // says here , ignore
-              }
+    resolutionResult match {
 
-              case None => {
-                // no unique lit ignore
-              }
+      case GivenClause(givenClause) => {
+        givenClause.uniqueResolvableLit match {
+          case Some(urlit) if (localAllocation.contains(urlit.top)) => {
+            // says here , ignore
+          }
 
-              case Some(urlit) => {
-                // dispatch
-                // pass the derived clauses to the parent actor
-                log.warning("Given clause %s is not allocated to this reasoner, dispatch it",givenClause)
-                dispatchedClauseCount += 1
-                parentActor forward resolutionResult
+          case None => {
+            // no unique lit ignore
+          }
 
-              }
-
-            }
-
-
+          case Some(urlit) => {
+            // dispatch
+            // pass the derived clauses to the parent actor
+            log.warning("Given clause %s is not allocated to this reasoner, dispatch it", givenClause)
+            dispatchedClauseCount += 1
+            parent.get forward resolutionResult
 
           }
 
+        }
 
-          case derived: Derived => {
-            val derivedClause = derived.derived
-            val urlit = derivedClause.uniqueResolvableLit
 
-            urlit match {
+      }
+
+
+      case derived: Derived => {
+        val derivedClause = derived.derived
+        val urlit = derivedClause.uniqueResolvableLit
+
+        urlit match {
+          case Some(urlit) if (localAllocation.contains(urlit.top)) => {
+            // says here , add to usable
+            prover.addToUsable(derivedClause)
+          }
+
+          case None => {
+            // no unique lit .. stays here
+            // says here , add to usable
+            prover.addToUsable(derivedClause)
+          }
+
+          case Some(urlit) => {
+            // dispatch
+            // pass the derived clauses to the parent actor
+            dispatchedClauseCount += 1
+
+            // add to local workedOff]
+
+            prover.addToWorkedOff(derivedClause)
+
+            parent.get ! (derived, this)
+
+          }
+
+        }
+
+      }
+
+      case DerivedBatch(derivedClauses) => {
+
+        // split clauses into those that stay at this node, and those that get
+        // sent away
+        val localClauses = derivedClauses.filter({
+          derivedClause: FOLClause =>
+            derivedClause.uniqueResolvableLit match {
               case Some(urlit) if (localAllocation.contains(urlit.top)) => {
-                // says here , add to usable
-                prover.addToUsable(derivedClause)
+                true
               }
 
               case None => {
                 // no unique lit .. stays here
-                // says here , add to usable
-                prover.addToUsable(derivedClause)
+                true
               }
 
               case Some(urlit) => {
                 // dispatch
                 // pass the derived clauses to the parent actor
                 dispatchedClauseCount += 1
-
-                // add to local workedOff]
-
-                prover.addToWorkedOff(derivedClause)
-
-                parentActor ! (derived, this)
-
+                false
               }
-
             }
+        })
 
-          }
+        // first add those clauses staying here to usabel
+        if (!localClauses.isEmpty)
+          prover.addAllToUsable(localClauses)
 
-          case DerivedBatch(derivedClauses) => {
-
-            // split clauses into those that stay at this node, and those that get
-            // sent away
-            val localClauses = derivedClauses.filter({
-              derivedClause: FOLClause =>
-                      derivedClause.uniqueResolvableLit match {
-                        case Some(urlit) if (localAllocation.contains(urlit.top)) => {
-                          true
-                        }
-
-                        case None => {
-                          // no unique lit .. stays here
-                          true
-                        }
-
-                        case Some(urlit) => {
-                          // dispatch
-                          // pass the derived clauses to the parent actor
-                          dispatchedClauseCount += 1
-                          false
-                        }
-                      }
-            })
-
-            // first add those clauses staying here to usabel
-            if (!localClauses.isEmpty)
-              prover.addAllToUsable(localClauses)
-
-            // send the rest to dispatcher ,and add to local workedoff
+        // send the rest to dispatcher ,and add to local workedoff
 
 
-            val dispatchClauses = derivedClauses.toList -- localClauses.toList
+        val dispatchClauses = derivedClauses.toList filterNot (localClauses.toList contains)
 
-            if (!dispatchClauses.isEmpty)
-              prover.addAllToWorkedOff(dispatchClauses)
+        if (!dispatchClauses.isEmpty)
+          prover.addAllToWorkedOff(dispatchClauses)
 
-            if (!(dispatchClauses).isEmpty)
-              parentActor ! DerivedBatch(dispatchClauses)
+        if (!(dispatchClauses).isEmpty)
+          parent.get ! DerivedBatch(dispatchClauses)
 
 
-          }
-          case _ => throw new IllegalArgumentException("Callback can only process ClauseStores")
-        }
       }
-
-      case None => throw new IllegalStateException("Proving Actor needs a parent actor")
+      case _ => throw new IllegalArgumentException("Callback can only process ClauseStores")
     }
-
 
   }
 
@@ -239,13 +218,23 @@ class ProvingActor(env: {val prover: FOLProving; val eventRecorder: Option[Event
     }
 
 
+    // handle incoming parent actor registration
+    case RegisterParentActor(parentActor) => {
+      // if paretn is already defined fail
+      if(parent.isDefined) throw new IllegalStateException("This actor has already a registered parent !")
+      else parent = Some(parentActor)
+
+
+    }
+
+
     case GetEventLog(sessiontoken) => {
       eventRecorder match {
         case Some(recorder) => {
           reply(EventLog(recorder.events))
         }
         case None => {
-          log.error("There was no event recorder, returning empty event log to %s",sender.toString)
+          log.error("There was no event recorder, returning empty event log to %s", self.sender.toString)
           reply(EventLog(Nil))
         }
       }
@@ -266,7 +255,7 @@ class ProvingActor(env: {val prover: FOLProving; val eventRecorder: Option[Event
       eventRecorder match {
         case Some(recorder) => {
           for (clause <- clauses) {
-            recorder.recordRecievedClause(clause, sender.toString)
+            recorder.recordRecievedClause(clause, self.sender.toString)
           }
         }
 
@@ -277,28 +266,28 @@ class ProvingActor(env: {val prover: FOLProving; val eventRecorder: Option[Event
 
 
       // if current mailbox is over threshold size buffer the clasues
-//      if(this.mailbox.size > MAILBOXBUFFERINGTHRESHOLD) {
-//        log.info("Buffering incoming claueses")
-//        incomingClausesBuffer.append(clauses)
-//      }
-//      else {
-//
-//        if(!incomingClausesBuffer.isEmpty) {
-//          val buffered = incomingClausesBuffer.toList.flatten(i => i)
-//          log.info("Purging incoming clause buffer , buffer size was : %s",incomingClausesBuffer.size)
-//          // purge buffer + forward to prover
-//          doSaturate(clauses ++ buffered)
-//          // clear out the buffer
-//          incomingClausesBuffer.clear
-//        } else {
-//          // directly forward to prover
-//          doSaturate(clauses)
-//
-//        }
-//      }
+      //      if(this.mailbox.size > MAILBOXBUFFERINGTHRESHOLD) {
+      //        log.info("Buffering incoming claueses")
+      //        incomingClausesBuffer.append(clauses)
+      //      }
+      //      else {
+      //
+      //        if(!incomingClausesBuffer.isEmpty) {
+      //          val buffered = incomingClausesBuffer.toList.flatten(i => i)
+      //          log.info("Purging incoming clause buffer , buffer size was : %s",incomingClausesBuffer.size)
+      //          // purge buffer + forward to prover
+      //          doSaturate(clauses ++ buffered)
+      //          // clear out the buffer
+      //          incomingClausesBuffer.clear
+      //        } else {
+      //          // directly forward to prover
+      //          doSaturate(clauses)
+      //
+      //        }
+      //      }
 
       // directly forward to prover
-          doSaturate(clauses)
+      doSaturate(clauses)
 
     }
 
@@ -382,8 +371,8 @@ class ProvingActor(env: {val prover: FOLProving; val eventRecorder: Option[Event
   }
 
 
-  override protected def init = {
-//    log.info("Scheduling heartbeat")
+  override def init = {
+    //    log.info("Scheduling heartbeat")
     // dispatch messegate to ourself with a fixed interval , upon recieving we will check the status of subsctors and
     // take action if we are considered idle
     //    se.scalablesolutions.akka.actor.Scheduler.schedule(this, PurgeClauseBuffer, 0, MESSAGEBUFFERPURGETIMETHRESHOLD, TimeUnit.MILLISECONDS)

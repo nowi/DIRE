@@ -1,10 +1,11 @@
-package core.reduction
+package de.unima.dire.core.reduction
 
 
-import containers.{GeneralClauseRetrieval, ClauseStorage, ForwardMatchingGeneralClauseRetrieval}
-import domain.fol.ast.{ALCDClause, FOLNode, FOLClause}
-import domain.fol.Substitution
-import helpers.Logging
+import de.unima.dire.recording.EventRecorder
+import de.unima.dire.domain.fol.ast.{FOLNode}
+import de.unima.dire.domain.fol.Substitution
+import de.unima.dire.helpers.Logging
+import de.unima.dire.core.containers._
 
 /**
  * User: nowi
@@ -19,7 +20,7 @@ trait ForwardSubsumption {
 
 
 
-class ForwardSubsumer(env:{val eventRecorder: Option[recording.EventRecorder]}) extends ForwardSubsumption with Logging {
+class ForwardSubsumer(env:{val eventRecorder: Option[EventRecorder]}) extends ForwardSubsumption with Logging {
 
   val eventRecorder = env.eventRecorder
   implicit def listofFOLNode2FOLClause(literals: Set[FOLNode]): FOLClause = ALCDClause(literals)

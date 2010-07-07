@@ -1,26 +1,24 @@
-package core
+package de.unima.dire.core
 
 /**
  * User: nowi
  * Date: 29.04.2010
  * Time: 21:42:23
  */
-import com.jteigen.scalatest.JUnit4Runner
 
-import config.{CuriosityDomain, WestDomain}
-import domain.fol.ast._
-import domain.fol.parsers.SPASSIntermediateFormatParser
+import de.unima.dire.core.config.{CuriosityDomain, WestDomain}
+import de.unima.dire.domain.fol.ast._
+import de.unima.dire.domain.fol.parsers.SPASSIntermediateFormatParser
+import de.unima.dire.helpers.Logging
+import de.unima.dire.partitioning.ManualConfExamplePartitioner
+import de.unima.dire.core.rewriting.{VariableRewriter}
+
 import java.io.File
-import helpers.Logging
-import org.junit.runner.RunWith
 
 
-import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
-import partitioning.ManualConfExamplePartitioner
-import rewriting.{VariableRewriter}
+import org.scalatest.matchers.ShouldMatchers
 
-@RunWith(classOf[JUnit4Runner])
 abstract class ProvingSpec extends Spec with ShouldMatchers with Logging {
   def createProver: FOLProving
 

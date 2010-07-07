@@ -1,4 +1,4 @@
-package kernel
+package de.unima.dire.kernel
 
 import se.scalablesolutions.akka.remote.RemoteNode
 

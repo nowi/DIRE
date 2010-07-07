@@ -1,4 +1,4 @@
-package core.ordering
+package de.unima.dire.core.ordering
 
 import scala.collection.mutable.{Map => MMap}
 

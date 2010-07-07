@@ -1,8 +1,7 @@
-package core.containers
+package de.unima.dire.core.containers
 
 
-import domain.fol.ast.FOLClause
-import domain.fol.ast.FOLNode
+import de.unima.dire.domain.fol.ast.FOLNode
 
 
 /**

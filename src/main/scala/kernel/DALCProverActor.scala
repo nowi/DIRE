@@ -1,28 +1,21 @@
-package kernel
+package de.unima.dire.kernel
 
-import dispatching.{ToVoidDispatchingActor, DALCDispatcherActor}
-import domain.fol.ast.{FOLNode, FOLClause}
-import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy
-import recording.{EventRecorder, NaiveClauseRecorder}
+import de.unima.dire.core.ordering.{LazyLexicographicPrecedence, LiteralComparison, CustomConferencePartitionedPrecedence, ALCLPOComparator}
+import de.unima.dire.core.{RobinsonProver, Standardizer}
+import de.unima.dire.kernel.dispatching.DALCDispatcherActor
+import de.unima.dire.domain.fol.ast.FOLNode
+import de.unima.dire.recording.EventRecorder
+import de.unima.dire.core.caches.{ActorCache, SelectedLitCache, URLitCache, MaxLitCache}
+import de.unima.dire.core.reduction._
+import de.unima.dire.core.rewriting.VariableRewriter
+import de.unima.dire.core.index.FeatureVectorImperfectIndex
+import de.unima.dire.core.resolution._
+import de.unima.dire.core.selection.DALCRSelector
+import de.unima.dire.core.containers.{LightestClauseHeuristicStorage, MutableClauseStore,ListBufferStorage}
 import se.scalablesolutions.akka.dispatch.Dispatchers
-import core._
-import caches.{ActorCache, SelectedLitCache, URLitCache, MaxLitCache}
-import config.DALCConfig
-import containers._
-import containers.heuristics.{LightestClauseHeuristicStorage, ListBufferStorage}
-import domain.fol.parsers.SPASSIntermediateFormatParser
-import helpers.Subject
-import java.io.File
-import core.reduction._
-import core.rewriting.{VariableRewriter}
-import ordering.{LiteralComparison, CustomConferencePartitionedPrecedence, CustomSPASSModule1Precedence, ALCLPOComparator}
-import ProvingState._
-import ProvingResult._
-import resolution._
-import se.scalablesolutions.akka.actor.Actor
-import se.scalablesolutions.akka.util.Logging
-import selection.{DALCRSelector, NegativeLiteralsSelection}
-import sun.reflect.generics.reflectiveObjects.NotImplementedException
+import se.scalablesolutions.akka.actor.Actor._
+import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy
+import se.scalablesolutions.akka.actor.{ActorRef, Actor}
 
 /**
  * User: nowi
@@ -39,7 +32,7 @@ class DefaultDALCReasoner extends ReasoningActor {
     lazy val neo4JGraphBasePath: String = "/workspace/DIRE/DIRE/logs/graph/clauses"
     val isDistributed = true
     lazy val variableRewriter = new VariableRewriter
-    lazy val standardizer = new Standardizer(this)
+    lazy val standardizer = new Standardizer(this)      
 
 
     // unique literal resolver
@@ -56,17 +49,17 @@ class DefaultDALCReasoner extends ReasoningActor {
     lazy val backwardSubsumer = new BackwardSubsumer(this)
 
     // positive factorer
-    lazy val positiveFactorer = new core.resolution.ALCPositiveOrderedFactoring(this)
+    lazy val positiveFactorer = new ALCPositiveOrderedFactoring(this)
     // negative factorer
     lazy val negativeFactorer = new ALCNegativeOrderedFactoring(this)
 
     // ACL resolver
     lazy val resolver = new DALCResolver(this)
     lazy val subsumptionStrategy = StillmannSubsumer
-//    lazy val inferenceRecorder = Some(new NaiveClauseRecorder)
+    //    lazy val inferenceRecorder = Some(new NaiveClauseRecorder)
     lazy val inferenceRecorder = None
     lazy val eventRecorder = Some(new EventRecorder)
-//    lazy val inferenceRecorder = None
+    //    lazy val inferenceRecorder = None
 
 
     // the caches
@@ -91,28 +84,35 @@ class DefaultDALCReasoner extends ReasoningActor {
 
     val prover = new RobinsonProver(this)
 
+
   }
 
   // setup this actor as a listener for resolution events
 
   // configure the core prover
-  val provingActor = new ProvingActor(config)
-  
+  // those actors are children of the reasoner actor
 
-  val dispatcherActor  = new DALCDispatcherActor(config)
-//  val dispatcherActor  = new ToVoidDispatchingActors
+  val provingActor = actorOf(new ProvingActor(config))
+  // configure the dispatcher for the proving actor
+  // cofigure a native os thread based dispatcher for the proving actor
+  //  val d = Dispatchers.newThreadBasedDispatcher(this)
+  //      val d = Dispatchers.globalReactorBasedSingleThreadEventDrivenDispatcher
 
 
-  val derivationsLoggingActor = new Neo4JLoggingActor(config)
 
-  val reductionsLoggingActor = new Neo4JLoggingActor(config)
+  val dispatcherActor = actorOf(new DALCDispatcherActor(config))
+  //  val dispatcherActor  = new ToVoidDispatchingActors
+
+  val derivationsLoggingActor = actorOf(new Neo4JLoggingActor(config))
+
+  val reductionsLoggingActor = actorOf(new Neo4JLoggingActor(config))
 
 
 }
 
 class DefaultFOLReasoner extends ReasoningActor {
   println("%s is starting up.." format this)
-// create the configuration here
+  // create the configuration here
   val config = new Object {
     // the initial clause store
 
@@ -124,14 +124,14 @@ class DefaultFOLReasoner extends ReasoningActor {
     lazy val uniqueLiteralResolver = None
 
     // ordered resolution needs comparator and selection
-    lazy val precedence = core.ordering.LazyLexicographicPrecedence
+    lazy val precedence = LazyLexicographicPrecedence
     lazy val literalComparator = new Object with LiteralComparison {
-      def compare(a: FOLNode, b: FOLNode) = Some(precedence.compare(a.top,b.top))
+      def compare(a: FOLNode, b: FOLNode) = Some(precedence.compare(a.top, b.top))
     }
     lazy val selector = new DALCRSelector()
 
 
-     // forward subsumer WITH index support
+    // forward subsumer WITH index support
     lazy val forwardSubsumer = new ForwardSubsumer(this)
 
     lazy val backwardSubsumer = new BackwardSubsumer(this)
@@ -150,7 +150,7 @@ class DefaultFOLReasoner extends ReasoningActor {
 
     // positive factorer
     lazy val positiveFactorer = PositiveFactorer
-     // negative factorer
+    // negative factorer
     lazy val negativeFactorer = NegativeFactorer
 
     // binary resolver
@@ -175,7 +175,7 @@ class DefaultFOLReasoner extends ReasoningActor {
 
     // hard time limit
     val timeLimit: Long = 0;
-    
+
 
     val prover = new RobinsonProver(this)
 
@@ -185,15 +185,17 @@ class DefaultFOLReasoner extends ReasoningActor {
   // setup this actor as a listener for resolution events
 
   // configure the core prover
-  val provingActor = new ProvingActor(config)
+  val provingActor = actorOf(new ProvingActor(config))
 
 
-  val dispatcherActor  = new DALCDispatcherActor(config)
+  val dispatcherActor = actorOf(new DALCDispatcherActor(config))
 
 
-  val derivationsLoggingActor = new Neo4JLoggingActor(config)
+  val derivationsLoggingActor = actorOf(new Neo4JLoggingActor(config))
 
-  val reductionsLoggingActor = new Neo4JLoggingActor(config)
+  val reductionsLoggingActor = actorOf(new Neo4JLoggingActor(config))
+
+
 
 
 }

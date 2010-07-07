@@ -131,6 +131,15 @@
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
     <file url="file://$PROJECT_DIR$/src/main/scala/core/index/SubstitutionIndexTree.scala" charset="MacRoman" />
   </component>
+  <component name="FacetAutodetectingManager">
+    <autodetection-disabled>
+      <facet-type id="Scala">
+        <modules>
+          <module name="DIRE" />
+        </modules>
+      </facet-type>
+    </autodetection-disabled>
+  </component>
   <component name="IdProvider" IDEtalkID="91FBA0E7D845850E37109AC97574FAC0" />
   <component name="InspectionProjectProfileManager">
     <profiles>
@@ -138,6 +147,7 @@
         <option name="myName" value="Project Default" />
         <option name="myLocal" value="false" />
         <inspection_tool class="NonJREEmulationClassesInClientCode" level="ERROR" enabled="false" />
+        <inspection_tool class="WrongPackageStatement" enabled="false" level="ERROR" enabled_by_default="false" />
       </profile>
     </profiles>
     <option name="PROJECT_PROFILE" value="Project Default" />
@@ -163,13 +173,6 @@
     <option name="HEAP_SIZE" />
     <option name="LOCALE" />
     <option name="OPEN_IN_BROWSER" value="true" />
-  </component>
-  <component name="MavenProjectsManager">
-    <option name="originalFiles">
-      <list>
-        <option value="$PROJECT_DIR$/pom.xml" />
-      </list>
-    </option>
   </component>
   <component name="Palette2">
     <group name="Swing">
@@ -295,6 +298,13 @@
   <component name="ProjectDetails">
     <option name="projectName" value="DIRE" />
   </component>
+  <component name="ProjectDictionaryState">
+    <dictionary name="nowi">
+      <words>
+        <w>subsumption</w>
+      </words>
+    </dictionary>
+  </component>
   <component name="ProjectKey">
     <option name="state" value="project:///workspace/DIRE/DIRE/DIRE.ipr" />
   </component>
@@ -314,8 +324,7 @@
     </option>
   </component>
   <component name="ScalacSettings">
-    <option name="SERVER_RESET" value="true" />
-    <option name="SERVER_SHUTDOWN" value="true" />
+    <option name="ADDITIONAL_OPTIONS_STRING" value="-deprecation -Xmigration -Xcheckinit -Xwarninit" />
   </component>
   <component name="SvnBranchConfigurationManager">
     <option name="mySupportsUserInfoFilter" value="true" />
@@ -325,17 +334,6 @@
   </component>
   <component name="WebServicesPlugin" addRequiredLibraries="true" />
   <component name="libraryTable">
-    <library name="Maven: com.jteigen.scalatest:junit4runner:1.0-SNAPSHOT">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/jteigen/scalatest/junit4runner/1.0-SNAPSHOT/junit4runner-1.0-SNAPSHOT.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/jteigen/scalatest/junit4runner/1.0-SNAPSHOT/junit4runner-1.0-SNAPSHOT-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/jteigen/scalatest/junit4runner/1.0-SNAPSHOT/junit4runner-1.0-SNAPSHOT-sources.jar!/" />
-      </SOURCES>
-    </library>
     <library name="Maven: org.multiverse:multiverse-alpha:jar-with-dependencies:0.3">
       <CLASSES>
         <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies.jar!/" />
@@ -552,17 +550,6 @@
         <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.7/junit-4.7-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.scala-tools.testing:specs:1.6.1">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/scala-tools/testing/specs/1.6.1/specs-1.6.1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/scala-tools/testing/specs/1.6.1/specs-1.6.1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/scala-tools/testing/specs/1.6.1/specs-1.6.1-sources.jar!/" />
-      </SOURCES>
-    </library>
     <library name="Maven: org.neo4j:neo4j-kernel:1.0">
       <CLASSES>
         <root url="jar://$MAVEN_REPOSITORY$/org/neo4j/neo4j-kernel/1.0/neo4j-kernel-1.0.jar!/" />
@@ -616,394 +603,6 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$MAVEN_REPOSITORY$/org/apache/lucene/lucene-core/2.9.1/lucene-core-2.9.1-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.neo4j:neo4j-scala:0.9.9-SNAPSHOT">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/neo4j/neo4j-scala/0.9.9-SNAPSHOT/neo4j-scala-0.9.9-SNAPSHOT.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/neo4j/neo4j-scala/0.9.9-SNAPSHOT/neo4j-scala-0.9.9-SNAPSHOT-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/neo4j/neo4j-scala/0.9.9-SNAPSHOT/neo4j-scala-0.9.9-SNAPSHOT-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.neo4j:neo4j-shell:1.0-rc">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/neo4j/neo4j-shell/1.0-rc/neo4j-shell-1.0-rc.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/neo4j/neo4j-shell/1.0-rc/neo4j-shell-1.0-rc-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/neo4j/neo4j-shell/1.0-rc/neo4j-shell-1.0-rc-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: jline:jline:0.9.94">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/jline/jline/0.9.94/jline-0.9.94.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/jline/jline/0.9.94/jline-0.9.94-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/jline/jline/0.9.94/jline-0.9.94-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: se.scalablesolutions.akka:akka-core_2.7.7:0.7">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-core_2.7.7/0.7/akka-core_2.7.7-0.7.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="file://$PROJECT_DIR$/../akka/docs" />
-        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-core_2.7.7/0.7/akka-core_2.7.7-0.7-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="file://$PROJECT_DIR$/../akka/akka-core/src" />
-        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-core_2.7.7/0.7/akka-core_2.7.7-0.7-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: se.scalablesolutions.akka:akka-cluster-jgroups_2.7.7:0.7">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-cluster-jgroups_2.7.7/0.7/akka-cluster-jgroups_2.7.7-0.7.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-cluster-jgroups_2.7.7/0.7/akka-cluster-jgroups_2.7.7-0.7-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-cluster-jgroups_2.7.7/0.7/akka-cluster-jgroups_2.7.7-0.7-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: jgroups:jgroups:2.8.0.CR7">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/jgroups/jgroups/2.8.0.CR7/jgroups-2.8.0.CR7.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/jgroups/jgroups/2.8.0.CR7/jgroups-2.8.0.CR7-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/jgroups/jgroups/2.8.0.CR7/jgroups-2.8.0.CR7-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.scala-tools.testing:scalatest:0.9.5">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/scala-tools/testing/scalatest/0.9.5/scalatest-0.9.5.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/scala-tools/testing/scalatest/0.9.5/scalatest-0.9.5-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/scala-tools/testing/scalatest/0.9.5/scalatest-0.9.5-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: se.scalablesolutions.akka:akka-core_2.7.7:0.7-nowafork-SNAPSHOT">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-core_2.7.7/0.7-nowafork-SNAPSHOT/akka-core_2.7.7-0.7-nowafork-SNAPSHOT.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-core_2.7.7/0.7-nowafork-SNAPSHOT/akka-core_2.7.7-0.7-nowafork-SNAPSHOT-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="file://$PROJECT_DIR$/../akka/akka-core/src/main/scala" />
-        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-core_2.7.7/0.7-nowafork-SNAPSHOT/akka-core_2.7.7-0.7-nowafork-SNAPSHOT-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: commons-io:commons-io:1.4">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/commons-io/commons-io/1.4/commons-io-1.4.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/commons-io/commons-io/1.4/commons-io-1.4-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/commons-io/commons-io/1.4/commons-io-1.4-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: sjson.json:sjson:0.4">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/sjson/json/sjson/0.4/sjson-0.4.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/sjson/json/sjson/0.4/sjson-0.4-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/sjson/json/sjson/0.4/sjson-0.4-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.2.1">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-mapper-asl/1.2.1/jackson-mapper-asl-1.2.1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-mapper-asl/1.2.1/jackson-mapper-asl-1.2.1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-mapper-asl/1.2.1/jackson-mapper-asl-1.2.1-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.codehaus.jackson:jackson-core-asl:1.2.1">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-core-asl/1.2.1/jackson-core-asl-1.2.1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-core-asl/1.2.1/jackson-core-asl-1.2.1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-core-asl/1.2.1/jackson-core-asl-1.2.1-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: sbinary:sbinary:0.3">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/sbinary/sbinary/0.3/sbinary-0.3.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/sbinary/sbinary/0.3/sbinary-0.3-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/sbinary/sbinary/0.3/sbinary-0.3-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: voldemort.store.compress:h2-lzf:1.0">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/voldemort/store/compress/h2-lzf/1.0/h2-lzf-1.0.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/voldemort/store/compress/h2-lzf/1.0/h2-lzf-1.0-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/voldemort/store/compress/h2-lzf/1.0/h2-lzf-1.0-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.scala-tools:javautils:2.7.4-0.1">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/scala-tools/javautils/2.7.4-0.1/javautils-2.7.4-0.1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/scala-tools/javautils/2.7.4-0.1/javautils-2.7.4-0.1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/scala-tools/javautils/2.7.4-0.1/javautils-2.7.4-0.1-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: net.databinder:dispatch-json_2.7.7:0.6.4">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/databinder/dispatch-json_2.7.7/0.6.4/dispatch-json_2.7.7-0.6.4.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/net/databinder/dispatch-json_2.7.7/0.6.4/dispatch-json_2.7.7-0.6.4-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/databinder/dispatch-json_2.7.7/0.6.4/dispatch-json_2.7.7-0.6.4-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: net.databinder:dispatch-http_2.7.7:0.6.4">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/databinder/dispatch-http_2.7.7/0.6.4/dispatch-http_2.7.7-0.6.4.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/net/databinder/dispatch-http_2.7.7/0.6.4/dispatch-http_2.7.7-0.6.4-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/databinder/dispatch-http_2.7.7/0.6.4/dispatch-http_2.7.7-0.6.4-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: jsr166x:jsr166x:1.0">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/jsr166x/jsr166x/1.0/jsr166x-1.0.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/jsr166x/jsr166x/1.0/jsr166x-1.0-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/jsr166x/jsr166x/1.0/jsr166x-1.0-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.jboss.netty:netty:3.2.0.BETA1">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/jboss/netty/netty/3.2.0.BETA1/netty-3.2.0.BETA1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/jboss/netty/netty/3.2.0.BETA1/netty-3.2.0.BETA1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/jboss/netty/netty/3.2.0.BETA1/netty-3.2.0.BETA1-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.codehaus.aspectwerkz:aspectwerkz-jdk5:2.1">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/aspectwerkz/aspectwerkz-jdk5/2.1/aspectwerkz-jdk5-2.1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/aspectwerkz/aspectwerkz-jdk5/2.1/aspectwerkz-jdk5-2.1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/aspectwerkz/aspectwerkz-jdk5/2.1/aspectwerkz-jdk5-2.1-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: net.lag:configgy:1.4.7">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/lag/configgy/1.4.7/configgy-1.4.7.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/net/lag/configgy/1.4.7/configgy-1.4.7-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/lag/configgy/1.4.7/configgy-1.4.7-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.codehaus.aspectwerkz:aspectwerkz-nodeps-jdk5:2.1">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/aspectwerkz/aspectwerkz-nodeps-jdk5/2.1/aspectwerkz-nodeps-jdk5-2.1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/aspectwerkz/aspectwerkz-nodeps-jdk5/2.1/aspectwerkz-nodeps-jdk5-2.1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/aspectwerkz/aspectwerkz-nodeps-jdk5/2.1/aspectwerkz-nodeps-jdk5-2.1-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: se.scalablesolutions.akka:akka-util-java_2.7.7:0.7-nowafork-SNAPSHOT">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-util-java_2.7.7/0.7-nowafork-SNAPSHOT/akka-util-java_2.7.7-0.7-nowafork-SNAPSHOT.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-util-java_2.7.7/0.7-nowafork-SNAPSHOT/akka-util-java_2.7.7-0.7-nowafork-SNAPSHOT-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-util-java_2.7.7/0.7-nowafork-SNAPSHOT/akka-util-java_2.7.7-0.7-nowafork-SNAPSHOT-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: com.google.protobuf:protobuf-java:2.2.0">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/protobuf/protobuf-java/2.2.0/protobuf-java-2.2.0.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/protobuf/protobuf-java/2.2.0/protobuf-java-2.2.0-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/protobuf/protobuf-java/2.2.0/protobuf-java-2.2.0-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.guiceyfruit:guice-core:2.0-beta-4">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/guiceyfruit/guice-core/2.0-beta-4/guice-core-2.0-beta-4.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/guiceyfruit/guice-core/2.0-beta-4/guice-core-2.0-beta-4-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/guiceyfruit/guice-core/2.0-beta-4/guice-core-2.0-beta-4-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: com.google.code.google-collections:google-collect:snapshot-20080530">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/code/google-collections/google-collect/snapshot-20080530/google-collect-snapshot-20080530.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/code/google-collections/google-collect/snapshot-20080530/google-collect-snapshot-20080530-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/code/google-collections/google-collect/snapshot-20080530/google-collect-snapshot-20080530-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: cglib:cglib:2.2">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/cglib/cglib/2.2/cglib-2.2.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/cglib/cglib/2.2/cglib-2.2-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/cglib/cglib/2.2/cglib-2.2-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: asm:asm:3.1">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/asm/asm/3.1/asm-3.1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/asm/asm/3.1/asm-3.1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/asm/asm/3.1/asm-3.1-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: aopalliance:aopalliance:1.0">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/aopalliance/aopalliance/1.0/aopalliance-1.0.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/aopalliance/aopalliance/1.0/aopalliance-1.0-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/aopalliance/aopalliance/1.0/aopalliance-1.0-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.multiverse:multiverse-alpha:0.4">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.4/multiverse-alpha-0.4.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.4/multiverse-alpha-0.4-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.4/multiverse-alpha-0.4-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.multiverse:multiverse-core:0.4">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-core/0.4/multiverse-core-0.4.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-core/0.4/multiverse-core-0.4-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-core/0.4/multiverse-core-0.4-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: asm:asm-tree:3.2">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-tree/3.2/asm-tree-3.2.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-tree/3.2/asm-tree-3.2-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-tree/3.2/asm-tree-3.2-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: asm:asm-analysis:3.2">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-analysis/3.2/asm-analysis-3.2.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-analysis/3.2/asm-analysis-3.2-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-analysis/3.2/asm-analysis-3.2-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: asm:asm-commons:3.2">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-commons/3.2/asm-commons-3.2.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-commons/3.2/asm-commons-3.2-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-commons/3.2/asm-commons-3.2-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: asm:asm-util:3.2">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-util/3.2/asm-util-3.2.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-util/3.2/asm-util-3.2-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-util/3.2/asm-util-3.2-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: com.google.code.typica:typica:1.7">
@@ -1061,61 +660,6 @@
         <root url="jar://$MAVEN_REPOSITORY$/commons-codec/commons-codec/1.4/commons-codec-1.4-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: se.scalablesolutions.akka:akka-persistence-cassandra_2.7.7:0.7">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-persistence-cassandra_2.7.7/0.7/akka-persistence-cassandra_2.7.7-0.7.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-persistence-cassandra_2.7.7/0.7/akka-persistence-cassandra_2.7.7-0.7-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-persistence-cassandra_2.7.7/0.7/akka-persistence-cassandra_2.7.7-0.7-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.apache.cassandra:cassandra:0.5.0">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/apache/cassandra/cassandra/0.5.0/cassandra-0.5.0.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/apache/cassandra/cassandra/0.5.0/cassandra-0.5.0-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/apache/cassandra/cassandra/0.5.0/cassandra-0.5.0-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: se.scalablesolutions.akka:akka-persistence-common_2.7.7:0.7">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-persistence-common_2.7.7/0.7/akka-persistence-common_2.7.7-0.7.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-persistence-common_2.7.7/0.7/akka-persistence-common_2.7.7-0.7-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-persistence-common_2.7.7/0.7/akka-persistence-common_2.7.7-0.7-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: com.facebook:thrift:1.0">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/facebook/thrift/1.0/thrift-1.0.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/facebook/thrift/1.0/thrift-1.0-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/facebook/thrift/1.0/thrift-1.0-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: commons-pool:commons-pool:1.5.1">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/commons-pool/commons-pool/1.5.1/commons-pool-1.5.1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/commons-pool/commons-pool/1.5.1/commons-pool-1.5.1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/commons-pool/commons-pool/1.5.1/commons-pool-1.5.1-sources.jar!/" />
-      </SOURCES>
-    </library>
     <library name="Maven: org.slf4j:slf4j-api:1.6.0">
       <CLASSES>
         <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.6.0/slf4j-api-1.6.0.jar!/" />
@@ -1126,14 +670,6 @@
       <SOURCES>
         <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.6.0/slf4j-api-1.6.0-sources.jar!/" />
       </SOURCES>
-    </library>
-    <library name="scromium">
-      <CLASSES>
-        <root url="file://$PROJECT_DIR$/../scromium/target/scala_2.8.0.Beta1" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES />
-      <jarDirectory url="file://$PROJECT_DIR$/../scromium/target/scala_2.8.0.Beta1" recursive="false" />
     </library>
     <library name="Maven: org.slf4j:slf4j-log4j12:1.6.0">
       <CLASSES>
@@ -1157,46 +693,499 @@
         <root url="jar://$MAVEN_REPOSITORY$/log4j/log4j/1.2.14/log4j-1.2.14-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Voldemort">
+    <library name="Maven: se.scalablesolutions.akka:akka-core_2.8.0.RC3:0.9.1">
       <CLASSES>
-        <root url="file://$PROJECT_DIR$/../voldemort-0.80.2/dist" />
+        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-core_2.8.0.RC3/0.9.1/akka-core_2.8.0.RC3-0.9.1.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-core_2.8.0.RC3/0.9.1/akka-core_2.8.0.RC3-0.9.1-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-core_2.8.0.RC3/0.9.1/akka-core_2.8.0.RC3-0.9.1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.2.1">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-mapper-asl/1.2.1/jackson-mapper-asl-1.2.1.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-mapper-asl/1.2.1/jackson-mapper-asl-1.2.1-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-mapper-asl/1.2.1/jackson-mapper-asl-1.2.1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.codehaus.jackson:jackson-core-asl:1.2.1">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-core-asl/1.2.1/jackson-core-asl-1.2.1.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-core-asl/1.2.1/jackson-core-asl-1.2.1-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-core-asl/1.2.1/jackson-core-asl-1.2.1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.guiceyfruit:guice-all:2.0">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/guiceyfruit/guice-all/2.0/guice-all-2.0.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/guiceyfruit/guice-all/2.0/guice-all-2.0-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/guiceyfruit/guice-all/2.0/guice-all-2.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: net.lag:configgy:2.8.0.RC3-1.5.2-SNAPSHOT">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/net/lag/configgy/2.8.0.RC3-1.5.2-SNAPSHOT/configgy-2.8.0.RC3-1.5.2-SNAPSHOT.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/net/lag/configgy/2.8.0.RC3-1.5.2-SNAPSHOT/configgy-2.8.0.RC3-1.5.2-SNAPSHOT-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/net/lag/configgy/2.8.0.RC3-1.5.2-SNAPSHOT/configgy-2.8.0.RC3-1.5.2-SNAPSHOT-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.multiverse:multiverse-alpha:0.5.2">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.5.2/multiverse-alpha-0.5.2.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.5.2/multiverse-alpha-0.5.2-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.5.2/multiverse-alpha-0.5.2-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.multiverse:multiverse-core:0.5.2">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-core/0.5.2/multiverse-core-0.5.2.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-core/0.5.2/multiverse-core-0.5.2-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-core/0.5.2/multiverse-core-0.5.2-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.multiverse:multiverse-instrumentation:0.5.2">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-instrumentation/0.5.2/multiverse-instrumentation-0.5.2.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-instrumentation/0.5.2/multiverse-instrumentation-0.5.2-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-instrumentation/0.5.2/multiverse-instrumentation-0.5.2-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: asm:asm:3.2">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/asm/asm/3.2/asm-3.2.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/asm/asm/3.2/asm-3.2-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/asm/asm/3.2/asm-3.2-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: asm:asm-tree:3.2">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-tree/3.2/asm-tree-3.2.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-tree/3.2/asm-tree-3.2-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-tree/3.2/asm-tree-3.2-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: asm:asm-analysis:3.2">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-analysis/3.2/asm-analysis-3.2.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-analysis/3.2/asm-analysis-3.2-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-analysis/3.2/asm-analysis-3.2-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: asm:asm-commons:3.2">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-commons/3.2/asm-commons-3.2.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-commons/3.2/asm-commons-3.2-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-commons/3.2/asm-commons-3.2-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: asm:asm-util:3.2">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-util/3.2/asm-util-3.2.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-util/3.2/asm-util-3.2-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-util/3.2/asm-util-3.2-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: asm:asm-all:3.2">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-all/3.2/asm-all-3.2.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-all/3.2/asm-all-3.2-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-all/3.2/asm-all-3.2-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: jgroups:jgroups:2.9.0.GA">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/jgroups/jgroups/2.9.0.GA/jgroups-2.9.0.GA.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/jgroups/jgroups/2.9.0.GA/jgroups-2.9.0.GA-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/jgroups/jgroups/2.9.0.GA/jgroups-2.9.0.GA-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: sbinary:sbinary:2.8.0.RC3-0.3.1-SNAPSHOT">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/sbinary/sbinary/2.8.0.RC3-0.3.1-SNAPSHOT/sbinary-2.8.0.RC3-0.3.1-SNAPSHOT.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/sbinary/sbinary/2.8.0.RC3-0.3.1-SNAPSHOT/sbinary-2.8.0.RC3-0.3.1-SNAPSHOT-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/sbinary/sbinary/2.8.0.RC3-0.3.1-SNAPSHOT/sbinary-2.8.0.RC3-0.3.1-SNAPSHOT-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: net.databinder:dispatch-json_2.8.0.RC3:0.7.4">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/net/databinder/dispatch-json_2.8.0.RC3/0.7.4/dispatch-json_2.8.0.RC3-0.7.4.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/net/databinder/dispatch-json_2.8.0.RC3/0.7.4/dispatch-json_2.8.0.RC3-0.7.4-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/net/databinder/dispatch-json_2.8.0.RC3/0.7.4/dispatch-json_2.8.0.RC3-0.7.4-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: commons-io:commons-io:1.4">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/commons-io/commons-io/1.4/commons-io-1.4.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/commons-io/commons-io/1.4/commons-io-1.4-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/commons-io/commons-io/1.4/commons-io-1.4-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: jsr166x:jsr166x:1.0">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/jsr166x/jsr166x/1.0/jsr166x-1.0.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/jsr166x/jsr166x/1.0/jsr166x-1.0-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/jsr166x/jsr166x/1.0/jsr166x-1.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: net.databinder:dispatch-http_2.8.0.RC3:0.7.4">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/net/databinder/dispatch-http_2.8.0.RC3/0.7.4/dispatch-http_2.8.0.RC3-0.7.4.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/net/databinder/dispatch-http_2.8.0.RC3/0.7.4/dispatch-http_2.8.0.RC3-0.7.4-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/net/databinder/dispatch-http_2.8.0.RC3/0.7.4/dispatch-http_2.8.0.RC3-0.7.4-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: net.databinder:dispatch-futures_2.8.0.RC3:0.7.4">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/net/databinder/dispatch-futures_2.8.0.RC3/0.7.4/dispatch-futures_2.8.0.RC3-0.7.4.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/net/databinder/dispatch-futures_2.8.0.RC3/0.7.4/dispatch-futures_2.8.0.RC3-0.7.4-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/net/databinder/dispatch-futures_2.8.0.RC3/0.7.4/dispatch-futures_2.8.0.RC3-0.7.4-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: aopalliance:aopalliance:1.0">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/aopalliance/aopalliance/1.0/aopalliance-1.0.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/aopalliance/aopalliance/1.0/aopalliance-1.0-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/aopalliance/aopalliance/1.0/aopalliance-1.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.codehaus.aspectwerkz:aspectwerkz-jdk5:2.1">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/aspectwerkz/aspectwerkz-jdk5/2.1/aspectwerkz-jdk5-2.1.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/aspectwerkz/aspectwerkz-jdk5/2.1/aspectwerkz-jdk5-2.1-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/aspectwerkz/aspectwerkz-jdk5/2.1/aspectwerkz-jdk5-2.1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.jboss.netty:netty:3.2.0.CR1">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/jboss/netty/netty/3.2.0.CR1/netty-3.2.0.CR1.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/jboss/netty/netty/3.2.0.CR1/netty-3.2.0.CR1-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/jboss/netty/netty/3.2.0.CR1/netty-3.2.0.CR1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: sjson.json:sjson:0.6-SNAPSHOT-2.8.RC3">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/sjson/json/sjson/0.6-SNAPSHOT-2.8.RC3/sjson-0.6-SNAPSHOT-2.8.RC3.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/sjson/json/sjson/0.6-SNAPSHOT-2.8.RC3/sjson-0.6-SNAPSHOT-2.8.RC3-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/sjson/json/sjson/0.6-SNAPSHOT-2.8.RC3/sjson-0.6-SNAPSHOT-2.8.RC3-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.codehaus.aspectwerkz:aspectwerkz-nodeps-jdk5:2.1">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/aspectwerkz/aspectwerkz-nodeps-jdk5/2.1/aspectwerkz-nodeps-jdk5-2.1.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/aspectwerkz/aspectwerkz-nodeps-jdk5/2.1/aspectwerkz-nodeps-jdk5-2.1-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/aspectwerkz/aspectwerkz-nodeps-jdk5/2.1/aspectwerkz-nodeps-jdk5-2.1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: com.google.protobuf:protobuf-java:2.3.0">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/protobuf/protobuf-java/2.3.0/protobuf-java-2.3.0.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/protobuf/protobuf-java/2.3.0/protobuf-java-2.3.0-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/protobuf/protobuf-java/2.3.0/protobuf-java-2.3.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: se.scalablesolutions.akka:akka-cluster_2.8.0.Beta1:0.8.1">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-cluster_2.8.0.Beta1/0.8.1/akka-cluster_2.8.0.Beta1-0.8.1.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-cluster_2.8.0.Beta1/0.8.1/akka-cluster_2.8.0.Beta1-0.8.1-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-cluster_2.8.0.Beta1/0.8.1/akka-cluster_2.8.0.Beta1-0.8.1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: se.scalablesolutions.akka:akka-cluster-shoal_2.8.0.Beta1:0.8.1">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-cluster-shoal_2.8.0.Beta1/0.8.1/akka-cluster-shoal_2.8.0.Beta1-0.8.1.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-cluster-shoal_2.8.0.Beta1/0.8.1/akka-cluster-shoal_2.8.0.Beta1-0.8.1-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-cluster-shoal_2.8.0.Beta1/0.8.1/akka-cluster-shoal_2.8.0.Beta1-0.8.1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: shoal-jxta:jxta:1.1-20090818">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/shoal-jxta/jxta/1.1-20090818/jxta-1.1-20090818.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/shoal-jxta/jxta/1.1-20090818/jxta-1.1-20090818-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/shoal-jxta/jxta/1.1-20090818/jxta-1.1-20090818-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: shoal-jxta:shoal:1.1-20090818">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/shoal-jxta/shoal/1.1-20090818/shoal-1.1-20090818.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/shoal-jxta/shoal/1.1-20090818/shoal-1.1-20090818-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/shoal-jxta/shoal/1.1-20090818/shoal-1.1-20090818-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: se.scalablesolutions.akka:akka-core_2.8.0.Beta1:0.8.1">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-core_2.8.0.Beta1/0.8.1/akka-core_2.8.0.Beta1-0.8.1.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-core_2.8.0.Beta1/0.8.1/akka-core_2.8.0.Beta1-0.8.1-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-core_2.8.0.Beta1/0.8.1/akka-core_2.8.0.Beta1-0.8.1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: net.databinder:dispatch-http_2.8.0.Beta1:0.6.6">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/net/databinder/dispatch-http_2.8.0.Beta1/0.6.6/dispatch-http_2.8.0.Beta1-0.6.6.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/net/databinder/dispatch-http_2.8.0.Beta1/0.6.6/dispatch-http_2.8.0.Beta1-0.6.6-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/net/databinder/dispatch-http_2.8.0.Beta1/0.6.6/dispatch-http_2.8.0.Beta1-0.6.6-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: net.databinder:dispatch-json_2.8.0.Beta1:0.6.6">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/net/databinder/dispatch-json_2.8.0.Beta1/0.6.6/dispatch-json_2.8.0.Beta1-0.6.6.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/net/databinder/dispatch-json_2.8.0.Beta1/0.6.6/dispatch-json_2.8.0.Beta1-0.6.6-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/net/databinder/dispatch-json_2.8.0.Beta1/0.6.6/dispatch-json_2.8.0.Beta1-0.6.6-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: se.scalablesolutions.akka:akka-util_2.8.0.Beta1:0.8.1">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-util_2.8.0.Beta1/0.8.1/akka-util_2.8.0.Beta1-0.8.1.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-util_2.8.0.Beta1/0.8.1/akka-util_2.8.0.Beta1-0.8.1-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-util_2.8.0.Beta1/0.8.1/akka-util_2.8.0.Beta1-0.8.1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: se.scalablesolutions.akka:akka-util-java_2.8.0.Beta1:0.8.1">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-util-java_2.8.0.Beta1/0.8.1/akka-util-java_2.8.0.Beta1-0.8.1.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-util-java_2.8.0.Beta1/0.8.1/akka-util-java_2.8.0.Beta1-0.8.1-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-util-java_2.8.0.Beta1/0.8.1/akka-util-java_2.8.0.Beta1-0.8.1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.guiceyfruit:guice-core:2.0-beta-4">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/guiceyfruit/guice-core/2.0-beta-4/guice-core-2.0-beta-4.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/guiceyfruit/guice-core/2.0-beta-4/guice-core-2.0-beta-4-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/guiceyfruit/guice-core/2.0-beta-4/guice-core-2.0-beta-4-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: com.google.code.google-collections:google-collect:snapshot-20080530">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/code/google-collections/google-collect/snapshot-20080530/google-collect-snapshot-20080530.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/code/google-collections/google-collect/snapshot-20080530/google-collect-snapshot-20080530-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/code/google-collections/google-collect/snapshot-20080530/google-collect-snapshot-20080530-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: cglib:cglib:2.2">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/cglib/cglib/2.2/cglib-2.2.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/cglib/cglib/2.2/cglib-2.2-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/cglib/cglib/2.2/cglib-2.2-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: se.scalablesolutions.akka:akka-cluster-jgroups_2.8.0.Beta1:0.8.1">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-cluster-jgroups_2.8.0.Beta1/0.8.1/akka-cluster-jgroups_2.8.0.Beta1-0.8.1.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-cluster-jgroups_2.8.0.Beta1/0.8.1/akka-cluster-jgroups_2.8.0.Beta1-0.8.1-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-cluster-jgroups_2.8.0.Beta1/0.8.1/akka-cluster-jgroups_2.8.0.Beta1-0.8.1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.scala-lang:scala-library:2.8.0.RC3">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.8.0.RC3/scala-library-2.8.0.RC3.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.8.0.RC3/scala-library-2.8.0.RC3-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.8.0.RC3/scala-library-2.8.0.RC3-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.scalatest:scalatest:1.2-for-scala-2.8.0.RC6-SNAPSHOT">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/scalatest/scalatest/1.2-for-scala-2.8.0.RC6-SNAPSHOT/scalatest-1.2-for-scala-2.8.0.RC6-SNAPSHOT.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/scalatest/scalatest/1.2-for-scala-2.8.0.RC6-SNAPSHOT/scalatest-1.2-for-scala-2.8.0.RC6-SNAPSHOT-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/scalatest/scalatest/1.2-for-scala-2.8.0.RC6-SNAPSHOT/scalatest-1.2-for-scala-2.8.0.RC6-SNAPSHOT-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.specs:specs:1.4.4-SNAPSHOT">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/specs/specs/1.4.4-SNAPSHOT/specs-1.4.4-SNAPSHOT.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/specs/specs/1.4.4-SNAPSHOT/specs-1.4.4-SNAPSHOT-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/specs/specs/1.4.4-SNAPSHOT/specs-1.4.4-SNAPSHOT-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: voldemort.store.compress:h2-lzf:1.0">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/voldemort/store/compress/h2-lzf/1.0/h2-lzf-1.0.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/voldemort/store/compress/h2-lzf/1.0/h2-lzf-1.0-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/voldemort/store/compress/h2-lzf/1.0/h2-lzf-1.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="DIREDeps">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/lib_managed/scala_2.8.0.RC3/compile" />
+        <root url="file://$PROJECT_DIR$/lib_managed/scala_2.8.0.RC3/test" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
-      <jarDirectory url="file://$PROJECT_DIR$/../voldemort-0.80.2/dist" recursive="false" />
-    </library>
-    <library name="Maven: se.scalablesolutions.akka:akka-persistence-mongo_2.7.7:0.7-nowafork-SNAPSHOT">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-persistence-mongo_2.7.7/0.7-nowafork-SNAPSHOT/akka-persistence-mongo_2.7.7-0.7-nowafork-SNAPSHOT.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-persistence-mongo_2.7.7/0.7-nowafork-SNAPSHOT/akka-persistence-mongo_2.7.7-0.7-nowafork-SNAPSHOT-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-persistence-mongo_2.7.7/0.7-nowafork-SNAPSHOT/akka-persistence-mongo_2.7.7-0.7-nowafork-SNAPSHOT-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.mongodb:mongo-java-driver:1.1">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mongodb/mongo-java-driver/1.1/mongo-java-driver-1.1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mongodb/mongo-java-driver/1.1/mongo-java-driver-1.1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mongodb/mongo-java-driver/1.1/mongo-java-driver-1.1-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: se.scalablesolutions.akka:akka-util_2.7.7:0.7">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-util_2.7.7/0.7/akka-util_2.7.7-0.7.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-util_2.7.7/0.7/akka-util_2.7.7-0.7-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-util_2.7.7/0.7/akka-util_2.7.7-0.7-sources.jar!/" />
-      </SOURCES>
+      <jarDirectory url="file://$PROJECT_DIR$/lib_managed/scala_2.8.0.RC3/compile" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/lib_managed/scala_2.8.0.RC3/test" recursive="false" />
     </library>
   </component>
 </project>

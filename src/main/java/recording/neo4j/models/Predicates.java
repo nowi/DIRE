@@ -1,4 +1,4 @@
-package recording.neo4j.models;
+package de.unima.dire.recording.neo4j.models;
 
 import org.neo4j.graphdb.RelationshipType;
 

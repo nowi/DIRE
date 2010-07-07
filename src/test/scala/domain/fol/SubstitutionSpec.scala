@@ -1,4 +1,5 @@
-package domain.fol
+package de.unima.dire.domain.fol
+
 
 /**
  * User: nowi
@@ -6,15 +7,13 @@ package domain.fol
  * Time: 11:56:04
  */
 
-import ast._
-import com.jteigen.scalatest.JUnit4Runner
-import helpers.Logging
+import de.unima.dire.domain.fol.ast._
+import de.unima.dire.helpers.Logging
+
+
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
-import org.junit.runner.RunWith
-
-@RunWith(classOf[JUnit4Runner])
-class SubstitutionSpec extends Spec with ShouldMatchers with Logging{
+class SubstitutionSpec extends Spec with ShouldMatchers with Logging {
   describe("Substitution") {
     val f1 = Function("f", Variable("u"), Variable("v"))
     val f2 = Function("f", Constant("a"), Variable("v"))
@@ -45,7 +44,7 @@ class SubstitutionSpec extends Spec with ShouldMatchers with Logging{
       val f = (t1: FOLNode, t2: FOLNode) => Function("f", t1, t2)
       val g = (t1: FOLNode) => Function("g", t1)
 
-      val s: Substitution = Map(x -> f(a,b), y -> g(z))
+      val s: Substitution = Map(x -> f(a, b), y -> g(z))
 
       s.image should equal(List(z))
 
@@ -78,9 +77,9 @@ class SubstitutionSpec extends Spec with ShouldMatchers with Logging{
     }
 
     it("two substitutions should be joinable 2") {
-      val s: Substitution = Map(z -> Function("f", x,y))
+      val s: Substitution = Map(z -> Function("f", x, y))
       val r: Substitution = Map(x -> a, y -> c)
-      val sr: Substitution = Map(z -> Function("f",a,c))
+      val sr: Substitution = Map(z -> Function("f", a, c))
       val joined = (s join r)
       joined should equal(sr)
 
@@ -127,10 +126,10 @@ class SubstitutionSpec extends Spec with ShouldMatchers with Logging{
       val g = (t1: FOLNode) => Function("g", t1)
 
       val general: Substitution = Map(x -> f(Variable("x1"), Variable("x2")))
-      val instance: Substitution = Map(Variable("x2") -> IndicatorVariable(1),Variable("x3") -> Constant("b"))
+      val instance: Substitution = Map(Variable("x2") -> IndicatorVariable(1), Variable("x3") -> Constant("b"))
 
       // should find empty generalizer
-      Substitution.generalizations(instance,general).isDefined should be(false)
+      Substitution.generalizations(instance, general).isDefined should be(false)
     }
 
     it("((x -> f(x1,x2)) is NOT A generalization (x2 -> g(x3))  )") {
@@ -141,7 +140,7 @@ class SubstitutionSpec extends Spec with ShouldMatchers with Logging{
       val instance: Substitution = Map(Variable("x2") -> g(Variable("x3")))
 
       // should find empty generalizer
-      Substitution.generalizations(general,instance).isDefined should be(false)
+      Substitution.generalizations(general, instance).isDefined should be(false)
       //Substitution.generalizations(instance,general).get.isEmpty should be(true)
     }
 
@@ -174,7 +173,7 @@ class SubstitutionSpec extends Spec with ShouldMatchers with Logging{
       val f = (t1: FOLNode, t2: FOLNode) => Function("f", t1, t2)
       val g = (t1: FOLNode) => Function("g", t1)
 
-      val r1 = Map(x -> f(Variable("x1"),Variable("x2")))
+      val r1 = Map(x -> f(Variable("x1"), Variable("x2")))
       val p: Substitution = Map(x -> f(b, g(a)))
 
 
@@ -189,7 +188,7 @@ class SubstitutionSpec extends Spec with ShouldMatchers with Logging{
           true
         }
         case None => false
-      }) should be (true)
+      }) should be(true)
     }
 
 
@@ -197,12 +196,12 @@ class SubstitutionSpec extends Spec with ShouldMatchers with Logging{
       val f = (t1: FOLNode, t2: FOLNode) => Function("f", t1, t2)
       val g = (t1: FOLNode) => Function("g", t1)
 
-      val r1 = Map(x -> f(Variable("x1"),Variable("x2")))
+      val r1 = Map(x -> f(Variable("x1"), Variable("x2")))
       val p: Substitution = Map(x -> f(c, g(Constant("d"))))
 
 
       val pSoFar = (p compose Substitution.variants(r1, p.normalize).get)
-      val r2: Substitution = Map(Variable("x1") -> IndicatorVariable(1),Variable("x2") -> g(b))
+      val r2: Substitution = Map(Variable("x1") -> IndicatorVariable(1), Variable("x2") -> g(b))
 
       (Substitution.variants(r2, pSoFar) match {
         case Some(vs) => {
@@ -212,7 +211,7 @@ class SubstitutionSpec extends Spec with ShouldMatchers with Logging{
           true
         }
         case None => false
-      }) should be (false)
+      }) should be(false)
     }
 
 

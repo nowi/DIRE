@@ -1,4 +1,5 @@
-package domain.fol
+package de.unima.dire.domain.fol
+
 
 /**
  * User: nowi
@@ -6,16 +7,9 @@ package domain.fol
  * Time: 17:56:34
  */
 
-import ast.{AndConnective}
-import com.jteigen.scalatest.JUnit4Runner
-
-import org.junit.runner.RunWith
-
-
-import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
+import org.scalatest.matchers.ShouldMatchers
 
-@RunWith(classOf[JUnit4Runner])
 class SentenceSpec extends Spec with ShouldMatchers {
   //  describe("A Constant") {
   //    it("should have a name equal to the passed value") {

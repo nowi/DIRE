@@ -1,21 +1,20 @@
-package core.config
+package de.unima.dire.core.config
 
 /**
  * User: nowi
  * Date: 11.03.2010
  * Time: 11:26:08
  */
-import caches.{SelectedLitCache, URLitCache, MaxLitCache}
-import containers.heuristics.{LightestClauseHeuristicStorage, ListBufferStorage}
-import recording.{EventRecorder, NaiveClauseRecorder, Neo4JRecorder}
-import resolution.{PositiveFactorer, DALCUniqueLiteralResolver, DALCResolver}
-import containers.{MutableClauseStore, STIndex, CNFClauseStore}
-import core._
-import core.reduction._
-import core.rewriting.{VariableRewriter}
-import ordering.{CustomConferencePartitionedPrecedence, ALCLPOComparator}
-import org.neo4j.kernel.EmbeddedGraphDatabase
-import selection.{DALCRSelector}
+import de.unima.dire.core.Standardizer
+import de.unima.dire.core.caches.{SelectedLitCache, URLitCache, MaxLitCache}
+import de.unima.dire.recording.EventRecorder
+import de.unima.dire.core.resolution.{PositiveFactorer, DALCUniqueLiteralResolver, DALCResolver}
+import de.unima.dire.core.reduction._
+import de.unima.dire.core.rewriting.VariableRewriter
+import de.unima.dire.core.ordering.{CustomConferencePartitionedPrecedence, ALCLPOComparator}
+import de.unima.dire.core.selection.DALCRSelector
+import de.unima.dire.core.index.STIndex
+import de.unima.dire.core.containers.{ListBufferStorage, LightestClauseHeuristicStorage, MutableClauseStore}
 
 object DALCConfig {
   // the initial clause store
@@ -51,10 +50,12 @@ object DALCConfig {
 
 
   // the caches
-    // chache for maximal literalas
-    def maxLitCache = new MaxLitCache()
-    def uniqueRLitCache = new URLitCache()
-    def selectedLitCache = new SelectedLitCache()
+  // chache for maximal literalas
+  def maxLitCache = new MaxLitCache()
+
+  def uniqueRLitCache = new URLitCache()
+
+  def selectedLitCache = new SelectedLitCache()
 
   // usable clause store with STI indexes
   def usableClauseStore = new MutableClauseStore with LightestClauseHeuristicStorage with STIndex

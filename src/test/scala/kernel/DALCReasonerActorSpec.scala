@@ -1,13 +1,11 @@
-package kernel
+package de.unima.dire.kernel
 
 /**
  * User: nowi
  * Date: 22.01.2010
  * Time: 18:43:35
  */
-import com.jteigen.scalatest.JUnit4Runner
 
-import org.junit.runner.RunWith
 
 
 import org.scalatest.matchers.ShouldMatchers
@@ -19,7 +17,6 @@ import org.scalatest.Spec
  * Date: 21.01.2010
  * Time: 19:56:30
  */
-@RunWith(classOf[JUnit4Runner])
 class DALCReasonerActorSpec extends Spec with ShouldMatchers {
   // create a handle to the remote ChatService
   //ChatService.makeRemote("localhost", 9999)

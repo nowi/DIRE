@@ -1,7 +1,8 @@
-package core.containers
+package de.unima.dire.core.index
 
 
-import domain.fol.ast.{FOLClause, FOLNode}
+import de.unima.dire.domain.fol.ast.{FOLNode}
+import de.unima.dire.core.containers.FOLClause
 
 /**
  * User: nowi

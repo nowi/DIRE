@@ -1,4 +1,4 @@
-package core
+package de.unima.dire.core
 
 /**
  * User: nowi
@@ -6,17 +6,13 @@ package core
  * Time: 12:26:36
  */
 
-import com.jteigen.scalatest.JUnit4Runner
 
-import config.{WestDomain}
-import containers.{CNFClauseStore}
-import org.junit.runner.RunWith
-import org.scalatest.matchers.ShouldMatchers
+import de.unima.dire.core.config.WestDomain
+import de.unima.dire.core.ProvingResult._
+
 import org.scalatest.Spec
+import org.scalatest.matchers.ShouldMatchers
 
-import ProvingResult._
-
-@RunWith(classOf[JUnit4Runner])
 abstract class WestDomainProvingSpec extends Spec with ShouldMatchers {
   // create a proover
   val resolutionProover: FOLProving

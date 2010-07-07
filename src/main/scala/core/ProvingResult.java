@@ -1,4 +1,4 @@
-package core;
+package de.unima.dire.core;
 
 
 /**

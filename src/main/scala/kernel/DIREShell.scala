@@ -1,47 +1,18 @@
-import allocation.{ConferenceExample1NodeAllocator, ConferenceExample5NodeAllocator, NaiveOneToOneUnrestrictedLocalDistributor, ClauseAllocation}
+package de.unima.dire
+
+
+import de.unima.dire.allocation.{ConferenceExample5NodeAllocator, ConferenceExample1NodeAllocator, NaiveOneToOneUnrestrictedLocalDistributor}
+import de.unima.dire.partitioning.{ManualConfExamplePartitioner, ManualConfExampleMerger}
+import de.unima.dire.recording.ReasonerEvent
+import de.unima.dire.core.containers.{CNFClauseStore, FOLClause}
+import de.unima.dire.kernel._
 import collection.mutable.{ListBuffer, HashMap, Map => MMap}
-import core.caches.{SelectedLitCache, URLitCache}
-import core.containers.heuristics.{ListBufferStorage, LightestClauseHeuristicStorage}
-import core.containers.{SForrestIndex, MutableClauseStore, CNFClauseStore}
-import core.ordering.{CustomConferencePartitionedPrecedence, ALCLPOComparator}
-import core.reduction.{ForwardSubsumer, BackwardSubsumer, StillmannSubsumer}
-import core.resolution._
-import core.rewriting.VariableRewriter
-import core.selection.DALCRSelector
-import core.{Standardizer, RobinsonProver}
-import domain.fol.ast.FOLClause
-import helpers.{DumpableString, HelperFunctions}
-import kernel._
-import dispatching.{DALCDispatcherActor, ToVoidDispatchingActor}
-import net.lag.configgy.Configgy
-import org.apache.cassandra.service.{ColumnOrSuperColumn, ColumnPath, ConsistencyLevel}
-import partitioning.{ManualConfExampleMerger, ManualConfExamplePartitioner}
-import recording.{ReasonerEvent, NaiveClauseRecorder}
-import runtime.RichString
-import se.scalablesolutions.akka.actor.{ActorRegistry, Actor}
 import se.scalablesolutions.akka.config.ScalaConfig.RemoteAddress
-import se.scalablesolutions.akka.persistence.cassandra.Protocol.JSON
-import se.scalablesolutions.akka.persistence.cassandra.{CassandraStorage, CassandraSessionPool}
-import se.scalablesolutions.akka.persistence.common.{StackPool, SocketProvider}
-import se.scalablesolutions.akka.persistence.mongo.MongoStorage
-import se.scalablesolutions.akka.remote.{RemoteClient, Cluster, RemoteNode}
-import se.scalablesolutions.akka.stm.NoTransactionInScopeException
-import se.scalablesolutions.akka.util.{Helpers, UUID, Logging}
+import se.scalablesolutions.akka.remote.{RemoteClient, Cluster}
+import net.lag.configgy.Configgy
+import se.scalablesolutions.akka.actor.{ActorRef, ActorRegistry, Actor}
+import se.scalablesolutions.akka.actor.Actor._
 import sun.reflect.generics.reflectiveObjects.NotImplementedException
-import Helpers._
-import voldemort.client.{DefaultStoreClient, SocketStoreClientFactory, ClientConfig}
-import voldemort.server.{VoldemortServer, VoldemortConfig}
-import voldemort.versioning.{Versioned, ArbitraryInconsistencyResolver}
-//import se.scalablesolutions.akka.actor.Actor.Sender.Self
-import se.scalablesolutions.akka.stm.Transaction._
-
-import com.mongodb.Mongo;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
-import com.mongodb.DBCursor;
-
 
 /**
  * User: nowi
@@ -51,6 +22,8 @@ import com.mongodb.DBCursor;
 
 
 object DIREShell extends Application with Actor {
+
+
   //Configgy.configure("/workspace/DIRE/DIRE/config/config.conf")
   val config = Configgy.config
 
@@ -60,39 +33,36 @@ object DIREShell extends Application with Actor {
   //  val FRAME_LENGTH = voldeConfig.getInt("akka.remote.client.frame-length", 104857600)
 
 
-//  println("Welcome to DIRE shell , enter help for list of available commands")
-//  println("Enter help(command) for more specific help")
+  //  println("Welcome to DIRE shell , enter help for list of available commands")
+  //  println("Enter help(command) for more specific help")
   //val shell = new DIREShell
   println("Starting Jgroups clustering")
   se.scalablesolutions.akka.remote.Cluster.start
 
-  val mongodb: Mongo = new Mongo("localhost");
-  val db = mongodb.getDB("mydb");
-
-  val clauseCollection = db.getCollection("clauses")
 
 
 
-  val keptClauses: MMap[Actor, Int] = new HashMap()
+  val keptClauses: MMap[ActorRef, Int] = new HashMap()
 
-  val node2Reasoner: MMap[RemoteAddress, Actor] = new HashMap()
+  // TODO FIXME this needs to be refactored for N : M deployments
+  val node2Reasoner: MMap[RemoteAddress, ActorRef] = new HashMap()
 
 
-  def saveLog(message: String) {
-    val doc = new BasicDBObject
-    doc.put("message", message);
-    clauseCollection.insert(doc);
-  }
-
-  def retrieveLogs = {
-    val buffer = new ListBuffer[DBObject]()
-    val cur: DBCursor = clauseCollection.find()
-    while (cur.hasNext()) {
-      buffer.append(cur.next())
-    }
-    buffer.toList.map(_.get("message"))
-  }
-
+  //  def saveLog(message: String) {
+  //    val doc = new BasicDBObject
+  //    doc.put("message", message);
+  //    clauseCollection.insert(doc);
+  //  }
+  //
+  //  def retrieveLogs = {
+  //    val buffer = new ListBuffer[DBObject]()
+  //    val cur: DBCursor = clauseCollection.find()
+  //    while (cur.hasNext()) {
+  //      buffer.append(cur.next())
+  //    }
+  //    buffer.toList.map(_.get("message"))
+  //  }
+  //
 
 
 
@@ -134,13 +104,13 @@ object DIREShell extends Application with Actor {
 
   // get number of local reasoners
   def localReasoners(count: Int) = {
-    for (i <- 0.until(count)) yield new DefaultDALCReasoner
+    for (i <- 0.until(count)) yield actorOf(new DefaultDALCReasoner)
   }
 
 
-  def reasoners(addresses: List[RemoteAddress]): List[Actor] = {
+  def reasoners(addresses: List[RemoteAddress]): List[ActorRef] = {
     require(addresses.size <= nodes.size, "We dont have enough computation nodes available in the cluster")
-    val rs = new ListBuffer[Actor]
+    val rs = new ListBuffer[ActorRef]
     for (endpoint: RemoteAddress <- addresses) {
       // check if we have a already established remote connection to a reasoner on this adress
       rs += node2Reasoner.getOrElseUpdate(endpoint, RemoteClient.actorFor("reasoner", endpoint.hostname, endpoint.port))
@@ -153,10 +123,10 @@ object DIREShell extends Application with Actor {
   lazy val _el = el(_reasoners)
 
   // get specified number reasoners
-  def reasoners(count: Int): List[Actor] = {
+  def reasoners(count: Int): List[ActorRef] = {
     println("Trying to find/spawn % available reasoners in the cluster" format count)
     require(count <= nodes.size, "We dont have enough computation nodes available in the cluster")
-    val rs = new ListBuffer[Actor]
+    val rs = new ListBuffer[ActorRef]
     for (endpoint: RemoteAddress <- nodes) {
       // check if we have a already established remote connection to a reasoner on this adress
       rs += node2Reasoner.getOrElseUpdate(endpoint, RemoteClient.actorFor("reasoner", endpoint.hostname, endpoint.port))
@@ -166,10 +136,10 @@ object DIREShell extends Application with Actor {
 
 
   // get specified number reasoners
-  def folReasoners(count: Int): List[Actor] = {
+  def folReasoners(count: Int): List[ActorRef] = {
     println("Trying to find/spawn % available full fol reasoners in the cluster" format count)
     require(count <= nodes.size, "We dont have enough computation nodes available in the cluster")
-    val rs = new ListBuffer[Actor]
+    val rs = new ListBuffer[ActorRef]
     for (endpoint: RemoteAddress <- nodes) {
       // check if we have a already established remote connection to a reasoner on this adress
       rs += node2Reasoner.getOrElseUpdate(endpoint, RemoteClient.actorFor("folReasoner", endpoint.hostname, endpoint.port))
@@ -178,10 +148,10 @@ object DIREShell extends Application with Actor {
   }
 
   // get rasoners for all available nodes in the cluster
-  def reasoners: List[Actor] = {
+  def reasoners: List[ActorRef] = {
     println("Trying to find/spawn all available reasoners in the cluster")
     require(!nodes.isEmpty, "There are no availabe computation nodes in cluster %s" format Cluster.toString)
-    val rs = new ListBuffer[Actor]
+    val rs = new ListBuffer[ActorRef]
     for (endpoint: RemoteAddress <- nodes) {
       // check if we have a already established remote connection to a reasoner on this adress
       rs += node2Reasoner.getOrElseUpdate(endpoint, RemoteClient.actorFor("reasoner", endpoint.hostname, endpoint.port))
@@ -192,7 +162,7 @@ object DIREShell extends Application with Actor {
 
   def stopReasoners = {
     println("Shutting down all reasoners on compute nodes in cluster %s" format Cluster)
-    reasoners.foreach(_.send(Shutdown("bla")))
+    reasoners.foreach(_ ! Shutdown("bla"))
 
   }
 
@@ -205,126 +175,132 @@ object DIREShell extends Application with Actor {
 
 
 
-  def status(reasoners: Actor*) = {
+  def status(reasoners: ActorRef*) = {
     reasoners.map(_ !! GetStatus(System.currentTimeMillis.toString))
   }
 
 
 
-  //  def recievedCount(reasoner: Actor) {
+  //  def recievedCount(reasoner: ActorRef) {
   //    reasoner ! GetRecievedClausesCount(System.currentTimeMillis.toString)
   //  }
 
 
-  def dispatchedCount(reasoner: Actor): Int = {
-    val option = reasoner !! (GetStatus(System.currentTimeMillis.toString), 30000) // timeout 1000 ms
-    val recieved: ProverStatus = option.getOrElse(throw new Exception("Couldn't get the count log"))
-    recieved.dispatchedClauseCount
-
+  def dispatchedCount(reasoner: ActorRef): Int = {
+    reasoner !! (GetStatus(System.currentTimeMillis.toString), 30000) match {
+      case Some(recieved: ProverStatus) => recieved.dispatchedClauseCount
+      case None => throw new Exception("Couldn't get the count log")
+    }
   }
 
-  def dispatchedCount(reasoners: Iterable[Actor]): Int = {
+  def dispatchedCount(reasoners: Iterable[ActorRef]): Int = {
     reasoners.map(dispatchedCount(_)).reduceLeft(_ + _)
   }
 
-  def keptCount(reasoner: Actor): Int = {
-    val option = reasoner !! (GetStatus(System.currentTimeMillis.toString), 30000) // timeout 1000 ms
-    val recieved: ProverStatus = option.getOrElse(throw new Exception("Couldn't get the count log"))
-    recieved.workedOffCount
+  def keptCount(reasoner: ActorRef): Int = {
+    reasoner !! (GetStatus(System.currentTimeMillis.toString), 30000) match {
+      case Some(recieved: ProverStatus) => recieved.workedOffCount
+      case None => throw new Exception("Couldn't get the count log")
+    }
 
   }
 
-  def keptCount(reasoners: Iterable[Actor]): Int = {
+  def keptCount(reasoners: Iterable[ActorRef]): Int = {
     reasoners.map(keptCount(_)).reduceLeft(_ + _)
   }
 
 
-  def recievedCount(reasoner: Actor): Int = {
-    val option = reasoner !! (GetStatus(System.currentTimeMillis.toString), 30000) // timeout 1000 ms
-    val recieved: ProverStatus = option.getOrElse(throw new Exception("Couldn't get the count log"))
-    recieved.recievedClauseCount
-
+  def recievedCount(reasoner: ActorRef): Int = {
+    reasoner !! (GetStatus(System.currentTimeMillis.toString), 30000) match {
+      case Some(recieved: ProverStatus) => recieved.recievedClauseCount
+      case None => throw new Exception("Couldn't get the count log")
+    }
   }
 
-  def recievedCount(reasoners: Iterable[Actor]): Int = {
+  def recievedCount(reasoners: Iterable[ActorRef]): Int = {
     reasoners.map(recievedCount(_)).reduceLeft(_ + _)
   }
 
-  def recievedKeptCount(reasoner: Actor): Int = {
-    val option = reasoner !! (GetStatus(System.currentTimeMillis.toString), 30000) // timeout 1000 ms
-    val recieved: ProverStatus = option.getOrElse(throw new Exception("Couldn't get the count log"))
-    recieved.recievedClauseCount
+  def recievedKeptCount(reasoner: ActorRef): Int = {
+    reasoner !! (GetStatus(System.currentTimeMillis.toString), 30000) match {
+      case Some(recieved: ProverStatus) => recieved.recievedClauseCount
+      case None => throw new Exception("Couldn't get the count log")
+    }
 
   }
 
-  def recievedKeptCount(reasoners: Iterable[Actor]): Int = {
+  def recievedKeptCount(reasoners: Iterable[ActorRef]): Int = {
     reasoners.map(recievedKeptCount(_)).reduceLeft(_ + _)
   }
 
-  def derivedCount(reasoner: Actor): Int = {
-    val option = reasoner !! (GetStatus(System.currentTimeMillis.toString), 30000) // timeout 1000 ms
-    val recieved: ProverStatus = option.getOrElse(throw new Exception("Couldn't get the count log"))
-    recieved.derivedCount
+  def derivedCount(reasoner: ActorRef): Int = {
+    reasoner !! (GetStatus(System.currentTimeMillis.toString), 30000) match {
+      case Some(status: ProverStatus) => status.derivedCount
+      case None => throw new Exception("Couldn't get the count log")
+    }
 
   }
 
-  def derivedCount(reasoners: Iterable[Actor]): Int = {
+  def derivedCount(reasoners: Iterable[ActorRef]): Int = {
     reasoners.map(derivedCount(_)).reduceLeft(_ + _)
   }
 
 
-  def el(reasoner: Actor) = {
+  def el(reasoner: ActorRef) = {
     println("Trying to retrieve clause log from reasoner %s" format reasoner)
-    val option = reasoner !! (GetEventLog(System.currentTimeMillis.toString), 30000) // timeout 1000 ms
-    val recieved: EventLog = option.getOrElse(throw new Exception("Couldn't get the inference log"))
-    recieved.eventLog
+    reasoner !! (GetEventLog(System.currentTimeMillis.toString), 30000) match {
+      case Some(recieved: EventLog) => recieved.eventLog
+      case None => throw new Exception("Couldn't get the inference log ... timeout ?")
+    }
+
   }
 
-  def el(reasoners: Iterable[Actor]): Iterable[ReasonerEvent] = {
+  def el(reasoners: Iterable[ActorRef]): Iterable[ReasonerEvent] = {
     reasoners.map(el(_)).reduceLeft(_ ++ _)
   }
 
 
-  def keptClauses(reasoner: Actor): List[FOLClause] = {
-    val option = reasoner !! (GetKeptClauses(System.currentTimeMillis.toString), 30000) // timeout 1000 ms
-    val kept: KeptClauses = option.getOrElse(throw new Exception("Couldn't get the kept clauses"))
-    kept.clauses.toList
+  def keptClauses(reasoner: ActorRef): List[FOLClause] = {
+    reasoner !! (GetKeptClauses(System.currentTimeMillis.toString), 30000) match {
+      case Some(kept: KeptClauses) => kept.clauses.toList
+      case None => throw new Exception("Couldn't get the kept clauses")
+    }
   }
 
 
-  def statusOverride(reasoners: Actor*) {
+  def statusOverride(reasoners: ActorRef*) {
     for (reasoner <- reasoners) reasoner ! GetStatusOverride(System.currentTimeMillis.toString)
   }
 
 
-  def incomingClausesLog(reasoners: Actor*) = {
+  def incomingClausesLog(reasoners: ActorRef*) = {
     for (reasoner <- reasoners) reasoner.!(GetIncomingClausesLog(System.currentTimeMillis.toString))
   }
 
 
-  def startSaturate(reasoners: Actor*) {
+  def startSaturate(reasoners: ActorRef*) {
 
   }
 
 
-  def send(destination: Actor, message: Event) {
+  def send(destination: ActorRef, message: Event) {
     destination ! message
 
   }
 
 
-  def createDALCReasonerWithDALCDispatching(): Actor = {
-    new DefaultDALCReasoner
+  def createDALCReasonerWithDALCDispatching(): ActorRef = {
+    actorOf(new DefaultDALCReasoner)
   }
 
-  def createDALCReasonerWithBroadCastDispatching(): Actor = {
+  def createDALCReasonerWithBroadCastDispatching(): ActorRef = {
     throw new NotImplementedException
     //    new DALCReasonerBroadCastDispatch
 
   }
 
 
-  def runCuriosityExampleCluster: List[Actor] = {
+  def runCuriosityExampleCluster: List[ActorRef] = {
     // spawn remote reasoners
 
     // echeck if there are enought conpute nodes in the cluster
@@ -336,7 +312,6 @@ object DIREShell extends Application with Actor {
     val rs = reasoners(ns)
 
 
-    val reasoner2address: Map[Actor, RemoteAddress] = (rs zip ns).foldLeft(Map[Actor, RemoteAddress]())(_ + _)
 
     // partition the ontology
     val partitioner = new ManualConfExamplePartitioner
@@ -354,13 +329,13 @@ object DIREShell extends Application with Actor {
     // create allocation of partitions --> RemoteAdress
 
 
-    val allocation = allocator.allocate(partitions, ns)
+    val allocation = allocator.allocate(partitions, rs)
 
     //val allocationTable = (Map() /: allocation)({case (clauseStore, reasoner) => (Map() /: clauseStore.signature)({name : String => Map(name -> reasoner.uuid)})})
     // send the allocation table  to the reasoning nodes
     for (reasoner <- rs) {
       // require(allocation.values.exists(_ == reasoner.uuid), "Missmatch between the uuid in the allocation and the destination actor")
-      reasoner ! LoadAllocation(allocation, reasoner2address(reasoner))
+      reasoner ! LoadAllocation(allocation, reasoner)
     }
 
     // send the ontologies to the reasoning nodes
@@ -374,7 +349,7 @@ object DIREShell extends Application with Actor {
   }
 
 
-  def runOntoFarmCluster: List[Actor] = {
+  def runOntoFarmCluster: List[ActorRef] = {
     // spawn remote reasoners
 
     // echeck if there are enought conpute nodes in the cluster
@@ -385,7 +360,6 @@ object DIREShell extends Application with Actor {
     val rs = reasoners(ns)
 
 
-    val reasoner2address: Map[Actor, RemoteAddress] = (rs zip ns).foldLeft(Map[Actor, RemoteAddress]())(_ + _)
 
     // partition the ontology
     val partitioner = new ManualConfExamplePartitioner
@@ -403,13 +377,13 @@ object DIREShell extends Application with Actor {
     // create allocation of partitions --> RemoteAdress
 
 
-    val allocation = allocator.allocate(partitions, ns)
+    val allocation = allocator.allocate(partitions, rs)
 
     //val allocationTable = (Map() /: allocation)({case (clauseStore, reasoner) => (Map() /: clauseStore.signature)({name : String => Map(name -> reasoner.uuid)})})
     // send the allocation table  to the reasoning nodes
     for (reasoner <- rs) {
       // require(allocation.values.exists(_ == reasoner.uuid), "Missmatch between the uuid in the allocation and the destination actor")
-      reasoner ! LoadAllocation(allocation, reasoner2address(reasoner))
+      reasoner ! LoadAllocation(allocation, reasoner)
     }
 
     // send the ontologies to the reasoning nodes
@@ -423,7 +397,7 @@ object DIREShell extends Application with Actor {
   }
 
 
-  def runOntoFarmMergedCluster: List[Actor] = {
+  def runOntoFarmMergedCluster: List[ActorRef] = {
     // spawn remote reasoners
 
     // echeck if there are enought conpute nodes in the cluster
@@ -434,7 +408,6 @@ object DIREShell extends Application with Actor {
     val rs = reasoners(ns)
 
 
-    val reasoner2address: Map[Actor, RemoteAddress] = (rs zip ns).foldLeft(Map[Actor, RemoteAddress]())(_ + _)
 
     // partition the ontology
     val partitioner = new ManualConfExampleMerger
@@ -452,13 +425,13 @@ object DIREShell extends Application with Actor {
     // create allocation of partitions --> RemoteAdress
 
 
-    val allocation = allocator.allocate(partitions, ns)
+    val allocation = allocator.allocate(partitions, rs)
 
     //val allocationTable = (Map() /: allocation)({case (clauseStore, reasoner) => (Map() /: clauseStore.signature)({name : String => Map(name -> reasoner.uuid)})})
     // send the allocation table  to the reasoning nodes
     for (reasoner <- rs) {
       // require(allocation.values.exists(_ == reasoner.uuid), "Missmatch between the uuid in the allocation and the destination actor")
-      reasoner ! LoadAllocation(allocation, reasoner2address(reasoner))
+      reasoner ! LoadAllocation(allocation, reasoner)
     }
 
     // send the ontologies to the reasoning nodes
@@ -472,16 +445,14 @@ object DIREShell extends Application with Actor {
   }
 
 
-  def runOntoFarmLocal: List[Actor] = {
+  def runOntoFarmLocal: List[ActorRef] = {
     // spawn remote reasoners
 
     // echeck if there are enought conpute nodes in the cluster
     // spawn 5 local reasoners
     val rs = localReasoners(5).toList
-    val ns = rs.map(_.uuid)
 
 
-    val reasoner2address: Map[Actor, String] = (rs zip rs.map(_.uuid)).foldLeft(Map[Actor, String]())(_ + _)
 
     // partition the ontology
     val partitioner = new ManualConfExamplePartitioner
@@ -499,14 +470,14 @@ object DIREShell extends Application with Actor {
     // create allocation of partitions --> RemoteAdress
 
 
-    val allocation = allocator.allocate(partitions, ns)
+    val allocation = allocator.allocate(partitions, rs)
 
     //val allocationTable = (Map() /: allocation)({case (clauseStore, reasoner) => (Map() /: clauseStore.signature)({name : String => Map(name -> reasoner.uuid)})})
     // send the allocation table  to the reasoning nodes
     for (reasoner <- rs) {
       // require(allocation.values.exists(_ == reasoner.uuid), "Missmatch between the uuid in the allocation and the destination actor")
       reasoner.start
-      reasoner ! LoadAllocation(allocation, reasoner2address(reasoner))
+      reasoner ! LoadAllocation(allocation, reasoner)
     }
 
     // send the ontologies to the reasoning nodes
@@ -519,16 +490,15 @@ object DIREShell extends Application with Actor {
 
   }
 
-  def runOntoFarmMergedLocal: List[Actor] = {
+  def runOntoFarmMergedLocal: List[ActorRef] = {
     // spawn remote reasoners
 
     // echeck if there are enought conpute nodes in the cluster
     // spawn 1 local reasoner
     val rs = localReasoners(1).toList
-    val ns = rs.map(_.uuid)
 
 
-    val reasoner2address: Map[Actor, String] = (rs zip rs.map(_.uuid)).foldLeft(Map[Actor, String]())(_ + _)
+    val reasoner2address: Map[ActorRef, String] = (rs zip rs.map(_.uuid)).foldLeft(Map[ActorRef, String]())(_ + _)
 
     // partition the ontology
     val partitioner = new ManualConfExampleMerger
@@ -546,14 +516,14 @@ object DIREShell extends Application with Actor {
     // create allocation of partitions --> RemoteAdress
 
 
-    val allocation = allocator.allocate(partitions, ns)
+    val allocation = allocator.allocate(partitions, rs)
 
     //val allocationTable = (Map() /: allocation)({case (clauseStore, reasoner) => (Map() /: clauseStore.signature)({name : String => Map(name -> reasoner.uuid)})})
     // send the allocation table  to the reasoning nodes
     for (reasoner <- rs) {
       // require(allocation.values.exists(_ == reasoner.uuid), "Missmatch between the uuid in the allocation and the destination actor")
       reasoner.start
-      reasoner ! LoadAllocation(allocation, reasoner2address(reasoner))
+      reasoner ! LoadAllocation(allocation, reasoner)
     }
 
     // send the ontologies to the reasoning nodes
@@ -567,7 +537,7 @@ object DIREShell extends Application with Actor {
   }
 
 
-  //  def loadOnotologiesAndAllocations(rs: List[Actor]) {
+  //  def loadOnotologiesAndAllocations(rs: List[ActorRef]) {
   //    // partition the ontology
   //    val partitioner = new ManualConfExamplePartitioner
   //    val partitions = partitioner.partition(CNFClauseStore()) // pass dummy empty store
@@ -599,7 +569,7 @@ object DIREShell extends Application with Actor {
   //    }
   //  }
   //
-  //  def loadOnotologiesAndAllocationsMerged(reasoner: Actor) {
+  //  def loadOnotologiesAndAllocationsMerged(reasoner: ActorRef) {
   //    val reasoners = List(reasoner)
   //
   //    // partition the ontology
@@ -633,16 +603,21 @@ object DIREShell extends Application with Actor {
 
   protected def receive = {
     case ProverStatus(state, workedOffCount, derivedCount, _, _, _) => {
-      keptClauses.put(sender.get, workedOffCount)
-      val totalClauses = keptClauses.values.reduceLeft(_ + _)
-      log.error("[Total Kept clauses in nodes] : %s \n", totalClauses)
+
+      self.sender match {
+        case Some(sender) => {
+          keptClauses.put(sender, workedOffCount)
+          val totalClauses = keptClauses.values.reduceLeft(_ + _)
+          log.error("[Total Kept clauses in nodes] : %s \n", totalClauses)
+        }
+        case None => //
+
+      }
 
 
     }
 
   }
-
-
 
 
 }
@@ -665,7 +640,7 @@ object DIRENewShell {
       autoImport("kernel._")
       autoImport("recording._")
       autoImport("domain._")
-      
+
       //bind("shell", new DIREShell())
       //OR if I want to restrict access to an interface
       //bindAs("processingBuilder2", classOf[ProcessingBuilder], new MyProcessingBuilderImplementationClass())

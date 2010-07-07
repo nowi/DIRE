@@ -1,10 +1,10 @@
-package core.containers
+package de.unima.dire.core.containers
 
 
 import collection.mutable._
-import domain.fol.ast.{EmptyClause, FOLNode, FOLClause}
-import scala.collection.mutable.{Set => MSet}
+import de.unima.dire.domain.fol.ast.{FOLNode}
 
+import scala.collection.mutable.{Set => MSet}
 /**
  * User: nowi
  * Date: 20.04.2010
@@ -13,19 +13,18 @@ import scala.collection.mutable.{Set => MSet}
 
 abstract class MutableClauseStore extends MutableClauseStorage {
 
+
   override def add(a: FOLClause)
 
   override def removeNext : FOLClause
 
   override def remove(a : FOLClause) : FOLClause
 
-
-
-  def removeAll(clauses: Iterable[FOLClause]) {
+  def removeAll(clauses: Iterable[FOLClause]) : Unit = {
     clauses.foreach(remove _)
   }
 
-  override def addAll(i: Iterable[FOLClause]) : Unit = {
+  def addAll(i: Iterable[FOLClause]) : Unit = {
     for (clause <- i)
       add(clause)
   }

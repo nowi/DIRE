@@ -1,19 +1,16 @@
-package core.containers
+package de.unima.dire.core.containers.test
 
 /**
  * User: nowi
  * Date: 17.12.2009
  * Time: 13:12:28
  */
-import com.jteigen.scalatest.JUnit4Runner
 
-import domain.fol.ast._
-import heuristics.LightestClauseHeuristicStorage
-import org.junit.runner.RunWith
+import de.unima.dire.core.containers.{StandardClause, LightestClauseHeuristicStorage}
+import de.unima.dire.domain.fol.ast.{Variable,Constant,FOLNode,Predicate,Negation}
+
 import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.Spec
 
-@RunWith(classOf[JUnit4Runner])
 abstract class UsableClausesStoreSpec extends org.scalatest.Spec with ShouldMatchers {
   // test clauses
   def createStorage: LightestClauseHeuristicStorage
@@ -100,7 +97,7 @@ abstract class UsableClausesStoreSpec extends org.scalatest.Spec with ShouldMatc
       storage.removeNext should equal(C1)
 
     }
-//
+    //
     it("should enque clauses , and be empty after dequeing") {
       val storage = createStorage
       storage.addAll(List(C1, C2, C3, C4, C5, C6, C7, C8, goalClause))
@@ -126,7 +123,7 @@ abstract class UsableClausesStoreSpec extends org.scalatest.Spec with ShouldMatc
       storage.isEmpty should be(true)
 
     }
-//
+    //
     it("should enque clauses , dequee , and enque interleaved claues correctyl") {
       val storage = createStorage
       storage.addAll(List(C1, C2, C3, C4, C5, C6, C7, C8, goalClause))
@@ -140,7 +137,7 @@ abstract class UsableClausesStoreSpec extends org.scalatest.Spec with ShouldMatc
       storage.removeNext should equal(C8)
 
       storage.add(C8)
-//      storage.add(C3)
+      //      storage.add(C3)
 
       storage.removeNext should equal(goalClause)
       storage.removeNext should equal(C8)
@@ -148,7 +145,7 @@ abstract class UsableClausesStoreSpec extends org.scalatest.Spec with ShouldMatc
       // size 2
       storage.removeNext should equal(C3)
       storage.removeNext should equal(C4)
-//      storage.removeNext should equal(C3)
+      //      storage.removeNext should equal(C3)
 
       // size 3
       storage.removeNext should equal(C2)
@@ -176,7 +173,7 @@ abstract class UsableClausesStoreSpec extends org.scalatest.Spec with ShouldMatc
 
       storage.add(C3)
 
-      
+
 
       storage.removeNext should equal(goalClause)
       storage.removeNext should equal(C8)
@@ -184,7 +181,7 @@ abstract class UsableClausesStoreSpec extends org.scalatest.Spec with ShouldMatc
       // size 2
       storage.removeNext should equal(C3)
       storage.removeNext should equal(C4)
-//      storage.removeNext should equal(C3)
+      //      storage.removeNext should equal(C3)
 
       // size 3
       storage.removeNext should equal(C2)
@@ -194,15 +191,15 @@ abstract class UsableClausesStoreSpec extends org.scalatest.Spec with ShouldMatc
       storage.isEmpty should be(true)
 
     }
-//
-//
-//    it("should index the classes correctly and support retrieval") {
-//      val storage = createStorage
-//      storage.addAll(List(C1, C2, C3, C4, C5, C6, C7, C8, goalClause))
-//      // get clauses for key :
-//      storage.toList.isEmpty should be(true)
-//
-//    }
+    //
+    //
+    //    it("should index the classes correctly and support retrieval") {
+    //      val storage = createStorage
+    //      storage.addAll(List(C1, C2, C3, C4, C5, C6, C7, C8, goalClause))
+    //      // get clauses for key :
+    //      storage.toList.isEmpty should be(true)
+    //
+    //    }
 
 
   }

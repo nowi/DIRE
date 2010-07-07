@@ -1,4 +1,4 @@
-package domain.fol.parsers
+package de.unima.dire.domain.fol.parsers
 
 /**
  * User: nowi
@@ -6,7 +6,7 @@ package domain.fol.parsers
  * Time: 14:28:33
  */
 
-import ast._
+import de.unima.dire.domain.fol.ast._
 import scala.util.parsing.combinator.syntactical._
 
 object FOLDsl extends StandardTokenParsers {

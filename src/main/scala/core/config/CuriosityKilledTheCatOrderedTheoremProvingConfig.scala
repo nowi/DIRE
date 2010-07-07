@@ -1,14 +1,16 @@
-package core.config
+package de.unima.dire.core.config
 
 
-import caches.{SelectedLitCache, URLitCache, MaxLitCache}
-import containers.{CNFClauseStore}
-import ordering.{ALCLPOComparator}
-import recording.NaiveClauseRecorder
-import reduction._
-import resolution.{DALCResolver, DALCUniqueLiteralResolver}
-import rewriting.{ VariableRewriter}
-import selection.{NegativeLiteralsSelection, DALCRSelector}
+import de.unima.dire.core.ordering.{LazyLexicographicPrecedence, ALCLPOComparator}
+import de.unima.dire.core.Standardizer
+import de.unima.dire.core.caches.{SelectedLitCache, URLitCache, MaxLitCache}
+import de.unima.dire.core.containers.{CNFClauseStore}
+import de.unima.dire.recording.NaiveClauseRecorder
+import de.unima.dire.core.reduction._
+import de.unima.dire.core.resolution.{DALCResolver, DALCUniqueLiteralResolver}
+import de.unima.dire.core.rewriting.{ VariableRewriter}
+import de.unima.dire.core.selection.{NegativeLiteralsSelection, DALCRSelector}
+
 object CuriosityKilledTheCatOrderedTheoremProvingConfig {
   // the initial clause store
 
@@ -27,7 +29,7 @@ object CuriosityKilledTheCatOrderedTheoremProvingConfig {
   lazy val uniqueLiteralResolver = Some(new DALCUniqueLiteralResolver(this))
 
   // ordered resolution needs comparator and selection too
-  lazy val precedence = core.ordering.LazyLexicographicPrecedence
+  lazy val precedence = LazyLexicographicPrecedence
   lazy val literalComparator = new ALCLPOComparator(this)
   lazy val selector = new NegativeLiteralsSelection()
 

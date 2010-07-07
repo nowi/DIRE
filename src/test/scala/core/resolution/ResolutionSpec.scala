@@ -1,4 +1,4 @@
-package core.resolution
+package de.unima.dire.core.resolution
 
 /**
  * User: nowi
@@ -6,17 +6,15 @@ package core.resolution
  * Time: 17:43:55
  */
 
-import com.jteigen.scalatest.JUnit4Runner
 
-import containers.{CNFClauseStore}
-import domain.fol.ast._
-import org.junit.runner.RunWith
-import org.scalatest.matchers.ShouldMatchers
+import de.unima.dire.core.containers.{CNFClauseStore}
+import de.unima.dire.domain.fol.ast._
+import de.unima.dire.helpers.Logging
+import de.unima.dire.core.reduction.{DuplicateLiteralDeleter, ClauseCondenser}
+
 import org.scalatest.Spec
-import helpers.Logging
-import reduction.{DuplicateLiteralDeleter, ClauseCondenser}
+import org.scalatest.matchers.ShouldMatchers
 
-@RunWith(classOf[JUnit4Runner])
 abstract class ResolutionSpec extends Spec with ShouldMatchers with Logging {
   implicit def setFolNode2StandardClause(set: Set[FOLNode]): StandardClause = StandardClause(set)
 

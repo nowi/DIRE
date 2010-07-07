@@ -1,28 +1,24 @@
-package core.resolution
+package de.unima.dire.core.resolution
 
 /**
  * User: nowi
  * Date: 13.12.2009
  * Time: 14:38:22
  */
-import com.jteigen.scalatest.JUnit4Runner
 
-import config.{CuriosityKilledTheCatOrderedTheoremProvingConfig}
-import org.junit.runner.RunWith
 
-import com.jteigen.scalatest.JUnit4Runner
 
-import domain.fol.ast._
-import org.junit.runner.RunWith
+import de.unima.dire.domain.fol.ast._
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
-import helpers.Logging
-import recording.NaiveClauseRecorder
-import reduction.StillmannSubsumer
-import rewriting.VariableRewriter
+import de.unima.dire.helpers.Logging
+import de.unima.dire.recording.NaiveClauseRecorder
+import de.unima.dire.core.reduction.StillmannSubsumer
+import de.unima.dire.core.rewriting.VariableRewriter
+import de.unima.dire.core.config.CuriosityKilledTheCatOrderedTheoremProvingConfig
+import de.unima.dire.core.Standardizer
 
 
-@RunWith(classOf[JUnit4Runner])
 class BinaryResolverImplSpec extends ResolutionSpec {
   val config = new Object {
 

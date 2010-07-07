@@ -6,7 +6,7 @@
 //import collection.immutable.{TreeSet, SortedSet}
 //import collection.mutable.ListBuffer
 //import containers._
-//import domain.fol.ast._
+//import domain.fol.domain.ast_
 //import formatting.ClauseFormatting
 //import ordering.LiteralComparison
 //import ClauseRecording

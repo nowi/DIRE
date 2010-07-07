@@ -2,11 +2,14 @@
 build/*
 out/*
 lib/*
-target/*
+target
 logs/*
 input/*
 DIRE.iws
 *.log
+lib_managed/
+src_managed/
+project/boot/*
 
 *.pbxuser
 *.mode1v3

@@ -1,4 +1,4 @@
-package core.reduction
+package de.unima.dire.core.reduction
 
 /**
  * User: nowi
@@ -6,15 +6,14 @@ package core.reduction
  * Time: 11:56:33
  */
 
-import containers.{CNFClauseStore}
-import domain.fol.ast._
-import helpers.Logging
-import org.junit.runner.RunWith
-import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.Spec
-import com.jteigen.scalatest.JUnit4Runner
 
-@RunWith(classOf[JUnit4Runner])
+import _root_.de.unima.dire.helpers.Logging
+import de.unima.dire.core.containers._
+import de.unima.dire.domain.fol.ast.{Variable,Constant,FOLNode,Function,Negation}
+
+import org.scalatest.Spec
+import org.scalatest.matchers.ShouldMatchers
+
 abstract class ClauseTautologyDetectionSpec extends Spec with ShouldMatchers with Logging {
   val tautologyDetector : ClauseTautologyDetection
 

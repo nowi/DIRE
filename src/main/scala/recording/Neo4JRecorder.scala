@@ -1,13 +1,10 @@
-package recording
+package de.unima.dire.recording
 
+import de.unima.dire.core.containers.FOLClause
 
-import domain.fol.ast.{ALCDClause, StandardClause, Predicate, FOLClause}
 import neo4j.models.Predicates._
-import org.neo4j.index.IndexService
+import neo4j.Neo4jWrapper
 import org.neo4j.index.lucene.LuceneIndexService
-import org.neo4j.scala.Neo4jWrapper
-import org.specs._
-import org.specs.runner._
 import org.neo4j.graphdb._
 import org.neo4j.kernel.EmbeddedGraphDatabase
 import se.scalablesolutions.akka.util.Logging
@@ -36,16 +33,16 @@ class Neo4JRecorder(val path: String) extends ClauseRecording with Neo4jWrapper 
 
 
   val parentsOf = (start: Node) =>
-          start.traverse(Traverser.Order.BREADTH_FIRST, (tp: TraversalPosition) => false, ReturnableEvaluator.ALL_BUT_START_NODE, ISPARENTOF, Direction.INCOMING).iterator
+    start.traverse(Traverser.Order.BREADTH_FIRST, (tp: TraversalPosition) => false, ReturnableEvaluator.ALL_BUT_START_NODE, ISPARENTOF, Direction.INCOMING).iterator
 
 
   private def retrieveNodeForClause(clause: FOLClause) = {
     execInNeo4j {
       neo =>
-              index.getSingleNode("clause", clause.toString) match {
-                case null => None
-                case node : Node => Some(node)
-              }
+        index.getSingleNode("clause", clause.toString) match {
+          case null => None
+          case node: Node => Some(node)
+        }
     }
   }
 
@@ -53,8 +50,8 @@ class Neo4JRecorder(val path: String) extends ClauseRecording with Neo4jWrapper 
 
     execInNeo4j {
       neo =>
-              val iterable = index.getNodes("clause", clause.toString)
-              (iterable.size > 0)
+        val iterable = index.getNodes("clause", clause.toString)
+        (iterable.size > 0)
     }
 
   }
@@ -65,7 +62,7 @@ class Neo4JRecorder(val path: String) extends ClauseRecording with Neo4jWrapper 
       case false => {
         execInNeo4j {
           neo =>
-                  block
+            block
         }
       }
       case true => {
@@ -96,79 +93,79 @@ class Neo4JRecorder(val path: String) extends ClauseRecording with Neo4jWrapper 
   override protected def record(clause: FOLClause, parent1: FOLClause, parent2: FOLClause, recieved: Boolean) {
     execInNeo4j {
       neo =>
-              // retrieve the parent nodes
-              var p1Node: Node = null
-              var p2Node: Node = null
+      // retrieve the parent nodes
+        var p1Node: Node = null
+        var p2Node: Node = null
 
-              val iterable1 = index.getNodes("clause", parent1.toString)
-              val iter1 = iterable1.iterator
-              // TODO workaround Neo4J lucene indexer bug .. hmm makes me wonder
-              // wo usses this stuff really ... hmmm
-              // http://www.mail-archive.com/user@lists.neo4j.org/msg02442.html
-              if (iterable1.size > 1) {
-                log.error("There are %s number of parents for this clause  !!!", iterable1.size)
-                while (iter1.hasNext()) {
-                  val node = iter1.next()
-                  log.error("one parent is  : %s !!!", node.getProperty("clause"))
-                  p1Node = node
-                }
-              } else {
-                log.info("Fetchign neo node for parent clause : %s",parent1.toString)
-                p1Node = iter1.next()
+        val iterable1 = index.getNodes("clause", parent1.toString)
+        val iter1 = iterable1.iterator
+        // TODO workaround Neo4J lucene indexer bug .. hmm makes me wonder
+        // wo usses this stuff really ... hmmm
+        // http://www.mail-archive.com/user@lists.neo4j.org/msg02442.html
+        if (iterable1.size > 1) {
+          log.error("There are %s number of parents for this clause  !!!", iterable1.size)
+          while (iter1.hasNext()) {
+            val node = iter1.next()
+            log.error("one parent is  : %s !!!", node.getProperty("clause"))
+            p1Node = node
+          }
+        } else {
+          log.info("Fetchign neo node for parent clause : %s", parent1.toString)
+          p1Node = iter1.next()
 
-              }
+        }
 
-              val iterable2 = index.getNodes("clause", parent2.toString)
-              val iter2 = iterable2.iterator
-              if (iterable2.size > 1) {
-                log.error("There are %s number of parents for this clause  !!!", iterable2.size)
-                while (iter2.hasNext()) {
-                  val node = iter2.next()
-                  log.error("one parent is  : %s !!!", node.getProperty("clause"))
-                  p2Node = node
-                }
-              } else {
-                log.info("Fetchign neo node for parent clause : %s",parent2.toString)
-                p2Node = iter2.next()
+        val iterable2 = index.getNodes("clause", parent2.toString)
+        val iter2 = iterable2.iterator
+        if (iterable2.size > 1) {
+          log.error("There are %s number of parents for this clause  !!!", iterable2.size)
+          while (iter2.hasNext()) {
+            val node = iter2.next()
+            log.error("one parent is  : %s !!!", node.getProperty("clause"))
+            p2Node = node
+          }
+        } else {
+          log.info("Fetchign neo node for parent clause : %s", parent2.toString)
+          p2Node = iter2.next()
 
-              }
-
-
-              require(p1Node != null && p2Node != null)
+        }
 
 
-              retrieveNodeForClause(clause) match {
-                case None => {
-                  // create the derived node
-                  val clauseNode = neo.createNode
-                  val createdTime = System.currentTimeMillis
-                  val createdBy = this.toString
+        require(p1Node != null && p2Node != null)
 
-                  clauseNode("createdOn") = createdTime
-                  clauseNode("createdBy") = createdBy
-                  clauseNode("clause") = clause.toString
-                  clauseNode("name") = clause.toString
-                  if (recieved) clauseNode("recieved") = "true"
 
-                  // index new node
-                  index.index(clauseNode, "clause", clauseNode.getProperty("clause"));
+        retrieveNodeForClause(clause) match {
+          case None => {
+            // create the derived node
+            val clauseNode = neo.createNode
+            val createdTime = System.currentTimeMillis
+            val createdBy = this.toString
 
-                  // link
-                  p1Node.createRelationshipTo(clauseNode, ISPARENTOF)
-                  p2Node.createRelationshipTo(clauseNode, ISPARENTOF)
+            clauseNode("createdOn") = createdTime
+            clauseNode("createdBy") = createdBy
+            clauseNode("clause") = clause.toString
+            clauseNode("name") = clause.toString
+            if (recieved) clauseNode("recieved") = "true"
 
-                }
+            // index new node
+            index.index(clauseNode, "clause", clauseNode.getProperty("clause"));
 
-                case Some(node) => {
-                  // already in the graph only add new links
-                  // link
-                  log.info("The clause : %s is already persisted in this graph and has been derived again", clause)
-                  p1Node.createRelationshipTo(node, ISPARENTOF)
-                  p2Node.createRelationshipTo(node, ISPARENTOF)
+            // link
+            p1Node.createRelationshipTo(clauseNode, ISPARENTOF)
+            p2Node.createRelationshipTo(clauseNode, ISPARENTOF)
 
-                }
+          }
 
-              }
+          case Some(node) => {
+            // already in the graph only add new links
+            // link
+            log.info("The clause : %s is already persisted in this graph and has been derived again", clause)
+            p1Node.createRelationshipTo(node, ISPARENTOF)
+            p2Node.createRelationshipTo(node, ISPARENTOF)
+
+          }
+
+        }
 
     }
 
@@ -183,16 +180,16 @@ class Neo4JRecorder(val path: String) extends ClauseRecording with Neo4jWrapper 
 
     execInNeo4j {
       neo =>
-              val iterable = index.getNodes("clause", clause.toString)
-              val iter = iterable.iterator
-              if (iterable.size == 1) {
-                clauseNode = iter.next()
-              } else if (iterable.size > 1) {
-                log.error("There are multiple nodes representing the clause %s", clause)
-                clauseNode = iter.next()
-              } else {
-                log.error("There are no nodes representing the clause %s", clause)
-              }
+        val iterable = index.getNodes("clause", clause.toString)
+        val iter = iterable.iterator
+        if (iterable.size == 1) {
+          clauseNode = iter.next()
+        } else if (iterable.size > 1) {
+          log.error("There are multiple nodes representing the clause %s", clause)
+          clauseNode = iter.next()
+        } else {
+          log.error("There are no nodes representing the clause %s", clause)
+        }
     }
 
 
@@ -205,17 +202,17 @@ class Neo4JRecorder(val path: String) extends ClauseRecording with Neo4jWrapper 
 
     execInNeo4j {
       neo =>
-              if (iter.hasNext) {
-                parent1Node = iter.next
-                parent2Node = iter.next
-                require(parent1Node != null && parent2Node != null)
-                val parent1ClauseString: String = parent1Node.getProperty("clause").asInstanceOf[String]
-                val parent2ClauseString: String = parent2Node.getProperty("clause").asInstanceOf[String]
-                Some(Tuple2(parent1ClauseString, parent2ClauseString))
-              } else {
-                None
+        if (iter.hasNext) {
+          parent1Node = iter.next
+          parent2Node = iter.next
+          require(parent1Node != null && parent2Node != null)
+          val parent1ClauseString: String = parent1Node.getProperty("clause").asInstanceOf[String]
+          val parent2ClauseString: String = parent2Node.getProperty("clause").asInstanceOf[String]
+          Some(Tuple2(parent1ClauseString, parent2ClauseString))
+        } else {
+          None
 
-              }
+        }
 
     }
 

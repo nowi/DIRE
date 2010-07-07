@@ -1,14 +1,16 @@
-package core.resolution
+package de.unima.dire.core.resolution
 
 
-import caches.{MaxLitCache, SelectedLitCache}
+import de.unima.dire.helpers.Logging
+import de.unima.dire.core.caches.{MaxLitCache, SelectedLitCache}
+import de.unima.dire.domain.fol.ast._
+import de.unima.dire.domain.fol.functions.FOLAlgorithms._
+import de.unima.dire.domain.fol.Substitution
+import de.unima.dire.core.ordering.LiteralComparison
+import de.unima.dire.core.selection.LiteralSelection
+import de.unima.dire.core.containers.{ALCDClause, StandardClause, FOLClause}
+
 import collection.mutable.ListBuffer
-import domain.fol.ast._
-import domain.fol.functions.FOLAlgorithms._
-import domain.fol.Substitution
-import ordering.LiteralComparison
-import selection.LiteralSelection
-
 /**
  * User: nowi
  * Date: 28.04.2010
@@ -39,7 +41,6 @@ trait NegativeFactoring {
 }
 
 object PositiveFactorer extends PositiveFactoring {
-
   implicit def listFOLnode2StandardClause(set: Set[FOLNode]): FOLClause = StandardClause(set)
 
   override def apply(clause: Set[FOLNode]): Set[FOLNode] = {
@@ -153,22 +154,22 @@ object NegativeFactorer extends NegativeFactoring {
 
 
 
-class PositiveOrderedFactoring(env: {val selector: LiteralSelection; val literalComparator: LiteralComparison;val selectedLitCache : SelectedLitCache }) extends PositiveFactoring with helpers.Logging {
+class PositiveOrderedFactoring(env: {val selector: LiteralSelection; val literalComparator: LiteralComparison; val selectedLitCache: SelectedLitCache}) extends PositiveFactoring with Logging {
   implicit def iterableFOLnode2ALCDClause(iterablelist: Set[FOLNode]): FOLClause = ALCDClause(iterablelist)
 
   implicit val literalSelector = env.selector
   implicit val literalComparator = env.literalComparator
   implicit val selectedLitCache = env.selectedLitCache
-  
+
   override def apply(clause: Set[FOLNode]): Set[FOLNode] = {
 
     // Aσ is maximal with respect to Cσ ∨ Bσ
-    def condition2(b: FOLNode,matcher : Substitution) = {
+    def condition2(b: FOLNode, matcher: Substitution) = {
       (clause - b).rewrite(matcher).contains(b.rewrite(matcher))
     }
 
     // 3. nothing is selected in Cσ ∨ Aσ ∨ Bσ
-    def condition3(matcher : Substitution) = clause.rewrite(matcher).selectedLits.isEmpty
+    def condition3(matcher: Substitution) = clause.rewrite(matcher).selectedLits.isEmpty
 
 
 
@@ -194,7 +195,7 @@ class PositiveOrderedFactoring(env: {val selector: LiteralSelection; val literal
         case (e2, Some(matcher)) => {
           // foudn some unifier , might be even the trivial one
           // check for ordering constraints
-          condition2(e2,matcher) && condition3(matcher)
+          condition2(e2, matcher) && condition3(matcher)
         }
         case (e2, None) => false
       })
@@ -225,7 +226,7 @@ class PositiveOrderedFactoring(env: {val selector: LiteralSelection; val literal
   }
 }
 
-class NegativeOrderedFactoring(env: {val selector: LiteralSelection; val literalComparator: LiteralComparison;val selectedLitCache : SelectedLitCache}) extends NegativeFactoring with helpers.Logging {
+class NegativeOrderedFactoring(env: {val selector: LiteralSelection; val literalComparator: LiteralComparison; val selectedLitCache: SelectedLitCache}) extends NegativeFactoring with Logging {
   implicit def iterableFOLnode2ALCDClause(iterable: Set[FOLNode]): FOLClause = ALCDClause(iterable)
 
   implicit val literalSelector = env.selector
@@ -235,12 +236,12 @@ class NegativeOrderedFactoring(env: {val selector: LiteralSelection; val literal
   override def apply(clause: Set[FOLNode]): Set[FOLNode] = {
 
     // Aσ is maximal with respect to Cσ ∨ Bσ
-    def condition2(b: FOLNode,matcher : Substitution) = {
+    def condition2(b: FOLNode, matcher: Substitution) = {
       (clause - b).rewrite(matcher).contains(b.rewrite(matcher))
     }
 
     // 3. nothing is selected in Cσ ∨ Aσ ∨ Bσ
-    def condition3(matcher : Substitution) = clause.rewrite(matcher).selectedLits.isEmpty
+    def condition3(matcher: Substitution) = clause.rewrite(matcher).selectedLits.isEmpty
 
 
 
@@ -266,7 +267,7 @@ class NegativeOrderedFactoring(env: {val selector: LiteralSelection; val literal
         case (e2, Some(matcher)) => {
           // foudn some unifier , might be even the trivial one
           // check for ordering constraints
-          condition2(e2,matcher) && condition3(matcher)
+          condition2(e2, matcher) && condition3(matcher)
         }
         case (e2, None) => false
       })
@@ -298,31 +299,31 @@ class NegativeOrderedFactoring(env: {val selector: LiteralSelection; val literal
 }
 
 object ALCPositiveOrderedFactoring {
-    // A is maximal with respect to C ∨ B
-    def condition2(clause : FOLClause, a : FOLNode,b: FOLNode)(implicit literalComperator : LiteralComparison,maxLitCache : MaxLitCache,selectedLitCache : SelectedLitCache ) = {
-      val result = clause.maxLits.contains(a)
-      result
-    }
+  // A is maximal with respect to C ∨ B
+  def condition2(clause: FOLClause, a: FOLNode, b: FOLNode)(implicit literalComperator: LiteralComparison, maxLitCache: MaxLitCache, selectedLitCache: SelectedLitCache) = {
+    val result = clause.maxLits.contains(a)
+    result
+  }
 
-    // 3. nothing is selected in C ∨ A ∨ B
-    def condition3(clause : FOLClause)(implicit literalSelector : LiteralSelection,selectedLitCache : SelectedLitCache ) = {
-      val result = clause.selectedLits.isEmpty
-      result
-    }
+  // 3. nothing is selected in C ∨ A ∨ B
+  def condition3(clause: FOLClause)(implicit literalSelector: LiteralSelection, selectedLitCache: SelectedLitCache) = {
+    val result = clause.selectedLits.isEmpty
+    result
+  }
 
 
-    def isAppliable(clause : FOLClause, a : FOLNode,b: FOLNode)(implicit literalComperator : LiteralComparison , literalSelector : LiteralSelection,maxLitCache : MaxLitCache,selectedLitCache : SelectedLitCache ) = condition2(clause,a,b) && condition3(clause)
+  def isAppliable(clause: FOLClause, a: FOLNode, b: FOLNode)(implicit literalComperator: LiteralComparison, literalSelector: LiteralSelection, maxLitCache: MaxLitCache, selectedLitCache: SelectedLitCache) = condition2(clause, a, b) && condition3(clause)
 
 }
 
 
-class ALCPositiveOrderedFactoring(env: {val selector: LiteralSelection; val literalComparator: LiteralComparison;val maxLitCache : MaxLitCache;val selectedLitCache : SelectedLitCache}) extends PositiveFactoring with helpers.Logging {
+class ALCPositiveOrderedFactoring(env: {val selector: LiteralSelection; val literalComparator: LiteralComparison; val maxLitCache: MaxLitCache; val selectedLitCache: SelectedLitCache}) extends PositiveFactoring with Logging {
   implicit def setFOLnode2ALCDClause(set: Set[FOLNode]): FOLClause = ALCDClause(set)
 
   implicit val literalSelector = env.selector
   implicit val literalComparator = env.literalComparator
   implicit val maxLitCache = env.maxLitCache
-  implicit val selectedLitCache  = env.selectedLitCache
+  implicit val selectedLitCache = env.selectedLitCache
 
   override def apply(clause: Set[FOLNode]): Set[FOLNode] = {
 
@@ -344,7 +345,7 @@ class ALCPositiveOrderedFactoring(env: {val selector: LiteralSelection; val lite
 
       // collect the candiate instantiations
 
-      val candidate = (for (a <- clause.positiveLiterals; b <- clause.positiveLiterals if ((a != b) && ALCPositiveOrderedFactoring.isAppliable(clause,a,b) )) yield (b, getMGU(a, b))).find({
+      val candidate = (for (a <- clause.positiveLiterals; b <- clause.positiveLiterals if ((a != b) && ALCPositiveOrderedFactoring.isAppliable(clause, a, b))) yield (b, getMGU(a, b))).find({
         case (b, Some(matcher)) => {
           // foudn some unifier , might be even the trivial one
           // check for ordering constraints
@@ -379,7 +380,7 @@ class ALCPositiveOrderedFactoring(env: {val selector: LiteralSelection; val lite
   }
 }
 
-class ALCNegativeOrderedFactoring(env: {val selector: LiteralSelection; val literalComparator: LiteralComparison;val maxLitCache : MaxLitCache; val selectedLitCache : SelectedLitCache}) extends NegativeFactoring with helpers.Logging {
+class ALCNegativeOrderedFactoring(env: {val selector: LiteralSelection; val literalComparator: LiteralComparison; val maxLitCache: MaxLitCache; val selectedLitCache: SelectedLitCache}) extends NegativeFactoring with Logging {
   implicit def setFOLnode2ALCDClause(set: Set[FOLNode]): FOLClause = ALCDClause(set)
 
   implicit val literalSelector = env.selector
@@ -408,7 +409,7 @@ class ALCNegativeOrderedFactoring(env: {val selector: LiteralSelection; val lite
 
       // collect the candiate instantiations
 
-      val candidate = (for (a <- clause.negativeLiterals; b <- clause.negativeLiterals if ((a != b) && ALCPositiveOrderedFactoring.isAppliable(clause,a,b) )) yield (b, getMGU(a, b))).find({
+      val candidate = (for (a <- clause.negativeLiterals; b <- clause.negativeLiterals if ((a != b) && ALCPositiveOrderedFactoring.isAppliable(clause, a, b))) yield (b, getMGU(a, b))).find({
         case (b, Some(matcher)) => {
           // foudn some unifier , might be even the trivial one
           // check for ordering constraints

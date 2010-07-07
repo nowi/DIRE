@@ -1,7 +1,7 @@
-package core.ordering
+package de.unima.dire.core.ordering
 
-import helpers.Logging
-import domain.fol.ast._
+import de.unima.dire.helpers.Logging
+import de.unima.dire.domain.fol.ast._
 
 
 /**

@@ -1,21 +1,17 @@
-package core.ordering
+package de.unima.dire.core.ordering
 
-;
 
 /**
  * User: nowi
  * Date: 19.01.2010
  * Time: 19:04:06
  */
-import com.jteigen.scalatest.JUnit4Runner
 
-import containers.{CNFClauseStore}
-import domain.fol.parsers.SPASSIntermediateFormatParser;
-import org.junit.runner.RunWith
+import core.containers.CNFClauseStore
+
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.Spec
 
-@RunWith(classOf[JUnit4Runner])
 class CustomSPASSModule1PrecedenceSpec extends Spec with ShouldMatchers {
   describe("CustomSPASSModule1PrecedenceSpec") {
 

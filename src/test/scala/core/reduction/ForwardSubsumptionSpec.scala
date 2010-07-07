@@ -1,4 +1,5 @@
-package core.reduction
+
+package de.unima.dire.core.reduction
 
 /**
  * User: nowi
@@ -6,15 +7,10 @@ package core.reduction
  * Time: 12:26:25
  */
 
-import containers.{CNFClauseStore}
-import domain.fol.ast._
-import helpers.Logging
-import org.junit.runner.RunWith
-import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.Spec
-import com.jteigen.scalatest.JUnit4Runner
+import de.unima.dire.helpers.Logging
 
-@RunWith(classOf[JUnit4Runner])
+import org.scalatest.Spec
+import org.scalatest.matchers.ShouldMatchers
 class ForwardSubsumptionSpec  extends Spec with ShouldMatchers with Logging{
 
   

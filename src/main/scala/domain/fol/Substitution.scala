@@ -1,14 +1,12 @@
-package domain.fol
+package de.unima.dire.domain.fol
 
+import de.unima.dire.domain.fol.ast.{IndicatorVariable, Variable, FOLNode}
+import de.unima.dire.helpers.HelperFunctions._
 
-import ast.{IndicatorVariable, Term, Variable, FOLNode}
-import collection.immutable.EmptySet
-import collection.{SortedMap, MapProxy}
+import de.unima.dire.domain.fol.functions.FOLAlgorithms._
+
+import collection.MapProxy
 import scala.collection.mutable.{Map => MMap}
-import functions.FOLAlgorithms
-import helpers.HelperFunctions._
-import sun.reflect.generics.reflectiveObjects.NotImplementedException
-import FOLAlgorithms._
 
 /**
  * User: nowi
@@ -85,7 +83,7 @@ case class Substitution(override val self: MMap[Variable, FOLNode]) extends MapP
       this
     else {
       require(substitution.size == 1, "Cannot add Substitions that contain more then one element use ++")
-      if(domain.contains(substitution.toList.head._1)) {
+      if (domain.contains(substitution.toList.head._1)) {
         require(!domain.contains(substitution.toList.head._1), "must not have variable contained in domain(this)")
       }
       Substitution(self + substitution.toList.head.asInstanceOf[Tuple2[Variable, FOLNode]])
@@ -97,7 +95,7 @@ case class Substitution(override val self: MMap[Variable, FOLNode]) extends MapP
     // the images of both substitions might be affected by the substitions
     // first apply the substititons to the images
     val sMapd = (s map ({case (xi, si) => (xi -> si.rewrite(r))}))
-    val rMapd = (r.filter({case (yi, ti) => (r.domain -- s.domain).contains(yi)}))
+    val rMapd = (r.filter({case (yi, ti) => (r.domain filterNot (s.domain contains)).contains(yi)}))
     (sMapd ++ rMapd)
   }
 
@@ -107,7 +105,7 @@ case class Substitution(override val self: MMap[Variable, FOLNode]) extends MapP
     // the images of both substitions might be affected by the substitions
     // first apply the substititons to the images
     val sMapd = (s map ({case (xi, si) => (xi -> si.rewrite(r))}))
-    val rMapd = (r.filter({case (yi, ti) => (r.domain -- s.image).contains(yi)}))
+    val rMapd = (r.filter({case (yi, ti) => (r.domain filterNot (s.image contains) ).contains(yi)}))
     (sMapd ++ rMapd)
 
   }
@@ -147,7 +145,7 @@ object NonTrivialSubstitution {
 object Substitution {
   def apply(): Substitution = MMap()
 
-  def apply(immutable : Map[Variable,FOLNode]) : Substitution = {
+  def apply(immutable: Map[Variable, FOLNode]): Substitution = {
     Substitution(MMap() ++ immutable)
   }
 
@@ -292,7 +290,12 @@ object Substitution {
 
 
   implicit def iterableToSubs(iter: Iterable[Tuple2[Variable, FOLNode]]): Substitution = {
-    Substitution(MMap() ++ iter )
+    Substitution(MMap() ++ iter)
+  }
+
+
+  implicit def iterableToSubs(obs: Tuple2[Variable, FOLNode]* ): Substitution = {
+    Substitution(MMap() ++ obs)
   }
 
   implicit def tupleToSubs(tuple: Tuple2[Variable, FOLNode]): Substitution = {
@@ -301,15 +304,13 @@ object Substitution {
   }
 
 
-
-
   implicit def subsToTuples(sub: Substitution): Iterable[Tuple2[Variable, FOLNode]] = {
     sub.toList
   }
 
   implicit def tuplesToSubs(tuples: List[Tuple2[Variable, FOLNode]]): Substitution = {
 
-//    Substitution((MMap[Variable, B]() /: tuples)(_ + _))
+    //    Substitution((MMap[Variable, B]() /: tuples)(_ + _))
     Substitution(MMap[Variable, FOLNode]() ++ tuples)
 
   }

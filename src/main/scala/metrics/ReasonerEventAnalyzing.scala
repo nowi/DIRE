@@ -1,7 +1,7 @@
-package metrics
+package de.unima.dire.metrics
 
 
-import recording._
+import de.unima.dire.recording._
 
 /**
  * User: nowi
@@ -33,9 +33,9 @@ trait ReasonerEventAnalyzing {
   lazy val recievedAndReducedClausesPerNode : Map[String,Int] = {
     // extract the reasoners
     var results = Map[String,Int]()
-    val nodes = events.map(_.nodeId).toList.removeDuplicates
+    val nodes = events.map(_.nodeId).toList.distinct
     for(currentNodeId <- nodes;reducedAtNode = reduced.filter(_.nodeId == currentNodeId);recivedAtNode = recieved.filter(_.nodeId == currentNodeId)){
-      results = results + (currentNodeId -> (recivedAtNode.toList -- reducedAtNode.toList).size)
+      results = results + (currentNodeId -> (recivedAtNode.toList filterNot (reducedAtNode.toList contains) ).size)
     }
     results
   }
