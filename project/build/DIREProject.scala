@@ -31,7 +31,7 @@ class DIREProject(info: ProjectInfo) extends DefaultProject(info) {
   val neo4jkernel = "org.neo4j" % "neo4j-kernel" % "1.0" % "compile"
   val neo4jindex = "org.neo4j" % "neo4j-index" % "1.0-b1" % "compile"
   val scalatest = "org.scala-tools.testing" % "scalatest" % "0.9.5" % "test"
-  val google_coll = "com.google.collections" % "google-collections" % "1.0" % "compile"
+  //val google_coll = "com.google.collections" % "google-collections" % "1.0" % "compile"
   //val jteigenrunner = "com.jteigen.scalatest" % "junit4runner" % "1.0-SNAPSHOT" % "test"
 
 
