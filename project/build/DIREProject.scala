@@ -39,6 +39,7 @@ class DIREProject(info: ProjectInfo) extends DefaultProject(info) {
 
   override def unmanagedClasspath = super.unmanagedClasspath +++ ("config" / "akka.conf")
 
+  System.setProperty("akka.config", "config/akka.conf")
 
   // specify run tasks here
   lazy val shell = runTask(Some("kernel.DIRENewShell"), super.runClasspath).dependsOn(compile) describedAs "Runs the shell."
