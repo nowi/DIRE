@@ -15,10 +15,15 @@ trait FOLClause {
 
   val literals: Set[FOLNode]
 
-  def uniqueResolvableLit(implicit resolver: UniqueLiteralResolution, cache: URLitCache): Option[FOLNode] = {
-    val resolved = resolver(this)
-    val urlit = cache.getOrElseUpdate(this, resolver(this))
-    urlit
+  def uniqueResolvableLit(implicit resolver: Option[UniqueLiteralResolution], cache: URLitCache): Option[FOLNode] = {
+    resolver match {
+      case Some(resolver) => {
+        val resolved = resolver(this)
+        val urlit = cache.getOrElseUpdate(this, resolver(this))
+        urlit
+      }
+      case None => None
+    }
   }
 
 //  // version without caching

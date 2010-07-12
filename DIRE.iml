@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module relativePaths="true" MavenProjectsManager.isMavenModule="true" org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+<module MavenProjectsManager.isMavenModule="true" org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" relativePaths="true" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="Scala" name="Scala">
-      <configuration />
+      <configuration>
+        <option name="takeFromSettings" value="true" />
+        <option name="myScalaCompilerJarPaths">
+          <array>
+            <option value="$MODULE_DIR$/../../scala/lib/scala-compiler.jar" />
+          </array>
+        </option>
+        <option name="myScalaSdkJarPaths">
+          <array>
+            <option value="$MODULE_DIR$/../../scala/lib/scala-library.jar" />
+          </array>
+        </option>
+      </configuration>
     </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_5" inherit-compiler-output="false">
@@ -19,53 +31,10 @@
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="library" name="Scala 2.7.7" level="application" />
+    <orderEntry type="library" exported="" name="SBTDeps" level="project" />
+    <orderEntry type="library" exported="" name="SBTManualDeps" level="project" />
     <orderEntry type="jdk" jdkName="1.6" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: junit:junit:4.7" level="project" />
-    <orderEntry type="library" name="Maven: org.scala-tools.testing:specs:1.6.1" level="project" />
-    <orderEntry type="library" exported="" name="Maven: com.google.collections:google-collections:1.0" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.neo4j:neo4j-scala:0.9.9-SNAPSHOT" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.scala-lang:scala-library:2.7.7" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.neo4j:neo4j-kernel:1.0" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.apache.geronimo.specs:geronimo-jta_1.1_spec:1.1.1" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.neo4j:neo4j-shell:1.0-rc" level="project" />
-    <orderEntry type="library" exported="" name="Maven: jline:jline:0.9.94" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.neo4j:neo4j-index:1.0-b1" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.neo4j:neo4j-commons:0.4" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.apache.lucene:lucene-core:2.9.1" level="project" />
-    <orderEntry type="library" exported="" name="Maven: se.scalablesolutions.akka:akka-core_2.7.7:0.7" level="project" />
-    <orderEntry type="library" exported="" name="Maven: sbinary:sbinary:0.3" level="project" />
-    <orderEntry type="library" exported="" name="Maven: voldemort.store.compress:h2-lzf:1.0" level="project" />
-    <orderEntry type="library" exported="" name="Maven: net.databinder:dispatch-http_2.7.7:0.6.4" level="project" />
-    <orderEntry type="library" exported="" name="Maven: commons-io:commons-io:1.4" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.scala-tools:javautils:2.7.4-0.1" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.jboss.netty:netty:3.2.0.BETA1" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.2.1" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.codehaus.jackson:jackson-core-asl:1.2.1" level="project" />
-    <orderEntry type="library" exported="" name="Maven: net.databinder:dispatch-json_2.7.7:0.6.4" level="project" />
-    <orderEntry type="library" exported="" name="Maven: sjson.json:sjson:0.4" level="project" />
-    <orderEntry type="library" exported="" name="Maven: se.scalablesolutions.akka:akka-util_2.7.7:0.7" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.codehaus.aspectwerkz:aspectwerkz-jdk5:2.1" level="project" />
-    <orderEntry type="library" exported="" name="Maven: net.lag:configgy:1.4.7" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.scala-lang:scala-compiler:2.7.6" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.codehaus.aspectwerkz:aspectwerkz-nodeps-jdk5:2.1" level="project" />
-    <orderEntry type="library" exported="" name="Maven: se.scalablesolutions.akka:akka-util-java_2.7.7:0.7" level="project" />
-    <orderEntry type="library" exported="" name="Maven: com.google.protobuf:protobuf-java:2.2.0" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.guiceyfruit:guice-core:2.0-beta-4" level="project" />
-    <orderEntry type="library" exported="" name="Maven: com.google.code.google-collections:google-collect:snapshot-20080530" level="project" />
-    <orderEntry type="library" exported="" name="Maven: cglib:cglib:2.2" level="project" />
-    <orderEntry type="library" exported="" name="Maven: asm:asm:3.1" level="project" />
-    <orderEntry type="library" exported="" name="Maven: aopalliance:aopalliance:1.0" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.multiverse:multiverse-alpha:0.4" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.multiverse:multiverse-core:0.4" level="project" />
-    <orderEntry type="library" exported="" name="Maven: asm:asm-tree:3.2" level="project" />
-    <orderEntry type="library" exported="" name="Maven: asm:asm-analysis:3.2" level="project" />
-    <orderEntry type="library" exported="" name="Maven: asm:asm-commons:3.2" level="project" />
-    <orderEntry type="library" exported="" name="Maven: asm:asm-util:3.2" level="project" />
-    <orderEntry type="library" exported="" name="Maven: se.scalablesolutions.akka:akka-cluster-jgroups_2.7.7:0.7" level="project" />
-    <orderEntry type="library" exported="" name="Maven: jgroups:jgroups:2.8.0.CR7" level="project" />
-    <orderEntry type="library" exported="" name="Maven: com.jteigen.scalatest:junit4runner:1.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.scala-tools.testing:scalatest:0.9.5" level="project" />
   </component>
 </module>
 

@@ -4,7 +4,7 @@ package core
 import collection.mutable.{ListBuffer}
 import domain.fol.ast._
 import helpers.{Subject, Logging}
-import kernel.{DerivedBatch, Derived}
+import kernel.{GivenClause, DerivedBatch, Derived}
 import ProvingResult._
 import collection.immutable.{TreeSet, SortedSet}
 import containers._
@@ -12,7 +12,7 @@ import formatting.ClauseFormatting
 import heuristics.LightestClauseHeuristicStorage
 import net.lag.configgy.Configgy
 import ordering.LiteralComparison
-import recording.ClauseRecording
+import recording.{EventRecorder, ClauseRecording}
 import reduction._
 import resolution._
 import scala.{Function => ScalaFun}
@@ -30,6 +30,7 @@ class RobinsonProver(env: {
   val workedOffClauseStore: MutableClauseStorage;
   val recordProofSteps: Boolean;
   val inferenceRecorder: Option[ClauseRecording];
+  val eventRecorder: Option[EventRecorder];
   val subsumptionStrategy: Subsumption;
   val forwardSubsumer: ForwardSubsumption;
   val backwardSubsumer: BackwardSubsumption;
@@ -56,7 +57,7 @@ class RobinsonProver(env: {
   val enableSharedClauses = false
   val seenClauses = new ListBuffer[FOLClause]()
 
-  val recordClauses = false
+  val recordClauses = true
   val backReductionOnRecievedClauses = true
   val forwardReductionOnRecievedClauses = true
 
@@ -75,7 +76,6 @@ class RobinsonProver(env: {
 
   val backwardSubsumer = env.backwardSubsumer
 
-  implicit val inferenceRecorder = env.inferenceRecorder
 
   // TODO
   //val forwardRewriting = ForwardRewriter.apply _
@@ -95,8 +95,12 @@ class RobinsonProver(env: {
 
   // init the storeas
   // take note this are MUTABLE structures that will be mutated by multiple methods in this class
-  val usable: MutableClauseStorage = env.usableClauseStore
-  val workedOff: MutableClauseStorage = env.workedOffClauseStore
+  private val _usable: MutableClauseStorage = env.usableClauseStore
+  private val _workedOff: MutableClauseStorage = env.workedOffClauseStore
+
+
+  implicit val _inferenceRecorder = env.inferenceRecorder
+  val eventRecorder = env.eventRecorder
 
   var derivedClausesCount: Int = 0
   var keptClausesCount: Int = 0
@@ -115,42 +119,59 @@ class RobinsonProver(env: {
   // used only from the proving actor when a clause stays in this node in the distributed case
   // TODO this is not very clean from a design perspective fix this in the future
   override def addToUsable(clause: FOLClause) = {
-    usable.add(clause)
+    _usable.add(clause)
   }
 
 
   override def addAllToUsable(clauses: Iterable[FOLClause]) = {
-    usable.addAll(clauses)
+    _usable.addAll(clauses)
   }
 
   override def addToWorkedOff(clause: FOLClause) = {
-    workedOff.add(clause)
+    _workedOff.add(clause)
   }
 
 
   override def addAllToWorkedOff(clauses: Iterable[FOLClause]) = {
-    workedOff.addAll(clauses)
+    _workedOff.addAll(clauses)
   }
+
+
+  override def inferenceLog = _inferenceRecorder
+
+  override def workedOff = _workedOff.toList
 
   override def saturate(clauses: Iterable[FOLClause]) = {
     clauses match {
       case Nil => {
         log.warning("Cannot staurate empty clauses ... ignore")
-        (COMPLETION, workedOff.toList.size, derivedClausesCount, recievedClauseCount, recievedKeptClauseCount)
+        (COMPLETION, _workedOff.toList.size, derivedClausesCount, recievedClauseCount, recievedKeptClauseCount)
       }
 
-      case clauses if (workedOff.toList.isEmpty) => {
+      case clauses if (_workedOff.toList.isEmpty) => {
         // this is the first saturation , we have no background clauses
         log.warning("%s is starting first saturation , we have no background clauses", this)
 
         // record those clauses
 
         if (recordClauses) {
-          inferenceRecorder match {
+          _inferenceRecorder match {
             case Some(ir) => {
               for (clause <- clauses) {
                 ir.recordClause(clause, None, None)
                 //              log.warning("Input : %s", printInferenceStep(clause))
+              }
+            }
+
+            case None => // no inference recorder present
+          }
+        }
+
+        if (recordClauses) {
+          eventRecorder match {
+            case Some(recorder) => {
+              for (clause <- clauses) {
+                recorder.recordInputClause(clause)
               }
             }
 
@@ -174,7 +195,7 @@ class RobinsonProver(env: {
         doSaturate(filtered)
       }
 
-      case clauses if (!workedOff.isEmpty) => {
+      case clauses if (!_workedOff.isEmpty) => {
         log.debug("%s is restarting saturation", this)
         // TODO interreducate with workedoff
 
@@ -184,7 +205,7 @@ class RobinsonProver(env: {
 
         // record those clauses
         if (recordClauses) {
-          inferenceRecorder match {
+          _inferenceRecorder match {
             case Some(ir) => {
               for (clause <- clauses) {
                 ir.recordRecievedClause(clause, None, None)
@@ -202,19 +223,19 @@ class RobinsonProver(env: {
           // first pass the clauses through the rewriting rules ( these are potentialy destructive )
           val rewritten = clauses.map(forwardLiteralDeletion(_))
           // filter out tautologies each redundant clause
-          rewritten.filter(!forwardRedundancyCheck(_, workedOff)).map(ALCDClause(_))
+          rewritten.filter(!forwardRedundancyCheck(_, _workedOff)).map(ALCDClause(_))
         } else clauses
 
 
 
         if (interReduced.isEmpty) {
           log.info("Recived redundant clause .. exit")
-          (COMPLETION, workedOff.toList.size, derivedClausesCount, recievedClauseCount, recievedKeptClauseCount)
+          (COMPLETION, _workedOff.toList.size, derivedClausesCount, recievedClauseCount, recievedKeptClauseCount)
         } else if (backReductionOnRecievedClauses) {
           // remainig clauses are then used for backward reduction on usable and workedoff sets
           // backward subsumption on usable
           //val backwardSubsumed = interReduced.flatMap({clause => backwardSubsumer.apply(clause,usable)})
-          workedOff.removeAll(interReduced.flatMap({clause => backwardSubsumer(clause, workedOff)}))
+          _workedOff.removeAll(interReduced.flatMap({clause => backwardSubsumer(clause, _workedOff)}))
 
           recievedKeptClauseCount += interReduced.toList.size
 
@@ -235,13 +256,13 @@ class RobinsonProver(env: {
   private def doSaturate(clauses: Iterable[FOLClause]) = {
     // submethods
 
-    usable.addAll(clauses)
+    _usable.addAll(clauses)
 
-    while (usable.hasNext && !resolvedEmptyClause && !isTimeUp(startTime)) {
+    while (_usable.hasNext && !resolvedEmptyClause && !isTimeUp(startTime)) {
       //record.info("Inner Loop")
       // 5. select a clause
       // sort the list and remove duplicates
-      val givenClause: FOLClause = usable.removeNext
+      val givenClause: FOLClause = _usable.removeNext
 
       //TODO remove this
       // check if we already know this clause
@@ -253,14 +274,14 @@ class RobinsonProver(env: {
       //
 
       // add given to workedoff
-      workedOff.add(givenClause)
+      _workedOff.add(givenClause)
 
       // dispatch given clause , maybe it does not belong to this partition
       //notify listeners with kept clause
-
+      notifyObservers(GivenClause(givenClause))
 
       // infere -- this should give us back clause buffers
-      val successfullResolutions: Iterable[SuccessfullResolution] = infere(givenClause, workedOff)
+      val successfullResolutions: Iterable[SuccessfullResolution] = infere(givenClause, _workedOff)
 
       successfullResolutions match {
         case successfullResolutions if (!successfullResolutions.isEmpty) => {
@@ -274,7 +295,7 @@ class RobinsonProver(env: {
             case false => { // we have derived clauses other than the empty clause
               // log here total derived
               if (recordClauses) {
-                inferenceRecorder match {
+                _inferenceRecorder match {
                   case Some(inferenceRecorder) => {
                     successfullResolutions.foreach({
                       r: core.resolution.SuccessfullResolution =>
@@ -284,9 +305,21 @@ class RobinsonProver(env: {
 
                   case None => // no inference recorder present
                 }
+                eventRecorder match {
+                  case Some(recorder) => {
+                    successfullResolutions.foreach({
+                      r: core.resolution.SuccessfullResolution =>
+                              recorder.recordDerivedClause(SharedALCDClause(r.result), SharedALCDClause(r.parent1),SharedALCDClause(r.parent2))
+                    })
+                  }
+
+                  case None => // no inference recorder present
+                }
+
+
               }
               // interreduce
-              interReduce(successfullResolutions.map(_.result), usable, workedOff)
+              interReduce(successfullResolutions.map(_.result), _usable, _workedOff)
 
 
             }
@@ -319,20 +352,20 @@ class RobinsonProver(env: {
 
     if (resolvedEmptyClause) {
       log.error("%s Proof found", this)
-      log.info("WorkedOff size :  %s", workedOff.toList.size)
+      log.info("WorkedOff size :  %s", _workedOff.toList.size)
       log.info("Derived Clauses Count :  %s", derivedClausesCount)
-      log.info("Kept Clauses Are :  %s", workedOff)
-      (PROOF, workedOff.toList.size, derivedClausesCount, recievedClauseCount, recievedKeptClauseCount)
-    } else if (!usable.hasNext) {
+      log.info("Kept Clauses Are :  %s", _workedOff)
+      (PROOF, _workedOff.toList.size, derivedClausesCount, recievedClauseCount, recievedKeptClauseCount)
+    } else if (!_usable.hasNext) {
       log.error("%s Completion found", this)
-      log.info("WorkedOff size :  %s", workedOff.size)
+      log.info("WorkedOff size :  %s", _workedOff.size)
       //log.warning("%s", formatClauses(workedOff))
       //      log.warning("%s", workedOff.toList.map("%s\n" format _).sort(_ < _))
       //      log.info("Kept Clauses Are :  %s", workedOff.toList.map("%s \n" format _))
-      (COMPLETION, workedOff.toList.size, derivedClausesCount, recievedClauseCount, recievedKeptClauseCount)
+      (COMPLETION, _workedOff.toList.size, derivedClausesCount, recievedClauseCount, recievedKeptClauseCount)
     } else {
       log.error("%s Error found", this)
-      (ERROR, workedOff.toList.size, derivedClausesCount, recievedClauseCount, recievedKeptClauseCount)
+      (ERROR, _workedOff.toList.size, derivedClausesCount, recievedClauseCount, recievedKeptClauseCount)
     }
 
 
@@ -401,13 +434,18 @@ class RobinsonProver(env: {
 
 
     def forwardReduction(clause: Set[FOLNode]): Set[FOLNode] = {
-      // first pass the clauses through the rewriting rules ( these are potentialy destructive )
-      val rewritten = forwardLiteralDeletion(clause)
-      // now check if redundant
-      if (forwardRedundancyCheck(rewritten, workedOff, usable)) {
-        Set.empty[FOLNode]
-      } else {
-        rewritten
+      tautologyDetection(clause) match {
+        case true => Set.empty[FOLNode] // clause is taut
+        case false => {
+          // first pass the clauses through the rewriting rules ( these are potentialy destructive )
+          val rewritten = forwardLiteralDeletion(clause)
+          // now check if redundant
+          if (forwardRedundancyCheck(rewritten, workedOff, usable)) {
+            Set.empty[FOLNode]
+          } else {
+            rewritten
+          }
+        }
       }
     }
 
@@ -478,13 +516,12 @@ class RobinsonProver(env: {
 
   def forwardLiteralDeletion(clause: Set[FOLNode]): Set[FOLNode] = {
     //condensation(duplicateLiteralDeleter(clause))(subsumptionChecker)
-    //duplicateLiteralDeleter(clause)
     clause
   }
 
 
   def forwardRedundancyCheck(clause: Set[FOLNode], backgroundClauses: ClauseStorage): Boolean = {
-    tautologyDetection(clause) || forwardSubsumer(clause, backgroundClauses)
+     forwardSubsumer(clause, backgroundClauses)
   }
 
   // rewritten in functional style
@@ -595,7 +632,7 @@ class RobinsonProver(env: {
 
   private def recordClauses(clauses: Iterable[FOLClause]) {
     //    record all initiial clauess
-    inferenceRecorder match {
+    _inferenceRecorder match {
       case Some(inferenceRecorder) => {
         for (clause <- clauses)
           inferenceRecorder.recordClause(clause, None, None)
@@ -609,7 +646,7 @@ class RobinsonProver(env: {
 
   private def recordRecievedClauses(clauses: Iterable[FOLClause]) {
     // record all initiial clauess
-    inferenceRecorder match {
+    _inferenceRecorder match {
       case Some(inferenceRecorder) => {
         for (clause <- clauses)
           inferenceRecorder.recordRecievedClause(clause, None, None)

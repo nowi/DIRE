@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project relativePaths="true" version="4">
+<project version="4">
   <component name="AntConfiguration">
     <defaultAnt bundledAnt="true" />
   </component>
@@ -9,15 +9,6 @@
   <component name="CodeStyleSettingsManager">
     <option name="PER_PROJECT_SETTINGS">
       <value>
-        <ADDITIONAL_INDENT_OPTIONS fileType="">
-          <option name="INDENT_SIZE" value="4" />
-          <option name="CONTINUATION_INDENT_SIZE" value="8" />
-          <option name="TAB_SIZE" value="4" />
-          <option name="USE_TAB_CHARACTER" value="false" />
-          <option name="SMART_TABS" value="false" />
-          <option name="LABEL_INDENT_SIZE" value="0" />
-          <option name="LABEL_INDENT_ABSOLUTE" value="false" />
-        </ADDITIONAL_INDENT_OPTIONS>
         <ADDITIONAL_INDENT_OPTIONS fileType="groovy">
           <option name="INDENT_SIZE" value="2" />
           <option name="CONTINUATION_INDENT_SIZE" value="8" />
@@ -46,6 +37,15 @@
           <option name="LABEL_INDENT_ABSOLUTE" value="false" />
         </ADDITIONAL_INDENT_OPTIONS>
         <ADDITIONAL_INDENT_OPTIONS fileType="js">
+          <option name="INDENT_SIZE" value="4" />
+          <option name="CONTINUATION_INDENT_SIZE" value="8" />
+          <option name="TAB_SIZE" value="4" />
+          <option name="USE_TAB_CHARACTER" value="false" />
+          <option name="SMART_TABS" value="false" />
+          <option name="LABEL_INDENT_SIZE" value="0" />
+          <option name="LABEL_INDENT_ABSOLUTE" value="false" />
+        </ADDITIONAL_INDENT_OPTIONS>
+        <ADDITIONAL_INDENT_OPTIONS fileType="jsp">
           <option name="INDENT_SIZE" value="4" />
           <option name="CONTINUATION_INDENT_SIZE" value="8" />
           <option name="TAB_SIZE" value="4" />
@@ -83,11 +83,9 @@
         </ADDITIONAL_INDENT_OPTIONS>
       </value>
     </option>
-    <option name="USE_PER_PROJECT_SETTINGS" value="false" />
   </component>
   <component name="CompilerConfiguration">
     <option name="DEFAULT_COMPILER" value="Javac" />
-    <option name="DEPLOY_AFTER_MAKE" value="0" />
     <resourceExtensions>
       <entry name=".+\.(properties|xml|html|dtd|tld)" />
       <entry name=".+\.(gif|png|jpeg|jpg)" />
@@ -104,6 +102,7 @@
       <entry name="?*.tld" />
       <entry name="?*.ftl" />
     </wildcardResourcePatterns>
+    <annotationProcessing enabled="false" useClasspath="true" />
   </component>
   <component name="CopyrightManager" default="">
     <module2copyright />
@@ -135,11 +134,174 @@
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
     <file url="file://$PROJECT_DIR$/src/main/scala/core/index/SubstitutionIndexTree.scala" charset="MacRoman" />
   </component>
+  <component name="FacetAutodetectingManager">
+    <autodetection-disabled>
+      <facet-type id="Scala">
+        <modules>
+          <module name="DIRE">
+            <files>
+              <file url="file://$PROJECT_DIR$/FOLProving.scala" />
+              <file url="file://$PROJECT_DIR$/project/DIREProject.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/allocation/ConferenceExample5NodeAllocator.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/allocation/Distribution.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/FOLProving.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/RobinsonProver.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/Standardizer.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/caches/URLitCache.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/config/CuriosityDomain.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/config/CuriosityKilledTheCatOrderedTheoremProvingConfig.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/config/DALCConfig.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/config/Partition1OrderedTheoremProvingConfig.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/config/WestDomain.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/config/WestOrderedTheoremProovingConfig.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/containers/CNFClauseStore.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/containers/ClauseRetrieval.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/containers/ClauseStorage.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/containers/ClauseStoreCollection.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/containers/FOLClauseIndex.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/containers/FOLKnowledgeBase.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/containers/FOLTermIndex.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/containers/FeatureVectorImperfectIndex.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/containers/MatchingClausesRetrieval.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/containers/MutableClauseStore.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/containers/STIndex.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/containers/heuristics/ListBufferStorage.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/formatting/ClauseFormatting.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/index/MSCGFunctions.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/index/SubstitutionIndexTree.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/matching/Matcher.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/ordering/CustomConferencePartitionedPrecedence.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/ordering/CustomSPASSModule1Precedence.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/ordering/LiteralComparison.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/ordering/Precedence.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/reduction/BackwardSubsumption.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/reduction/BackwardSubsumptionEliminator.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/reduction/ClauseCondenser.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/reduction/ClauseTautologyDetector.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/reduction/DuplicateLiteralDeleter.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/reduction/ForwardSubsumption.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/reduction/Reducing.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/reduction/TrivialLiteralDeleter.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/resolution/BinaryResolver.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/resolution/DALCResolver.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/resolution/Inference.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/resolution/OrderedBinaryResolver.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/resolution/PositiveOrderedFactoring.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/resolution/Resolution.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/resolution/SuccessfullResolution.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/resolution/UniqueLiteralResolution.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/rewriting/CNFRewriting.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/rewriting/VariableRewriter.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/selection/DALCRSelector.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/selection/LiteralSelection.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/core/unification/RobinsonUnificator.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/domain/fol/Context.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/domain/fol/CriminalWestDomain.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/domain/fol/MSCG.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/domain/fol/Substitution.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/domain/fol/ast/AtomicSentence.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/domain/fol/ast/Binding.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/domain/fol/ast/Connective.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/domain/fol/ast/Constant.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/domain/fol/ast/Expr.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/domain/fol/ast/FOLLiteral.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/domain/fol/ast/FOLNode.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/domain/fol/ast/Function.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/domain/fol/ast/NamedObject.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/domain/fol/ast/Negation.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/domain/fol/ast/Predicate.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/domain/fol/ast/Quantifier.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/domain/fol/ast/Sentence.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/domain/fol/ast/StandardClause.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/domain/fol/ast/Term.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/domain/fol/ast/TermEquality.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/domain/fol/ast/Variable.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/domain/fol/functions/FOLAlgorithms.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/domain/fol/parsers/FOLDsl.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/domain/fol/parsers/SPASSIntermediateFormatParser.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/domain/fol/parsers/SPASSParser.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/helpers/EnhancedTreeSet.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/helpers/HelperFunctions.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/helpers/IteratorWrapper.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/helpers/Logging.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/helpers/Subject.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/kernel/AllocationHandling.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/kernel/DALCProverActor.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/kernel/DIREServer.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/kernel/DIREShell.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/kernel/DispatchingActor.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/kernel/Event.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/kernel/InterpreterWrapper.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/kernel/LoggingActor.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/kernel/ProvingActor.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/kernel/ReasoningActor.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/kernel/ReasoningTestClient.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/kernel/dispatching/DALCDispatcherActor.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/kernel/dispatching/ToVoidDispatchingActor.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/metrics/ReasonerEventAnalyzing.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/partitioning/ClauseStoragePartitioning.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/partitioning/ManualConfExamplePartitioner.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/recording/ClauseRecording.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/recording/EventRecorder.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/recording/EventRecording.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/recording/NaiveClauseRecorder.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/recording/Neo4JRecorder.scala" />
+              <file url="file://$PROJECT_DIR$/src/main/scala/recording/neo4j/Neo4jWrapper.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/ConferenceMergedProvingSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/ConferencePartitionedProvingSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/CuriosityDomainProovingSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/FOLClauseIndexSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/ProvingSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/RobinsonProverBinaryResolutionWithForwardReductionNoIndexSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/StandardizerSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/WestDomainProvingSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/containers/LightestClauseHeuristicWithTopSymbolHashingIndexSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/containers/UsableClausesStoreSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/index/FirstFitHeuristicSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/index/MSCGSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/index/SubstitutionTreeIndexSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/matching/MatcherSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/ordering/ALCLPOComparatorSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/ordering/CustomSPASSModule1PrecedenceSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/ordering/LexicographicPrecedenceSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/reduction/ClauseCondensationSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/reduction/ClauseCondenserImplSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/reduction/ClauseTautologyDetectionImplSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/reduction/ClauseTautologyDetectionSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/reduction/DuplicateLiteralDeleterImplSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/reduction/DuplicateLiteralDeletionSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/reduction/ForwardSubsumptionSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/reduction/StillmannSubsumerSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/reduction/SubsumptionSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/reduction/TrivialLiteralDeleterSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/resolution/BinaryResolverCuriosityDomainSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/resolution/BinaryResolverImplSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/resolution/BinaryResolverWestDomainSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/resolution/OrderedResolverWestDomainSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/resolution/ResolutionSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/rewriting/VariableRewriterSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/core/unification/RobinsonUnifierSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/domain/fol/FOLClauseSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/domain/fol/FOLNodeSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/domain/fol/SentenceSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/domain/fol/SubstitutionSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/domain/fol/parsers/FOLDomainSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/domain/fol/parsers/FOLDslSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/domain/fol/parsers/SPASSIntermediateFormatParserSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/domain/fol/parsers/SPASSParserSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/kernel/DALCReasonerActorSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/kernel/DALCRemoteReasonerStartupRunner.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/recording/neo4j/Neo4jWrapperTest.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/selection/ALCRSelectorSpec.scala" />
+              <file url="file://$PROJECT_DIR$/src/test/scala/selection/SelectionSpec.scala" />
+            </files>
+          </module>
+        </modules>
+      </facet-type>
+    </autodetection-disabled>
+  </component>
   <component name="IdProvider" IDEtalkID="91FBA0E7D845850E37109AC97574FAC0" />
   <component name="InspectionProjectProfileManager">
-    <option name="PROJECT_PROFILE" value="Project Default" />
-    <option name="USE_PROJECT_LEVEL_SETTINGS" value="false" />
-    <scopes />
     <profiles>
       <profile version="1.0" is_locked="false">
         <option name="myName" value="Project Default" />
@@ -147,7 +309,9 @@
         <inspection_tool class="NonJREEmulationClassesInClientCode" level="ERROR" enabled="false" />
       </profile>
     </profiles>
-    <list size="0" />
+    <option name="PROJECT_PROFILE" value="Project Default" />
+    <option name="USE_PROJECT_PROFILE" value="true" />
+    <version value="1.0" />
   </component>
   <component name="JavacSettings">
     <option name="DEBUGGING_INFO" value="true" />
@@ -180,13 +344,6 @@
     <option name="GENERATE_NO_WARNINGS" value="false" />
     <option name="IS_EMACS_ERRORS_MODE" value="true" />
     <option name="ADDITIONAL_OPTIONS_STRING" value="" />
-  </component>
-  <component name="MavenProjectsManager">
-    <option name="originalFiles">
-      <list>
-        <option value="$PROJECT_DIR$/pom.xml" />
-      </list>
-    </option>
   </component>
   <component name="Palette2">
     <group name="Swing">
@@ -312,10 +469,6 @@
   <component name="ProjectDetails">
     <option name="projectName" value="DIRE" />
   </component>
-  <component name="ProjectFileVersion" converted="true">
-    <converter id="ror-modules" />
-    <converter id="SelenaRunConfToDiana" />
-  </component>
   <component name="ProjectKey">
     <option name="state" value="project:///workspace/DIRE/DIRE/DIRE.ipr" />
   </component>
@@ -349,17 +502,6 @@
   </component>
   <component name="WebServicesPlugin" addRequiredLibraries="true" />
   <component name="libraryTable">
-    <library name="Maven: com.jteigen.scalatest:junit4runner:1.0-SNAPSHOT">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/com/jteigen/scalatest/junit4runner/1.0-SNAPSHOT/junit4runner-1.0-SNAPSHOT.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/com/jteigen/scalatest/junit4runner/1.0-SNAPSHOT/junit4runner-1.0-SNAPSHOT-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/com/jteigen/scalatest/junit4runner/1.0-SNAPSHOT/junit4runner-1.0-SNAPSHOT-sources.jar!/" />
-      </SOURCES>
-    </library>
     <library name="Maven: org.multiverse:multiverse-alpha:jar-with-dependencies:0.3">
       <CLASSES>
         <root url="jar://$MAVEN_REPOSITORY$/org/multiverse/multiverse-alpha/0.3/multiverse-alpha-0.3-jar-with-dependencies.jar!/" />
@@ -565,484 +707,73 @@
       </SOURCES>
       <jarDirectory url="file://$PROJECT_DIR$/../akka/akka-util/target/scala_2.7.7" recursive="false" />
     </library>
-    <library name="Maven: junit:junit:4.7">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/junit/junit/4.7/junit-4.7.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/junit/junit/4.7/junit-4.7-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/junit/junit/4.7/junit-4.7-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.scala-tools.testing:specs:1.6.1">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/scala-tools/testing/specs/1.6.1/specs-1.6.1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/scala-tools/testing/specs/1.6.1/specs-1.6.1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/scala-tools/testing/specs/1.6.1/specs-1.6.1-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.neo4j:neo4j-kernel:1.0">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/neo4j/neo4j-kernel/1.0/neo4j-kernel-1.0.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/neo4j/neo4j-kernel/1.0/neo4j-kernel-1.0-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/neo4j/neo4j-kernel/1.0/neo4j-kernel-1.0-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.neo4j:neo4j-index:1.0-b1">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/neo4j/neo4j-index/1.0-b1/neo4j-index-1.0-b1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/neo4j/neo4j-index/1.0-b1/neo4j-index-1.0-b1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/neo4j/neo4j-index/1.0-b1/neo4j-index-1.0-b1-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.apache.geronimo.specs:geronimo-jta_1.1_spec:1.1.1">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/apache/geronimo/specs/geronimo-jta_1.1_spec/1.1.1/geronimo-jta_1.1_spec-1.1.1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/apache/geronimo/specs/geronimo-jta_1.1_spec/1.1.1/geronimo-jta_1.1_spec-1.1.1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/apache/geronimo/specs/geronimo-jta_1.1_spec/1.1.1/geronimo-jta_1.1_spec-1.1.1-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.neo4j:neo4j-commons:0.4">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/neo4j/neo4j-commons/0.4/neo4j-commons-0.4.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/neo4j/neo4j-commons/0.4/neo4j-commons-0.4-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/neo4j/neo4j-commons/0.4/neo4j-commons-0.4-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.apache.lucene:lucene-core:2.9.1">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/apache/lucene/lucene-core/2.9.1/lucene-core-2.9.1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/apache/lucene/lucene-core/2.9.1/lucene-core-2.9.1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/apache/lucene/lucene-core/2.9.1/lucene-core-2.9.1-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.neo4j:neo4j-scala:0.9.9-SNAPSHOT">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/neo4j/neo4j-scala/0.9.9-SNAPSHOT/neo4j-scala-0.9.9-SNAPSHOT.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/neo4j/neo4j-scala/0.9.9-SNAPSHOT/neo4j-scala-0.9.9-SNAPSHOT-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/neo4j/neo4j-scala/0.9.9-SNAPSHOT/neo4j-scala-0.9.9-SNAPSHOT-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.scala-lang:scala-library:2.7.7">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/scala-lang/scala-library/2.7.7/scala-library-2.7.7.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/scala-lang/scala-library/2.7.7/scala-library-2.7.7-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/scala-lang/scala-library/2.7.7/scala-library-2.7.7-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.neo4j:neo4j-shell:1.0-rc">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/neo4j/neo4j-shell/1.0-rc/neo4j-shell-1.0-rc.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/neo4j/neo4j-shell/1.0-rc/neo4j-shell-1.0-rc-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/neo4j/neo4j-shell/1.0-rc/neo4j-shell-1.0-rc-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: jline:jline:0.9.94">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/jline/jline/0.9.94/jline-0.9.94.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/jline/jline/0.9.94/jline-0.9.94-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/jline/jline/0.9.94/jline-0.9.94-sources.jar!/" />
-      </SOURCES>
-    </library>
     <library name="Maven: se.scalablesolutions.akka:akka-core_2.7.7:0.7">
       <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/se/scalablesolutions/akka/akka-core_2.7.7/0.7/akka-core_2.7.7-0.7.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-core_2.7.7/0.7/akka-core_2.7.7-0.7.jar!/" />
       </CLASSES>
       <JAVADOC>
         <root url="file://$PROJECT_DIR$/../akka/docs" />
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/se/scalablesolutions/akka/akka-core_2.7.7/0.7/akka-core_2.7.7-0.7-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-core_2.7.7/0.7/akka-core_2.7.7-0.7-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
         <root url="file://$PROJECT_DIR$/../akka/akka-core/src" />
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/se/scalablesolutions/akka/akka-core_2.7.7/0.7/akka-core_2.7.7-0.7-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-core_2.7.7/0.7/akka-core_2.7.7-0.7-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: sbinary:sbinary:0.3">
+    <library name="Maven: se.scalablesolutions.akka:akka-core_2.7.7:0.7-nowafork-SNAPSHOT">
       <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/sbinary/sbinary/0.3/sbinary-0.3.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-core_2.7.7/0.7-nowafork-SNAPSHOT/akka-core_2.7.7-0.7-nowafork-SNAPSHOT.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/sbinary/sbinary/0.3/sbinary-0.3-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-core_2.7.7/0.7-nowafork-SNAPSHOT/akka-core_2.7.7-0.7-nowafork-SNAPSHOT-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/sbinary/sbinary/0.3/sbinary-0.3-sources.jar!/" />
+        <root url="file://$PROJECT_DIR$/../akka/akka-core/src/main/scala" />
+        <root url="jar://$MAVEN_REPOSITORY$/se/scalablesolutions/akka/akka-core_2.7.7/0.7-nowafork-SNAPSHOT/akka-core_2.7.7-0.7-nowafork-SNAPSHOT-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: voldemort.store.compress:h2-lzf:1.0">
+    <library name="scromium">
       <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/voldemort/store/compress/h2-lzf/1.0/h2-lzf-1.0.jar!/" />
+        <root url="file://$PROJECT_DIR$/../scromium/target/scala_2.8.0.Beta1" />
       </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/voldemort/store/compress/h2-lzf/1.0/h2-lzf-1.0-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/voldemort/store/compress/h2-lzf/1.0/h2-lzf-1.0-sources.jar!/" />
-      </SOURCES>
+      <JAVADOC />
+      <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/../scromium/target/scala_2.8.0.Beta1" recursive="false" />
     </library>
-    <library name="Maven: net.databinder:dispatch-http_2.7.7:0.6.4">
+    <library name="Voldemort">
       <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/net/databinder/dispatch-http_2.7.7/0.6.4/dispatch-http_2.7.7-0.6.4.jar!/" />
+        <root url="file://$PROJECT_DIR$/../voldemort-0.80.2/dist" />
       </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/net/databinder/dispatch-http_2.7.7/0.6.4/dispatch-http_2.7.7-0.6.4-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/net/databinder/dispatch-http_2.7.7/0.6.4/dispatch-http_2.7.7-0.6.4-sources.jar!/" />
-      </SOURCES>
+      <JAVADOC />
+      <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/../voldemort-0.80.2/dist" recursive="false" />
     </library>
-    <library name="Maven: commons-io:commons-io:1.4">
+    <library name="SBTDeps">
       <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/commons-io/commons-io/1.4/commons-io-1.4.jar!/" />
+        <root url="file://$PROJECT_DIR$/lib_managed/scala_2.7.7/compile" />
+        <root url="file://$PROJECT_DIR$/lib_managed/scala_2.7.7/test" />
       </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/commons-io/commons-io/1.4/commons-io-1.4-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/commons-io/commons-io/1.4/commons-io-1.4-sources.jar!/" />
-      </SOURCES>
+      <JAVADOC />
+      <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/lib_managed/scala_2.7.7/compile" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/lib_managed/scala_2.7.7/test" recursive="false" />
     </library>
-    <library name="Maven: org.scala-tools:javautils:2.7.4-0.1">
+    <library name="SBTAutoDeps">
       <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/scala-tools/javautils/2.7.4-0.1/javautils-2.7.4-0.1.jar!/" />
+        <root url="file://$PROJECT_DIR$/lib_managed/scala_2.7.7" />
       </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/scala-tools/javautils/2.7.4-0.1/javautils-2.7.4-0.1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/scala-tools/javautils/2.7.4-0.1/javautils-2.7.4-0.1-sources.jar!/" />
-      </SOURCES>
+      <JAVADOC />
+      <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/lib_managed/scala_2.7.7" recursive="false" />
     </library>
-    <library name="Maven: org.jboss.netty:netty:3.2.0.BETA1">
+    <library name="SBTManualDeps">
       <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/jboss/netty/netty/3.2.0.BETA1/netty-3.2.0.BETA1.jar!/" />
+        <root url="file://$PROJECT_DIR$/lib" />
       </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/jboss/netty/netty/3.2.0.BETA1/netty-3.2.0.BETA1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/jboss/netty/netty/3.2.0.BETA1/netty-3.2.0.BETA1-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.2.1">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/codehaus/jackson/jackson-mapper-asl/1.2.1/jackson-mapper-asl-1.2.1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/codehaus/jackson/jackson-mapper-asl/1.2.1/jackson-mapper-asl-1.2.1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/codehaus/jackson/jackson-mapper-asl/1.2.1/jackson-mapper-asl-1.2.1-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.codehaus.jackson:jackson-core-asl:1.2.1">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/codehaus/jackson/jackson-core-asl/1.2.1/jackson-core-asl-1.2.1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/codehaus/jackson/jackson-core-asl/1.2.1/jackson-core-asl-1.2.1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/codehaus/jackson/jackson-core-asl/1.2.1/jackson-core-asl-1.2.1-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: net.databinder:dispatch-json_2.7.7:0.6.4">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/net/databinder/dispatch-json_2.7.7/0.6.4/dispatch-json_2.7.7-0.6.4.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/net/databinder/dispatch-json_2.7.7/0.6.4/dispatch-json_2.7.7-0.6.4-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/net/databinder/dispatch-json_2.7.7/0.6.4/dispatch-json_2.7.7-0.6.4-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: sjson.json:sjson:0.4">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/sjson/json/sjson/0.4/sjson-0.4.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/sjson/json/sjson/0.4/sjson-0.4-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/sjson/json/sjson/0.4/sjson-0.4-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: se.scalablesolutions.akka:akka-util_2.7.7:0.7">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/se/scalablesolutions/akka/akka-util_2.7.7/0.7/akka-util_2.7.7-0.7.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/se/scalablesolutions/akka/akka-util_2.7.7/0.7/akka-util_2.7.7-0.7-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/se/scalablesolutions/akka/akka-util_2.7.7/0.7/akka-util_2.7.7-0.7-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.codehaus.aspectwerkz:aspectwerkz-jdk5:2.1">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/codehaus/aspectwerkz/aspectwerkz-jdk5/2.1/aspectwerkz-jdk5-2.1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/codehaus/aspectwerkz/aspectwerkz-jdk5/2.1/aspectwerkz-jdk5-2.1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/codehaus/aspectwerkz/aspectwerkz-jdk5/2.1/aspectwerkz-jdk5-2.1-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: net.lag:configgy:1.4.7">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/net/lag/configgy/1.4.7/configgy-1.4.7.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/net/lag/configgy/1.4.7/configgy-1.4.7-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/net/lag/configgy/1.4.7/configgy-1.4.7-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.scala-lang:scala-compiler:2.7.6">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/scala-lang/scala-compiler/2.7.6/scala-compiler-2.7.6.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/scala-lang/scala-compiler/2.7.6/scala-compiler-2.7.6-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/scala-lang/scala-compiler/2.7.6/scala-compiler-2.7.6-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.codehaus.aspectwerkz:aspectwerkz-nodeps-jdk5:2.1">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/codehaus/aspectwerkz/aspectwerkz-nodeps-jdk5/2.1/aspectwerkz-nodeps-jdk5-2.1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/codehaus/aspectwerkz/aspectwerkz-nodeps-jdk5/2.1/aspectwerkz-nodeps-jdk5-2.1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/codehaus/aspectwerkz/aspectwerkz-nodeps-jdk5/2.1/aspectwerkz-nodeps-jdk5-2.1-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: se.scalablesolutions.akka:akka-util-java_2.7.7:0.7">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/se/scalablesolutions/akka/akka-util-java_2.7.7/0.7/akka-util-java_2.7.7-0.7.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/se/scalablesolutions/akka/akka-util-java_2.7.7/0.7/akka-util-java_2.7.7-0.7-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/se/scalablesolutions/akka/akka-util-java_2.7.7/0.7/akka-util-java_2.7.7-0.7-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: com.google.protobuf:protobuf-java:2.2.0">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/com/google/protobuf/protobuf-java/2.2.0/protobuf-java-2.2.0.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/com/google/protobuf/protobuf-java/2.2.0/protobuf-java-2.2.0-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/com/google/protobuf/protobuf-java/2.2.0/protobuf-java-2.2.0-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.guiceyfruit:guice-core:2.0-beta-4">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/guiceyfruit/guice-core/2.0-beta-4/guice-core-2.0-beta-4.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/guiceyfruit/guice-core/2.0-beta-4/guice-core-2.0-beta-4-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/guiceyfruit/guice-core/2.0-beta-4/guice-core-2.0-beta-4-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.multiverse:multiverse-alpha:0.4">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/multiverse/multiverse-alpha/0.4/multiverse-alpha-0.4.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/multiverse/multiverse-alpha/0.4/multiverse-alpha-0.4-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/multiverse/multiverse-alpha/0.4/multiverse-alpha-0.4-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.multiverse:multiverse-core:0.4">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/multiverse/multiverse-core/0.4/multiverse-core-0.4.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/multiverse/multiverse-core/0.4/multiverse-core-0.4-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/multiverse/multiverse-core/0.4/multiverse-core-0.4-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: asm:asm-tree:3.2">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/asm/asm-tree/3.2/asm-tree-3.2.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/asm/asm-tree/3.2/asm-tree-3.2-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/asm/asm-tree/3.2/asm-tree-3.2-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: asm:asm-analysis:3.2">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/asm/asm-analysis/3.2/asm-analysis-3.2.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/asm/asm-analysis/3.2/asm-analysis-3.2-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/asm/asm-analysis/3.2/asm-analysis-3.2-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: asm:asm-commons:3.2">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/asm/asm-commons/3.2/asm-commons-3.2.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/asm/asm-commons/3.2/asm-commons-3.2-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/asm/asm-commons/3.2/asm-commons-3.2-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: asm:asm-util:3.2">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/asm/asm-util/3.2/asm-util-3.2.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/asm/asm-util/3.2/asm-util-3.2-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/asm/asm-util/3.2/asm-util-3.2-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: se.scalablesolutions.akka:akka-cluster-jgroups_2.7.7:0.7">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/se/scalablesolutions/akka/akka-cluster-jgroups_2.7.7/0.7/akka-cluster-jgroups_2.7.7-0.7.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/se/scalablesolutions/akka/akka-cluster-jgroups_2.7.7/0.7/akka-cluster-jgroups_2.7.7-0.7-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/se/scalablesolutions/akka/akka-cluster-jgroups_2.7.7/0.7/akka-cluster-jgroups_2.7.7-0.7-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: jgroups:jgroups:2.8.0.CR7">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/jgroups/jgroups/2.8.0.CR7/jgroups-2.8.0.CR7.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/jgroups/jgroups/2.8.0.CR7/jgroups-2.8.0.CR7-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/jgroups/jgroups/2.8.0.CR7/jgroups-2.8.0.CR7-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: cglib:cglib:2.2">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/cglib/cglib/2.2/cglib-2.2.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/cglib/cglib/2.2/cglib-2.2-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/cglib/cglib/2.2/cglib-2.2-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: asm:asm:3.1">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/asm/asm/3.1/asm-3.1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/asm/asm/3.1/asm-3.1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/asm/asm/3.1/asm-3.1-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: aopalliance:aopalliance:1.0">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/aopalliance/aopalliance/1.0/aopalliance-1.0.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/aopalliance/aopalliance/1.0/aopalliance-1.0-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/aopalliance/aopalliance/1.0/aopalliance-1.0-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.scala-tools.testing:scalatest:0.9.5">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/scala-tools/testing/scalatest/0.9.5/scalatest-0.9.5.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/scala-tools/testing/scalatest/0.9.5/scalatest-0.9.5-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/org/scala-tools/testing/scalatest/0.9.5/scalatest-0.9.5-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: com.google.code.google-collections:google-collect:snapshot-20080530">
-      <CLASSES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/com/google/code/google-collections/google-collect/snapshot-20080530/google-collect-snapshot-20080530.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/com/google/code/google-collections/google-collect/snapshot-20080530/google-collect-snapshot-20080530-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar:///Volumes/Data/nowi/.m2/repository/com/google/code/google-collections/google-collect/snapshot-20080530/google-collect-snapshot-20080530-sources.jar!/" />
-      </SOURCES>
+      <JAVADOC />
+      <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/lib" recursive="false" />
     </library>
   </component>
-  <UsedPathMacros>
-    <macro name="MAVEN_REPOSITORY" description="Maven Local Repostiry" />
-  </UsedPathMacros>
 </project>
 

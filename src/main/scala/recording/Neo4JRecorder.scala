@@ -3,11 +3,9 @@ package recording
 
 import domain.fol.ast.{ALCDClause, StandardClause, Predicate, FOLClause}
 import neo4j.models.Predicates._
+import neo4j.Neo4jWrapper
 import org.neo4j.index.IndexService
 import org.neo4j.index.lucene.LuceneIndexService
-import org.neo4j.scala.Neo4jWrapper
-import org.specs._
-import org.specs.runner._
 import org.neo4j.graphdb._
 import org.neo4j.kernel.EmbeddedGraphDatabase
 import se.scalablesolutions.akka.util.Logging
@@ -26,6 +24,11 @@ class Neo4JRecorder(val path: String) extends ClauseRecording with Neo4jWrapper 
       neo.shutdown
     }
   })
+
+
+
+
+  override def toList = Nil
 
   val index = new LuceneIndexService(neo);
 

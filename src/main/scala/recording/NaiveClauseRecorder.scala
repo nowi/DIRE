@@ -18,11 +18,17 @@ case class ClauseRecord(a:Option[FOLClause],b:Option[FOLClause],resolvent:FOLCla
 
 class NaiveClauseRecorder extends ClauseRecording {
 
-
+  @serializable
   private var inferenceLog: Map[FOLClause, Tuple2[FOLClause, FOLClause]] = Map[FOLClause, Tuple2[FOLClause, FOLClause]]()
 
+
+  @serializable
   private val clauseIndex = MMap[FOLClause,ClauseRecord]()
 
+
+  override def toList = {
+    clausesHistory.map(clause => (clause,inferenceLog.get(clause))).toList
+  }
 
   override protected def record(clause: FOLClause, parent1: FOLClause, parent2: FOLClause,recieved:Boolean) {
     super.record(clause,recieved)

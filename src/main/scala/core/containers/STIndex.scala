@@ -256,7 +256,7 @@ trait STHeadIndex extends MutableClauseStore
   abstract override def removeNext: FOLClause = {
     // remove from headindex
     val clause = super.removeNext
-    remove(clause.first)
+    remove(clause.literals.toList.first)
     clause
   }
 
@@ -277,7 +277,7 @@ trait STHeadIndex extends MutableClauseStore
   abstract override def add(a: FOLClause): Unit = {
     require(!a.isEmpty)
     // index the head of the clause
-    add(a.literals.head)
+    add(a.literals.toList.head)
 
     super.add(a)
 

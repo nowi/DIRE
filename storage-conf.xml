@@ -38,7 +38,7 @@ one logical cluster from joining any other cluster. -->
        are always time-sorted.
   -->
   <Keyspaces>
-    <Keyspace Name="akka">
+    <Keyspace Name="Keyspace1">
       <!-- The fraction of keys per sstable whose locations we
            keep in memory in "mostly LRU" order.  (JUST the key
            locations, NOT any column values.)

@@ -28,7 +28,7 @@ object WestOrderedTheoremProovingConfig {
   lazy val precedence = core.ordering.LazyLexicographicPrecedence
   lazy val literalComparator = new ALCLPOComparator(this)
   lazy val selector = new NegativeLiteralsSelection()
-  lazy val uniqueLiteralResolver = new DALCUniqueLiteralResolver(this)
+  lazy val uniqueLiteralResolver = Some(new DALCUniqueLiteralResolver(this))
 
   
    // chache for maximal literalas

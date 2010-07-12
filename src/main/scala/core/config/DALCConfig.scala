@@ -7,6 +7,7 @@ package core.config
  */
 import caches.{SelectedLitCache, URLitCache, MaxLitCache}
 import containers.heuristics.{LightestClauseHeuristicStorage, ListBufferStorage}
+import recording.{EventRecorder, NaiveClauseRecorder, Neo4JRecorder}
 import resolution.{PositiveFactorer, DALCUniqueLiteralResolver, DALCResolver}
 import containers.{MutableClauseStore, STIndex, CNFClauseStore}
 import core._
@@ -14,7 +15,6 @@ import core.reduction._
 import core.rewriting.{VariableRewriter}
 import ordering.{CustomConferencePartitionedPrecedence, ALCLPOComparator}
 import org.neo4j.kernel.EmbeddedGraphDatabase
-import recording.{NaiveClauseRecorder, Neo4JRecorder}
 import selection.{DALCRSelector}
 
 object DALCConfig {
@@ -26,7 +26,7 @@ object DALCConfig {
   lazy val neo4JGraphBasePath: String = "/workspace/DIRE/DIRE/logs/graph/clauses"
 
   // unique literal resolver
-  lazy val uniqueLiteralResolver = new DALCUniqueLiteralResolver(this)
+  lazy val uniqueLiteralResolver = Some(new DALCUniqueLiteralResolver(this))
 
   // ordered resolution needs comparator and selection
   lazy val precedence = new CustomConferencePartitionedPrecedence
@@ -34,7 +34,7 @@ object DALCConfig {
   lazy val selector = new DALCRSelector()
 
   // forward subsumer WITH index support
-  lazy val forwardSubsumer = ForwardSubsumer
+  lazy val forwardSubsumer = new ForwardSubsumer(this)
 
 
   // positive factorer
@@ -43,8 +43,8 @@ object DALCConfig {
   // ACL resolver
   lazy val resolver = new DALCResolver(this)
   lazy val subsumptionStrategy = StillmannSubsumer
-  lazy val inferenceRecorder = new NaiveClauseRecorder
-
+  lazy val inferenceRecorder = None
+  lazy val eventRecorder = Some(new EventRecorder)
 
   // TODO here we shouldf descice if a global chache can be used or not
 

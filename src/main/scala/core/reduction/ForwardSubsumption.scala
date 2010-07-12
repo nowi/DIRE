@@ -19,9 +19,10 @@ trait ForwardSubsumption {
 
 
 
-object ForwardSubsumer extends ForwardSubsumption with Logging {
-  implicit def listofFOLNode2FOLClause(literals: Set[FOLNode]): FOLClause = ALCDClause(literals)
+class ForwardSubsumer(env:{val eventRecorder: Option[recording.EventRecorder]}) extends ForwardSubsumption with Logging {
 
+  val eventRecorder = env.eventRecorder
+  implicit def listofFOLNode2FOLClause(literals: Set[FOLNode]): FOLClause = ALCDClause(literals)
   private def subsumes(clause: FOLClause, allClauses: ClauseStorage)(implicit subsumptionCheck: Subsumption) : Boolean = {
 
 //    if(clause.toString == "[¬(O1Author(U))V¬(O1Poster(skf135(U)))]") {
@@ -54,7 +55,14 @@ object ForwardSubsumer extends ForwardSubsumption with Logging {
     // from those candidates try to find one canddate that subsumes the clause
     candidateClauses.find(subsumptionCheck(_, clause)) match {
       case Some(subsumerClause) => {
-        log.info("%s detected that clause %s is subsumed by %s", this, clause,subsumerClause)
+        // record this event if there is a recorder present in environment
+        eventRecorder match {
+          case Some(recorder) => {
+              recorder.recordReducedClause(clause,subsumerClause,this.toString)
+          }
+          case None => // no inference recorder present
+        }
+        log.debug("%s detected that clause %s is subsumed by %s", this, clause,subsumerClause)
         true
       }
 

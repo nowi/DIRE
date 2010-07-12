@@ -5,6 +5,7 @@ import collection.immutable.{TreeMap, SortedMap}
 import collection.mutable._
 import domain.fol.ast.{FOLNode, FOLClause}
 import helpers.Logging
+import reduction.{StillmannSubsumer, ForwardSubsumer}
 import scala.collection.mutable.{Set => MSet}
 
 /**
@@ -14,7 +15,7 @@ import scala.collection.mutable.{Set => MSet}
  */
 
 
-trait ListBufferStorage extends MutableClauseStorage {
+trait ListBufferStorage extends MutableClauseStorage with Logging {
   this: MutableClauseStorage =>
   // intercept removeNext
 
@@ -44,7 +45,7 @@ trait ListBufferStorage extends MutableClauseStorage {
 
   override def hasNext = !buffer.isEmpty
 
-  override def removeNext: FOLClause = {
+  override def removeNext: FOLClause = synchronized {
     if (isEmpty) throw new NoSuchElementException
     val clause = buffer.first
 
@@ -58,7 +59,7 @@ trait ListBufferStorage extends MutableClauseStorage {
   }
 
 
-  def remove(clause: FOLClause) = {
+  override def remove(clause: FOLClause) = synchronized {
     for (term <- clause.literals) {
       // remove from termToClause
       termToClause.remove(term, clause)
@@ -68,7 +69,28 @@ trait ListBufferStorage extends MutableClauseStorage {
     clause
   }
 
-  override def add(a: FOLClause): Unit = {
+  override def removeAll(clauses: Iterable[FOLClause]) = synchronized {
+    clauses.foreach(remove _)
+  }
+
+  // TODO expensive
+  def contains(clause: FOLClause) = synchronized {
+    val termToClauseValues = termToClause.values.toList.flatten(trs => trs)
+    val isInTerm2Clause = termToClauseValues.contains(clause)
+    isInTerm2Clause
+  }
+
+
+  override def add(a: FOLClause): Unit = synchronized {
+    //    if (ForwardSubsumer(a, this)(StillmannSubsumer)) {
+    //      log.error("ListBufferStorage tries to add a clause that is already subsumed: %s", a)
+    //    } else if (contains(a)) {
+    //      // check if forwardsubsumption would catch this clause
+    //      log.error("ListBufferStorage tries to add a clause that is NOT SUBsumed but contained ?? cannot happen", a)
+    //    } else {
+    //
+    //    }
+    //  }
     // append the element to the buffer in O(1)
     buffer += a
 
@@ -77,7 +99,6 @@ trait ListBufferStorage extends MutableClauseStorage {
       termToClause.add(literal, a)
     }
   }
-
 
 }
 
@@ -108,7 +129,7 @@ trait LightestClauseHeuristicStorage extends MutableClauseStorage with Logging {
 
 
 
-  override def hasNext = {
+  override def hasNext = synchronized {
     val notEmpty = (buckets.filter({t => !t._2.isEmpty})).asInstanceOf[SortedMap[Int, Queue[FOLClause]]] match {
       case x if (!x.isEmpty) => Some(x)
       case _ => None
@@ -125,7 +146,7 @@ trait LightestClauseHeuristicStorage extends MutableClauseStorage with Logging {
 
   def isEmpty = size == 0
 
-  override def toList = {
+  override def toList = synchronized {
     if (isEmpty) Nil
     else
       termToClause.readOnly.values.toList.flatten(itr => itr)
@@ -133,7 +154,7 @@ trait LightestClauseHeuristicStorage extends MutableClauseStorage with Logging {
   }
 
 
-  def elements = {
+  def elements = synchronized {
     val notEmpty = (buckets.filter({t => !t._2.isEmpty})).asInstanceOf[SortedMap[Int, Queue[FOLClause]]] match {
       case x if (!x.isEmpty) => Some(x)
       case _ => None
@@ -147,13 +168,30 @@ trait LightestClauseHeuristicStorage extends MutableClauseStorage with Logging {
 
   }
 
+  // TODO expensive
+  def contains(clause: FOLClause) = synchronized {
+    //    val isInBucket = buckets.get(clause.size) match {
+    //      case Some(bucket: Queue[FOLClause]) => {
+    //        // check if its in queue
+    //        bucket.contains(clause)
+    //      }
+    //      case None => false
+    //    }
 
-  override def add(clause: FOLClause) {
+    val termToClauseValues = termToClause.values.toList.flatten(trs => trs)
+    val isInTerm2Clause = termToClauseValues.contains(clause)
 
 
 
+    isInTerm2Clause
 
-    // get the bucket
+  }
+
+
+  override def add(clause: FOLClause) = synchronized {
+    // check if this clause is not already contained
+    // check in both index and directly in buckets
+    // TODO expensive !
     val bucketIndex = clause.size
     buckets.get(bucketIndex) match {
       case Some(bucket: Queue[FOLClause]) => {
@@ -167,6 +205,7 @@ trait LightestClauseHeuristicStorage extends MutableClauseStorage with Logging {
           // associate this literal with the clause
           termToClause.add(literal, clause)
         }
+
         _size += 1
       }
       case None => {
@@ -183,22 +222,58 @@ trait LightestClauseHeuristicStorage extends MutableClauseStorage with Logging {
       }
     }
 
+
   }
+
+  //  private def addToLookup(literal : FOLNode,clause : FOLClause) {
+  //
+  //  }
 
   private def checkSizeInvariant {
-    //    val term2clauseSize =  termToClause.values.toList.flatten(itr => itr).removeDuplicates.size
+    //    val termToClauseValues = termToClause.values.toList.flatten(trs => trs)
+    //    val bucketliterals = elements.toList.flatMap(_.literals).removeDuplicates
+    //    val term2clauseLiterals = termToClauseValues.flatMap(_.literals).removeDuplicates
+    //    //val term2clausekeyLiterals = termToClause.keys.toList.removeDuplicates
+    //    // compare the counts
+    //    val bucketliteralsCount = bucketliterals.size
+    //    val term2clauseLiteralsCount = term2clauseLiterals.size
+    //    //val term2clausekeyLiteralsCount = term2clausekeyLiterals.size
+    //    if (!(bucketliteralsCount == term2clauseLiteralsCount)) {
+    //      log.error("Size invariants donat match")
+    //    }
+
 
   }
 
-  override def remove(clause: FOLClause): FOLClause = {
+  override def removeAll(clauses: Iterable[FOLClause]) = synchronized {
+    clauses.foreach(remove _)
+
+  }
+
+
+  override def remove(clause: FOLClause): FOLClause = synchronized {
     // TODO optimize this , create dedicated removeALl method to minimize buffer copying
+
+    //    if (clause.toString == "[¬(O1Poster(U))]") {
+    //      log.warning("Big backward sumsumption is comming with [¬(O1Poster(U))]")
+    //    }
+
     val key = clause.size
     buckets.get(key) match {
       case Some(queue) => {
         // remove the clause from the qeuue
-        val newQueue = queue.filter(_ != clause)
+        val sizeBefore = queue.size
+        val newQueue: Queue[FOLClause] = new Queue()
+        queue.filter(_ != clause).foreach(newQueue.enqueue(_))
 
-        buckets.update(key, newQueue)
+
+        //  TODO this stinks
+        buckets = buckets.asInstanceOf[TreeMap[Int, Queue[FOLClause]]].update(key, newQueue)
+
+        //        val sizeAfter = buckets.get(key).get.size
+        //        if(sizeBefore - 1 != sizeAfter){
+        //          log.error("Bucket size mismatch after delete ")
+        //        }
 
         // remove from lookup map
         for (term <- clause.literals) {
@@ -207,7 +282,6 @@ trait LightestClauseHeuristicStorage extends MutableClauseStorage with Logging {
         }
 
         _size -= 1
-
 
         clause
 
@@ -222,7 +296,7 @@ trait LightestClauseHeuristicStorage extends MutableClauseStorage with Logging {
   }
 
 
-  override def removeNext(): FOLClause = {
+  override def removeNext(): FOLClause = synchronized {
     val notEmpty = (buckets.filter({t => !t._2.isEmpty})).asInstanceOf[SortedMap[Int, Queue[FOLClause]]] match {
       case x if (!x.isEmpty) => Some(x)
       case _ => None
@@ -230,13 +304,7 @@ trait LightestClauseHeuristicStorage extends MutableClauseStorage with Logging {
     notEmpty match {
       case Some(neb) => {
         // TODO extend subclasses with paramterized pick / given ratios
-        //        val key : Int = if(counter % ratio == 0) {
-        //          counter = 0
-        //          neb.lastKey
-        //        } else {
-        //          neb.firstKey
-        //        }
-        //        counter = counter + 1
+
 
         val key: Int = neb.firstKey
 
@@ -250,6 +318,7 @@ trait LightestClauseHeuristicStorage extends MutableClauseStorage with Logging {
             }
 
             _size -= 1
+            checkSizeInvariant
             clause
 
           }

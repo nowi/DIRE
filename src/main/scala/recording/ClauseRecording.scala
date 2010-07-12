@@ -11,9 +11,11 @@ import domain.fol.ast._
  */
 
 trait ClauseRecording {
-
+  @serializable
   private[recording] val clausesHistory : ListBuffer[FOLClause] = new ListBuffer[FOLClause]()
 
+
+  def toList : List[(FOLClause,Option[Tuple2[FOLClause, FOLClause]])]
 
   def recordRecievedClause(clause: FOLClause, parent1: Option[FOLClause], parent2: Option[FOLClause]) = {
      (clause,parent1,parent2) match {

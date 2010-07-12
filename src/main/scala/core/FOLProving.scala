@@ -37,6 +37,11 @@ trait FOLProving extends Subject {
   def addAllToWorkedOff(clauses : Iterable[FOLClause])
 
 
+  def workedOff : Iterable[FOLClause]
+
+  def inferenceLog : Option[ClauseRecording]
+
+
 }
 //
 //

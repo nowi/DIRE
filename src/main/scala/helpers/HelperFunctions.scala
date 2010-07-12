@@ -2,7 +2,8 @@ package helpers
 
 
 import domain.fol.Substitution
-
+import java.io.{OutputStreamWriter, BufferedOutputStream, FileOutputStream}
+import runtime.RichString
 /**
  * User: nowi
  * Date: 03.04.2010
@@ -35,9 +36,36 @@ object HelperFunctions {
     }
 
 
-  def tupled[a1, a2, a3, a4, a5,a6, b](f: (a1, a2, a3, a4, a5,a6) => b): Tuple6[a1, a2, a3, a4, a5,a6] => b = {
-    case Tuple6(x1, x2, x3, x4, x5,x6) => f(x1, x2, x3, x4, x5,x6)
+  def tupled[a1, a2, a3, a4, a5, a6, b](f: (a1, a2, a3, a4, a5, a6) => b): Tuple6[a1, a2, a3, a4, a5, a6] => b = {
+  case Tuple6(x1, x2, x3, x4, x5, x6) => f(x1, x2, x3, x4, x5, x6)
+  }
+
+
+
+  // dump to file helper
+
+  def dumpToFile(data: String, filename: String) {
+    val basePath = System.getProperty("user.dir");
+
+    val os = new OutputStreamWriter((new FileOutputStream(basePath + "/" + filename)))
+    os.write(data)
+    os.close()
   }
 
 
 }
+
+class DumpableString(val self: String) extends Proxy with RandomAccessSeq[Char] {
+  override def apply(n: Int) = self charAt n
+ 
+  override def length = self.length
+  override def toString = self
+  override def mkString = self
+  
+  def >>>(fileName: String) {
+    HelperFunctions.dumpToFile(self,fileName)
+  }
+
+}
+
+

@@ -42,10 +42,14 @@ trait FeatureVectorImperfectIndex extends MutableClauseStorage
   new HashMap[Integer, MSet[FOLNode]] with MultiMap[Integer, FOLNode]
 
 
+  val topSymbolIndex: scala.collection.mutable.MultiMap[String, FOLNode] =
+  new HashMap[String, MSet[FOLNode]] with MultiMap[String, FOLNode]
+
+
   val hashSeed: Int = 17
   val hashMultiplier: Int = 59
 
-  abstract override def removeNext: FOLClause = {
+  abstract override def removeNext: FOLClause = synchronized {
     val clause = super.removeNext
 
 
@@ -59,7 +63,7 @@ trait FeatureVectorImperfectIndex extends MutableClauseStorage
   }
 
 
-  abstract override def remove(clause: FOLClause): FOLClause = {
+  abstract override def remove(clause: FOLClause): FOLClause = synchronized  {
     val removedClause: FOLClause = super.remove(clause)
     // remove from index ...
     for (term <- removedClause.literals) {
@@ -69,7 +73,7 @@ trait FeatureVectorImperfectIndex extends MutableClauseStorage
   }
 
 
-  abstract override def add(a: FOLClause): Unit = {
+  abstract override def add(a: FOLClause): Unit = synchronized {
     require(!a.isEmpty)
     // index on all literals of the clause
     for (literal <- a.literals) {
@@ -82,72 +86,105 @@ trait FeatureVectorImperfectIndex extends MutableClauseStorage
 
 
   // compute hash based on arity , topsymbol and polarity
-  private def computeHashKey(literal: FOLNode): Int = {
+  private def computeHashKey(literal: FOLNode): Int = synchronized {
     var hc: Int = hashSeed
     hc = hc * hashMultiplier + literal.top.hashCode
     hc = hc * hashMultiplier + literal.arity.hashCode
     hc
   }
 
-  private def add(term: FOLNode) {
+  private def add(term: FOLNode) = synchronized  {
     // TODO , maybe save old copies for undo redo functionality
-    term match {
-      case Negation(filler) => {
-        val key = computeHashKey(filler)
-        // add to index
-        negativeLiterals.add(key, term)
-      }
-      case positiveTerm => {
-        val key = computeHashKey(term)
-        // add to index
-        positiveLiterals.add(key, term)
 
-      }
-    }
+    topSymbolIndex.add(term.top, term)
+    //require(topSymbolIndex.values.exists(_.contains(term)))
+
+    //    term match {
+    //      case Negation(filler) => {
+    //        val key = computeHashKey(filler)
+    //        // add to index
+    //        negativeLiterals.add(key, term)
+    //        require(negativeLiterals.values.exists(_.contains(term)))
+    //      }
+    //      case positiveTerm => {
+    //        val key = computeHashKey(term)
+    //        // add to index
+    //        positiveLiterals.add(key, term)
+    //        require(positiveLiterals.values.exists(_.contains(term)))
+    //
+    //      }
+    //    }
   }
 
-  private def remove(term: FOLNode) {
-    term match {
-      case Negation(filler) => {
-        val key = computeHashKey(filler)
-        // add to index
-        negativeLiterals.remove(key, term)
-      }
-      case positiveTerm => {
-        val key = computeHashKey(term)
-        // add to index
-        positiveLiterals.remove(key, term)
+  // TODO !!!!!!!!!!!!! IMPLEMENT REMOVAL HERE !!!!!!!!!!!!
 
-      }
-    }
+
+  private def remove(term: FOLNode) = synchronized {
+//    val bucketsizeBefore = topSymbolIndex.get(term.top).get.size
+//
+//    topSymbolIndex.get(term.top) match {
+//      case Some(bucket) =>
+//        if (!bucket.contains(term)) {
+//          val b = bucket
+//          error("Deleting a term , but the term is not indexed in ites bucket")
+//
+//        }
+//    }
+
+    // TODO check this , do not remove because this is a multi
+    //topSymbolIndex.remove(term.top, term)
+
+
+//    val bucketsizeAfter = topSymbolIndex.get(term.top) match {
+//      case Some(bucket) => bucket.size
+//      case None => 0
+//    }
+
+//    if (bucketsizeAfter > bucketsizeBefore) {
+//      require(bucketsizeAfter == bucketsizeBefore - 1)
+//    }
+
+    //    term match {
+    //      case Negation(filler) => {
+    //        val key = computeHashKey(filler)
+    //        // add to index
+    //        negativeLiterals.remove(key, term)
+    //      }
+    //      case positiveTerm => {
+    //        val key = computeHashKey(term)
+    //        // add to index
+    //        positiveLiterals.remove(key, term)
+    //
+    //      }
+    //    }
   }
 
 
-  override def retrieveGeneralizations(queryTerm: FOLNode) = {
+  override def retrieveGeneralizations(queryTerm: FOLNode) = synchronized {
     // first get the terms from sti index
     val terms = retrieveGeneralTerms(queryTerm)
     // lookup the clauses for those terms using the term2clause lookup map in the
-    val clauses = terms.flatMap(termToClause(_))
+    val clauses = terms.flatMap(termToClause.getOrElse(_,Nil))
 
     clauses
 
   }
 
 
-  override def retrieveUnifiables(queryTerm: FOLNode) = {
+  override def retrieveUnifiables(queryTerm: FOLNode) = synchronized {
     // first get the terms from sti index
     val terms = retrieveUnifiableTerms(queryTerm)
     // lookup the clauses for those terms
-    val clauses = terms.flatMap(termToClause(_)).removeDuplicates
+    val clauses = terms.flatMap(termToClause.getOrElse(_,Nil))
 
     clauses
   }
 
-  override def retrieveUnifiablesFull(queryTerm: FOLNode) = {
+  override def retrieveUnifiablesFull(queryTerm: FOLNode) = synchronized {
     // first get the terms from sti index
     val terms = retrieveUnifiableTerms(queryTerm)
     // lookup the clauses for those terms
-    val clauses = terms.flatMap(termToClause(_)).removeDuplicates
+    val clauses = terms.flatMap(termToClause.getOrElse(_,Nil))
 
     // get the subsititutions
     //val substitutions = retrieveUnifiableLeafNodes(queryTerm).map(_.substitution.get)
@@ -167,19 +204,19 @@ trait FeatureVectorImperfectIndex extends MutableClauseStorage
 
   }
 
-  override def retrieveInstances(queryTerm: FOLNode) = {
+  override def retrieveInstances(queryTerm: FOLNode) = synchronized {
     // first get the terms from sti index
     val terms = retrieveInstanceTerms(queryTerm)
     // lookup the clauses for those terms
-    val clauses = terms.flatMap(termToClause(_))
+    val clauses = terms.flatMap(termToClause.getOrElse(_,Nil))
     clauses
   }
 
-  override def retrieveVariants(queryTerm: FOLNode) = {
+  override def retrieveVariants(queryTerm: FOLNode) = synchronized {
     // first get the terms from sti index
     val terms = retrieveVariantTerms(queryTerm)
     // lookup the clauses for those terms
-    val clauses = terms.flatMap(termToClause(_))
+    val clauses = terms.flatMap(termToClause.getOrElse(_,Nil))
     clauses
   }
 
@@ -190,20 +227,24 @@ trait FeatureVectorImperfectIndex extends MutableClauseStorage
 
 
   // imperfect retrieval
-  private def retrieveUnifiableTerms(queryTerm: FOLNode): List[FOLNode] = {
-    val results = queryTerm match {
-      case Negation(term) => {
-        // check if we have a tree
-        val key = computeHashKey(term)
-        negativeLiterals.get(key)
-      }
-      case term => {
-        // check if we have a tree
-        // check if we have a tree
-        val key = computeHashKey(term)
-        positiveLiterals.get(key)
-      }
-    }
+  private def retrieveUnifiableTerms(queryTerm: FOLNode): List[FOLNode] = synchronized {
+
+
+    val results = topSymbolIndex.get(queryTerm.top)
+
+    //    val results = queryTerm match {
+    //      case Negation(term) => {
+    //        // check if we have a tree
+    //        val key = computeHashKey(term)
+    //        negativeLiterals.get(key)
+    //      }
+    //      case term => {
+    //        // check if we have a tree
+    //        // check if we have a tree
+    //        val key = computeHashKey(term)
+    //        positiveLiterals.get(key)
+    //      }
+    //    }
 
     results match {
       case Some(set) => set.toList
@@ -213,25 +254,27 @@ trait FeatureVectorImperfectIndex extends MutableClauseStorage
   }
 
 
-  private def retrieveVariantTerms(queryTerm: FOLNode): List[FOLNode] = {
+  private def retrieveVariantTerms(queryTerm: FOLNode): List[FOLNode] = synchronized {
     throw new NotImplementedException
 
   }
 
-  private def retrieveInstanceTerms(queryTerm: FOLNode): List[FOLNode] = {
-    val terms = queryTerm match {
-      case Negation(term) => {
-        // check if we have a tree
-        val key = computeHashKey(term)
-        negativeLiterals.get(key)
-      }
-      case term => {
-        // check if we have a tree
-        // check if we have a tree
-        val key = computeHashKey(term)
-        positiveLiterals.get(key)
-      }
-    }
+  private def retrieveInstanceTerms(queryTerm: FOLNode): List[FOLNode] = synchronized {
+    val terms = topSymbolIndex.get(queryTerm.top)
+
+    //    val terms = queryTerm match {
+    //      case Negation(term) => {
+    //        // check if we have a tree
+    //        val key = computeHashKey(term)
+    //        negativeLiterals.get(key)
+    //      }
+    //      case term => {
+    //        // check if we have a tree
+    //        // check if we have a tree
+    //        val key = computeHashKey(term)
+    //        positiveLiterals.get(key)
+    //      }
+    //    }
 
     terms match {
       case Some(set) => set.toList
@@ -239,20 +282,22 @@ trait FeatureVectorImperfectIndex extends MutableClauseStorage
     }
   }
 
-  private def retrieveGeneralTerms(queryTerm: FOLNode): List[FOLNode] = {
-    val terms = queryTerm match {
-      case Negation(term) => {
-        // check if we have a tree
-        val key = computeHashKey(term)
-        negativeLiterals.get(key)
-      }
-      case term => {
-        // check if we have a tree
-        // check if we have a tree
-        val key = computeHashKey(term)
-        positiveLiterals.get(key)
-      }
-    }
+  private def retrieveGeneralTerms(queryTerm: FOLNode): List[FOLNode] = synchronized {
+    val terms = topSymbolIndex.get(queryTerm.top)
+
+    //    val terms = queryTerm match {
+    //      case Negation(term) => {
+    //        // check if we have a tree
+    //        val key = computeHashKey(term)
+    //        negativeLiterals.get(key)
+    //      }
+    //      case term => {
+    //        // check if we have a tree
+    //        // check if we have a tree
+    //        val key = computeHashKey(term)
+    //        positiveLiterals.get(key)
+    //      }
+    //    }
 
     terms match {
       case Some(set) => set.toList

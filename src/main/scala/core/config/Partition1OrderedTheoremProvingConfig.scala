@@ -43,7 +43,7 @@ object Partition1OrderedTheoremProvingConfig {
   lazy val resolver = new DALCResolver(this)
   lazy val subsumptionStrategy = StillmannSubsumer
   lazy val inferenceRecorder = Some(new NaiveClauseRecorder)
-    lazy val uniqueLiteralResolver = new DALCUniqueLiteralResolver(this)
+    lazy val uniqueLiteralResolver = Some(new DALCUniqueLiteralResolver(this))
 
   // ordered resolution needs comparator and selection too
   lazy val precedence = new CustomConferencePartitionedPrecedence

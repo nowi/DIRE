@@ -20,7 +20,7 @@ trait ReasoningActorChild {
 
 
 trait DispatchingActor extends Actor with ReasoningActorChild  {
-  var allocationTable: Map[String,String] = Map()
+  var allocationTable: Map[String,Any] = Map()
 
   var dispatchedCount : Int = 0
 
@@ -32,7 +32,7 @@ trait DispatchingActor extends Actor with ReasoningActorChild  {
 
   protected def receive = {
     // handle incoming allocation table updates
-    case LoadAllocation(allocation) => {
+    case LoadAllocation(allocation,localAddress) => {
 //      log.trace("Reasoner: %s Recieved Load Allocation Message forwared from %s with payload %s", this,forwarder, ((allocation map {case (sig, uuid) => ("Signature" + sig + "-->" + "Reasoner :" + uuid)}) mkString ("AllocationTable : [\n", ",\n", "]")))
       // update the allocation map
       allocationTable = allocation
@@ -55,9 +55,38 @@ trait DispatchingActor extends Actor with ReasoningActorChild  {
         //println("%s is Dispatching CLauses : %s to destination kernel : %s",this,clauses,actor)
         clauses match {
           case cs if(!cs.isEmpty) => {
-            log.info("Dispatching clauses %s to reasoner %s", clauses,destinationActor)
+            log.debug("Dispatching clauses %s to reasoner %s", clauses,destinationActor)
             dispatchedCount = dispatchedCount + clauses.toList.size
-            destinationActor ! Saturate(clauses)
+            val clausepacket = cs
+            val da = destinationActor
+            destinationActor.send(Saturate(clauses))
+
+          }
+          case _ => // dont sent
+        }
+
+
+      }
+
+
+    }
+
+    // handle dispatching of given clause
+    case  msg @ GivenClause(givenClause) => {
+
+      // pass clause to logging actor
+      // analyze where this claues should be send
+      for((destinationActor,clauses) <- determineDestination(List(givenClause),allocationTable) ){
+        // disptach
+        //println("%s is Dispatching CLauses : %s to destination kernel : %s",this,clauses,actor)
+        clauses match {
+          case cs if(!cs.isEmpty) => {
+            log.debug("Dispatching given clauses %s to reasoner %s", clauses,destinationActor)
+            dispatchedCount = dispatchedCount + clauses.toList.size
+            val clausepacket = cs
+            val da = destinationActor
+            destinationActor.send(Saturate(clauses))
+
           }
           case _ => // dont sent
         }
@@ -77,9 +106,10 @@ trait DispatchingActor extends Actor with ReasoningActorChild  {
         //println("%s is Dispatching CLauses : %s to destination kernel : %s",this,clauses,actor)
         clauses match {
           case cs if(!cs.isEmpty) => {
-            log.info("Dispatching clauses %s to reasoner %s", clauses,destinationActor)
+            log.debug("Dispatching clauses %s to reasoner %s", clauses,destinationActor)
             dispatchedCount = dispatchedCount + clauses.toList.size
-            destinationActor ! Saturate(clauses)
+            //log.error("Sending clause packet of size %s",cs.size)
+            destinationActor.send(Saturate(clauses))
           }
           case _ => // dont sent
         }
@@ -98,7 +128,7 @@ trait DispatchingActor extends Actor with ReasoningActorChild  {
 
 
 
-  protected def determineDestination(clauses: Iterable[FOLClause], allocation: Map[String,String] ) : MultiMap[Actor, FOLClause]
+  protected def determineDestination(clauses: Iterable[FOLClause], allocation: Map[String, Any] ) : MultiMap[Actor, FOLClause]
 }
 
 /**
