@@ -36,7 +36,7 @@ class DefaultDALCReasoner extends ReasoningActor {
 
   val config = new Object {
     // the initial clause store
-    lazy val neo4JGraphBasePath: String = "/workspace/DIRE/DIRE/logs/graph/clauses"
+    lazy val neo4JGraphBasePath: String = "logs/graph/clauses"
     val isDistributed = true
     lazy val variableRewriter = new VariableRewriter
     lazy val standardizer = new Standardizer(this)
