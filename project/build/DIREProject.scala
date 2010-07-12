@@ -1,13 +1,8 @@
 import sbt._
-import java.io.File
-import java.util.jar.Attributes
-
-
-
 class DIREProject(info: ProjectInfo) extends DefaultProject(info) {
   // ------------------------------------------------------------
   // repositories
-//  val embeddedrepo = "embedded repo" at new File(akkaHome, "embedded-repo").toURI.toString
+  //  val embeddedrepo = "embedded repo" at new File(akkaHome, "embedded-repo").toURI.toString
   val akka = "Akka" at "http://www.scalablesolutions.se/akka/repository/"
   val neo4j = "Neo4J" at "http://m2.neo4j.org/"
   val sunjdmk = "sunjdmk" at "http://wp5.e-taxonomy.eu/cdmlib/mavenrepo"
@@ -23,7 +18,7 @@ class DIREProject(info: ProjectInfo) extends DefaultProject(info) {
 
   // deployment
   val artifactorydeploy = "artifactorydeply" at "http://localhost:8081/artifactory/libs-snapshots-local"
-   Credentials(Path.userHome / ".m2" / ".credentials", log)
+  Credentials(Path.userHome / ".m2" / ".credentials", log)
 
   // ------------------------------------------------------------
   // project defintions
@@ -45,7 +40,26 @@ class DIREProject(info: ProjectInfo) extends DefaultProject(info) {
   override def unmanagedClasspath = super.unmanagedClasspath +++ ("config" / "akka.conf")
 
 
-  override def mainClass = Some("DIRENewShell")
+  // specify run tasks here
+  lazy val shell = runTask(Some("kernel.DIRENewShell"), super.runClasspath).dependsOn(compile) describedAs "Runs the shell."
+  //lazy val server =
+
+  lazy val server =
+  task {
+    args =>
+      if (args.length == 2)
+        serverConstructor(args(0), args(1))
+      else
+        task {Some("Please specify a port (integer) and a reasoner type (RDL or FOL)")}
+  }
+
+  def serverConstructor(a: String, b: String) =
+    {
+      println("Arguments were: " + a + " and " + b)
+      runTask(Some("kernel.DIREServer"), super.runClasspath,a,b).dependsOn(compile) describedAs "Starts a DIRE reasoner on specifed port and type ( FOL | RDL )"
+    }
+
+  //override def mainClass = Some("DIREServer")
 
 
 }

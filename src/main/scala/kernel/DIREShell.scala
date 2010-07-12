@@ -623,7 +623,7 @@ object DIREShell extends Application with Actor {
 
 }
 
-
+// TODO work in progress !!
 object DIRENewShell {
   def main(args: Array[String]) {
     //Let's assume all arguments are file locations for configuration
