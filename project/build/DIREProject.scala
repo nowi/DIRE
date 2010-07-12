@@ -17,8 +17,8 @@ class DIREProject(info: ProjectInfo) extends DefaultProject(info) {
   //val localartifactory = "artifactory" at "http://localhost:8081/artifactory/repo"
 
   // deployment
-  val artifactorydeploy = "artifactorydeply" at "http://localhost:8081/artifactory/libs-snapshots-local"
-  Credentials(Path.userHome / ".m2" / ".credentials", log)
+//  val artifactorydeploy = "artifactorydeply" at "http://localhost:8081/artifactory/libs-snapshots-local"
+//  Credentials(Path.userHome / ".m2" / ".credentials", log)
 
   // ------------------------------------------------------------
   // project defintions
