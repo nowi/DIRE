@@ -1,10 +1,11 @@
 # xcode noise
-build/*
-out/*
-lib/*
-target/*
-logs/*
-input/*
+build
+out
+lib_managed
+target
+logs
+input
+boot
 DIRE.iws
 *.log
 

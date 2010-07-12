@@ -231,7 +231,8 @@ abstract class ReasoningActor extends Actor {
 //      log.fatal("%s | Dispatcher : %s", this, dispatcherActor.mailbox.size)
 
 
-      log.fatal("%s%10d%10d%10d%10d%10d%10d%10d|", this, workedOffCount, derivedCount, recievedClauseCount, recievedKeptClauseCount, dispatchedClauseCount,provingActor.mailbox.size,dispatcherActor.mailbox.size)
+//      log.fatal("%s%10d%10d%10d%10d%10d%10d%10d|", this, workedOffCount, derivedCount, recievedClauseCount, recievedKeptClauseCount, dispatchedClauseCount,provingActor.mailbox.size,dispatcherActor.mailbox.size)
+      log.fatal("%s%10d%10d%10d%10d%10d|", this, workedOffCount, derivedCount, recievedClauseCount, recievedKeptClauseCount, dispatchedClauseCount)
 
 //      log.fatal("%s |Kept|Derived|Recieved|RecKept|Sent|Inbox|Outbox| %s  %s  s%  %s  %s  %s  %s", this, workedOffCount, derivedCount, recievedClauseCount, recievedKeptClauseCount, dispatchedClauseCount,provingActor.mailbox.size,dispatcherActor.mailbox.size)
       //println("%s %s  %s  s%  %s  %s " format this, workedOffCount, derivedCount, recievedClauseCount, recievedKeptClauseCount, dispatchedClauseCount)

@@ -6,7 +6,6 @@ import collection.mutable.{ListBuffer, Queue, ArrayBuffer}
 import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy
 import java.util.concurrent.TimeUnit
 import java.util.Date
-import jsr166x.{Deque, ConcurrentLinkedDeque}
 import recording.{EventRecording, ClauseRecording}
 import se.scalablesolutions.akka.actor.{Scheduler, Actor}
 import se.scalablesolutions.akka.dispatch.Dispatchers

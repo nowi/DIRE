@@ -14,33 +14,19 @@ import helpers.{DumpableString, HelperFunctions}
 import kernel._
 import dispatching.{DALCDispatcherActor, ToVoidDispatchingActor}
 import net.lag.configgy.Configgy
-import org.apache.cassandra.service.{ColumnOrSuperColumn, ColumnPath, ConsistencyLevel}
 import partitioning.{ManualConfExampleMerger, ManualConfExamplePartitioner}
 import recording.{ReasonerEvent, NaiveClauseRecorder}
 import runtime.RichString
 import se.scalablesolutions.akka.actor.{ActorRegistry, Actor}
 import se.scalablesolutions.akka.config.ScalaConfig.RemoteAddress
-import se.scalablesolutions.akka.persistence.cassandra.Protocol.JSON
-import se.scalablesolutions.akka.persistence.cassandra.{CassandraStorage, CassandraSessionPool}
-import se.scalablesolutions.akka.persistence.common.{StackPool, SocketProvider}
-import se.scalablesolutions.akka.persistence.mongo.MongoStorage
 import se.scalablesolutions.akka.remote.{RemoteClient, Cluster, RemoteNode}
 import se.scalablesolutions.akka.stm.NoTransactionInScopeException
 import se.scalablesolutions.akka.util.{Helpers, UUID, Logging}
 import sun.reflect.generics.reflectiveObjects.NotImplementedException
 import Helpers._
-import voldemort.client.{DefaultStoreClient, SocketStoreClientFactory, ClientConfig}
-import voldemort.server.{VoldemortServer, VoldemortConfig}
-import voldemort.versioning.{Versioned, ArbitraryInconsistencyResolver}
 //import se.scalablesolutions.akka.actor.Actor.Sender.Self
 import se.scalablesolutions.akka.stm.Transaction._
 
-import com.mongodb.Mongo;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
-import com.mongodb.DBCursor;
 
 
 /**
@@ -54,22 +40,12 @@ object DIREShell extends Application with Actor {
   //Configgy.configure("/workspace/DIRE/DIRE/config/config.conf")
   val config = Configgy.config
 
-  //  val CASSANDRA_HOST = voldeConfig.getString("cassandra.hostname", "127.0.0.1")
-  //  val CASSANDRA_KEYSPACE = voldeConfig.getString("cassandra.keyspace", "DIRE")
-  //  val CASSANDRA_PORT = voldeConfig.getInt("cassandra.port", 9160)
-  //  val FRAME_LENGTH = voldeConfig.getInt("akka.remote.client.frame-length", 104857600)
-
-
 //  println("Welcome to DIRE shell , enter help for list of available commands")
 //  println("Enter help(command) for more specific help")
   //val shell = new DIREShell
   println("Starting Jgroups clustering")
   se.scalablesolutions.akka.remote.Cluster.start
 
-  val mongodb: Mongo = new Mongo("localhost");
-  val db = mongodb.getDB("mydb");
-
-  val clauseCollection = db.getCollection("clauses")
 
 
 
@@ -78,20 +54,20 @@ object DIREShell extends Application with Actor {
   val node2Reasoner: MMap[RemoteAddress, Actor] = new HashMap()
 
 
-  def saveLog(message: String) {
-    val doc = new BasicDBObject
-    doc.put("message", message);
-    clauseCollection.insert(doc);
-  }
-
-  def retrieveLogs = {
-    val buffer = new ListBuffer[DBObject]()
-    val cur: DBCursor = clauseCollection.find()
-    while (cur.hasNext()) {
-      buffer.append(cur.next())
-    }
-    buffer.toList.map(_.get("message"))
-  }
+//  def saveLog(message: String) {
+//    val doc = new BasicDBObject
+//    doc.put("message", message);
+//    clauseCollection.insert(doc);
+//  }
+//
+//  def retrieveLogs = {
+//    val buffer = new ListBuffer[DBObject]()
+//    val cur: DBCursor = clauseCollection.find()
+//    while (cur.hasNext()) {
+//      buffer.append(cur.next())
+//    }
+//    buffer.toList.map(_.get("message"))
+//  }
 
 
 
