@@ -143,7 +143,7 @@ class DefaultFOLReasoner extends ReasoningActor {
 
     val recordProofSteps = true
 
-    lazy val neo4JGraphBasePath: String = "/workspace/DIRE/DIRE/logs/graph/clauses"
+    lazy val neo4JGraphBasePath: String = "logs/graph/clauses"
     //lazy val inferenceRecorder = Some(new Neo4JRecorder(neo4JGraphBasePath + "/" + System.currentTimeMillis + "/" + this))
     lazy val inferenceRecorder = None
     lazy val eventRecorder = Some(new EventRecorder)
