@@ -1,0 +1,219 @@
+list_of_clauses(axioms, cnf).
+  clause( || O1_Paper(U) -> O1_Contribution(U),1).
+  clause( || O1_Administrative_event(U) -> O1_Event(U),2).
+  clause( || O1_Reviewing_event(U) -> O1_Administrative_event(U),3).
+  clause( || O1_Administrator(U) -> O1_Person(U),4).
+  clause( || O1_Banquet(U) -> O1_Social_event(U),5).
+  clause( || O1_Company(U) -> O1_Organization(U),6).
+  clause( || O1_Conference(U) -> O1_Working_event(U),7).
+  clause( || O1_Assistant(U) -> O1_Person(U),8).
+  clause( || O1_University(U) -> O1_Organization(U),9).
+  clause( || O1_Science_Worker(U) -> O1_Person(U),10).
+  clause( || O1_Member(U) -> O1_Participant(U),11).
+  clause( || O1_Regular(U) -> O1_Participant(U),13).
+  clause( || O1_Volunteer(U) -> O1_Person(U),14).
+  clause( || O1_Scholar(U) -> O1_Person(U),15).
+  clause( || O1_Short_paper(U) -> O1_Contribution(U),16).
+  clause( || O1_Reviewing_results_event(U) -> O1_Administrative_event(U),17).
+  clause( || O1_Registration_of_participants_event(U) -> O1_Administrative_event(U),18).
+  clause( || O1_Participant(U) -> O1_Person(U),19).
+  clause( || O1_Reception(U) -> O1_Social_event(U),20).
+  clause( || O1_Member_PC(U) -> O1_Person(U),21).
+  clause( || O1_Tutorial(U) -> O1_Working_event(U),22).
+  clause( || O1_Student(U) -> O1_Participant(U),23).
+  clause( || O1_Workshop(U) -> O1_Working_event(U),25).
+  clause( || O1_Chair_PC(U) -> O1_Person(U),26).
+  clause( || O1_Social_event(U) -> O1_Event(U),27).
+  clause( || O1_Author(U) -> O1_Person(U),28).
+  clause( || O1_Submission_event(U) -> O1_Administrative_event(U),29).
+  clause( || O1_Camera_Ready_event(U) -> O1_Administrative_event(U),30).
+  clause( || O1_Working_event(U) -> O1_Event(U),31).
+  clause( || O1_Poster(U) -> O1_Contribution(U),32).
+  clause( || O1_Trip(U) -> O1_Social_event(U),33).
+  clause( || O1_Camera_Ready_event(U) O1_Submission_event(U) -> ,34).
+  clause( || O1_Camera_Ready_event(U) O1_Reviewing_results_event(U) -> ,36).
+  clause( || O1_Person(U) -> O1_Organization(skf1_46(U)),37).
+  clause( || O1_Organization(U) O1_Person(U) -> ,38).
+  clause( || O1_Contribution(U) -> O1_Topic(skf1_44(U)),40).
+  clause( || O1_Event(U) O1_Person(U) -> ,41).
+  clause( || O1_Person(U) O1_Country(U) -> ,42).
+  clause( || O1_Event(U) O1_Organization(U) -> ,43).
+  clause( || O1_Reviewing_event(U) O1_Submission_event(U) -> ,45).
+  clause( || O1_Event(U) O1_Country(U) -> ,47).
+  clause( || O1_Social_event(U) O1_Administrative_event(U) -> ,48).
+  clause( || O1_Contribution(U) O1_City(U) -> ,49).
+  clause( || O1_Person(U) -> O1_City(skf1_38(U)),53).
+  clause( || O1_Topic(U) O1_Person(U) -> ,54).
+  clause( || O1_Reception(U) O1_Banquet(U) -> ,55).
+  clause( || O1_Member_PC(U) -> O1_Topic(skf1_37(U)),56).
+  clause( || O1_Topic(U) O1_Organization(U) -> ,57).
+  clause( || O1_Company(U) O1_University(U) -> ,58).
+  clause( || O1_Topic(U) O1_Contribution(U) -> ,60).
+  clause( || O1_Short_paper(U) O1_Paper(U) -> ,61).
+  clause( || O1_Trip(U) O1_Banquet(U) -> ,62).
+  clause( || O1_Author(U) -> O1_Contribution(skf1_35(U)),63).
+  clause( || O1_Person(U) O1_City(U) -> ,64).
+  clause( || O1_Organization(U) O1_Contribution(U) -> ,65).
+  clause( || O1_Contribution(U) O1_Person(U) -> ,66).
+  clause( || O1_Member_PC(U) -> O1_Contribution(skf1_33(U)),68).
+  clause( || O1_Reviewing_event(U) O1_Camera_Ready_event(U) -> ,71).
+  clause( || O1_Event(U) O1_Topic(U) -> ,72).
+  clause( || O1_Conference(U) O1_Workshop(U) -> ,73).
+  clause( || O1_Event(U) O1_Contribution(U) -> ,74).
+  clause( || O1_Camera_Ready_event(U) O1_Registration_of_participants_event(U) -> ,75).
+  clause( || O1_Working_event(U) O1_Administrative_event(U) -> ,77).
+  clause( || O1_Reviewing_results_event(U) O1_Registration_of_participants_event(U) -> ,78).
+  clause( || O1_Organization(U) O1_Country(U) -> ,80).
+  clause( || O1_Social_event(U) O1_Working_event(U) -> ,81).
+  clause( || O1_Reviewing_event(U) O1_Registration_of_participants_event(U) -> ,82).
+  clause( || O1_Conference(U) O1_Tutorial(U) -> ,83).
+  clause( || O1_Paper(U) O1_Poster(U) -> ,84).
+  clause( || O1_Event(U) O1_City(U) -> ,85).
+  clause( || O1_Person(U) -> O1_Country(skf1_28(U)),86).
+  clause( || O1_Scholar(U) -> O1_University(skf1_26(U)),88).
+  clause( || O1_Trip(U) O1_Reception(U) -> ,89).
+  clause( || O1_Topic(U) O1_City(U) -> ,90).
+  clause( || O1_Short_paper(U) O1_Poster(U) -> ,91).
+  clause( || O1_Working_event(U) -> O1_Topic(skf1_25(U)),92).
+  clause( || O1_Contribution(U) O1_Country(U) -> ,94).
+  clause( || O1_Registration_of_participants_event(U) O1_Submission_event(U) -> ,95).
+  clause( || O1_Reviewing_event(U) O1_Reviewing_results_event(U) -> ,96).
+  clause( || O1_Workshop(U) O1_Tutorial(U) -> ,97).
+  clause( || O1_Organization(U) O1_City(U) -> ,98).
+  clause( || O1_Topic(U) O1_Country(U) -> ,99).
+  clause( || O1_Reviewing_results_event(U) O1_Submission_event(U) -> ,100).
+  clause( || -> O1_Member_PC(U) O1_NEWATOMIC4(U),101).
+  clause( || -> O1_Author(U) O1_NEWATOMIC9(U),102).
+  clause( || O1_Person(U) -> O1_hasEmail(U,skf1_47(U)),103).
+  clause( || O1_Person(U) -> O1_employedBy(U,skf1_46(U)),104).
+  clause( || -> O1_Person(U) O1_NEWATOMIC18(U),105).
+  clause( || O1_Social_event(U) -> O1_location(U,skf1_45(U)),106).
+  clause( || -> O1_Scholar(U) O1_NEWATOMIC31(U),107).
+  clause( || O1_Contribution(U) -> O1_dealsWith(U,skf1_44(U)),108).
+  clause( || -> O1_NEWATOMIC10(U) O1_Contribution(U),109).
+  clause( || -> O1_NEWATOMIC17(U) O1_Person(U),110).
+  clause( || -> O1_Event(U) O1_NEWATOMIC5(U),111).
+  clause( || O1_Working_event(U) -> O1_defaultChoice(U,skf1_43(U)),112).
+  clause( || -> O1_Contribution(U) O1_NEWATOMIC29(U),113).
+  clause( || O1_Contribution(U) -> O1_hasTitle(U,skf1_42(U)),114).
+  clause( || -> O1_Person(U) O1_NEWATOMIC30(U),115).
+  clause( || O1_Person(U) -> O1_hasFirstName(U,skf1_41(U)),116).
+  clause( || -> O1_NEWATOMIC6(U) O1_Working_event(U),117).
+  clause( || O1_Contribution(U) -> O1_abstract(U,skf1_40(U)),118).
+  clause( || -> O1_Contribution(U) O1_NEWATOMIC3(U),119).
+  clause( || O1_Contribution(U) -> O1_hasKeyword(U,skf1_39(U)),120).
+  clause( || O1_Person(U) -> O1_hasCity(U,skf1_38(U)),121).
+  clause( || O1_Member_PC(U) -> O1_expertOn(U,skf1_37(U)),122).
+  clause( || O1_Person(U) -> O1_hasSurname(U,skf1_36(U)),123).
+  clause( || O1_Author(U) -> O1_writes(U,skf1_35(U)),124).
+  clause( || O1_Person(U) -> O1_hasStreet(U,skf1_34(U)),125).
+  clause( || O1_Member_PC(U) -> O1_reviewes(U,skf1_33(U)),126).
+  clause( || O1_Person(U) -> O1_hasPostalCode(U,skf1_32(U)),127).
+  clause( || O1_Social_event(U) -> O1_defaultChoice(U,skf1_31(U)),128).
+  clause( || -> O1_Event(U) O1_NEWATOMIC21(U),129).
+  clause( || -> O1_NEWATOMIC1(U) O1_Working_event(U),130).
+  clause( || O1_Contribution(U) -> O1_contactEmail(U,skf1_30(U)),131).
+  clause( || -> O1_NEWATOMIC34(U) O1_Administrative_event(U),132).
+  clause( || O1_Working_event(U) -> O1_has_title(U,skf1_29(U)),133).
+  clause( || -> O1_Contribution(U) O1_NEWATOMIC8(U),134).
+  clause( || -> O1_NEWATOMIC27(U) O1_Person(U),135).
+  clause( || -> O1_Contribution(U) O1_NEWATOMIC32(U),136).
+  clause( || O1_Person(U) -> O1_hasCountry(U,skf1_28(U)),137).
+  clause( || -> O1_NEWATOMIC16(U) O1_Member_PC(U),138).
+  clause( || O1_Social_event(U) -> O1_has_title(U,skf1_27(U)),139).
+  clause( || -> O1_NEWATOMIC33(U) O1_Administrative_event(U),140).
+  clause( || -> O1_Contribution(U) O1_NEWATOMIC25(U),141).
+  clause( || O1_Scholar(U) -> O1_studyAt(U,skf1_26(U)),142).
+  clause( || -> O1_Person(U) O1_NEWATOMIC12(U),143).
+  clause( || -> O1_NEWATOMIC26(U) O1_Participant(U),144).
+  clause( || -> O1_NEWATOMIC0(U) O1_Person(U),145).
+  clause( || -> O1_NEWATOMIC19(U) O1_Contribution(U),146).
+  clause( || -> O1_Person(U) O1_NEWATOMIC23(U),147).
+  clause( || O1_Working_event(U) -> O1_hasTopic(U,skf1_25(U)),148).
+  clause( || O1_Working_event(U) -> O1_location(U,skf1_24(U)),149).
+  clause( || O1_hasCountry(U,V) O1_NEWATOMIC22(U) -> ,150).
+  clause( || O1_hasCity(U,V) -> O1_City(V),151).
+  clause( || O1_minChoice(U,V) O1_NEWATOMIC14(U) -> ,152).
+  clause( || O1_starts_on(U,V) O1_NEWATOMIC5(U) -> ,153).
+  clause( || O1_hasPostalCode(U,V) O1_NEWATOMIC11(U) -> ,154).
+  clause( || O1_hasTopic(U,V) O1_Working_event(U) -> O1_Topic(V),155).
+  clause( || O1_employedBy(U,V) O1_NEWATOMIC30(U) -> ,156).
+  clause( || O1_maxChoice(U,V) O1_NEWATOMIC20(U) -> ,157).
+  clause( || O1_contactEmail(U,V) O1_NEWATOMIC29(U) -> ,158).
+  clause( || O1_reviewes(U,V) -> O1_Contribution(V),159).
+  clause( || O1_hasVAT(U,V) O1_NEWATOMIC24(U) -> ,160).
+  clause( || O1_hasHomePage(U,V) O1_NEWATOMIC17(U) -> ,161).
+  clause( || O1_hasFax(U,V) O1_NEWATOMIC12(U) -> ,162).
+  clause( || O1_dealsWith(U,V) O1_NEWATOMIC19(U) -> ,163).
+  clause( || O1_hasEmail(U,V) O1_NEWATOMIC27(U) -> ,164).
+  clause( || O1_hasPhone(U,V) O1_NEWATOMIC18(U) -> ,165).
+  clause( || O1_employedBy(U,V) -> O1_Organization(V),166).
+  clause( || -> O1_NEWATOMIC24(U) O1_Social_event(U) O1_Working_event(U),167).
+  clause( || O1_expertOn(U,V) O1_NEWATOMIC16(U) -> ,168).
+  clause( || O1_follows(U,V) -> O1_Administrative_event(V),169).
+  clause( || O1_reviewes(U,V) O1_NEWATOMIC4(U) -> ,170).
+  clause( || O1_parallel_with(U,V) O1_NEWATOMIC34(U) -> ,171).
+  clause( || O1_ends_on(U,V) O1_NEWATOMIC21(U) -> ,172).
+  clause( || O1_dealsWith(U,V) -> O1_Topic(V),173).
+  clause( || -> O1_Organization(U) O1_NEWATOMIC22(U) O1_Person(U),174).
+  clause( || O1_hasTitle(U,V) O1_NEWATOMIC25(U) -> ,175).
+  clause( || O1_studyAt(U,V) O1_NEWATOMIC31(U) -> ,176).
+  clause( || O1_hasSurname(U,V) O1_NEWATOMIC0(U) -> ,177).
+  clause( || O1_defaultChoice(U,V) O1_NEWATOMIC28(U) -> ,178).
+  clause( || O1_hasStreet(U,V) O1_NEWATOMIC2(U) -> ,179).
+  clause( || O1_writes(U,V) O1_Author(U) -> O1_Contribution(V),180).
+  clause( || O1_hasCountry(U,V) -> O1_Country(V),181).
+  clause( || O1_parallel_with(U,V) -> O1_Administrative_event(V),182).
+  clause( || -> O1_Social_event(U) O1_NEWATOMIC15(U) O1_Working_event(U),183).
+  clause( || O1_reviewes(U,V) O1_Member_PC(U) -> O1_Contribution(V),184).
+  clause( || O1_hasKeyword(U,V) O1_NEWATOMIC3(U) -> ,185).
+  clause( || -> O1_NEWATOMIC35(U) O1_Organization(U) O1_Person(U),186).
+  clause( || O1_writtenBy(U,V) -> O1_Author(V),187).
+  clause( || O1_writes(U,V) -> O1_Contribution(V),188).
+  clause( || -> O1_Social_event(U) O1_Working_event(U) O1_NEWATOMIC28(U),189).
+  clause( || O1_location(U,V) O1_NEWATOMIC15(U) -> ,190).
+  clause( || -> O1_Organization(U) O1_NEWATOMIC11(U) O1_Person(U),191).
+  clause( || O1_employedBy(U,V) O1_Person(U) -> O1_Organization(V),192).
+  clause( || O1_studyAt(U,V) -> O1_University(V),193).
+  clause( || O1_follows(U,V) O1_NEWATOMIC33(U) -> ,194).
+  clause( || O1_has_short_title(U,V) O1_NEWATOMIC13(U) -> ,195).
+  clause( || O1_studyAt(U,V) O1_Scholar(U) -> O1_University(V),196).
+  clause( || O1_writtenBy(U,V) O1_NEWATOMIC32(U) -> ,197).
+  clause( || O1_dealsWith(U,V) O1_Contribution(U) -> O1_Topic(V),198).
+  clause( || -> O1_NEWATOMIC14(U) O1_Social_event(U) O1_Working_event(U),199).
+  clause( || -> O1_NEWATOMIC20(U) O1_Social_event(U) O1_Working_event(U),200).
+  clause( || O1_abstract(U,V) O1_NEWATOMIC8(U) -> ,201).
+  clause( || O1_earlyRegistration(U,V) O1_NEWATOMIC26(U) -> ,202).
+  clause( || O1_hasTopic(U,V) -> O1_Topic(V),203).
+  clause( || O1_expertOn(U,V) O1_Member_PC(U) -> O1_Topic(V),204).
+  clause( || -> O1_Organization(U) O1_NEWATOMIC2(U) O1_Person(U),205).
+  clause( || O1_has_title(U,V) O1_NEWATOMIC7(U) -> ,206).
+  clause( || O1_hasAdministrativeEvent(U,V) O1_NEWATOMIC1(U) -> ,207).
+  clause( || O1_hasAdministrativeEvent(U,V) -> O1_Administrative_event(V),208).
+  clause( || O1_hasCity(U,V) O1_NEWATOMIC35(U) -> ,209).
+  clause( || O1_expertOn(U,V) -> O1_Topic(V),210).
+  clause( || O1_remark(U,V) O1_NEWATOMIC10(U) -> ,211).
+  clause( || O1_writes(U,V) O1_NEWATOMIC9(U) -> ,212).
+  clause( || O1_hasTopic(U,V) O1_NEWATOMIC6(U) -> ,213).
+  clause( || -> O1_NEWATOMIC13(U) O1_Social_event(U) O1_Working_event(U),214).
+  clause( || O1_hasFirstName(U,V) O1_NEWATOMIC23(U) -> ,215).
+  clause( || -> O1_Social_event(U) O1_NEWATOMIC7(U) O1_Working_event(U),216).
+  clause( || O0_ConferenceMember(U) -> O1_Member(U),1).
+  clause( || O0_PaperFullVersion(U) -> O1_Paper(U),2).
+  clause( || O0_Author(U) -> O1_Author(U),4).
+  clause( || O1_Administrator(U) -> O0_Administrator(U),7).
+  clause( || O0_Conference(U) -> O1_Conference(U),8).
+  clause( || O0_SubjectArea(U) -> O1_Topic(U),10).
+  clause( || O0_Person(U) -> O1_Person(U),11).
+  clause( || O1_Member_PC(U) -> O0_ProgramCommitteeMember(U),13).
+  clause( || O0_Paper(U) -> O1_Contribution(U),14).
+  clause( || O1_Member(U) -> O0_ConferenceMember(U),20).
+  clause( || O1_Conference(U) -> O0_Conference(U),21).
+  clause( || O1_Paper(U) -> O0_PaperFullVersion(U),22).
+  clause( || O1_Person(U) -> O0_Person(U),24).
+  clause( || O1_Contribution(U) -> O0_Paper(U),25).
+  clause( || O0_ProgramCommitteeMember(U) -> O1_Member_PC(U),26).
+  clause( || O0_Administrator(U) -> O1_Administrator(U),27).
+  clause( || O1_Author(U) -> O0_Author(U),29).
+  clause( || O1_Topic(U) -> O0_SubjectArea(U),30).
+end_of_list. 

@@ -1,0 +1,635 @@
+list_of_clauses(axioms, cnf).
+  clause( || O3_Tax(U) -> O3_Money(U),2).
+  clause( || O3_Lecture(U) -> O3_Conference_activity(U),3).
+  clause( || O3_Presenter_state(U) -> O3_State(U),4).
+  clause( || O3_Invitation_letter(U) -> O3_Document(U),5).
+  clause( || O3_Conference_building(U) -> O3_Building(U),6).
+  clause( || O3_Renting(U) -> O3_Activity_before_conference(U),7).
+  clause( || O3_Hotel_registration_form(U) -> O3_Form(U),8).
+  clause( || O3_Bank_transfer(U) -> O3_Payment_document(U),9).
+  clause( || O3_Computer(U) -> O3_Audiovisual_equipment(U),10).
+  clause( || O3_Presenter_house(U) -> O3_Building(U),11).
+  clause( || O3_Conference_airport(U) -> O3_Building(U),12).
+  clause( || O3_Car(U) -> O3_Transport_vehicle(U),13).
+  clause( || -> O3_NEWATOMIC56(U),14).
+  clause( || O3_Author_cd_proceedings_included(U) -> O3_Author(U),15).
+  clause( || O3_Plenary_lecture_speaker(U) -> O3_Author(U),16).
+  clause( || -> O3_NEWATOMIC76(U),17).
+  clause( || O3_Dinner_banquet(U) -> O3_Social_program(U),18).
+  clause( || O3_Fee_for_extra_trip(U) -> O3_Fee(U),19).
+  clause( || O3_Mailing_list(U) -> O3_Document(U),20).
+  clause( || -> O3_NEWATOMIC54(U),21).
+  clause( || O3_Value_added_tax(U) -> O3_Tax(U),22).
+  clause( || O3_Credit_card(U) -> O3_Card(U),23).
+  clause( || O3_Delegate(U) -> O3_NEWATOMIC69(U),24).
+  clause( || O3_Delegate(U) -> O3_NEWATOMIC71(U),25).
+  clause( || O3_Delegate(U) -> O3_NEWATOMIC70(U),26).
+  clause( || O3_Final_manuscript(U) -> O3_Submission(U),27).
+  clause( || O3_Receiving_manuscript(U) -> O3_Activity_before_conference(U),28).
+  clause( || O3_Viza(U) -> O3_Document(U),29).
+  clause( || O3_Submission(U) -> O3_Document(U),30).
+  clause( || O3_Document(U) -> O3_Item(U),31).
+  clause( || O3_Conference_hall(U) -> O3_Place(U),32).
+  clause( || O3_Cheque(U) -> O3_Payment_document(U),33).
+  clause( || O3_Audiovisual_equipment(U) -> O3_Item(U),34).
+  clause( || O3_Speaker_lecture(U) -> O3_Session(U),35).
+  clause( || O3_Transport_vehicle(U) -> O3_Item(U),36).
+  clause( || O3_Camera_ready_manuscript_deadline(U) -> O3_Deadline(U),37).
+  clause( || O3_One_conference_day(U) -> O3_Conference_days(U),38).
+  clause( || O3_Plenary_lecture(U) -> O3_Lecture(U),39).
+  clause( || O3_Author_attendee_book_registration_fee(U) -> O3_Registration_fee(U),40).
+  clause( || O3_Sponsor_city(U) -> O3_City(U),41).
+  clause( || O3_Review(U) -> O3_Document(U),43).
+  clause( || O3_Reviewer(U) -> O3_Speaker(U),44).
+  clause( || O3_Overhead_projector(U) -> O3_Audiovisual_equipment(U),45).
+  clause( || O3_Conference_activity(U) -> O3_Activity(U),46).
+  clause( || O3_Book_proceeding(U) -> O3_Publication(U),47).
+  clause( || O3_Tutorial_speaker(U) -> O3_Author(U),48).
+  clause( || O3_Activity_after_conference(U) -> O3_Activity(U),49).
+  clause( || O3_Sponsor_state(U) -> O3_State(U),50).
+  clause( || O3_Lecturer(U) -> O3_Author(U),51).
+  clause( || O3_Conference_days(U) -> O3_Time(U),52).
+  clause( || -> O3_NEWATOMIC28(U),53).
+  clause( || O3_PowerPoint_presentation(U) -> O3_Presentation(U),54).
+  clause( || O3_Social_program(U) -> O3_Conference_activity(U),55).
+  clause( || -> O3_NEWATOMIC79(U),56).
+  clause( || O3_Accepting_manuscript(U) -> O3_Activity_before_conference(U),57).
+  clause( || O3_Research(U) -> O3_Activity_before_conference(U),58).
+  clause( || O3_One_day_presenter(U) -> O3_Delegate(U),59).
+  clause( || O3_Deadline_hotel_reservation(U) -> O3_Deadline(U),60).
+  clause( || O3_Activity_before_conference(U) -> O3_Activity(U),61).
+  clause( || O3_Registration(U) -> O3_Conference_activity(U),62).
+  clause( || O3_Full_day_tour(U) -> O3_Activity_after_conference(U),63).
+  clause( || O3_Refusing_manuscript(U) -> O3_Activity_before_conference(U),64).
+  clause( || O3_Deadline(U) -> O3_Time(U),65).
+  clause( || O3_Brief_introduction_for_Session_chair(U) -> O3_Document(U),66).
+  clause( || O3_Building(U) -> O3_Place(U),67).
+  clause( || O3_Cd_proceening(U) -> O3_Publication(U),68).
+  clause( || O3_Presenter_university(U) -> O3_Building(U),69).
+  clause( || O3_Presenter_city(U) -> O3_City(U),70).
+  clause( || O3_Trip_day(U) -> O3_Time(U),71).
+  clause( || O3_Listener(U) -> O3_NEWATOMIC61(U),72).
+  clause( || O3_Publication(U) -> O3_Item(U),73).
+  clause( || O3_Student_registration_fee(U) -> O3_NEWATOMIC22(U),74).
+  clause( || O3_Conference_hotel(U) -> O3_Building(U),75).
+  clause( || O3_Introduction_of_speaker(U) -> O3_Introduction(U),76).
+  clause( || O3_Video_presentation(U) -> O3_Presentation(U),77).
+  clause( || O3_Main_office(U) -> O3_Place(U),78).
+  clause( || O3_Delegate(U) -> O3_Person(U),79).
+  clause( || O3_Hotel_presenter(U) -> O3_Delegate(U),80).
+  clause( || O3_Initial_manuscipt(U) -> O3_Submission(U),81).
+  clause( || O3_Record_of_attendance(U) -> O3_Document(U),82).
+  clause( || O3_Form(U) -> O3_Document(U),83).
+  clause( || O3_Author_book_proceedings_included(U) -> O3_Author(U),84).
+  clause( || O3_Sponsor_company_house(U) -> O3_Building(U),85).
+  clause( || -> O3_NEWATOMIC17(U),86).
+  clause( || -> O3_NEWATOMIC44(U),87).
+  clause( || O3_Van(U) -> O3_Transport_vehicle(U),88).
+  clause( || O3_Sponzorship(U) -> O3_Money(U),89).
+  clause( || O3_Simulating(U) -> O3_Research(U),90).
+  clause( || O3_Credit_card(U) -> O3_NEWATOMIC83(U),91).
+  clause( || O3_Card(U) -> O3_Item(U),92).
+  clause( || O3_Transparency(U) -> O3_Document(U),93).
+  clause( || O3_Registration_form(U) -> O3_Form(U),94).
+  clause( || O3_Nonmember_registration_fee(U) -> O3_Registration_fee(U),95).
+  clause( || O3_Trip_city(U) -> O3_City(U),96).
+  clause( || O3_Departure(U) -> O3_Activity_after_conference(U),97).
+  clause( || O3_Conference_restaurant(U) -> O3_Building(U),98).
+  clause( || O3_Coffee_break(U) -> O3_Conference_activity(U),99).
+  clause( || O3_Speaker(U) -> O3_Delegate(U),100).
+  clause( || O3_Registation_deadline(U) -> O3_Deadline(U),101).
+  clause( || O3_Tutorial(U) -> O3_Lecture(U),102).
+  clause( || O3_Session(U) -> O3_NEWATOMIC49(U),103).
+  clause( || O3_Worker_lecturer(U) -> O3_Lecturer(U),104).
+  clause( || O3_Registration_fee(U) -> O3_Fee(U),105).
+  clause( || O3_Deadline_for_notification_of_acceptance(U) -> O3_Deadline(U),106).
+  clause( || O3_Conference_state(U) -> O3_State(U),107).
+  clause( || O3_Non_speaker(U) -> O3_Delegate(U),108).
+  clause( || O3_Payment_document(U) -> O3_NEWATOMIC40(U),109).
+  clause( || O3_Conference_city(U) -> O3_City(U),110).
+  clause( || O3_Single_hotel_room(U) -> O3_Hotel_room(U),111).
+  clause( || O3_Technic_activity(U) -> O3_Conference_activity(U),112).
+  clause( || O3_IASTED_member(U) -> O3_Delegate(U),113).
+  clause( || O3_Departure_tax(U) -> O3_Tax(U),114).
+  clause( || O3_Student_registration_fee(U) -> O3_Registration_fee(U),115).
+  clause( || O3_Double_hotel_room(U) -> O3_Hotel_room(U),116).
+  clause( || O3_Session_chair(U) -> O3_Delegate(U),117).
+  clause( || O3_Nonauthor_registration_fee(U) -> O3_Registration_fee(U),118).
+  clause( || O3_Listener(U) -> O3_Delegate(U),119).
+  clause( || O3_IASTED_non_member(U) -> O3_Delegate(U),120).
+  clause( || O3_Technical_commitee(U) -> O3_Delegate(U),121).
+  clause( || O3_Fee(U) -> O3_Money(U),122).
+  clause( || -> O3_NEWATOMIC7(U),123).
+  clause( || O3_Tip(U) -> O3_Money(U),124).
+  clause( || -> O3_NEWATOMIC85(U),125).
+  clause( || O3_Hotel_room(U) -> O3_Place(U),126).
+  clause( || O3_Memeber_registration_fee(U) -> O3_Registration_fee(U),127).
+  clause( || O3_Conference_Hiker(U) -> O3_Delegate(U),128).
+  clause( || O3_Session_room(U) -> O3_Place(U),129).
+  clause( || O3_Payment_document(U) -> O3_Document(U),130).
+  clause( || O3_LCD_projector(U) -> O3_Audiovisual_equipment(U),131).
+  clause( || O3_Hotel_presenter(U) -> O3_NEWATOMIC5(U),132).
+  clause( || O3_Hotel_presenter(U) -> O3_NEWATOMIC4(U),133).
+  clause( || O3_Video_cassette_player(U) -> O3_Audiovisual_equipment(U),134).
+  clause( || O3_Submissions_deadline(U) -> O3_Deadline(U),135).
+  clause( || O3_Worker_non_speaker(U) -> O3_Non_speaker(U),136).
+  clause( || O3_Modelling(U) -> O3_Research(U),137).
+  clause( || O3_Taxi(U) -> O3_Transport_vehicle(U),138).
+  clause( || O3_Presentation(U) -> O3_Conference_activity(U),139).
+  clause( || -> O3_NEWATOMIC1(U),140).
+  clause( || O3_Welcome_address(U) -> O3_Conference_activity(U),141).
+  clause( || O3_Session(U) -> O3_Lecture(U),142).
+  clause( || O3_Introduction(U) -> O3_Conference_activity(U),143).
+  clause( || O3_Coctail_reception(U) -> O3_Conference_activity(U),144).
+  clause( || O3_Fee(U) -> O3_NEWATOMIC32(U),145).
+  clause( || O3_Shuttle_bus(U) -> O3_Transport_vehicle(U),146).
+  clause( || O3_Student_non_speaker(U) -> O3_Non_speaker(U),147).
+  clause( || O3_Sponsor(U) -> O3_Person(U),148).
+  clause( || O3_Author_information_form(U) -> O3_Form(U),149).
+  clause( || O3_Student_lecturer(U) -> O3_Lecturer(U),150).
+  clause( || O3_Hotel_fee(U) -> O3_Fee(U),151).
+  clause( || O3_Author_attendee_cd_registration_fee(U) -> O3_Registration_fee(U),152).
+  clause( || O3_Author(U) -> O3_Speaker(U),153).
+  clause( || O3_NEWATOMIC83(U) -> O3_NEWATOMIC82(skf3_265(U)),154).
+  clause( || O3_Brief_introduction_for_Session_chair(U) -> O3_Session_chair(skf3_264(U)),155).
+  clause( || O3_Conference_city(U) -> O3_Delegate(skf3_263(U)),156).
+  clause( || O3_Conference_activity(U) -> O3_Conference_days(skf3_262(U)),157).
+  clause( || O3_Registration_fee(U) -> O3_Conference_activity(skf3_261(U)),158).
+  clause( || O3_Conference_Hiker(U) -> O3_Full_day_tour(skf3_260(U)),159).
+  clause( || O3_NEWATOMIC61(U) -> O3_NEWATOMIC60(skf3_259(U)),160).
+  clause( || O3_Place(U) -> O3_Conference_city(skf3_258(U)),161).
+  clause( || O3_Plenary_lecture_speaker(U) -> O3_Conference_hall(skf3_257(U)),162).
+  clause( || O3_Trip_city(U) -> O3_Conference_Hiker(skf3_256(U)),163).
+  clause( || O3_Final_manuscript(U) -> O3_Accepting_manuscript(skf3_255(U)),164).
+  clause( || O3_Sponsor_city(U) -> O3_Sponsor(skf3_254(U)),165).
+  clause( || O3_Conference_hotel(U) -> O3_Hotel_presenter(skf3_253(U)),166).
+  clause( || O3_Author_attendee_cd_registration_fee(U) -> O3_Cd_proceening(skf3_252(U)),167).
+  clause( || O3_NEWATOMIC70(U) -> O3_Conference_building(skf3_251(U)),168).
+  clause( || O3_Presenter_house(U) -> O3_Presenter_city(skf3_250(U)),169).
+  clause( || O3_Presenter_state(U) -> O3_Delegate(skf3_249(U)),170).
+  clause( || O3_Conference_airport(U) -> O3_Conference_state(skf3_248(U)),171).
+  clause( || O3_Presenter_university(U) -> O3_Presenter_state(skf3_247(U)),172).
+  clause( || O3_City(U) -> O3_State(skf3_246(U)),173).
+  clause( || O3_Transport_vehicle(U) -> O3_Delegate(skf3_245(U)),174).
+  clause( || O3_Registration_fee(U) -> O3_Delegate(skf3_244(U)),175).
+  clause( || O3_Sponsor(U) -> O3_Sponzorship(skf3_243(U)),176).
+  clause( || O3_Hotel_fee(U) -> O3_Hotel_presenter(skf3_242(U)),177).
+  clause( || O3_Author_attendee_book_registration_fee(U) -> O3_Book_proceeding(skf3_241(U)),178).
+  clause( || O3_Session_room(U) -> O3_Audiovisual_equipment(skf3_239(U)),179).
+  clause( || O3_Sponsor_company_house(U) -> O3_Sponsor_city(skf3_238(U)),180).
+  clause( || O3_Full_day_tour(U) -> O3_Delegate(skf3_237(U)),181).
+  clause( || O3_Session_room(U) -> O3_Conference_building(skf3_236(U)),182).
+  clause( || O3_IASTED_non_member(U) -> O3_Nonmember_registration_fee(skf3_235(U)),183).
+  clause( || O3_NEWATOMIC69(U) -> O3_Registration(skf3_234(U)),184).
+  clause( || O3_Plenary_lecture_speaker(U) -> O3_Tutorial(skf3_233(U)),185).
+  clause( || O3_Non_speaker(U) O3_Speaker(U) -> ,186).
+  clause( || O3_Conference_building(U) -> O3_Conference_city(skf3_232(U)),187).
+  clause( || O3_Submission(U) -> O3_Speaker(skf3_231(U)),188).
+  clause( || O3_Hotel_room(U) -> O3_Conference_hotel(skf3_230(U)),189).
+  clause( || O3_Full_day_tour(U) -> O3_Trip_city(skf3_229(U)),190).
+  clause( || O3_Technic_activity(U) -> O3_Technical_commitee(skf3_228(U)),191).
+  clause( || O3_Session_chair(U) -> O3_Brief_introduction_for_Session_chair(skf3_227(U)),192).
+  clause( || O3_Fee_for_extra_trip(U) -> O3_Full_day_tour(skf3_226(U)),193).
+  clause( || O3_Nonmember_registration_fee(U) -> O3_IASTED_non_member(skf3_225(U)),194).
+  clause( || O3_Sponsor(U) -> O3_Sponsor_state(skf3_224(U)),195).
+  clause( || O3_Delegate(U) -> O3_Viza(skf3_223(U)),196).
+  clause( || O3_Hotel_room(U) -> O3_Hotel_presenter(skf3_222(U)),197).
+  clause( || O3_Speaker(U) -> O3_Lecture(skf3_221(U)),198).
+  clause( || O3_Presenter_city(U) -> O3_Delegate(skf3_220(U)),199).
+  clause( || O3_Delegate(U) -> O3_Presenter_city(skf3_219(U)),200).
+  clause( || O3_Nonauthor_registration_fee(U) -> O3_Non_speaker(skf3_218(U)),201).
+  clause( || O3_Coctail_reception(U) -> O3_Delegate(skf3_217(U)),202).
+  clause( || O3_Sponsor(U) -> O3_Sponsor_company_house(skf3_216(U)),203).
+  clause( || O3_Tip(U) -> O3_Conference_restaurant(skf3_215(U)),204).
+  clause( || O3_Deadline(U) -> O3_Delegate(skf3_214(U)),205).
+  clause( || O3_Coffee_break(U) -> O3_Delegate(skf3_213(U)),206).
+  clause( || O3_Conference_restaurant(U) -> O3_Conference_city(skf3_212(U)),207).
+  clause( || O3_Delegate(U) -> O3_Invitation_letter(skf3_211(U)),208).
+  clause( || O3_Record_of_attendance(U) -> O3_Listener(skf3_210(U)),209).
+  clause( || O3_Audiovisual_equipment(U) -> O3_Listener(skf3_209(U)),210).
+  clause( || O3_NEWATOMIC4(U) -> O3_Conference_hotel(skf3_208(U)),211).
+  clause( || O3_Sponsor_company_house(U) -> O3_Sponsor(skf3_207(U)),212).
+  clause( || O3_Delegate(U) -> O3_Presenter_state(skf3_206(U)),213).
+  clause( || O3_Conference_state(U) -> O3_Delegate(skf3_205(U)),214).
+  clause( || O3_Lecturer(U) -> O3_Session(skf3_204(U)),215).
+  clause( || O3_Delegate(U) -> O3_Registration_fee(skf3_203(U)),216).
+  clause( || O3_Viza(U) -> O3_Delegate(skf3_202(U)),217).
+  clause( || O3_Author(U) -> O3_Brief_introduction_for_Session_chair(skf3_201(U)),218).
+  clause( || O3_Audiovisual_equipment(U) -> O3_Session_room(skf3_200(U)),219).
+  clause( || O3_Activity_before_conference(U) -> O3_Conference_days(skf3_199(U)),220).
+  clause( || O3_Author(U) -> O3_Transparency(skf3_198(U)),221).
+  clause( || O3_Sponzorship(U) -> O3_Sponsor(skf3_197(U)),222).
+  clause( || O3_Publication(U) -> O3_Final_manuscript(skf3_196(U)),223).
+  clause( || O3_Delegate(U) -> O3_Registration_form(skf3_195(U)),224).
+  clause( || O3_Conference_hotel(U) -> O3_Conference_city(skf3_194(U)),225).
+  clause( || O3_Sponsor_company_house(U) -> O3_Sponsor_state(skf3_193(U)),226).
+  clause( || O3_NEWATOMIC49(U) -> O3_NEWATOMIC48(skf3_192(U)),227).
+  clause( || O3_NEWATOMIC40(U) -> O3_NEWATOMIC39(skf3_191(U)),228).
+  clause( || O3_Technical_commitee(U) -> O3_Technic_activity(skf3_190(U)),229).
+  clause( || O3_Session_chair(U) -> O3_Introduction_of_speaker(skf3_189(U)),230).
+  clause( || O3_NEWATOMIC32(U) -> O3_NEWATOMIC31(skf3_188(U)),231).
+  clause( || O3_Conference_days(U) -> O3_Delegate(skf3_187(U)),232).
+  clause( || O3_Brief_introduction_for_Session_chair(U) -> O3_Author(skf3_186(U)),233).
+  clause( || O3_Initial_manuscipt(U) -> O3_Refusing_manuscript(skf3_185(U)),234).
+  clause( || O3_Sponsor(U) -> O3_Sponsor_city(skf3_184(U)),235).
+  clause( || O3_Conference_hotel(U) -> O3_Conference_state(skf3_183(U)),236).
+  clause( || O3_Worker_non_speaker(U) -> O3_Nonauthor_registration_fee(skf3_182(U)),237).
+  clause( || O3_Tutorial_speaker(U) -> O3_Conference_hall(skf3_181(U)),238).
+  clause( || O3_Conference_restaurant(U) -> O3_Conference_state(skf3_180(U)),239).
+  clause( || O3_Invitation_letter(U) -> O3_Delegate(skf3_179(U)),240).
+  clause( || O3_Lecturer(U) -> O3_Session_room(skf3_178(U)),241).
+  clause( || O3_Tutorial_speaker(U) -> O3_Plenary_lecture(skf3_177(U)),242).
+  clause( || O3_Presenter_house(U) -> O3_Presenter_state(skf3_176(U)),243).
+  clause( || O3_Reviewer(U) -> O3_Review(skf3_175(U)),244).
+  clause( || O3_Review(U) -> O3_Reviewer(skf3_174(U)),245).
+  clause( || O3_Hotel_registration_form(U) -> O3_Deadline_hotel_reservation(skf3_173(U)),246).
+  clause( || O3_Conference_building(U) -> O3_Conference_state(skf3_172(U)),247).
+  clause( || O3_Conference_hall(U) -> O3_Conference_building(skf3_171(U)),248).
+  clause( || O3_Trip_day(U) -> O3_Delegate(skf3_170(U)),249).
+  clause( || O3_Registration_form(U) -> O3_Registation_deadline(skf3_169(U)),250).
+  clause( || O3_Plenary_lecture(U) -> O3_Plenary_lecture_speaker(skf3_168(U)),251).
+  clause( || O3_Activity_after_conference(U) -> O3_Conference_days(skf3_167(U)),252).
+  clause( || O3_Student_non_speaker(U) -> O3_Student_registration_fee(skf3_166(U)),253).
+  clause( || O3_Tutorial(U) -> O3_Tutorial_speaker(skf3_165(U)),254).
+  clause( || O3_NEWATOMIC5(U) -> O3_Hotel_fee(skf3_164(U)),255).
+  clause( || O3_NEWATOMIC71(U) -> O3_Conference_days(skf3_163(U)),256).
+  clause( || O3_Form(U) -> O3_Delegate(skf3_162(U)),257).
+  clause( || O3_Presenter_house(U) -> O3_Delegate(skf3_161(U)),258).
+  clause( || O3_NEWATOMIC22(U) -> O3_NEWATOMIC21(skf3_160(U)),259).
+  clause( || O3_Fee_for_extra_trip(U) -> O3_Conference_Hiker(skf3_159(U)),260).
+  clause( || O3_Conference_activity(U) -> O3_Conference_state(skf3_158(U)),261).
+  clause( || O3_Author_information_form(U) -> O3_Deadline_for_notification_of_acceptance(skf3_157(U)),262).
+  clause( || O3_Presenter_university(U) -> O3_Presenter_city(skf3_156(U)),263).
+  clause( || O3_Renting(U) -> O3_Car(skf3_155(U)),264).
+  clause( || O3_Conference_airport(U) -> O3_Conference_city(skf3_154(U)),265).
+  clause( || O3_Full_day_tour(U) -> O3_Trip_day(skf3_153(U)),266).
+  clause( || O3_Memeber_registration_fee(U) -> O3_IASTED_member(skf3_152(U)),267).
+  clause( || O3_Transparency(U) -> O3_Speaker(skf3_151(U)),268).
+  clause( || O3_Conference_building(U) -> O3_Delegate(skf3_150(U)),269).
+  clause( || O3_Listener(U) -> O3_Record_of_attendance(skf3_149(U)),270).
+  clause( || O3_Record_of_attendance(U) -> O3_Session_room(skf3_148(U)),271).
+  clause( || O3_Conference_restaurant(U) -> O3_Delegate(skf3_147(U)),272).
+  clause( || O3_IASTED_member(U) -> O3_Memeber_registration_fee(skf3_146(U)),273).
+  clause( || O3_Audiovisual_equipment(U) -> O3_Speaker(skf3_145(U)),274).
+  clause( || O3_Lecture(U) -> O3_Listener(skf3_144(U)),275).
+  clause( || O3_Mailing_list(U) -> O3_Delegate(skf3_143(U)),276).
+  clause( || O3_Registration(U) -> O3_Delegate(skf3_142(U)),277).
+  clause( || O3_Author_cd_proceedings_included(U) -> O3_Cd_proceening(skf3_141(U)),278).
+  clause( || O3_Speaker(U) -> O3_Final_manuscript(skf3_140(U)),279).
+  clause( || O3_Social_program(U) -> O3_Delegate(skf3_139(U)),280).
+  clause( || O3_Session(U) -> O3_Session_room(skf3_138(U)),281).
+  clause( || O3_Departure_tax(U) -> O3_Departure(skf3_137(U)),282).
+  clause( || O3_Place(U) -> O3_Conference_state(skf3_136(U)),283).
+  clause( || O3_Registration_form(U) -> O3_Delegate(skf3_135(U)),284).
+  clause( || O3_Author_book_proceedings_included(U) -> O3_Book_proceeding(skf3_134(U)),285).
+  clause( || O3_Delegate(U) -> O3_Presenter_house(skf3_133(U)),286).
+  clause( || O3_NEWATOMIC83(U) -> O3_is_designed_for(U,skf3_265(U)),287).
+  clause( || O3_Brief_introduction_for_Session_chair(U) -> O3_is_given_to(U,skf3_264(U)),288).
+  clause( || O3_Conference_city(U) -> O3_is_visited_by(U,skf3_263(U)),289).
+  clause( || O3_Conference_activity(U) -> O3_is_held_in(U,skf3_262(U)),290).
+  clause( || O3_Registration_fee(U) -> O3_is_paid_for(U,skf3_261(U)),291).
+  clause( || -> O3_NEWATOMIC11(U) O3_Item(U),292).
+  clause( || -> O3_Place(U) O3_NEWATOMIC95(U),293).
+  clause( || O3_Conference_Hiker(U) -> O3_go_through(U,skf3_260(U)),294).
+  clause( || O3_NEWATOMIC61(U) -> O3_is_present_in(U,skf3_259(U)),295).
+  clause( || O3_Place(U) -> O3_is_situated_in(U,skf3_258(U)),296).
+  clause( || O3_Plenary_lecture_speaker(U) -> O3_speak_in(U,skf3_257(U)),297).
+  clause( || O3_Trip_city(U) -> O3_is_visited_by(U,skf3_256(U)),298).
+  clause( || -> O3_NEWATOMIC23(U) O3_Person(U),299).
+  clause( || -> O3_NEWATOMIC50(U) O3_Activity(U),300).
+  clause( || O3_Final_manuscript(U) -> O3_go_through(U,skf3_255(U)),301).
+  clause( || O3_NEWATOMIC31(U) -> O3_Payment_document(U) O3_Credit_card(U),302).
+  clause( || O3_Sponsor_city(U) -> O3_is_occupied_by(U,skf3_254(U)),303).
+  clause( || O3_Conference_hotel(U) -> O3_is_designed_for(U,skf3_253(U)),304).
+  clause( || O3_Author_attendee_cd_registration_fee(U) -> O3_is_paid_for(U,skf3_252(U)),305).
+  clause( || -> O3_Activity(U) O3_NEWATOMIC15(U),306).
+  clause( || O3_NEWATOMIC70(U) -> O3_is_present_in(U,skf3_251(U)),307).
+  clause( || O3_Presenter_house(U) -> O3_is_situated_in(U,skf3_250(U)),308).
+  clause( || O3_Presenter_state(U) -> O3_is_occupied_by(U,skf3_249(U)),309).
+  clause( || O3_Conference_airport(U) -> O3_is_situated_in(U,skf3_248(U)),310).
+  clause( || O3_Presenter_university(U) -> O3_is_situated_in(U,skf3_247(U)),311).
+  clause( || O3_City(U) -> O3_is_situated_in(U,skf3_246(U)),312).
+  clause( || O3_Transport_vehicle(U) -> O3_is_used_by(U,skf3_245(U)),313).
+  clause( || O3_Registration_fee(U) -> O3_is_paid_by(U,skf3_244(U)),314).
+  clause( || O3_NEWATOMIC84(U) -> O3_Activity(U) O3_Money(U),315).
+  clause( || -> O3_Item(U) O3_NEWATOMIC64(U),316).
+  clause( || O3_Sponsor(U) -> O3_give(U,skf3_243(U)),317).
+  clause( || O3_Hotel_fee(U) -> O3_is_paid_by(U,skf3_242(U)),318).
+  clause( || -> O3_NEWATOMIC72(U) O3_Person(U),319).
+  clause( || -> O3_Activity(U) O3_NEWATOMIC12(U),320).
+  clause( || O3_Author_attendee_book_registration_fee(U) -> O3_is_paid_for(U,skf3_241(U)),321).
+  clause( || O3_One_day_presenter(skf3_240(U)) O3_Dinner_banquet(U) -> ,322).
+  clause( || O3_Dinner_banquet(U) -> O3_is_designed_for(U,skf3_240(U)),323).
+  clause( || O3_Session_room(U) -> O3_is_equipped_by(U,skf3_239(U)),324).
+  clause( || O3_NEWATOMIC39(U) -> O3_Fee(U) O3_Tax(U),325).
+  clause( || O3_Sponsor_company_house(U) -> O3_is_situated_in(U,skf3_238(U)),326).
+  clause( || O3_NEWATOMIC16(U) -> O3_Time(U) O3_Place(U),327).
+  clause( || -> O3_NEWATOMIC26(U) O3_Sponsor(U),328).
+  clause( || O3_Full_day_tour(U) -> O3_is_designed_for(U,skf3_237(U)),329).
+  clause( || O3_NEWATOMIC78(U) -> O3_Activity(U) O3_Person(U),330).
+  clause( || O3_Session_room(U) -> O3_is_situated_in(U,skf3_236(U)),331).
+  clause( || O3_IASTED_non_member(U) -> O3_pay(U,skf3_235(U)),332).
+  clause( || O3_NEWATOMIC69(U) -> O3_go_through(U,skf3_234(U)),333).
+  clause( || O3_NEWATOMIC6(U) -> O3_Activity(U) O3_Item(U),334).
+  clause( || O3_Plenary_lecture_speaker(U) -> O3_give(U,skf3_233(U)),335).
+  clause( || -> O3_NEWATOMIC3(U) O3_Plenary_lecture(U),336).
+  clause( || -> O3_NEWATOMIC74(U) O3_Money(U),337).
+  clause( || O3_Conference_building(U) -> O3_is_situated_in(U,skf3_232(U)),338).
+  clause( || O3_Submission(U) -> O3_is_writen_by(U,skf3_231(U)),339).
+  clause( || O3_Hotel_room(U) -> O3_is_situated_in(U,skf3_230(U)),340).
+  clause( || -> O3_NEWATOMIC88(U) O3_Money(U),341).
+  clause( || O3_Full_day_tour(U) -> O3_is_held_in(U,skf3_229(U)),342).
+  clause( || O3_Technic_activity(U) -> O3_is_given_by(U,skf3_228(U)),343).
+  clause( || O3_Session_chair(U) -> O3_obtain(U,skf3_227(U)),344).
+  clause( || O3_Fee_for_extra_trip(U) -> O3_is_paid_for(U,skf3_226(U)),345).
+  clause( || -> O3_NEWATOMIC90(U) O3_Item(U),346).
+  clause( || O3_Nonmember_registration_fee(U) -> O3_is_designed_for(U,skf3_225(U)),347).
+  clause( || O3_Sponsor(U) -> O3_occupy(U,skf3_224(U)),348).
+  clause( || -> O3_Worker_non_speaker(U) O3_NEWATOMIC58(U),349).
+  clause( || -> O3_Item(U) O3_NEWATOMIC51(U),350).
+  clause( || O3_Delegate(U) -> O3_need(U,skf3_223(U)),351).
+  clause( || O3_Hotel_room(U) -> O3_is_designed_for(U,skf3_222(U)),352).
+  clause( || -> O3_NEWATOMIC20(U) O3_Item(U),353).
+  clause( || O3_Speaker(U) -> O3_give(U,skf3_221(U)),354).
+  clause( || O3_Presenter_city(U) -> O3_is_occupied_by(U,skf3_220(U)),355).
+  clause( || O3_Delegate(U) -> O3_occupy(U,skf3_219(U)),356).
+  clause( || O3_Nonauthor_registration_fee(U) -> O3_is_designed_for(U,skf3_218(U)),357).
+  clause( || -> O3_NEWATOMIC81(U) O3_Person(U),358).
+  clause( || O3_Coctail_reception(U) -> O3_is_designed_for(U,skf3_217(U)),359).
+  clause( || O3_Sponsor(U) -> O3_occupy(U,skf3_216(U)),360).
+  clause( || -> O3_Conference_Hiker(U) O3_NEWATOMIC59(U),361).
+  clause( || O3_Tip(U) -> O3_is_paid_in(U,skf3_215(U)),362).
+  clause( || -> O3_Reviewer(U) O3_NEWATOMIC42(U),363).
+  clause( || O3_Deadline(U) -> O3_is_designed_for(U,skf3_214(U)),364).
+  clause( || O3_Coffee_break(U) -> O3_is_designed_for(U,skf3_213(U)),365).
+  clause( || O3_Conference_restaurant(U) -> O3_is_situated_in(U,skf3_212(U)),366).
+  clause( || O3_Delegate(U) -> O3_obtain(U,skf3_211(U)),367).
+  clause( || O3_Record_of_attendance(U) -> O3_is_signed_by(U,skf3_210(U)),368).
+  clause( || -> O3_Sponzorship(U) O3_NEWATOMIC87(U),369).
+  clause( || O3_Audiovisual_equipment(U) -> O3_is_designed_for(U,skf3_209(U)),370).
+  clause( || O3_NEWATOMIC4(U) -> O3_occupy(U,skf3_208(U)),371).
+  clause( || O3_Sponsor_company_house(U) -> O3_is_occupied_by(U,skf3_207(U)),372).
+  clause( || O3_NEWATOMIC75(U) -> O3_Time(U) O3_Place(U),373).
+  clause( || O3_Delegate(U) -> O3_occupy(U,skf3_206(U)),374).
+  clause( || O3_Conference_state(U) -> O3_is_visited_by(U,skf3_205(U)),375).
+  clause( || O3_NEWATOMIC55(U) -> O3_Activity(U) O3_Item(U),376).
+  clause( || O3_Lecturer(U) -> O3_give(U,skf3_204(U)),377).
+  clause( || O3_Delegate(U) -> O3_pay(U,skf3_203(U)),378).
+  clause( || O3_Viza(U) -> O3_is_needed_for(U,skf3_202(U)),379).
+  clause( || O3_Author(U) -> O3_give(U,skf3_201(U)),380).
+  clause( || O3_Audiovisual_equipment(U) -> O3_is_situated_in(U,skf3_200(U)),381).
+  clause( || O3_Activity_before_conference(U) -> O3_is_held_before(U,skf3_199(U)),382).
+  clause( || -> O3_NEWATOMIC52(U) O3_Tutorial(U),383).
+  clause( || -> O3_Item(U) O3_NEWATOMIC46(U),384).
+  clause( || -> O3_Delegate(U) O3_NEWATOMIC38(U),385).
+  clause( || O3_Author(U) -> O3_prepare(U,skf3_198(U)),386).
+  clause( || O3_Sponzorship(U) -> O3_is_paid_by(U,skf3_197(U)),387).
+  clause( || O3_Publication(U) -> O3_is_made_from(U,skf3_196(U)),388).
+  clause( || O3_Delegate(U) -> O3_send(U,skf3_195(U)),389).
+  clause( || O3_Conference_hotel(U) -> O3_is_situated_in(U,skf3_194(U)),390).
+  clause( || O3_Sponsor_company_house(U) -> O3_is_situated_in(U,skf3_193(U)),391).
+  clause( || -> O3_Plenary_lecture_speaker(U) O3_NEWATOMIC18(U),392).
+  clause( || O3_NEWATOMIC49(U) -> O3_is_given_by(U,skf3_192(U)),393).
+  clause( || O3_NEWATOMIC40(U) -> O3_is_designed_for(U,skf3_191(U)),394).
+  clause( || O3_Technical_commitee(U) -> O3_go_through(U,skf3_190(U)),395).
+  clause( || O3_Session_chair(U) -> O3_go_through(U,skf3_189(U)),396).
+  clause( || -> O3_NEWATOMIC13(U) O3_Person(U),397).
+  clause( || O3_NEWATOMIC32(U) -> O3_is_paid_with(U,skf3_188(U)),398).
+  clause( || O3_Conference_days(U) -> O3_is_designed_for(U,skf3_187(U)),399).
+  clause( || -> O3_Tutorial_speaker(U) O3_NEWATOMIC19(U),400).
+  clause( || O3_Brief_introduction_for_Session_chair(U) -> O3_is_given_by(U,skf3_186(U)),401).
+  clause( || O3_NEWATOMIC43(U) -> O3_Place(U) O3_Item(U),402).
+  clause( || O3_Initial_manuscipt(U) -> O3_go_through(U,skf3_185(U)),403).
+  clause( || O3_Sponsor(U) -> O3_occupy(U,skf3_184(U)),404).
+  clause( || -> O3_NEWATOMIC93(U) O3_Person(U),405).
+  clause( || O3_Conference_hotel(U) -> O3_is_situated_in(U,skf3_183(U)),406).
+  clause( || O3_Worker_non_speaker(U) -> O3_pay(U,skf3_182(U)),407).
+  clause( || O3_Tutorial_speaker(U) -> O3_speak_in(U,skf3_181(U)),408).
+  clause( || O3_Conference_restaurant(U) -> O3_is_situated_in(U,skf3_180(U)),409).
+  clause( || -> O3_Activity(U) O3_NEWATOMIC14(U),410).
+  clause( || O3_Invitation_letter(U) -> O3_is_designed_for(U,skf3_179(U)),411).
+  clause( || O3_Lecturer(U) -> O3_speak_in(U,skf3_178(U)),412).
+  clause( || O3_Tutorial_speaker(U) -> O3_give(U,skf3_177(U)),413).
+  clause( || O3_Presenter_house(U) -> O3_is_situated_in(U,skf3_176(U)),414).
+  clause( || O3_Reviewer(U) -> O3_give(U,skf3_175(U)),415).
+  clause( || -> O3_NEWATOMIC47(U) O3_Person(U),416).
+  clause( || O3_Review(U) -> O3_is_writen_by(U,skf3_174(U)),417).
+  clause( || O3_NEWATOMIC21(U) -> O3_Student_lecturer(U) O3_Student_non_speaker(U),418).
+  clause( || O3_Hotel_registration_form(U) -> O3_is_sent_before(U,skf3_173(U)),419).
+  clause( || O3_Conference_building(U) -> O3_is_situated_in(U,skf3_172(U)),420).
+  clause( || -> O3_NEWATOMIC25(U) O3_Deadline(U),421).
+  clause( || -> O3_NEWATOMIC66(U) O3_Person(U),422).
+  clause( || -> O3_NEWATOMIC30(U) O3_Lecturer(U),423).
+  clause( || O3_Conference_hall(U) -> O3_is_situated_in(U,skf3_171(U)),424).
+  clause( || O3_Trip_day(U) -> O3_is_designed_for(U,skf3_170(U)),425).
+  clause( || -> O3_NEWATOMIC34(U) O3_Item(U),426).
+  clause( || -> O3_NEWATOMIC86(U) O3_Student_non_speaker(U),427).
+  clause( || O3_Registration_form(U) -> O3_is_sent_before(U,skf3_169(U)),428).
+  clause( || -> O3_NEWATOMIC8(U) O3_IASTED_member(U),429).
+  clause( || O3_Plenary_lecture(U) -> O3_is_given_by(U,skf3_168(U)),430).
+  clause( || O3_NEWATOMIC27(U) -> O3_Time(U) O3_Place(U),431).
+  clause( || O3_Activity_after_conference(U) -> O3_is_held_after(U,skf3_167(U)),432).
+  clause( || -> O3_NEWATOMIC65(U) O3_Person(U),433).
+  clause( || -> O3_NEWATOMIC73(U) O3_Money(U),434).
+  clause( || O3_Student_non_speaker(U) -> O3_pay(U,skf3_166(U)),435).
+  clause( || O3_Tutorial(U) -> O3_is_given_by(U,skf3_165(U)),436).
+  clause( || O3_NEWATOMIC5(U) -> O3_pay(U,skf3_164(U)),437).
+  clause( || O3_NEWATOMIC71(U) -> O3_is_present_in(U,skf3_163(U)),438).
+  clause( || O3_Form(U) -> O3_is_given_to(U,skf3_162(U)),439).
+  clause( || O3_NEWATOMIC48(U) -> O3_Author(U) O3_Session_chair(U),440).
+  clause( || O3_Presenter_house(U) -> O3_is_occupied_by(U,skf3_161(U)),441).
+  clause( || -> O3_NEWATOMIC92(U) O3_Item(U),442).
+  clause( || -> O3_IASTED_non_member(U) O3_NEWATOMIC33(U),443).
+  clause( || O3_NEWATOMIC22(U) -> O3_is_designed_for(U,skf3_160(U)),444).
+  clause( || -> O3_NEWATOMIC63(U) O3_Session_chair(U),445).
+  clause( || -> O3_NEWATOMIC29(U) O3_Money(U),446).
+  clause( || -> O3_NEWATOMIC2(U) O3_Item(U),447).
+  clause( || O3_Fee_for_extra_trip(U) -> O3_is_paid_by(U,skf3_159(U)),448).
+  clause( || O3_Conference_activity(U) -> O3_is_held_in(U,skf3_158(U)),449).
+  clause( || -> O3_NEWATOMIC9(U) O3_Money(U),450).
+  clause( || O3_Author_information_form(U) -> O3_is_sent_after(U,skf3_157(U)),451).
+  clause( || O3_Presenter_university(U) -> O3_is_situated_in(U,skf3_156(U)),452).
+  clause( || O3_Renting(U) -> O3_is_connected_with(U,skf3_155(U)),453).
+  clause( || O3_Conference_airport(U) -> O3_is_situated_in(U,skf3_154(U)),454).
+  clause( || -> O3_Item(U) O3_NEWATOMIC24(U),455).
+  clause( || O3_Full_day_tour(U) -> O3_is_held_in(U,skf3_153(U)),456).
+  clause( || O3_Memeber_registration_fee(U) -> O3_is_designed_for(U,skf3_152(U)),457).
+  clause( || O3_Transparency(U) -> O3_is_prepared_by(U,skf3_151(U)),458).
+  clause( || O3_NEWATOMIC60(U) -> O3_Conference_hall(U) O3_Session_room(U),459).
+  clause( || O3_Conference_building(U) -> O3_is_occupied_by(U,skf3_150(U)),460).
+  clause( || O3_Listener(U) -> O3_sign(U,skf3_149(U)),461).
+  clause( || O3_Record_of_attendance(U) -> O3_is_situated_in(U,skf3_148(U)),462).
+  clause( || O3_Conference_restaurant(U) -> O3_is_occupied_by(U,skf3_147(U)),463).
+  clause( || O3_IASTED_member(U) -> O3_pay(U,skf3_146(U)),464).
+  clause( || O3_Audiovisual_equipment(U) -> O3_is_used_by(U,skf3_145(U)),465).
+  clause( || O3_Lecture(U) -> O3_is_designed_for(U,skf3_144(U)),466).
+  clause( || -> O3_NEWATOMIC10(U) O3_Item(U),467).
+  clause( || -> O3_NEWATOMIC62(U) O3_Person(U),468).
+  clause( || O3_Mailing_list(U) -> O3_is_designed_for(U,skf3_143(U)),469).
+  clause( || O3_Registration(U) -> O3_is_designed_for(U,skf3_142(U)),470).
+  clause( || O3_Author_cd_proceedings_included(U) -> O3_obtain(U,skf3_141(U)),471).
+  clause( || -> O3_NEWATOMIC89(U) O3_Person(U),472).
+  clause( || O3_Speaker(U) -> O3_write(U,skf3_140(U)),473).
+  clause( || O3_Social_program(U) -> O3_is_designed_for(U,skf3_139(U)),474).
+  clause( || -> O3_NEWATOMIC57(U) O3_Person(U),475).
+  clause( || O3_Session(U) -> O3_is_held_in(U,skf3_138(U)),476).
+  clause( || -> O3_NEWATOMIC91(U) O3_Item(U),477).
+  clause( || O3_Departure_tax(U) -> O3_is_designed_for(U,skf3_137(U)),478).
+  clause( || O3_Place(U) -> O3_is_situated_in(U,skf3_136(U)),479).
+  clause( || O3_Registration_form(U) -> O3_is_sent_by(U,skf3_135(U)),480).
+  clause( || O3_Author_book_proceedings_included(U) -> O3_obtain(U,skf3_134(U)),481).
+  clause( || -> O3_NEWATOMIC80(U) O3_Person(U),482).
+  clause( || O3_Delegate(U) -> O3_occupy(U,skf3_133(U)),483).
+  clause( || O3_NEWATOMIC38(U) -> O3_NEWATOMIC36(U) O3_NEWATOMIC37(U) O3_NEWATOMIC35(U),484).
+  clause( || O3_is_sent_after(U,V) O3_NEWATOMIC10(U) -> ,485).
+  clause( || O3_is_present_in(U,V) O3_NEWATOMIC17(U) -> O3_NEWATOMIC16(V),486).
+  clause( || O3_is_used_for(U,V) O3_NEWATOMIC34(U) -> ,487).
+  clause( || O3_need(U,V) O3_NEWATOMIC65(U) -> ,488).
+  clause( || O3_is_held_in(U,V) O3_NEWATOMIC28(U) -> O3_NEWATOMIC27(V),489).
+  clause( || O3_is_paid_with(U,V) -> O3_Item(V),490).
+  clause( || O3_is_used_by(U,V) O3_NEWATOMIC2(U) -> ,491).
+  clause( || O3_is_present(U,V) O3_NEWATOMIC57(U) -> ,492).
+  clause( || O3_is_given_to(U,V) -> O3_Person(V),493).
+  clause( || O3_sign(U,V) -> O3_Item(V),494).
+  clause( || O3_obtain(U,V) O3_NEWATOMIC62(U) -> ,495).
+  clause( || O3_is_equipped_by(U,V) O3_NEWATOMIC95(U) -> ,496).
+  clause( || O3_is_visited_by(U,V) -> O3_Person(V),497).
+  clause( || O3_send(U,V) -> O3_Item(V),498).
+  clause( || O3_is_visited_by(U,V) O3_NEWATOMIC45(U) -> ,499).
+  clause( || O3_is_used_for(U,V) O3_NEWATOMIC85(U) -> O3_NEWATOMIC84(V),500).
+  clause( || O3_is_paid_in(U,V) -> O3_Building(V),501).
+  clause( || O3_pay(U,V) O3_NEWATOMIC93(U) -> ,502).
+  clause( || O3_go_through(U,V) O3_NEWATOMIC91(U) -> ,503).
+  clause( || -> O3_Activity(U) O3_Item(U) O3_NEWATOMIC68(U),504).
+  clause( || O3_obtain(U,V) -> O3_Item(V),505).
+  clause( || O3_is_made_from(U,V) O3_NEWATOMIC24(U) -> ,506).
+  clause( || O3_is_prepared_by(U,V) O3_NEWATOMIC92(U) -> ,507).
+  clause( || O3_is_situated_in(U,V) O3_NEWATOMIC77(U) -> ,508).
+  clause( || O3_is_occupied_by(U,V) O3_NEWATOMIC94(U) -> ,509).
+  clause( || O3_is_sent_after(U,V) -> O3_Time(V),510).
+  clause( || O3_occupy(U,V) O3_NEWATOMIC1(U) -> O3_NEWATOMIC0(V),511).
+  clause( || O3_is_needed_for(U,V) -> O3_Person(V),512).
+  clause( || O3_need(U,V) -> O3_Item(V),513).
+  clause( || O3_is_signed_by(U,V) -> O3_Person(V),514).
+  clause( || O3_is_equipped_by(U,V) -> O3_Item(V),515).
+  clause( || -> O3_Activity(U) O3_NEWATOMIC67(U) O3_Person(U),516).
+  clause( || O3_send(U,V) O3_NEWATOMIC72(U) -> ,517).
+  clause( || O3_is_held_after(U,V) -> O3_Time(V),518).
+  clause( || O3_is_situated_in(U,V) O3_NEWATOMIC54(U) -> O3_NEWATOMIC53(V),519).
+  clause( || O3_write(U,V) O3_NEWATOMIC47(U) -> ,520).
+  clause( || O3_is_sent_before(U,V) O3_NEWATOMIC64(U) -> ,521).
+  clause( || O3_speak_in(U,V) O3_NEWATOMIC76(U) -> O3_NEWATOMIC75(V),522).
+  clause( || O3_is_writen_by(U,V) O3_NEWATOMIC20(U) -> ,523).
+  clause( || O3_is_needed_for(U,V) O3_NEWATOMIC90(U) -> ,524).
+  clause( || O3_is_sent_by(U,V) O3_NEWATOMIC11(U) -> ,525).
+  clause( || O3_give(U,V) O3_NEWATOMIC89(U) -> ,526).
+  clause( || O3_is_paid_for(U,V) O3_NEWATOMIC7(U) -> O3_NEWATOMIC6(V),527).
+  clause( || O3_occupy(U,V) O3_NEWATOMIC13(U) -> ,528).
+  clause( || O3_is_held_before(U,V) -> O3_Time(V),529).
+  clause( || O3_is_sent_by(U,V) -> O3_Person(V),530).
+  clause( || O3_is_held_after(U,V) O3_NEWATOMIC15(U) -> ,531).
+  clause( || O3_NEWATOMIC82(U) -> O3_Sponzorship(U) O3_Fee(U) O3_Tax(U),532).
+  clause( || O3_give(U,V) O3_NEWATOMIC56(U) -> O3_NEWATOMIC55(V),533).
+  clause( || O3_has_amount_of(U,V) O3_NEWATOMIC29(U) -> ,534).
+  clause( || O3_pay(U,V) -> O3_Money(V),535).
+  clause( || O3_is_connected_with(U,V) O3_NEWATOMIC67(U) -> ,536).
+  clause( || O3_is_given_to(U,V) O3_NEWATOMIC46(U) -> ,537).
+  clause( || O3_is_paid_for(U,V) O3_NEWATOMIC88(U) -> ,538).
+  clause( || O3_is_designed_for(U,V) O3_NEWATOMIC41(U) -> ,539).
+  clause( || O3_is_paid_by(U,V) -> O3_Person(V),540).
+  clause( || O3_is_given_by(U,V) -> O3_Person(V),541).
+  clause( || O3_is_occupied_by(U,V) -> O3_Person(V),542).
+  clause( || O3_is_paid_by(U,V) O3_NEWATOMIC73(U) -> ,543).
+  clause( || O3_prepare(U,V) -> O3_Item(V),544).
+  clause( || O3_NEWATOMIC0(U) -> O3_State(U) O3_City(U) O3_Building(U),545).
+  clause( || O3_sign(U,V) O3_NEWATOMIC66(U) -> ,546).
+  clause( || O3_is_held_before(U,V) O3_NEWATOMIC50(U) -> ,547).
+  clause( || O3_is_given_by(U,V) O3_NEWATOMIC68(U) -> ,548).
+  clause( || O3_is_paid_with(U,V) O3_NEWATOMIC74(U) -> ,549).
+  clause( || O3_is_prepared_by(U,V) -> O3_Person(V),550).
+  clause( || O3_is_writen_by(U,V) -> O3_Person(V),551).
+  clause( || O3_is_present(U,V) -> O3_Time(V),552).
+  clause( || O3_is_paid_in(U,V) O3_NEWATOMIC9(U) -> ,553).
+  clause( || O3_is_made_from(U,V) -> O3_Item(V),554).
+  clause( || O3_is_signed_by(U,V) O3_NEWATOMIC51(U) -> ,555).
+  clause( || O3_is_dated_on(U,V) O3_NEWATOMIC12(U) -> ,556).
+  clause( || O3_is_used_by(U,V) -> O3_Person(V),557).
+  clause( || O3_is_held_in(U,V) O3_NEWATOMIC14(U) -> ,558).
+  clause( || O3_done_till(U,V) O3_NEWATOMIC25(U) -> ,559).
+  clause( || O3_write(U,V) -> O3_Item(V),560).
+  clause( || O3_go_through(U,V) -> O3_Activity(V),561).
+  clause( || O3_is_sent_before(U,V) -> O3_Time(V),562).
+  clause( || O3_prepare(U,V) O3_NEWATOMIC23(U) -> ,563).
+  clause( || O3_is_connected_with(U,V) O3_NEWATOMIC44(U) -> O3_NEWATOMIC43(V),564).
+  clause( || O3_is_designed_for(U,V) O3_NEWATOMIC79(U) -> O3_NEWATOMIC78(V),565).
+  clause( || O3_is_present_in(U,V) O3_NEWATOMIC81(U) -> ,566).
+  clause( || O3_speak_in(U,V) O3_NEWATOMIC80(U) -> ,567).
+  clause( || O3_Memeber_registration_fee(U) O3_pay(V,U) O3_NEWATOMIC8(V) -> ,568).
+  clause( || O3_Nonauthor_registration_fee(U) O3_pay(V,U) O3_NEWATOMIC58(V) -> ,569).
+  clause( || O3_Conference_building(U) O3_is_present_in(V,U) O3_NEWATOMIC36(V) -> ,570).
+  clause( || O3_Plenary_lecture(U) O3_give(V,U) O3_NEWATOMIC19(V) -> ,571).
+  clause( || O3_Tutorial(U) O3_give(V,U) O3_NEWATOMIC18(V) -> ,572).
+  clause( || O3_Nonmember_registration_fee(U) O3_pay(V,U) O3_NEWATOMIC33(V) -> ,573).
+  clause( || O3_Conference_days(U) O3_is_present_in(V,U) O3_NEWATOMIC35(V) -> ,574).
+  clause( || O3_Sponzorship(U) O3_give(V,U) O3_NEWATOMIC26(V) -> ,575).
+  clause( || O3_Full_day_tour(U) O3_go_through(V,U) O3_NEWATOMIC59(V) -> ,576).
+  clause( || O3_Tutorial_speaker(U) O3_is_given_by(V,U) O3_NEWATOMIC52(V) -> ,577).
+  clause( || O3_Registration(U) O3_go_through(V,U) O3_NEWATOMIC37(V) -> ,578).
+  clause( || O3_Plenary_lecture_speaker(U) O3_is_given_by(V,U) O3_NEWATOMIC3(V) -> ,579).
+  clause( || O3_Session(U) O3_give(V,U) O3_NEWATOMIC30(V) -> ,580).
+  clause( || O3_Introduction_of_speaker(U) O3_go_through(V,U) O3_NEWATOMIC63(V) -> ,581).
+  clause( || O3_Review(U) O3_give(V,U) O3_NEWATOMIC42(V) -> ,582).
+  clause( || O3_Student_registration_fee(U) O3_pay(V,U) O3_NEWATOMIC86(V) -> ,583).
+  clause( || O3_Sponsor(U) O3_is_paid_by(V,U) O3_NEWATOMIC87(V) -> ,584).
+  clause( || -> O3_Time(U) O3_Activity(U) O3_NEWATOMIC41(U) O3_Money(U),585).
+  clause( || -> O3_State(U) O3_City(U) O3_NEWATOMIC45(U) O3_Building(U),586).
+  clause( || -> O3_City(U) O3_NEWATOMIC77(U) O3_Place(U) O3_Building(U),587).
+  clause( || -> O3_State(U) O3_City(U) O3_NEWATOMIC94(U) O3_Building(U),588).
+  clause( || O3_NEWATOMIC53(U) -> O3_State(U) O3_City(U) O3_Place(U) O3_Building(U),589).
+  clause( || O3_Person(U) -> O0_Person(U),1).
+  clause( || O0_Review(U) -> O3_Review(U),2).
+  clause( || O0_Author(U) -> O3_Author(U),3).
+  clause( || O3_Reviewer(U) -> O0_Reviewer(U),4).
+  clause( || O0_Person(U) -> O3_Person(U),5).
+  clause( || O0_Reviewer(U) -> O3_Reviewer(U),6).
+  clause( || O3_Author(U) -> O0_Author(U),7).
+  clause( || O3_Review(U) -> O0_Review(U),8).
+  clause( || O1_Tutorial(U) -> O3_Tutorial(U),1).
+  clause( || O1_Reception(U) -> O3_Coctail_reception(U),2).
+  clause( || O1_Country(U) -> O3_State(U),3).
+  clause( || O1_Banquet(U) -> O3_Dinner_banquet(U),4).
+  clause( || O1_Administrative_event(U) -> O3_Activity_before_conference(U),5).
+  clause( || O1_Author(U) -> O3_Author(U),6).
+  clause( || O1_City(U) -> O3_City(U),7).
+  clause( || O3_Activity(U) -> O1_Event(U),8).
+  clause( || O3_Person(U) -> O1_Person(U),9).
+  clause( || O3_State(U) -> O1_Country(U),10).
+  clause( || O1_Person(U) -> O3_Person(U),11).
+  clause( || O1_Event(U) -> O3_Activity(U),12).
+  clause( || O3_Coctail_reception(U) -> O1_Reception(U),13).
+  clause( || O3_Tutorial(U) -> O1_Tutorial(U),14).
+  clause( || O3_City(U) -> O1_City(U),15).
+  clause( || O3_Dinner_banquet(U) -> O1_Banquet(U),16).
+  clause( || O3_Activity_before_conference(U) -> O1_Administrative_event(U),17).
+  clause( || O3_Author(U) -> O1_Author(U),18).
+  clause( || O3_Review(U) -> O2_Review(U),1).
+  clause( || O3_Activity(U) -> O2_Event(U),2).
+  clause( || O3_Document(U) -> O2_Document(U),3).
+  clause( || O2_Location(U) -> O3_Place(U),4).
+  clause( || O3_Dinner_banquet(U) -> O2_Conference_Banquet(U),5).
+  clause( || O3_Person(U) -> O2_Person(U),6).
+  clause( || O3_Tutorial(U) -> O2_Tutorial(U),7).
+  clause( || O2_Session(U) -> O3_Session(U),8).
+  clause( || O2_Paper_Author(U) -> O3_Author(U),9).
+  clause( || O3_Session_chair(U) -> O2_Session_Chair(U),10).
+  clause( || O3_Session(U) -> O2_Session(U),11).
+  clause( || O2_Person(U) -> O3_Person(U),12).
+  clause( || O2_Document(U) -> O3_Document(U),13).
+  clause( || O2_Session_Chair(U) -> O3_Session_chair(U),14).
+  clause( || O2_Tutorial(U) -> O3_Tutorial(U),15).
+  clause( || O2_Event(U) -> O3_Activity(U),16).
+  clause( || O3_Author(U) -> O2_Paper_Author(U),17).
+  clause( || O2_Review(U) -> O3_Review(U),18).
+  clause( || O2_Conference_Banquet(U) -> O3_Dinner_banquet(U),19).
+  clause( || O3_Place(U) -> O2_Location(U),20).
+end_of_list. 

@@ -1,0 +1,230 @@
+list_of_clauses(axioms, cnf).
+  clause( || O0_Reviewer(U) -> O0_ConferenceMember(U),1).
+  clause( || O0_Review(U) -> O0_Document(U),2).
+  clause( || O0_ProgramCommitteeMember(U) -> O0_Person(U),3).
+  clause( || O0_Meta_Reviewer(U) -> O0_Reviewer(U),4).
+  clause( || O0_Administrator(U) -> O0_User(U),5).
+  clause( || O0_Author(U) -> O0_ConferenceMember(U),6).
+  clause( || O0_Acceptance(U) -> O0_Decision(U),7).
+  clause( || O0_AuthorNotReviewer(U) -> O0_Author(U),8).
+  clause( || O0_Rejection(U) -> O0_Decision(U),9).
+  clause( || O0_ProgramCommitteeChair(U) -> O0_ProgramCommitteeMember(U),10).
+  clause( || O0_ConferenceMember(U) -> O0_Person(U),11).
+  clause( || O0_Co_author(U) -> O0_Author(U),12).
+  clause( || O0_Paper(U) -> O0_Document(U),13).
+  clause( || O0_PaperAbstract(U) -> O0_Paper(U),14).
+  clause( || O0_ExternalReviewer(U) -> O0_Person(U),15).
+  clause( || O0_Reviewer(U) -> O0_User(U),16).
+  clause( || O0_Meta_Review(U) -> O0_Review(U),17).
+  clause( || O0_User(U) -> O0_Person(U),18).
+  clause( || O0_Chairman(U) -> O0_Person(U),20).
+  clause( || O0_ConferenceChair(U) -> O0_ConferenceMember(U),21).
+  clause( || O0_AssociatedChair(U) -> O0_ConferenceMember(U),22).
+  clause( || O0_ProgramCommitteeMember(U) -> O0_ConferenceMember(U),23).
+  clause( || O0_Author(U) -> O0_User(U),24).
+  clause( || O0_PaperFullVersion(U) -> O0_Paper(U),25).
+  clause( || O0_Preference(U) O0_Person(U) -> ,26).
+  clause( || O0_Acceptance(U) O0_Rejection(U) -> ,27).
+  clause( || O0_Conference(U) O0_Document(U) -> ,29).
+  clause( || O0_AssociatedChair(U) O0_NEWATOMIC54(U) -> ,30).
+  clause( || O0_ConferenceChair(U) O0_NEWATOMIC54(U) -> ,31).
+  clause( || O0_ProgramCommitteeChair(U) O0_NEWATOMIC54(U) -> ,32).
+  clause( || O0_Conference(U) O0_ProgramCommittee(U) -> ,33).
+  clause( || O0_ProgramCommitteeMember(U) O0_AuthorNotReviewer(U) -> ,34).
+  clause( || O0_Conference(U) O0_Person(U) -> ,35).
+  clause( || O0_Conference(U) O0_Preference(U) -> ,36).
+  clause( || O0_Decision(U) O0_Conference(U) -> ,37).
+  clause( || O0_Preference(U) O0_Bid(U) -> ,38).
+  clause( || O0_ConferenceChair(U) O0_AssociatedChair(U) -> ,39).
+  clause( || O0_Decision(U) O0_ProgramCommittee(U) -> ,40).
+  clause( || O0_Decision(U) O0_Person(U) -> ,41).
+  clause( || O0_Document(U) O0_Person(U) -> ,43).
+  clause( || O0_Document(U) O0_ProgramCommittee(U) -> ,44).
+  clause( || O0_Person(U) O0_Bid(U) -> ,45).
+  clause( || O0_Reviewer(U) O0_AuthorNotReviewer(U) -> ,46).
+  clause( || O0_Person(U) O0_ProgramCommittee(U) -> ,47).
+  clause( || O0_Decision(U) O0_Bid(U) -> ,48).
+  clause( || O0_Paper(U) O0_Review(U) -> ,50).
+  clause( || O0_Reviewer(U) O0_ExternalReviewer(U) -> ,52).
+  clause( || O0_Decision(U) O0_Document(U) -> ,53).
+  clause( || O0_ProgramCommittee(U) O0_Bid(U) -> ,54).
+  clause( || O0_Preference(U) O0_Document(U) -> ,55).
+  clause( || O0_Document(U) O0_Bid(U) -> ,56).
+  clause( || O0_Conference(U) O0_Bid(U) -> ,57).
+  clause( || O0_Preference(U) O0_ProgramCommittee(U) -> ,58).
+  clause( || O0_Decision(U) O0_Preference(U) -> ,60).
+  clause( || -> O0_Administrator(U) O0_NEWATOMIC2(U),61).
+  clause( || -> O0_Reviewer(U) O0_NEWATOMIC39(U),62).
+  clause( || -> O0_NEWATOMIC6(U) O0_Conference(U),63).
+  clause( || -> O0_Administrator(U) O0_NEWATOMIC27(U),64).
+  clause( || -> O0_ProgramCommitteeMember(U) O0_NEWATOMIC5(U),65).
+  clause( || O0_Conference(U) -> O0_date(U,skf0_9(U)),66).
+  clause( || -> O0_Paper(U) O0_NEWATOMIC43(U),67).
+  clause( || -> O0_NEWATOMIC44(U) O0_Conference(U),68).
+  clause( || -> O0_Administrator(U) O0_NEWATOMIC24(U),69).
+  clause( || -> O0_Administrator(U) O0_NEWATOMIC33(U),70).
+  clause( || -> O0_Administrator(U) O0_NEWATOMIC47(U),71).
+  clause( || -> O0_Administrator(U) O0_NEWATOMIC28(U),72).
+  clause( || -> O0_NEWATOMIC1(U) O0_Author(U),73).
+  clause( || -> O0_Conference(U) O0_NEWATOMIC9(U),74).
+  clause( || -> O0_NEWATOMIC45(U) O0_ExternalReviewer(U),75).
+  clause( || -> O0_Conference(U) O0_NEWATOMIC38(U),76).
+  clause( || -> O0_Conference(U) O0_NEWATOMIC42(U),77).
+  clause( || -> O0_Administrator(U) O0_NEWATOMIC36(U),78).
+  clause( || -> O0_Paper(U) O0_NEWATOMIC57(U),79).
+  clause( || -> O0_Reviewer(U) O0_NEWATOMIC50(U),80).
+  clause( || -> O0_NEWATOMIC30(U) O0_ProgramCommitteeMember(U),81).
+  clause( || -> O0_NEWATOMIC0(U) O0_Paper(U),82).
+  clause( || -> O0_Conference(U) O0_NEWATOMIC37(U),83).
+  clause( || -> O0_Conference(U) O0_NEWATOMIC4(U),84).
+  clause( || -> O0_Reviewer(U) O0_NEWATOMIC23(U),85).
+  clause( || -> O0_Administrator(U) O0_NEWATOMIC51(U),86).
+  clause( || -> O0_Paper(U) O0_NEWATOMIC49(U),87).
+  clause( || -> O0_NEWATOMIC56(U) O0_Author(U),88).
+  clause( || -> O0_Reviewer(U) O0_NEWATOMIC29(U),89).
+  clause( || -> O0_Paper(U) O0_NEWATOMIC13(U),90).
+  clause( || -> O0_Paper(U) O0_NEWATOMIC14(U),91).
+  clause( || -> O0_Conference(U) O0_NEWATOMIC55(U),92).
+  clause( || -> O0_Conference(U) O0_NEWATOMIC19(U),93).
+  clause( || -> O0_NEWATOMIC35(U) O0_ProgramCommittee(U),94).
+  clause( || -> O0_NEWATOMIC46(U) O0_Person(U),95).
+  clause( || -> O0_Reviewer(U) O0_NEWATOMIC32(U),96).
+  clause( || O0_Paper(U) -> O0_readByReviewer(U,skf0_8(U)),97).
+  clause( || -> O0_NEWATOMIC7(U) O0_Bid(U),98).
+  clause( || -> O0_Administrator(U) O0_NEWATOMIC8(U),99).
+  clause( || -> O0_NEWATOMIC12(U) O0_Paper(U),100).
+  clause( || -> O0_Review(U) O0_NEWATOMIC20(U),101).
+  clause( || -> O0_NEWATOMIC26(U) O0_Paper(U),102).
+  clause( || -> O0_Paper(U) O0_NEWATOMIC59(U),103).
+  clause( || -> O0_Conference(U) O0_NEWATOMIC15(U),104).
+  clause( || -> O0_NEWATOMIC21(U) O0_ProgramCommitteeMember(U),105).
+  clause( || -> O0_Conference(U) O0_NEWATOMIC3(U),106).
+  clause( || -> O0_NEWATOMIC40(U) O0_Paper(U),107).
+  clause( || O0_Conference(U) -> O0_name(U,skf0_7(U)),108).
+  clause( || O0_Conference(U) -> O0_reviewsPerPaper(U,skf0_6(U)),109).
+  clause( || -> O0_NEWATOMIC34(U) O0_ConferenceMember(U),110).
+  clause( || -> O0_NEWATOMIC54(U) O0_Chairman(U),111).
+  clause( || -> O0_NEWATOMIC58(U) O0_ProgramCommitteeChair(U),112).
+  clause( || -> O0_Conference(U) O0_NEWATOMIC10(U),113).
+  clause( || -> O0_Administrator(U) O0_NEWATOMIC22(U),114).
+  clause( || -> O0_NEWATOMIC52(U) O0_Paper(U),115).
+  clause( || -> O0_Paper(U) O0_NEWATOMIC41(U),116).
+  clause( || -> O0_Administrator(U) O0_NEWATOMIC25(U),117).
+  clause( || -> O0_Co_author(U) O0_NEWATOMIC53(U),118).
+  clause( || -> O0_Administrator(U) O0_NEWATOMIC31(U),119).
+  clause( || -> O0_Conference(U) O0_NEWATOMIC16(U),120).
+  clause( || -> O0_NEWATOMIC17(U) O0_Person(U),121).
+  clause( || -> O0_Reviewer(U) O0_NEWATOMIC48(U),122).
+  clause( || O0_ExternalReviewer(U) -> O0_assignedByReviewer(U,skf0_5(U)),123).
+  clause( || O0_date(U,V) O0_NEWATOMIC38(U) -> ,124).
+  clause( || O0_rejectPaper(U,V) -> O0_Paper(V),125).
+  clause( || O0_title(U,V) O0_NEWATOMIC40(U) -> ,126).
+  clause( || O0_reviewsPerPaper(U,V) O0_NEWATOMIC3(U) -> ,127).
+  clause( || O0_submitPaper(U,V) O0_NEWATOMIC56(U) -> ,128).
+  clause( || O0_paperAssignmentFinalizedBy(U,V) O0_NEWATOMIC44(U) -> ,129).
+  clause( || O0_assignReviewer(U,V) -> O0_Reviewer(V),130).
+  clause( || O0_enterConferenceDetails(U,V) -> O0_Conference(V),131).
+  clause( || O0_logoURL(U,V) O0_NEWATOMIC4(U) -> ,132).
+  clause( || O0_hasBid(U,V) O0_NEWATOMIC59(U) -> ,133).
+  clause( || O0_assignExternalReviewer(U,V) O0_NEWATOMIC50(U) -> ,134).
+  clause( || O0_name(U,V) O0_NEWATOMIC11(U) -> ,135).
+  clause( || O0_memberOfProgramCommittee(U,V) O0_NEWATOMIC30(U) -> ,136).
+  clause( || O0_addProgramCommitteeMember(U,V) O0_NEWATOMIC47(U) -> ,137).
+  clause( || O0_hasAuthor(U,V) -> O0_Author(V),138).
+  clause( || O0_assignedByReviewer(U,V) -> O0_Reviewer(V),139).
+  clause( || O0_Chairman(U) -> O0_ConferenceChair(U) O0_AssociatedChair(U) O0_ProgramCommitteeChair(U),140).
+  clause( || O0_adjustedBy(U,V) O0_NEWATOMIC7(U) -> ,141).
+  clause( || O0_maxPapers(U,V) O0_NEWATOMIC5(U) -> ,142).
+  clause( || O0_submitPaper(U,V) -> O0_Paper(V),143).
+  clause( || O0_email(U,V) O0_NEWATOMIC46(U) -> ,144).
+  clause( || O0_reviewCriteriaEnteredBy(U,V) -> O0_Administrator(V),145).
+  clause( || O0_detailsEnteredBy(U,V) O0_NEWATOMIC16(U) -> ,146).
+  clause( || -> O0_Conference(U) O0_NEWATOMIC11(U) O0_Person(U),147).
+  clause( || O0_hasConflictOfInterest(U,V) O0_NEWATOMIC17(U) -> ,148).
+  clause( || O0_memberOfConference(U,V) -> O0_Conference(V),149).
+  clause( || O0_startReviewerBidding(U,V) -> O0_Conference(V),150).
+  clause( || O0_readByMeta_Reviewer(U,V) O0_NEWATOMIC14(U) -> ,151).
+  clause( || O0_acceptPaper(U,V) -> O0_Paper(V),152).
+  clause( || O0_co_writePaper(U,V) O0_NEWATOMIC53(U) -> ,153).
+  clause( || O0_paperAssignmentToolsRunBy(U,V) -> O0_Administrator(V),154).
+  clause( || O0_reviewerBiddingStartedBy(U,V) -> O0_Administrator(V),155).
+  clause( || O0_assignedTo(U,V) -> O0_Reviewer(V),156).
+  clause( || O0_paperAssignmentFinalizedBy(U,V) -> O0_Administrator(V),157).
+  clause( || O0_hasCo_author(U,V) -> O0_Co_author(V),158).
+  clause( || O0_hasCo_author(U,V) O0_NEWATOMIC49(U) -> ,159).
+  clause( || O0_rejectedBy(U,V) -> O0_Administrator(V),160).
+  clause( || O0_assignedTo(U,V) O0_NEWATOMIC43(U) -> ,161).
+  clause( || O0_enterConferenceDetails(U,V) O0_NEWATOMIC31(U) -> ,162).
+  clause( || O0_virtualMeetingEnabledBy(U,V) -> O0_Administrator(V),163).
+  clause( || O0_setMaxPapers(U,V) O0_NEWATOMIC33(U) -> ,164).
+  clause( || O0_enableVirtualMeeting(U,V) -> O0_Conference(V),165).
+  clause( || O0_finalizePaperAssignment(U,V) O0_NEWATOMIC8(U) -> ,166).
+  clause( || O0_writeReview(U,V) O0_NEWATOMIC39(U) -> ,167).
+  clause( || O0_markConflictOfInterest(U,V) O0_NEWATOMIC18(U) -> ,168).
+  clause( || O0_readByReviewer(U,V) O0_NEWATOMIC13(U) -> ,169).
+  clause( || O0_acceptPaper(U,V) O0_NEWATOMIC24(U) -> ,170).
+  clause( || O0_rejectedBy(U,V) O0_NEWATOMIC52(U) -> ,171).
+  clause( || O0_writeReview(U,V) -> O0_Review(V),172).
+  clause( || O0_paperID(U,V) O0_NEWATOMIC0(U) -> ,173).
+  clause( || O0_adjustedBy(U,V) -> O0_Reviewer(V),174).
+  clause( || O0_readPaper(U,V) O0_NEWATOMIC32(U) -> ,175).
+  clause( || O0_hasConflictOfInterest(U,V) -> O0_Document(V),176).
+  clause( || O0_assignedByReviewer(U,V) O0_NEWATOMIC45(U) -> ,177).
+  clause( || O0_virtualMeetingEnabledBy(U,V) O0_NEWATOMIC42(U) -> ,178).
+  clause( || O0_reviewCriteriaEnteredBy(U,V) O0_NEWATOMIC19(U) -> ,179).
+  clause( || O0_reviewerBiddingStartedBy(U,V) O0_NEWATOMIC10(U) -> ,180).
+  clause( || O0_adjustBid(U,V) O0_NEWATOMIC29(U) -> ,181).
+  clause( || O0_memberOfProgramCommittee(U,V) -> O0_ProgramCommittee(V),182).
+  clause( || O0_hasDecision(U,V) O0_NEWATOMIC57(U) -> ,183).
+  clause( || O0_rejectPaper(U,V) O0_NEWATOMIC28(U) -> ,184).
+  clause( || O0_hardcopyMailingManifestsPrintedBy(U,V) -> O0_Administrator(V),185).
+  clause( || O0_acceptedBy(U,V) O0_NEWATOMIC26(U) -> ,186).
+  clause( || O0_enterReviewCriteria(U,V) -> O0_Conference(V),187).
+  clause( || O0_enterReviewCriteria(U,V) O0_NEWATOMIC51(U) -> ,188).
+  clause( || O0_endReview(U,V) O0_NEWATOMIC58(U) -> ,189).
+  clause( || O0_detailsEnteredBy(U,V) -> O0_Administrator(V),190).
+  clause( || O0_readByMeta_Reviewer(U,V) -> O0_Meta_Reviewer(V),191).
+  clause( || O0_writtenBy(U,V) O0_NEWATOMIC20(U) -> ,192).
+  clause( || O0_readByReviewer(U,V) -> O0_Reviewer(V),193).
+  clause( || O0_writtenBy(U,V) -> O0_Reviewer(V),194).
+  clause( || O0_hardcopyMailingManifestsPrintedBy(U,V) O0_NEWATOMIC55(U) -> ,195).
+  clause( || O0_co_writePaper(U,V) -> O0_Paper(V),196).
+  clause( || O0_endReview(U,V) -> O0_Review(V),197).
+  clause( || O0_markConflictOfInterest(U,V) -> O0_Paper(V),198).
+  clause( || O0_enableVirtualMeeting(U,V) O0_NEWATOMIC27(U) -> ,199).
+  clause( || O0_acceptsHardcopySubmissions(U,V) O0_NEWATOMIC6(U) -> ,200).
+  clause( || O0_addedBy(U,V) O0_NEWATOMIC21(U) -> ,201).
+  clause( || O0_paperAssignmentToolsRunBy(U,V) O0_NEWATOMIC9(U) -> ,202).
+  clause( || O0_hasSubjectArea(U,V) -> O0_SubjectArea(V),203).
+  clause( || O0_hasBeenAssigned(U,V) O0_NEWATOMIC23(U) -> ,204).
+  clause( || O0_hasConferenceMember(U,V) -> O0_ConferenceMember(V),205).
+  clause( || O0_printHardcopyMailingManifests(U,V) -> O0_Conference(V),207).
+  clause( || O0_hasBid(U,V) -> O0_Bid(V),208).
+  clause( || O0_hasProgramCommitteeMember(U,V) -> O0_ProgramCommitteeMember(V),209).
+  clause( || O0_hasProgramCommitteeMember(U,V) O0_NEWATOMIC35(U) -> ,210).
+  clause( || O0_writePaper(U,V) -> O0_Paper(V),211).
+  clause( || O0_startReviewerBidding(U,V) O0_NEWATOMIC25(U) -> ,212).
+  clause( || O0_assignedByAdministrator(U,V) -> O0_Administrator(V),213).
+  clause( || O0_memberOfConference(U,V) O0_NEWATOMIC34(U) -> ,214).
+  clause( || O0_writePaper(U,V) O0_NEWATOMIC1(U) -> ,215).
+  clause( || O0_hasSubjectArea(U,V) O0_NEWATOMIC41(U) -> ,216).
+  clause( || O0_setMaxPapers(U,V) -> O0_ProgramCommitteeMember(V),217).
+  clause( || O0_runPaperAssignmentTools(U,V) O0_NEWATOMIC2(U) -> ,218).
+  clause( || O0_addedBy(U,V) -> O0_Administrator(V),220).
+  clause( || O0_assignReviewer(U,V) O0_NEWATOMIC22(U) -> ,221).
+  clause( || O0_siteURL(U,V) O0_NEWATOMIC15(U) -> ,222).
+  clause( || O0_addProgramCommitteeMember(U,V) -> O0_ProgramCommitteeMember(V),223).
+  clause( || O0_hasDecision(U,V) -> O0_Decision(V),224).
+  clause( || O0_readPaper(U,V) -> O0_Paper(V),225).
+  clause( || O0_hasBeenAssigned(U,V) -> O0_Paper(V),226).
+  clause( || O0_finalizePaperAssignment(U,V) -> O0_Conference(V),227).
+  clause( || O0_acceptedBy(U,V) -> O0_Administrator(V),228).
+  clause( || O0_hasConferenceMember(U,V) O0_NEWATOMIC37(U) -> ,229).
+  clause( || O0_hasAuthor(U,V) O0_NEWATOMIC12(U) -> ,230).
+  clause( || O0_adjustBid(U,V) -> O0_Bid(V),231).
+  clause( || O0_assignedByAdministrator(U,V) O0_NEWATOMIC48(U) -> ,232).
+  clause( || O0_runPaperAssignmentTools(U,V) -> O0_Conference(V),233).
+  clause( || O0_printHardcopyMailingManifests(U,V) O0_NEWATOMIC36(U) -> ,234).
+  clause( || O0_assignExternalReviewer(U,V) -> O0_ExternalReviewer(V),235).
+  clause( || -> O0_Reviewer(U) O0_NEWATOMIC18(U) O0_Author(U) O0_Chairman(U),236).
+end_of_list. 

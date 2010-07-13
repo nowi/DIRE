@@ -1,0 +1,239 @@
+list_of_clauses(axioms, cnf).
+  clause( || O4_Organizing_Committee_member(U) -> O4_Organizator(U),1).
+  clause( || O4_General_Chair(U) -> O4_Organizator(U),2).
+  clause( || O4_Registration_SIGKDD_Member(U) -> O4_Registration_fee(U),3).
+  clause( || O4_Webmaster(U) -> O4_Organizator(U),4).
+  clause( || O4_Listener(U) -> O4_Person(U),5).
+  clause( || O4_Main_office(U) -> O4_Place(U),6).
+  clause( || O4_Best_Applications_Paper_Award(U) -> O4_Award(U),7).
+  clause( || O4_Program_Committee(U) -> O4_Committee(U),8).
+  clause( || O4_Best_Student_Paper_Award(U) -> O4_Award(U),9).
+  clause( || O4_Author(U) -> O4_Speaker(U),10).
+  clause( || O4_Organizing_Committee(U) -> O4_Committee(U),11).
+  clause( || O4_Deadline_Paper_Submission(U) -> O4_Deadline(U),12).
+  clause( || O4_Sponzor_fee(U) -> O4_Fee(U),13).
+  clause( || O4_Hotel(U) -> O4_Place(U),14).
+  clause( || O4_Registration_Student(U) -> O4_Registration_fee(U),16).
+  clause( || O4_Program_Committee_member(U) -> O4_Organizator(U),17).
+  clause( || O4_Conference_hall(U) -> O4_Place(U),18).
+  clause( || O4_Registration_fee(U) -> O4_Fee(U),19).
+  clause( || O4_Best_Student_Paper_Supporter(U) -> O4_Sponzor(U),20).
+  clause( || O4_Author_of_paper(U) -> O4_Author(U),21).
+  clause( || O4_Best_Paper_Awards_Committee(U) -> O4_Committee(U),22).
+  clause( || O4_Invited_Speaker(U) -> O4_Speaker(U),23).
+  clause( || O4_Gold_Supporter(U) -> O4_Sponzor(U),24).
+  clause( || O4_Bronze_Supporter(U) -> O4_Sponzor(U),25).
+  clause( || O4_Review(U) -> O4_Document(U),26).
+  clause( || O4_Exhibitor(U) -> O4_Sponzor(U),28).
+  clause( || O4_Best_Research_Paper_Award(U) -> O4_Award(U),29).
+  clause( || O4_Paper(U) -> O4_Document(U),30).
+  clause( || O4_Author_of_paper_student(U) -> O4_Author(U),31).
+  clause( || O4_Platinum_Supporter(U) -> O4_Sponzor(U),32).
+  clause( || O4_Silver_Supporter(U) -> O4_Sponzor(U),33).
+  clause( || O4_Speaker(U) -> O4_Person(U),34).
+  clause( || O4_Deadline_Abstract_Submission(U) -> O4_Deadline(U),35).
+  clause( || O4_Registration_SIGMOD_Member(U) -> O4_Registration_fee(U),36).
+  clause( || O4_Registration_Non_Member(U) -> O4_Registration_fee(U),37).
+  clause( || O4_Abstract(U) -> O4_Document(U),38).
+  clause( || O4_Program_Chair(U) -> O4_Organizator(U),39).
+  clause( || O4_Deadline_Author_notification(U) -> O4_Deadline(U),40).
+  clause( || O4_Organizator(U) -> O4_Person(U),41).
+  clause( || O4_Author(U) -> O4_Paper(skf4_29(U)),42).
+  clause( || O4_Author_of_paper_student(U) -> O4_Best_Student_Paper_Award(skf4_28(U)),43).
+  clause( || O4_Author_of_paper(U) -> O4_Best_Research_Paper_Award(skf4_27(U)),44).
+  clause( || O4_ACM_SIGKDD(U) -> O4_Sponzor(skf4_26(U)),45).
+  clause( || O4_Abstract(U) -> O4_Deadline_Abstract_Submission(skf4_25(U)),46).
+  clause( || O4_ACM_SIGKDD(U) -> O4_Deadline(skf4_24(U)),47).
+  clause( || O4_Paper(U) -> O4_Deadline_Paper_Submission(skf4_23(U)),48).
+  clause( || O4_Author_of_paper(U) -> O4_Best_Applications_Paper_Award(skf4_22(U)),49).
+  clause( || O4_Sponzor(U) -> O4_Sponzor_fee(skf4_21(U)),50).
+  clause( || O4_Author(U) -> O4_Deadline_Author_notification(skf4_20(U)),51).
+  clause( || O4_Speaker(U) -> O4_Document(skf4_19(U)),52).
+  clause( || O4_Award(U) -> O4_Organizator(skf4_18(U)),53).
+  clause( || O4_Person(U) -> O4_Hotel(skf4_17(U)),54).
+  clause( || O4_Person(U) -> O4_Registration_fee(skf4_16(U)),55).
+  clause( || O4_ACM_SIGKDD(U) -> O4_Conference(skf4_15(U)),56).
+  clause( || -> O4_Person(U) O4_NEWATOMIC25(U),57).
+  clause( || -> O4_NEWATOMIC31(U) O4_Author(U),58).
+  clause( || O4_Author(U) -> O4_submit(U,skf4_29(U)),59).
+  clause( || -> O4_Registration_fee(U) O4_NEWATOMIC9(U),60).
+  clause( || -> O4_Paper(U) O4_NEWATOMIC32(U),61).
+  clause( || -> O4_NEWATOMIC4(U) O4_Award(U),62).
+  clause( || -> O4_NEWATOMIC30(U) O4_Document(U),63).
+  clause( || -> O4_NEWATOMIC22(U) O4_ACM_SIGKDD(U),64).
+  clause( || -> O4_Sponzor(U) O4_NEWATOMIC24(U),65).
+  clause( || O4_Author_of_paper_student(U) -> O4_award(U,skf4_28(U)),66).
+  clause( || -> O4_Conference(U) O4_NEWATOMIC13(U),67).
+  clause( || -> O4_NEWATOMIC21(U) O4_Person(U),68).
+  clause( || -> O4_NEWATOMIC2(U) O4_Author(U),69).
+  clause( || -> O4_NEWATOMIC5(U) O4_Speaker(U),70).
+  clause( || -> O4_NEWATOMIC18(U) O4_Author(U),71).
+  clause( || -> O4_NEWATOMIC28(U) O4_Speaker(U),72).
+  clause( || O4_Author_of_paper(U) -> O4_award(U,skf4_27(U)),73).
+  clause( || -> O4_Sponzor(U) O4_NEWATOMIC1(U),74).
+  clause( || O4_ACM_SIGKDD(U) -> O4_search(U,skf4_26(U)),75).
+  clause( || O4_Abstract(U) -> O4_submit_until(U,skf4_25(U)),76).
+  clause( || O4_ACM_SIGKDD(U) -> O4_design(U,skf4_24(U)),77).
+  clause( || O4_Paper(U) -> O4_submit_until(U,skf4_23(U)),78).
+  clause( || -> O4_NEWATOMIC19(U) O4_Person(U),79).
+  clause( || -> O4_NEWATOMIC11(U) O4_ACM_SIGKDD(U),80).
+  clause( || O4_Author_of_paper(U) -> O4_award(U,skf4_22(U)),81).
+  clause( || O4_Sponzor(U) -> O4_pay(U,skf4_21(U)),82).
+  clause( || -> O4_NEWATOMIC6(U) O4_Author(U),83).
+  clause( || -> O4_NEWATOMIC20(U) O4_Person(U),84).
+  clause( || O4_Author(U) -> O4_notification_until(U,skf4_20(U)),85).
+  clause( || O4_Speaker(U) -> O4_presentation(U,skf4_19(U)),86).
+  clause( || -> O4_NEWATOMIC29(U) O4_Deadline(U),87).
+  clause( || O4_Award(U) -> O4_awarded_by(U,skf4_18(U)),88).
+  clause( || -> O4_Deadline(U) O4_NEWATOMIC26(U),89).
+  clause( || -> O4_NEWATOMIC17(U) O4_Award(U),90).
+  clause( || -> O4_Registration_fee(U) O4_NEWATOMIC23(U),91).
+  clause( || -> O4_NEWATOMIC12(U) O4_Conference(U),92).
+  clause( || -> O4_Person(U) O4_NEWATOMIC3(U),93).
+  clause( || -> O4_NEWATOMIC8(U) O4_Registration_fee(U),94).
+  clause( || -> O4_Abstract(U) O4_NEWATOMIC33(U),95).
+  clause( || -> O4_NEWATOMIC14(U) O4_Conference(U),96).
+  clause( || -> O4_Conference(U) O4_NEWATOMIC16(U),97).
+  clause( || -> O4_NEWATOMIC0(U) O4_Sponzor(U),98).
+  clause( || -> O4_NEWATOMIC7(U) O4_Conference(U),99).
+  clause( || -> O4_ACM_SIGKDD(U) O4_NEWATOMIC15(U),100).
+  clause( || O4_Person(U) -> O4_can_stay_in(U,skf4_17(U)),101).
+  clause( || -> O4_NEWATOMIC27(U) O4_Document(U),102).
+  clause( || O4_Person(U) -> O4_pay(U,skf4_16(U)),103).
+  clause( || -> O4_NEWATOMIC10(U) O4_Person(U),104).
+  clause( || O4_ACM_SIGKDD(U) -> O4_hold(U,skf4_15(U)),105).
+  clause( || O4_holded_by(U,V) -> O4_ACM_SIGKDD(V),106).
+  clause( || O4_hold(U,V) -> O4_Conference(V),107).
+  clause( || O4_Name(U,V) O4_NEWATOMIC10(U) -> ,108).
+  clause( || O4_searched_by(U,V) -> O4_ACM_SIGKDD(V),109).
+  clause( || O4_award(U,V) -> O4_Award(V),110).
+  clause( || O4_payed_by(U,V) O4_NEWATOMIC9(U) -> ,111).
+  clause( || O4_notification_until(U,V) O4_NEWATOMIC2(U) -> ,112).
+  clause( || O4_obtain(U,V) -> O4_Award(V),113).
+  clause( || O4_Name_of_sponsor(U,V) O4_NEWATOMIC1(U) -> ,114).
+  clause( || O4_presentation(U,V) O4_NEWATOMIC5(U) -> ,115).
+  clause( || O4_presentation(U,V) -> O4_Document(V),116).
+  clause( || O4_Name_of_conference(U,V) O4_NEWATOMIC13(U) -> ,117).
+  clause( || O4_hold(U,V) O4_NEWATOMIC11(U) -> ,118).
+  clause( || O4_Currency(U,V) O4_NEWATOMIC8(U) -> ,119).
+  clause( || O4_awarded_by(U,V) O4_NEWATOMIC4(U) -> ,120).
+  clause( || O4_search(U,V) -> O4_Sponzor(V),121).
+  clause( || O4_Price(U,V) O4_NEWATOMIC23(U) -> ,122).
+  clause( || O4_E_mail(U,V) O4_NEWATOMIC19(U) -> ,123).
+  clause( || O4_presentationed_by(U,V) O4_NEWATOMIC27(U) -> ,124).
+  clause( || O4_Start_of_conference(U,V) O4_NEWATOMIC7(U) -> ,125).
+  clause( || O4_searched_by(U,V) O4_NEWATOMIC0(U) -> ,126).
+  clause( || O4_presentationed_by(U,V) -> O4_Speaker(V),127).
+  clause( || O4_pay(U,V) O4_NEWATOMIC20(U) -> ,128).
+  clause( || O4_can_stay_in(U,V) O4_NEWATOMIC21(U) -> ,129).
+  clause( || O4_designed_by(U,V) -> O4_ACM_SIGKDD(V),130).
+  clause( || O4_End_of_conference(U,V) O4_NEWATOMIC16(U) -> ,131).
+  clause( || O4_Date(U,V) O4_NEWATOMIC29(U) -> ,132).
+  clause( || O4_Nation(U,V) O4_NEWATOMIC25(U) -> ,133).
+  clause( || O4_submit(U,V) -> O4_Paper(V),134).
+  clause( || O4_pay(U,V) -> O4_Registration_fee(V),135).
+  clause( || O4_City_of_conference(U,V) O4_NEWATOMIC12(U) -> ,136).
+  clause( || O4_design(U,V) O4_NEWATOMIC22(U) -> ,137).
+  clause( || O4_obtain(U,V) O4_NEWATOMIC18(U) -> ,138).
+  clause( || O4_submit_until(U,V) -> O4_Deadline(V),139).
+  clause( || O4_submit_until(U,V) O4_NEWATOMIC30(U) -> ,140).
+  clause( || O4_designed_by(U,V) O4_NEWATOMIC26(U) -> ,141).
+  clause( || O4_submit(U,V) O4_NEWATOMIC31(U) -> ,142).
+  clause( || O4_design(U,V) -> O4_Deadline(V),143).
+  clause( || O4_payed_by(U,V) -> O4_Person(V),144).
+  clause( || O4_holded_by(U,V) O4_NEWATOMIC14(U) -> ,145).
+  clause( || O4_search(U,V) O4_NEWATOMIC15(U) -> ,146).
+  clause( || O4_notification_until(U,V) -> O4_Deadline_Author_notification(V),147).
+  clause( || O4_can_stay_in(U,V) -> O4_Place(V),148).
+  clause( || O4_Deadline_Abstract_Submission(U) O4_submit_until(V,U) O4_NEWATOMIC33(V) -> ,149).
+  clause( || O4_Sponzor_fee(U) O4_pay(V,U) O4_NEWATOMIC24(V) -> ,150).
+  clause( || O4_Deadline_Paper_Submission(U) O4_submit_until(V,U) O4_NEWATOMIC32(V) -> ,151).
+  clause( || O4_Paper(U) O4_submit(V,U) O4_NEWATOMIC6(V) -> ,152).
+  clause( || O4_Registration_fee(U) O4_pay(V,U) O4_NEWATOMIC3(V) -> ,153).
+  clause( || O4_Document(U) O4_presentation(V,U) O4_NEWATOMIC28(V) -> ,154).
+  clause( || O4_Organizator(U) O4_awarded_by(V,U) O4_NEWATOMIC17(V) -> ,155).
+  clause( || O4_General_Chair(U) -> O0_ConferenceChair(U),1).
+  clause( || O4_Review(U) -> O0_Review(U),2).
+  clause( || O4_Author(U) -> O0_Author(U),3).
+  clause( || O4_Document(U) -> O0_Document(U),4).
+  clause( || O4_Conference(U) -> O0_Conference(U),5).
+  clause( || O4_Program_Committee_member(U) -> O0_ProgramCommitteeMember(U),6).
+  clause( || O0_Person(U) -> O4_Person(U),7).
+  clause( || O0_ProgramCommitteeChair(U) -> O4_Program_Chair(U),8).
+  clause( || O0_ProgramCommittee(U) -> O4_Program_Committee(U),10).
+  clause( || O0_Paper(U) -> O4_Paper(U),12).
+  clause( || O4_Program_Committee(U) -> O0_ProgramCommittee(U),13).
+  clause( || O0_ProgramCommitteeMember(U) -> O4_Program_Committee_member(U),16).
+  clause( || O0_Document(U) -> O4_Document(U),17).
+  clause( || O0_Author(U) -> O4_Author(U),18).
+  clause( || O0_Review(U) -> O4_Review(U),19).
+  clause( || O0_Conference(U) -> O4_Conference(U),20).
+  clause( || O4_Paper(U) -> O0_Paper(U),21).
+  clause( || O4_Program_Chair(U) -> O0_ProgramCommitteeChair(U),22).
+  clause( || O4_Person(U) -> O0_Person(U),23).
+  clause( || O0_ConferenceChair(U) -> O4_General_Chair(U),24).
+  clause( || O4_Program_Committee_member(U) -> O1_Member_PC(U),1).
+  clause( || O1_Chair_PC(U) -> O4_Program_Chair(U),2).
+  clause( || O4_Paper(U) -> O1_Paper(U),3).
+  clause( || O4_Conference(U) -> O1_Conference(U),5).
+  clause( || O4_Author(U) -> O1_Author(U),6).
+  clause( || O1_Person(U) -> O4_Person(U),7).
+  clause( || O4_Person(U) -> O1_Person(U),8).
+  clause( || O1_Conference(U) -> O4_Conference(U),9).
+  clause( || O1_Paper(U) -> O4_Paper(U),10).
+  clause( || O1_Member_PC(U) -> O4_Program_Committee_member(U),11).
+  clause( || O4_Program_Chair(U) -> O1_Chair_PC(U),12).
+  clause( || O1_Author(U) -> O4_Author(U),13).
+  clause( || O2_Paper(U) -> O4_Paper(U),1).
+  clause( || O4_Invited_Speaker(U) -> O2_Invited_Speaker(U),2).
+  clause( || O2_Person(U) -> O4_Person(U),3).
+  clause( || O2_Conference(U) -> O4_Conference(U),4).
+  clause( || O4_Author(U) -> O2_Paper_Author(U),5).
+  clause( || O2_Abstract(U) -> O4_Abstract(U),6).
+  clause( || O4_Document(U) -> O2_Document(U),7).
+  clause( || O2_PC_Chair(U) -> O4_Program_Chair(U),8).
+  clause( || O4_Place(U) -> O2_Location(U),9).
+  clause( || O2_OC_Member(U) -> O4_Organizing_Committee_member(U),10).
+  clause( || O4_Review(U) -> O2_Review(U),11).
+  clause( || O4_Person(U) -> O2_Person(U),12).
+  clause( || O4_Paper(U) -> O2_Paper(U),13).
+  clause( || O2_Paper_Author(U) -> O4_Author(U),14).
+  clause( || O2_Document(U) -> O4_Document(U),15).
+  clause( || O2_Review(U) -> O4_Review(U),16).
+  clause( || O4_Abstract(U) -> O2_Abstract(U),17).
+  clause( || O4_Program_Chair(U) -> O2_PC_Chair(U),18).
+  clause( || O2_Location(U) -> O4_Place(U),19).
+  clause( || O2_Invited_Speaker(U) -> O4_Invited_Speaker(U),20).
+  clause( || O4_Organizing_Committee_member(U) -> O2_OC_Member(U),21).
+  clause( || O4_Conference(U) -> O2_Conference(U),22).
+  clause( || O3_Person(U) -> O4_Person(U),1).
+  clause( || O3_Main_office(U) -> O4_Main_office(U),2).
+  clause( || O4_Listener(U) -> O3_Listener(U),3).
+  clause( || O3_Speaker(U) -> O4_Speaker(U),4).
+  clause( || O4_Place(U) -> O3_Place(U),5).
+  clause( || O4_Review(U) -> O3_Review(U),6).
+  clause( || O4_Deadline_Author_notification(U) -> O3_Deadline_for_notification_of_acceptance(U),7).
+  clause( || O3_Student_registration_fee(U) -> O4_Registration_Student(U),8).
+  clause( || O3_Registration_fee(U) -> O4_Registration_fee(U),9).
+  clause( || O4_Conference_hall(U) -> O3_Conference_hall(U),10).
+  clause( || O3_Sponsor(U) -> O4_Sponzor(U),11).
+  clause( || O3_Nonmember_registration_fee(U) -> O4_Registration_Non_Member(U),12).
+  clause( || O3_Fee(U) -> O4_Fee(U),13).
+  clause( || O4_Author(U) -> O3_Author(U),14).
+  clause( || O3_Deadline(U) -> O4_Deadline(U),15).
+  clause( || O4_Registration_Non_Member(U) -> O3_Nonmember_registration_fee(U),16).
+  clause( || O3_Author(U) -> O4_Author(U),17).
+  clause( || O4_Registration_fee(U) -> O3_Registration_fee(U),18).
+  clause( || O4_Speaker(U) -> O3_Speaker(U),19).
+  clause( || O4_Main_office(U) -> O3_Main_office(U),20).
+  clause( || O3_Review(U) -> O4_Review(U),21).
+  clause( || O4_Person(U) -> O3_Person(U),22).
+  clause( || O4_Sponzor(U) -> O3_Sponsor(U),23).
+  clause( || O3_Place(U) -> O4_Place(U),24).
+  clause( || O3_Conference_hall(U) -> O4_Conference_hall(U),25).
+  clause( || O4_Fee(U) -> O3_Fee(U),26).
+  clause( || O4_Registration_Student(U) -> O3_Student_registration_fee(U),27).
+  clause( || O3_Deadline_for_notification_of_acceptance(U) -> O4_Deadline_Author_notification(U),28).
+  clause( || O4_Deadline(U) -> O3_Deadline(U),29).
+  clause( || O3_Listener(U) -> O4_Listener(U),30).
+end_of_list. 

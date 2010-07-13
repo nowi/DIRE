@@ -4,7 +4,6 @@ out
 lib_managed
 target
 logs
-input
 boot
 DIRE.iws
 *.log

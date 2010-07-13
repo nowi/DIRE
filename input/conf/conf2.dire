@@ -1,0 +1,314 @@
+list_of_clauses(axioms, cnf).
+  clause( || O2_Regular_Session(U) -> O2_Session(U),1).
+  clause( || O2_Organising_Agency(U) -> O2_Organisation(U),2).
+  clause( || O2_Session(U) -> O2_NEWATOMIC14(U),3).
+  clause( || O2_Presenter(U) -> O2_Conference_Participant(U),4).
+  clause( || O2_Conference_Banquet(U) -> O2_Social_Event(U),5).
+  clause( || O2_Accepted_Paper(U) -> O2_Evaluated_Paper(U),6).
+  clause( || O2_Negative_Review(U) -> O2_Review(U),7).
+  clause( || O2_Paper_Author(U) -> O2_Person(U),8).
+  clause( || O2_Conference(U) -> O2_Scientific_Event(U),9).
+  clause( || O2_Proceedings(U) -> O2_Multi_author_Volume(U),10).
+  clause( || O2_Invited_Speaker(U) -> O2_Presenter(U),11).
+  clause( || O2_Session(U) -> O2_Scientific_Event(U),12).
+  clause( || O2_Poster_Paper(U) -> O2_Paper(U),13).
+  clause( || O2_Research_Institute(U) -> O2_Academic_Institution(U),14).
+  clause( || O2_Scientific_Event(U) -> O2_Event(U),15).
+  clause( || O2_Proceedings(U) -> O2_NEWATOMIC31(U),16).
+  clause( || O2_Tutorial_Abstract(U) -> O2_Abstract(U),17).
+  clause( || O2_Conference_Trip(U) -> O2_Social_Event(U),18).
+  clause( || O2_Contributed_Talk(U) -> O2_Individual_Presentation(U),19).
+  clause( || O2_Industrial_Paper(U) -> O2_Paper(U),20).
+  clause( || O2_OC_Member(U) -> O2_Conference_Participant(U),21).
+  clause( || O2_Student(U) -> O2_Person(U),22).
+  clause( || O2_Positive_Review(U) -> O2_Review(U),23).
+  clause( || O2_Social_Event(U) -> O2_Event(U),24).
+  clause( || O2_Conference_Participant(U) -> O2_Person(U),25).
+  clause( || O2_Tutorial_Chair(U) -> O2_Conference_Participant(U),26).
+  clause( || O2_Evaluated_Paper(U) -> O2_Assigned_Paper(U),27).
+  clause( || -> O2_NEWATOMIC23(U),28).
+  clause( || O2_Submitted_Paper(U) -> O2_Paper(U),29).
+  clause( || O2_Conference_Proceedings(U) -> O2_NEWATOMIC19(U),30).
+  clause( || O2_Academic_Institution(U) -> O2_Organisation(U),31).
+  clause( || O2_Demo_Session(U) -> O2_Session(U),32).
+  clause( || O2_Paper(U) -> O2_Document(U),33).
+  clause( || -> O2_NEWATOMIC33(U),34).
+  clause( || O2_PC_Chair(U) -> O2_PC_Member(U),35).
+  clause( || O2_Workshop_Paper(U) -> O2_Paper(U),36).
+  clause( || O2_Programme_Brochure(U) -> O2_Document(U),37).
+  clause( || O2_Conference_Session(U) -> O2_Session(U),38).
+  clause( || O2_Invited_Talk_Abstract(U) -> O2_Abstract(U),39).
+  clause( || O2_Tutorial_Chair(U) -> O2_PC_Member(U),40).
+  clause( || O2_PC_Member(U) -> O2_Possible_Reviewer(U),41).
+  clause( || O2_Industrial_Session(U) -> O2_Conference_Session(U),42).
+  clause( || O2_Agency_Staff_Member(U) -> O2_Person(U),43).
+  clause( || O2_Session_Chair(U) -> O2_Conference_Participant(U),44).
+  clause( || -> O2_NEWATOMIC21(U),45).
+  clause( || O2_Proceedings_Publisher(U) -> O2_Organisation(U),46).
+  clause( || -> O2_NEWATOMIC8(U),47).
+  clause( || O2_Demo_Chair(U) -> O2_Conference_Participant(U),48).
+  clause( || O2_Workshop_Chair(U) -> O2_PC_Member(U),49).
+  clause( || O2_University(U) -> O2_Academic_Institution(U),50).
+  clause( || O2_Workshop_Session(U) -> O2_Session(U),51).
+  clause( || O2_Demo_Paper(U) -> O2_Paper(U),52).
+  clause( || O2_Camera_Ready_Paper(U) -> O2_Paper(U),53).
+  clause( || -> O2_NEWATOMIC3(U),54).
+  clause( || O2_Invited_Talk(U) -> O2_Individual_Presentation(U),55).
+  clause( || O2_Conference_Proceedings(U) -> O2_Proceedings(U),56).
+  clause( || O2_Assigned_Paper(U) -> O2_Submitted_Paper(U),57).
+  clause( || O2_Rejected_Paper(U) -> O2_Evaluated_Paper(U),58).
+  clause( || O2_Session(U) -> O2_NEWATOMIC16(U),59).
+  clause( || O2_Regular_Paper(U) -> O2_Paper(U),60).
+  clause( || O2_Conference_Paper(U) -> O2_Paper(U),61).
+  clause( || O2_Neutral_Review(U) -> O2_Review(U),62).
+  clause( || O2_Web_Site(U) -> O2_Document(U),63).
+  clause( || O2_Late_Registered_Participant(U) -> O2_Conference_Participant(U),64).
+  clause( || O2_Individual_Presentation(U) -> O2_Scientific_Event(U),65).
+  clause( || O2_OC_Chair(U) -> O2_OC_Member(U),66).
+  clause( || O2_Abstract(U) -> O2_Document(U),67).
+  clause( || O2_SC_Member(U) -> O2_PC_Member(U),68).
+  clause( || O2_Review(U) -> O2_Document(U),69).
+  clause( || O2_Multi_author_Volume(U) -> O2_Document(U),70).
+  clause( || O2_Workshop(U) -> O2_Scientific_Event(U),71).
+  clause( || O2_Early_Registered_Participant(U) -> O2_Conference_Participant(U),72).
+  clause( || O2_Tutorial(U) -> O2_Individual_Presentation(U),73).
+  clause( || O2_Track(U) -> O2_Scientific_Event(U),74).
+  clause( || O2_Session_Chair(U) -> O2_PC_Member(U),75).
+  clause( || O2_Possible_Reviewer(U) -> O2_Person(U),76).
+  clause( || O2_Poster_Session(U) -> O2_Session(U),77).
+  clause( || O2_Flyer(U) -> O2_Document(U),78).
+  clause( || O2_Workshop_Chair(U) -> O2_Conference_Participant(U),79).
+  clause( || O2_PC_Chair(U) -> O2_Conference_Participant(U),80).
+  clause( || O2_Poster_Paper(U) O2_Regular_Paper(U) -> ,81).
+  clause( || O2_Workshop(U) O2_Session(U) -> ,82).
+  clause( || O2_Social_Event(U) O2_Workshop(U) -> ,83).
+  clause( || O2_Tutorial(U) O2_Session(U) -> ,84).
+  clause( || O2_Rejected_Paper(U) O2_Accepted_Paper(U) -> ,85).
+  clause( || O2_Event(U) O2_Person(U) -> ,86).
+  clause( || O2_Accepted_Paper(U) O2_Camera_Ready_Paper(U) -> ,87).
+  clause( || O2_Social_Event(U) O2_Conference(U) -> ,88).
+  clause( || O2_Conference_Session(U) -> O2_Conference(skf2_21(U)),89).
+  clause( || O2_Conference(U) O2_Contributed_Talk(U) -> ,90).
+  clause( || O2_Workshop_Chair(U) O2_PC_Chair(U) -> ,91).
+  clause( || O2_Poster_Paper(U) O2_Industrial_Paper(U) -> ,92).
+  clause( || O2_Workshop(U) O2_Individual_Presentation(U) -> ,93).
+  clause( || O2_Conference_Session(U) O2_Workshop_Session(U) -> ,95).
+  clause( || O2_Review(U) O2_Paper(U) -> ,96).
+  clause( || O2_Invited_Talk(U) O2_Conference(U) -> ,97).
+  clause( || O2_Workshop(U) O2_Conference(U) -> ,98).
+  clause( || O2_Accepted_Paper(U) -> O2_Positive_Review(skf2_19(U)),99).
+  clause( || O2_Tutorial(U) O2_Workshop(U) -> ,100).
+  clause( || O2_Person(U) O2_Location(U) -> ,101).
+  clause( || O2_Regular_Paper(U) O2_Demo_Paper(U) -> ,102).
+  clause( || O2_Tutorial(U) O2_Track(U) -> ,103).
+  clause( || O2_Track(U) O2_Session(U) -> ,104).
+  clause( || O2_Workshop(U) O2_Track(U) -> ,105).
+  clause( || O2_Negative_Review(U) O2_Neutral_Review(U) -> ,106).
+  clause( || O2_Track(U) O2_Invited_Talk(U) -> ,107).
+  clause( || O2_Multi_author_Volume(U) O2_Flyer(U) -> ,108).
+  clause( || O2_Poster_Paper(U) O2_Demo_Paper(U) -> ,109).
+  clause( || O2_Negative_Review(U) O2_Positive_Review(U) -> ,110).
+  clause( || O2_Workshop(U) O2_Invited_Talk(U) -> ,112).
+  clause( || O2_Late_Registered_Participant(U) O2_Early_Registered_Participant(U) -> ,113).
+  clause( || O2_Proceedings(U) O2_Paper(U) -> ,114).
+  clause( || O2_Programme_Brochure(U) O2_Proceedings(U) -> ,115).
+  clause( || O2_Programme_Brochure(U) O2_Web_Site(U) -> ,116).
+  clause( || O2_Web_Site(U) O2_Paper(U) -> ,117).
+  clause( || O2_Camera_Ready_Paper(U) -> O2_Conference_Participant(skf2_17(U)),118).
+  clause( || O2_Track(U) O2_Contributed_Talk(U) -> ,119).
+  clause( || O2_Social_Event(U) O2_Invited_Talk(U) -> ,120).
+  clause( || O2_Evaluated_Paper(U) O2_Camera_Ready_Paper(U) -> ,121).
+  clause( || O2_Multi_author_Volume(U) O2_Review(U) -> ,122).
+  clause( || O2_Person(U) O2_Organisation(U) -> ,123).
+  clause( || O2_Flyer(U) O2_Paper(U) -> ,124).
+  clause( || O2_Multi_author_Volume(U) O2_Programme_Brochure(U) -> ,125).
+  clause( || O2_Industrial_Paper(U) O2_Demo_Paper(U) -> ,126).
+  clause( || O2_Web_Site(U) O2_Flyer(U) -> ,127).
+  clause( || O2_Programme_Brochure(U) O2_Paper(U) -> ,128).
+  clause( || O2_Positive_Review(U) O2_Neutral_Review(U) -> ,130).
+  clause( || O2_Tutorial_Chair(U) O2_PC_Chair(U) -> ,131).
+  clause( || O2_Workshop_Paper(U) O2_Industrial_Paper(U) -> ,132).
+  clause( || O2_Conference_Paper(U) O2_Workshop_Paper(U) -> ,133).
+  clause( || O2_Track(U) O2_Conference(U) -> ,134).
+  clause( || O2_Multi_author_Volume(U) O2_Paper(U) -> ,135).
+  clause( || O2_Multi_author_Volume(U) O2_Web_Site(U) -> ,136).
+  clause( || O2_Tutorial(U) O2_Conference(U) -> ,137).
+  clause( || O2_Poster_Session(U) O2_Regular_Session(U) -> ,138).
+  clause( || O2_Tutorial(U) O2_Invited_Talk(U) -> ,139).
+  clause( || O2_Regular_Paper(U) O2_Industrial_Paper(U) -> ,140).
+  clause( || O2_Review(U) O2_Proceedings(U) -> ,141).
+  clause( || O2_Submitted_Paper(U) O2_Camera_Ready_Paper(U) -> ,143).
+  clause( || O2_Tutorial(U) O2_Social_Event(U) -> ,144).
+  clause( || O2_Contributed_Talk(U) -> O2_Camera_Ready_Paper(skf2_14(U)),145).
+  clause( || O2_Organising_Agency(U) O2_Academic_Institution(U) -> ,146).
+  clause( || O2_Session(U) O2_Contributed_Talk(U) -> ,147).
+  clause( || O2_Demo_Session(U) O2_Poster_Session(U) -> ,148).
+  clause( || O2_Social_Event(U) O2_Contributed_Talk(U) -> ,149).
+  clause( || O2_Camera_Ready_Paper(U) -> O2_Accepted_Paper(skf2_13(U)),150).
+  clause( || O2_Programme_Brochure(U) O2_Review(U) -> ,151).
+  clause( || O2_Programme_Brochure(U) O2_Flyer(U) -> ,152).
+  clause( || O2_Session(U) O2_Invited_Talk(U) -> ,153).
+  clause( || O2_Session(U) -> O2_Individual_Presentation(skf2_12(U)),154).
+  clause( || O2_Tutorial(U) O2_Contributed_Talk(U) -> ,155).
+  clause( || O2_NEWATOMIC16(U) -> O2_NEWATOMIC15(skf2_11(U)),156).
+  clause( || O2_Proceedings(U) O2_Flyer(U) -> ,157).
+  clause( || O2_Invited_Talk(U) O2_Contributed_Talk(U) -> ,158).
+  clause( || O2_Person(U) O2_Document(U) -> ,159).
+  clause( || O2_Proceedings(U) O2_Web_Site(U) -> ,160).
+  clause( || O2_Social_Event(U) O2_Track(U) -> ,161).
+  clause( || O2_Session(U) O2_Conference(U) -> ,162).
+  clause( || O2_Review(U) O2_Flyer(U) -> ,163).
+  clause( || O2_Demo_Session(U) O2_Regular_Session(U) -> ,164).
+  clause( || O2_Review(U) O2_Web_Site(U) -> ,165).
+  clause( || -> O2_NEWATOMIC35(U) O2_Organisation(U),166).
+  clause( || -> O2_Review(U) O2_NEWATOMIC26(U),167).
+  clause( || O2_NEWATOMIC22(U) -> O2_Event(U) O2_Paper(U),168).
+  clause( || O2_Conference_Session(U) -> O2_partOfEvent(U,skf2_21(U)),169).
+  clause( || -> O2_Individual_Presentation(U) O2_NEWATOMIC25(U),170).
+  clause( || O2_Proceedings(U) -> O2_volumeContainsPaper(U,skf2_20(U)),171).
+  clause( || -> O2_Event(U) O2_NEWATOMIC41(U),172).
+  clause( || O2_Accepted_Paper(U) -> O2_hasReview(U,skf2_19(U)),173).
+  clause( || O2_NEWATOMIC20(U) -> O2_Programme_Brochure(U) O2_Web_Site(U),174).
+  clause( || -> O2_Possible_Reviewer(U) O2_NEWATOMIC10(U),175).
+  clause( || -> O2_Event(U) O2_NEWATOMIC5(U),176).
+  clause( || O2_Evaluated_Paper(U) -> O2_hasReview(U,skf2_18(U)),177).
+  clause( || O2_NEWATOMIC18(U) -> O2_Conference_Paper(U) O2_Invited_Talk_Abstract(U),178).
+  clause( || O2_Camera_Ready_Paper(U) -> O2_writtenBy(U,skf2_17(U)),179).
+  clause( || -> O2_Event(U) O2_NEWATOMIC28(U),180).
+  clause( || -> O2_NEWATOMIC29(U) O2_Organisation(U),181).
+  clause( || O2_Assigned_Paper(U) -> O2_hasReviewer(U,skf2_16(U)),182).
+  clause( || -> O2_Review(U) O2_NEWATOMIC39(U),183).
+  clause( || -> O2_NEWATOMIC17(U) O2_Document(U),184).
+  clause( || -> O2_Document(U) O2_NEWATOMIC40(U),185).
+  clause( || -> O2_NEWATOMIC11(U) O2_Paper(U),186).
+  clause( || -> O2_NEWATOMIC27(U) O2_Location(U),187).
+  clause( || -> O2_NEWATOMIC36(U) O2_Paper(U),188).
+  clause( || O2_NEWATOMIC32(U) -> O2_Abstract(U) O2_Paper(U),189).
+  clause( || -> O2_NEWATOMIC38(U) O2_Document(U),190).
+  clause( || O2_Contributed_Talk(U) -> O2_presentationOfPaper(U,skf2_15(U)),191).
+  clause( || O2_NEWATOMIC30(U) -> O2_Accepted_Paper(U) O2_Invited_Talk_Abstract(U),192).
+  clause( || O2_Contributed_Talk(U) -> O2_presentationOfPaper(U,skf2_14(U)),193).
+  clause( || -> O2_Event(U) O2_NEWATOMIC24(U),194).
+  clause( || O2_NEWATOMIC2(U) -> O2_Person(U) O2_Organisation(U),195).
+  clause( || O2_Camera_Ready_Paper(U) -> O2_updatedVersionOf(U,skf2_13(U)),196).
+  clause( || -> O2_Event(U) O2_NEWATOMIC9(U),197).
+  clause( || O2_Session(U) -> O2_hasEvent(U,skf2_12(U)),198).
+  clause( || O2_NEWATOMIC16(U) -> O2_partOfEvent(U,skf2_11(U)),199).
+  clause( || -> O2_NEWATOMIC1(U) O2_Research_Topic(U),200).
+  clause( || -> O2_NEWATOMIC34(U) O2_Academic_Institution(U),201).
+  clause( || O2_NEWATOMIC15(U) -> O2_Workshop(U) O2_Conference(U),202).
+  clause( || -> O2_Person(U) O2_NEWATOMIC37(U),203).
+  clause( || O2_partOfEvent(U,V) O2_NEWATOMIC14(U) -> O2_NEWATOMIC13(V),204).
+  clause( || O2_hasReviewer(U,V) -> O2_Possible_Reviewer(V),205).
+  clause( || O2_authorOf(U,V) -> O2_Document(V),206).
+  clause( || O2_writtenBy(U,V) -> O2_Person(V),207).
+  clause( || O2_hasEvent(U,V) -> O2_Event(V),208).
+  clause( || O2_presentationOfPaper(U,V) O2_NEWATOMIC33(U) -> O2_NEWATOMIC32(V),209).
+  clause( || O2_reviewerOfPaper(U,V) -> O2_Paper(V),210).
+  clause( || O2_heldIn(U,V) O2_NEWATOMIC41(U) -> ,211).
+  clause( || O2_inverse_of_partOf_7(U,V) -> O2_Event(V),212).
+  clause( || O2_coversTopic(U,V) -> O2_Research_Topic(V),213).
+  clause( || O2_NEWATOMIC13(U) -> O2_Workshop(U) O2_Track(U) O2_Conference(U),214).
+  clause( || O2_hasUpdatedVersion(U,V) -> O2_Document(V),215).
+  clause( || O2_publisherOf(U,V) O2_NEWATOMIC35(U) -> ,216).
+  clause( || O2_paperPresentedAs(U,V) -> O2_Individual_Presentation(V),217).
+  clause( || O2_topicCoveredBy(U,V) O2_NEWATOMIC1(U) -> ,218).
+  clause( || O2_hasEvent(U,V) O2_NEWATOMIC9(U) -> ,219).
+  clause( || O2_technicallyOrganises(U,V) O2_NEWATOMIC29(U) -> ,220).
+  clause( || O2_hasReview(U,V) -> O2_Review(V),221).
+  clause( || -> O2_NEWATOMIC0(U) O2_Abstract(U) O2_Paper(U),222).
+  clause( || O2_partOfEvent(U,V) O2_NEWATOMIC28(U) -> ,223).
+  clause( || O2_paperPresentedAs(U,V) O2_NEWATOMIC0(U) -> ,224).
+  clause( || O2_coversTopic(U,V) O2_NEWATOMIC6(U) -> ,225).
+  clause( || O2_heldIn(U,V) -> O2_Location(V),226).
+  clause( || O2_eventOnList(U,V) O2_NEWATOMIC5(U) -> ,227).
+  clause( || O2_authorOf(U,V) O2_NEWATOMIC37(U) -> ,228).
+  clause( || O2_volumeContainsPaper(U,V) O2_NEWATOMIC19(U) -> O2_NEWATOMIC18(V),229).
+  clause( || O2_listsEvent(U,V) O2_NEWATOMIC12(U) -> ,230).
+  clause( || O2_hasUpdatedVersion(U,V) O2_NEWATOMIC17(U) -> ,231).
+  clause( || O2_listsEvent(U,V) -> O2_Event(V),232).
+  clause( || O2_hasReviewer(U,V) O2_NEWATOMIC11(U) -> ,233).
+  clause( || O2_publisherOf(U,V) O2_NEWATOMIC8(U) -> O2_NEWATOMIC7(V),234).
+  clause( || O2_locationOf(U,V) O2_NEWATOMIC27(U) -> ,235).
+  clause( || O2_reviewWrittenBy(U,V) -> O2_Possible_Reviewer(V),236).
+  clause( || O2_scientificallyOrganisedBy(U,V) -> O2_Academic_Institution(V),237).
+  clause( || O2_eventOnList(U,V) O2_NEWATOMIC21(U) -> O2_NEWATOMIC20(V),238).
+  clause( || -> O2_Programme_Brochure(U) O2_Web_Site(U) O2_NEWATOMIC12(U),239).
+  clause( || O2_partOfEvent(U,V) -> O2_Event(V),240).
+  clause( || O2_organisedBy(U,V) O2_NEWATOMIC3(U) -> O2_NEWATOMIC2(V),241).
+  clause( || O2_topicCoveredBy(U,V) O2_NEWATOMIC23(U) -> O2_NEWATOMIC22(V),242).
+  clause( || -> O2_Event(U) O2_NEWATOMIC6(U) O2_Paper(U),243).
+  clause( || O2_volumeContainsPaper(U,V) O2_NEWATOMIC31(U) -> O2_NEWATOMIC30(V),244).
+  clause( || O2_scientificallyOrganises(U,V) O2_NEWATOMIC34(U) -> ,245).
+  clause( || -> O2_NEWATOMIC4(U) O2_Person(U) O2_Organisation(U),246).
+  clause( || O2_locationOf(U,V) -> O2_Event(V),247).
+  clause( || O2_hasReview(U,V) O2_NEWATOMIC36(U) -> ,248).
+  clause( || O2_updatedVersionOf(U,V) O2_NEWATOMIC38(U) -> ,249).
+  clause( || O2_reviewerOfPaper(U,V) O2_NEWATOMIC10(U) -> ,250).
+  clause( || O2_organises(U,V) -> O2_Event(V),251).
+  clause( || O2_reviewOfPaper(U,V) -> O2_Paper(V),252).
+  clause( || O2_organises(U,V) O2_NEWATOMIC4(U) -> ,253).
+  clause( || O2_organisedBy(U,V) O2_NEWATOMIC24(U) -> ,254).
+  clause( || O2_updatedVersionOf(U,V) -> O2_Document(V),255).
+  clause( || O2_reviewWrittenBy(U,V) O2_NEWATOMIC39(U) -> ,256).
+  clause( || O2_presentationOfPaper(U,V) O2_NEWATOMIC25(U) -> ,257).
+  clause( || O2_reviewOfPaper(U,V) O2_NEWATOMIC26(U) -> ,258).
+  clause( || O2_writtenBy(U,V) O2_NEWATOMIC40(U) -> ,259).
+  clause( || O2_NEWATOMIC7(U) -> O2_Multi_author_Volume(U) O2_Programme_Brochure(U) O2_Web_Site(U) O2_Flyer(U),260).
+  clause( || O2_Paper(U) -> O0_Paper(U),1).
+  clause( || O0_Document(U) -> O2_Document(U),2).
+  clause( || O0_Review(U) -> O2_Review(U),5).
+  clause( || O0_ConferenceMember(U) -> O2_Conference_Participant(U),6).
+  clause( || O0_Person(U) -> O2_Person(U),8).
+  clause( || O0_PaperFullVersion(U) -> O2_Regular_Paper(U),9).
+  clause( || O0_Author(U) -> O2_Paper_Author(U),10).
+  clause( || O2_Conference(U) -> O0_Conference(U),11).
+  clause( || O0_Conference(U) -> O2_Conference(U),12).
+  clause( || O0_Paper(U) -> O2_Paper(U),13).
+  clause( || O2_Paper_Author(U) -> O0_Author(U),15).
+  clause( || O2_Document(U) -> O0_Document(U),16).
+  clause( || O2_Review(U) -> O0_Review(U),18).
+  clause( || O2_Person(U) -> O0_Person(U),19).
+  clause( || O2_Conference_Participant(U) -> O0_ConferenceMember(U),20).
+  clause( || O2_Regular_Paper(U) -> O0_PaperFullVersion(U),21).
+  clause( || O2_Student(U) -> O1_Student(U),1).
+  clause( || O2_Conference(U) -> O1_Conference(U),2).
+  clause( || O1_Event(U) -> O2_Event(U),3).
+  clause( || O2_Paper(U) -> O1_Contribution(U),4).
+  clause( || O2_Student(U) -> O1_Scholar(U),5).
+  clause( || O1_Banquet(U) -> O2_Conference_Banquet(U),6).
+  clause( || O2_PC_Chair(U) -> O1_Chair_PC(U),7).
+  clause( || O1_Working_event(U) -> O2_Scientific_Event(U),8).
+  clause( || O1_Participant(U) -> O2_Conference_Participant(U),9).
+  clause( || O1_Social_event(U) -> O2_Social_Event(U),10).
+  clause( || O2_Paper_Author(U) -> O1_Author(U),11).
+  clause( || O1_Member_PC(U) -> O2_PC_Member(U),12).
+  clause( || O1_Workshop(U) -> O2_Workshop(U),13).
+  clause( || O1_Tutorial(U) -> O2_Tutorial(U),14).
+  clause( || O2_Research_Topic(U) -> O1_Topic(U),15).
+  clause( || O2_Conference_Trip(U) -> O1_Trip(U),16).
+  clause( || O2_Organisation(U) -> O1_Organization(U),17).
+  clause( || O1_University(U) -> O2_University(U),18).
+  clause( || O1_Poster(U) -> O2_Poster_Paper(U),19).
+  clause( || O1_Person(U) -> O2_Person(U),20).
+  clause( || O1_Student(U) -> O2_Student(U),21).
+  clause( || O1_Conference(U) -> O2_Conference(U),22).
+  clause( || O2_Scientific_Event(U) -> O1_Working_event(U),23).
+  clause( || O2_Conference_Participant(U) -> O1_Participant(U),24).
+  clause( || O2_Poster_Paper(U) -> O1_Poster(U),25).
+  clause( || O1_Scholar(U) -> O2_Student(U),26).
+  clause( || O2_Tutorial(U) -> O1_Tutorial(U),27).
+  clause( || O2_Conference_Banquet(U) -> O1_Banquet(U),28).
+  clause( || O1_Author(U) -> O2_Paper_Author(U),29).
+  clause( || O2_PC_Member(U) -> O1_Member_PC(U),30).
+  clause( || O1_Topic(U) -> O2_Research_Topic(U),31).
+  clause( || O2_Workshop(U) -> O1_Workshop(U),32).
+  clause( || O2_Social_Event(U) -> O1_Social_event(U),33).
+  clause( || O1_Contribution(U) -> O2_Paper(U),34).
+  clause( || O2_Event(U) -> O1_Event(U),35).
+  clause( || O2_University(U) -> O1_University(U),36).
+  clause( || O1_Chair_PC(U) -> O2_PC_Chair(U),37).
+  clause( || O1_Organization(U) -> O2_Organisation(U),38).
+  clause( || O1_Trip(U) -> O2_Conference_Trip(U),39).
+  clause( || O2_Person(U) -> O1_Person(U),40).
+end_of_list. 
