@@ -83,7 +83,7 @@ class ManualConfExampleMerger extends ClauseStoragePartitioning with Logging {
   override def partition(clauses: ClauseStorage) = {
     // load the main ontology
 
-    val module0 = SPASSIntermediateFormatParser.parseFromFile(new File("/workspace/DIRE/DIRE/input/conf/merged.dire")).removeDuplicates
+    val module0 = SPASSIntermediateFormatParser.parseFromFile(new File("input/conf/merged.dire")).removeDuplicates
 
     // merge those modules into one
 
@@ -101,7 +101,7 @@ class ManualConfExampleMergerShared extends ClauseStoragePartitioning with Loggi
   override def partition(clauses: ClauseStorage) = {
     // load the main ontology
 
-    val module0 = SPASSIntermediateFormatParser.parseSharedFromFile(new File("/workspace/DIRE/DIRE/input/conf/merged.dire")).removeDuplicates
+    val module0 = SPASSIntermediateFormatParser.parseSharedFromFile(new File("input/conf/merged.dire")).removeDuplicates
 
     // merge those modules into one
 
