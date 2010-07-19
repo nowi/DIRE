@@ -18,43 +18,47 @@ Building DIRE
 DIRE is using the [SBT][4] build system. So the first thing you have to do is to download and install SBT as described on the SBT homepage.
 
 
-1.    Get the source code for DIRE
+Download the source code for DIRE, update/download all dependencies and compile the project :
 
     git clone git://github.com/nowi/DIRE.git
 
-2.    cd DIRE
+    cd DIRE
 
-3.    sbt udpate
+    sbt udpate
 
-4.    sbt compile
+    sbt compile
 
 
-Running DIRE ( single workstation mode )
+Running DIRE (single workstation mode)
 -------------
 
-1.    sbt console-quick
+Start the Scala [REPL][5], import the DIRE commands into scope and start a local saturation of the OntoFarm ontology. (handles to the involved reasoners are stored in the variable 'reasoners')
 
-2.    import DIREShell._
+    sbt console-quick
 
-3.    val reasoners = runOntoFarmLocal (this starts a distributed reasoning process that saturates the OntoFarm example ontology.)
+    import DIREShell._
+
+    val reasoners = runOntoFarmLocal
 
 
-Running DIRE ( cluster mode )
+Running DIRE (cluster mode)
 -------------
 
-On each machine of the cluster execute : sbt server *PORT* RDL (e.g. sbt server 30000 RDL)
+On each machine in the cluster execute: 
+    sbt server *PORT* RDL (e.g. sbt server 30000 RDL)
          
 
-On any of those machines: 
+On any of those machines execute: 
 
-1.    sbt console-quick
+    sbt console-quick
 
-2.    import DIREShell._
+    import DIREShell._
 
-3.    val remoteReasoners = runOntoFarmCluster
+    val remoteReasoners = runOntoFarmCluster
 
 
   [1]: http://scala-lang.org
   [2]: http://akkasource.com
   [3]: http://en.wikipedia.org/wiki/Actor_model
   [4]: http://code.google.com/p/simple-build-tool/
+  [5]: http://en.wikipedia.org/wiki/Read-eval-print_loop
